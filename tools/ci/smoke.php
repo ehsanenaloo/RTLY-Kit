@@ -34,6 +34,11 @@ $failed = array_keys(array_filter($checks, static fn (bool $ok): bool => ! $ok))
 
 echo 'mbstring loaded: ' . (extension_loaded('mbstring') ? 'yes' : 'no') . PHP_EOL;
 
+if (getenv('RTLY_EXPECT_NO_MBSTRING') === '1' && extension_loaded('mbstring')) {
+    fwrite(STDERR, 'The minimal job must run without mbstring, but it is loaded.' . PHP_EOL);
+    exit(1);
+}
+
 if ($failed !== []) {
     fwrite(STDERR, 'Smoke test failed: ' . implode(', ', $failed) . PHP_EOL);
     exit(1);

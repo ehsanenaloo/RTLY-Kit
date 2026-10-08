@@ -58,8 +58,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, macos-latest]
-        php: ['8.2', '8.5']
+        include:
+          - { os: windows-latest, php: '8.2' }
+          - { os: windows-latest, php: '8.5' }
+          - { os: macos-latest, php: '8.2' }
+          - { os: macos-latest, php: '8.4' }
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -139,11 +142,14 @@ jobs:
       - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
         with:
           php-version: '8.2'
-          extensions: none, :mbstring
+          # Composer itself needs iconv or mbstring; the library needs neither, so keep iconv only.
+          extensions: none, iconv, :mbstring
           coverage: none
           tools: composer:v2
       - run: composer install --no-dev --no-interaction --prefer-dist --no-progress
       - run: php tools/ci/smoke.php
+        env:
+          RTLY_EXPECT_NO_MBSTRING: '1'
 
   # Mutation testing: slow, so it runs on pushes to main and on demand, not on pull requests.
   mutation:
