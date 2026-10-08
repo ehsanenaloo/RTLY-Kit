@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-10-08
+
 ### Added
 - `Jalali`, `Hijri` and `Hebrew` implement `JsonSerializable` (the full `Y/m/d H:i:s` text), so Eloquent `toJson()` with `JalaliCast` no longer produces `{}`.
 - Range errors now carry `ErrorCode::DateOutOfRange` (year, timestamp and shift overflow); other invalid dates keep `ErrorCode::InvalidDate`.
