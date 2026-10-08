@@ -1,0 +1,91 @@
+<!--
+title: ماكروات Carbon
+description: تكامل Carbon الاختياري: حوّل أي كائن Carbon إلى الجلالي أو الهجري أو العبري، وأنشئ تواريخ Carbon من مكوّنات التقويم، مع القائمة الدقيقة للماكروات وأنواع القيم المُرجعة والأخطاء.
+group: calendars
+order: 50
+-->
+<h2 id="overview">ما الذي يمنحك إياه هذا</h2>
+<p>إذا كانت الحزمة <code>nesbot/carbon</code> مثبّتة، يسجّل RTLY-Kit مجموعة صغيرة من الماكروات على <code>Carbon\Carbon</code> و<code>Carbon\CarbonImmutable</code>. بها تنتقل بين Carbon وفئات التقويم باستدعاء واحد، في الاتجاهين. Carbon <strong>اختياري</strong>: لا يشترطه RTLY-Kit، وبدونه لا يُسجَّل شيء ولا يتعطل شيء. وتأتي تطبيقات Laravel مع Carbon أصلًا، فالماكروات متاحة فيها دون أي خطوة إضافية (انظر أيضًا <a href="laravel-setup.html">إعداد Laravel</a>).</p>
+<p><strong>المتطلبات.</strong> تثبيت RTLY-Kit (<a href="installation.html">التثبيت</a>) وCarbon 3 (<code>composer require nesbot/carbon</code>؛ الإصدار 3 هو المدعوم).</p>
+
+<h2 id="registration">كيف يعمل التسجيل</h2>
+<p>يحمّل Composer ملف المساعدة في الحزمة عند التحميل التلقائي. يُقلع هذا الملف التكامل، فيتحقق من وجود فئات Carbon وإن وُجدت سجّل الماكروات مرة واحدة. لا تستدعي أنت شيئًا:</p>
+<pre><code class="language-php">&lt;?php
+require 'vendor/autoload.php';
+
+use Carbon\Carbon;
+use Carbon\CarbonImmutable;
+use RtlyKit\Calendar\HijriVariant;
+use RtlyKit\Calendar\Jalali;
+
+var_dump(Carbon::hasMacro('toJalali'));   // bool(true)</code></pre>
+<div class="note"><strong>ثبّت Carbon عبر Composer.</strong> تُسجَّل الماكروات عند بدء المحمّل التلقائي في Composer وإمكان العثور على فئات Carbon. أما نسخة Carbon غير الموجودة على المحمّل التلقائي نفسه (مثل phar مضمَّن) فلا يُكتشف. فئات التسجيل داخلية؛ فاعتمد على أسماء الماكروات، فهي جزء من واجهة API العامة.</div>
+
+<h2 id="list">مرجع الماكروات</h2>
+<table>
+<thead><tr><th>الماكرو</th><th>النوع</th><th>القيمة المُرجعة</th><th>ملاحظات</th></tr></thead>
+<tbody>
+<tr><td><code>toJalali()</code></td><td>على الكائن</td><td><code>Jalali</code></td><td>اللحظة والمنطقة الزمنية نفسهما لكائن Carbon</td></tr>
+<tr><td><code>jformat($format = 'Y/m/d H:i:s')</code></td><td>على الكائن</td><td><code>string</code></td><td>اختصار لـ <code>toJalali()-&gt;format($format)</code>؛ والرموز كما في <a href="jalali.html#format">تنسيق التاريخ الجلالي</a></td></tr>
+<tr><td><code>toHijri(?HijriVariant $variant = null)</code></td><td>على الكائن</td><td><code>Hijri</code></td><td>أم القرى ما لم تُعطَ صيغة أخرى</td></tr>
+<tr><td><code>toHebrew()</code></td><td>على الكائن</td><td><code>Hebrew</code></td><td></td></tr>
+<tr><td><code>createFromJalali($y, $m, $d, $h = 0, $i = 0, $s = 0, $tz = null)</code></td><td>ساكن (static)</td><td>الفئة التي استدعيته عليها</td><td>تُرجع <code>Carbon::</code> كائن <code>Carbon</code>؛ وتُرجع <code>CarbonImmutable::</code> كائن <code>CarbonImmutable</code></td></tr>
+<tr><td><code>createFromHijri($y, $m, $d, $h = 0, $i = 0, $s = 0, $tz = null, ?HijriVariant $variant = null)</code></td><td>ساكن (static)</td><td>الفئة التي استدعيته عليها</td><td>الصيغة الافتراضية هي أم القرى</td></tr>
+<tr><td><code>createFromHebrew($y, $m, $d, $h = 0, $i = 0, $s = 0, $tz = null)</code></td><td>ساكن (static)</td><td>الفئة التي استدعيته عليها</td><td>ترقيم الأشهر ترتيبي، راجع <a href="hebrew.html#months">الأشهر العبرية</a></td></tr>
+</tbody>
+</table>
+<p>يقبل الوسيط <code>$tz</code> كائن <code>DateTimeZone</code> أو سلسلة معرّف منطقة زمنية أو <code>null</code> (وعندها تُطبَّق المنطقة الافتراضية في PHP، لا منطقة أي كائن Carbon موجود).</p>
+
+<h2 id="to-calendar">من Carbon إلى تقويم</h2>
+<pre><code class="language-php">$c = Carbon::create(2026, 3, 21, 12, 0, 0, 'UTC');
+
+echo $c-&gt;toJalali();                           // 1405/01/01 12:00:00
+echo get_class($c-&gt;toJalali());                // RtlyKit\Calendar\Jalali
+echo $c-&gt;jformat('l j F Y');                   // شنبه 1 فروردین 1405
+echo $c-&gt;jformat();                            // 1405/01/01 12:00:00
+echo $c-&gt;toHijri()-&gt;format('j F Y', 'en');     // 2 Shawwal 1447
+echo $c-&gt;toHebrew()-&gt;format('j F Y');          // 3 Nisan 5786</code></pre>
+<p>النتيجة كائن تقويم لا كائن Carbon، فاستخدم واجهة التقويم من هنا فصاعدًا (الأرقام الفارسية مثلًا عبر <code>$c-&gt;toJalali()-&gt;format('Y/m/d', true)</code>). ولأن كائن التقويم قيمة عادية، يمكنك مواصلة العمل به والعودة في أي وقت بالدالة <code>toGregorian()</code>:</p>
+<pre><code class="language-php">echo Carbon::now('UTC')-&gt;setDate(2026, 3, 21)-&gt;toJalali()-&gt;addMonths(1)-&gt;format('Y/m/d');  // 1405/02/01</code></pre>
+<p>استدعاء <code>make()</code> الخاصة بالتقويم مباشرةً مع كائن Carbon يعادل ذلك، لأن Carbon يطبّق <code>DateTimeInterface</code>:</p>
+<pre><code class="language-php">echo Jalali::make($c)-&gt;format('Y/m/d H:i');                                   // 1405/01/01 12:00
+echo Jalali::make(Carbon::create(2026, 3, 21, 22, 0, 0, 'UTC'), new DateTimeZone('Asia/Tehran'))-&gt;format('Y/m/d H:i');  // 1405/01/02 01:30</code></pre>
+
+<h2 id="from-calendar">من مكوّنات التقويم إلى Carbon</h2>
+<pre><code class="language-php">$a = Carbon::createFromJalali(1405, 1, 1, 0, 0, 0, 'UTC');
+echo get_class($a), ' ', $a-&gt;toDateTimeString();      // Carbon\Carbon 2026-03-21 00:00:00
+
+$b = CarbonImmutable::createFromJalali(1405, 1, 1, 8, 30, 0, 'Asia/Tehran');
+echo get_class($b), ' ', $b-&gt;toIso8601String();       // Carbon\CarbonImmutable 2026-03-21T08:30:00+03:30
+
+echo Carbon::createFromHijri(1446, 9, 1, 0, 0, 0, 'UTC')-&gt;toDateString();   // 2025-03-01
+echo Carbon::createFromHebrew(5786, 1, 1, 0, 0, 0, 'UTC')-&gt;toDateString();  // 2025-09-23</code></pre>
+<p>مرّر صيغة التقويم الهجري الجدولي (Tabular) وسيطًا أخيرًا إلى <code>createFromHijri()</code>: <code>Carbon::createFromHijri(1446, 10, 1, 0, 0, 0, 'UTC', HijriVariant::Tabular)</code>.</p>
+
+<h2 id="errors">الأخطاء</h2>
+<p>تتحقق الماكروات من الصحة عبر فئات التقويم، لذا يُلقي الإدخال غير الصالح أو الخارج عن النطاق الاستثناء <code>RtlyKit\Exceptions\InvalidDateException</code> (ولا يُلقي <code>InvalidFormatException</code> الخاص بـ Carbon في هذه الحالات)، وكذلك معرّف المنطقة الزمنية المجهول:</p>
+<pre><code class="language-php">use RtlyKit\Exceptions\RtlyKitThrowable;
+
+$cases = [
+    fn () =&gt; Carbon::createFromJalali(1404, 12, 30),
+    fn () =&gt; Carbon::createFromJalali(1404, 1, 1, 0, 0, 0, 'Nowhere/Land'),
+    fn () =&gt; Carbon::createFromHijri(9999, 1, 1),
+    fn () =&gt; Carbon::createFromHebrew(1, 1, 1),
+];
+foreach ($cases as $f) {
+    try { $f(); }
+    catch (RtlyKitThrowable $e) { echo get_class($e), ': ', $e-&gt;getMessage(), "\n"; }
+}
+// RtlyKit\Exceptions\InvalidDateException: Invalid Jalali date: 1404/12/30
+// RtlyKit\Exceptions\InvalidDateException: Unknown timezone: Nowhere/Land
+// RtlyKit\Exceptions\InvalidDateException: Invalid Hijri date: 9999/1/1
+// RtlyKit\Exceptions\InvalidDateException: Invalid Hebrew date: 1/1/1</code></pre>
+<p>النطاقات المدعومة هي نطاقات التقاويم: الجلالي -620..9377، والهجري 1..9665، والعبري 3762..13759.</p>
+
+<h2 id="known">الحدود وأمور تستوجب الحذر</h2>
+<div class="note"><strong>من المفيد أن تعرف.</strong> الماكروات تعطي النتائج نفسها التي تعطيها فئات التقويم. فالجلالي يعتمد القاعدة الحسابية ذات الدورة البالغة 33 سنة، وهي مطابقة للتقويم الرسمي في السنوات 1206 إلى 1497. وبيانات أم القرى الهجرية (1300 إلى 1500 هـ) مأخوذة من ICU/CLDR، وتطابق بدايات أشهرها تقويم KACST الرسمي للسنوات 1318 إلى 1500 هـ (فُحص في 2026-10-08). ويتغير اليوم عند منتصف الليل المدني.</div>
+<ul>
+<li>الماكروات عامة على مستوى الفئة: فإذا عرّفت حزمة أخرى ماكرو بالاسم نفسه (<code>toJalali</code> أو <code>toHijri</code> ...) فالغلبة لمن يسجّل آخرًا. استخدم فئات التقويم مباشرةً (<code>Jalali::make($carbon)</code>) عندما تحتاج إلى اليقين.</li>
+<li>تنتقل المناطق الزمنية مع الكائن: تستخدم <code>toJalali()</code> المنطقة الخاصة بكائن Carbon نفسه، فوحّد المنطقة قبل التحويل إذا كان يوم التقويم مهمًا.</li>
+<li>تختلف أرقام أيام الأسبوع بين التقاويم؛ فلا تمرّر ناتج <code>getDayOfWeek()</code> من تقويم إلى آخر. راجع <a href="convert-and-compare.html">تحويل التواريخ ومقارنتها</a>.</li>
+</ul>

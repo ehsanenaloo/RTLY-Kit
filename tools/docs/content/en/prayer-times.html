@@ -1,12 +1,12 @@
 <!--
 title: Prayer times
-description: Compute Fajr, sunrise, Dhuhr, Asr, Maghrib and Isha for any location with six calculation methods, with an honest per-method verification status.
+description: Compute Fajr, sunrise, Dhuhr, Asr, Maghrib and Isha for any place with six calculation methods, high-latitude rules and manual tuning. The page lists what each method was checked against.
 group: dates-and-times
 order: 20
 -->
 <h2 id="overview">Overview</h2>
-<p><code>RtlyKit\Prayer\PrayerTimes</code> calculates the six daily times from astronomical equations, with no network access and no data file. The solar declination and equation of time come from the low-precision series in Jean Meeus, <em>Astronomical Algorithms</em> (the same equations as the NOAA Solar Calculator). The hour angle comes from spherical trigonometry, Asr from the shadow-length factor, and sunrise/sunset from an altitude of -0.833 degrees (refraction plus the sun's semi-diameter). The Fajr, Maghrib and Isha angles are the published conventions of each method, not values derived from other software.</p>
-<p>Results are strings in <code>HH:MM</code> format in the local time of the calculator's time zone, rounded to the nearest minute.</p>
+<p><code>RtlyKit\Prayer\PrayerTimes</code> calculates the six daily times from astronomical equations. It needs no network and no data file. The solar declination and the equation of time come from the low-precision series in Jean Meeus, <em>Astronomical Algorithms</em> (the same equations as the NOAA Solar Calculator). The hour angle comes from spherical trigonometry. Asr uses the shadow-length factor. Sunrise and sunset use an altitude of -0.833 degrees (refraction plus the semi-diameter of the sun). The Fajr, Maghrib and Isha angles are the published conventions of each method.</p>
+<p>Results are strings in <code>HH:MM</code> format, in the local time of the calculator's time zone, rounded to the nearest minute.</p>
 
 <h2 id="quick">Quick start</h2>
 <pre><code class="language-php">use RtlyKit\Prayer\PrayerTimes;
@@ -14,13 +14,13 @@ order: 20
 $tz  = new DateTimeZone('Asia/Tehran');
 $day = new DateTimeImmutable('2026-03-21 12:00', $tz);
 
-$times = PrayerTimes::forCity('tehran')->getTimes($day);
+$times = PrayerTimes::forCity('tehran')-&gt;getTimes($day);
 echo json_encode($times);
 // {"fajr":"04:43","sunrise":"06:07","dhuhr":"12:12","asr":"15:39","maghrib":"18:35","isha":"19:22"}</code></pre>
-<p>If you omit the date, <code>getTimes()</code> uses today in the calculator's time zone. The date you pass selects the <em>local calendar day</em> of that zone. There is also a namespaced shortcut that returns the same array for today: <code>\RtlyKit\prayer_times('tehran', 'Tehran')</code> (see <a href="helpers-and-globals.html">helpers and globals</a>).</p>
+<p>If you leave out the date, <code>getTimes()</code> uses today in the time zone of the calculator. The date you pass selects the local calendar day of that zone. A namespaced shortcut returns the same array for today: <code>\RtlyKit\prayer_times('tehran', 'Tehran')</code> (see <a href="helpers-and-globals.html">Helpers and globals</a>).</p>
 
 <h2 id="construct">Creating a calculator</h2>
-<p>There are two ways to build one.</p>
+<p>There are two ways.</p>
 <pre><code class="language-php">// 1) A built-in city: coordinates and time zone are filled in.
 $p = PrayerTimes::forCity('mecca', PrayerTimes::METHOD_MAKKAH);
 
@@ -33,10 +33,10 @@ $p = new PrayerTimes(
     timezone:  new DateTimeZone('Asia/Tehran'), // default: date_default_timezone_get()
     elevation: 0.0,                          // metres, default 0
 );</code></pre>
-<p><code>forCity()</code> knows these names (case-insensitive): <code>tehran</code>, <code>mashhad</code>, <code>isfahan</code>, <code>shiraz</code>, <code>tabriz</code>, <code>qom</code>, <code>mecca</code>, <code>medina</code>, <code>riyadh</code>, <code>istanbul</code>, <code>cairo</code>, <code>dubai</code>, <code>baghdad</code>, <code>jakarta</code>. Anything else throws, so for other cities use the constructor with your own coordinates.</p>
+<p><code>forCity()</code> knows these names (any letter case): <code>tehran</code>, <code>mashhad</code>, <code>isfahan</code>, <code>shiraz</code>, <code>tabriz</code>, <code>qom</code>, <code>mecca</code>, <code>medina</code>, <code>riyadh</code>, <code>istanbul</code>, <code>cairo</code>, <code>dubai</code>, <code>baghdad</code>, <code>jakarta</code>. Any other name throws. For other cities, use the constructor with your own coordinates.</p>
 
 <h2 id="methods">Methods and angles</h2>
-<p>The method decides the sun's depression angle for Fajr and Isha (and, for Tehran, Maghrib). Use the class constants rather than strings.</p>
+<p>The method sets the depression angle of the sun for Fajr and Isha, and for Tehran also for Maghrib. Use the class constants, not strings.</p>
 <table>
 <thead><tr><th>Constant</th><th>Fajr</th><th>Maghrib</th><th>Isha</th></tr></thead>
 <tbody>
@@ -48,9 +48,9 @@ $p = new PrayerTimes(
 <tr><td><code>METHOD_KARACHI</code> (<code>Karachi</code>)</td><td>18 degrees</td><td>sunset</td><td>18 degrees</td></tr>
 </tbody>
 </table>
-<p>The same Tehran day computed with each method (only Fajr, Maghrib and Isha differ; sunrise, Dhuhr and Asr do not depend on the method):</p>
+<p>The same Tehran day with each method. Only Fajr, Maghrib and Isha change. Sunrise, Dhuhr and Asr do not depend on the method:</p>
 <pre><code class="language-php">foreach (['Tehran', 'MWL', 'ISNA', 'Egypt', 'Makkah', 'Karachi'] as $m) {
-    echo str_pad($m, 8), json_encode(PrayerTimes::forCity('tehran', $m)->getTimes($day)), "\n";
+    echo str_pad($m, 8), json_encode(PrayerTimes::forCity('tehran', $m)-&gt;getTimes($day)), "\n";
 }
 // Tehran  {"fajr":"04:43","sunrise":"06:07","dhuhr":"12:12","asr":"15:39","maghrib":"18:35","isha":"19:22"}
 // MWL     {"fajr":"04:42","sunrise":"06:07","dhuhr":"12:12","asr":"15:39","maghrib":"18:17","isha":"19:37"}
@@ -58,18 +58,18 @@ $p = new PrayerTimes(
 // Egypt   {"fajr":"04:34","sunrise":"06:07","dhuhr":"12:12","asr":"15:39","maghrib":"18:17","isha":"19:40"}
 // Makkah  {"fajr":"04:39","sunrise":"06:07","dhuhr":"12:12","asr":"15:39","maghrib":"18:17","isha":"19:47"}
 // Karachi {"fajr":"04:42","sunrise":"06:07","dhuhr":"12:12","asr":"15:39","maghrib":"18:17","isha":"19:42"}</code></pre>
-<p>Dhuhr is solar noon (the sun crossing the meridian); no safety offset is added to any time.</p>
+<p>Dhuhr is solar noon, when the sun crosses the meridian. No safety margin is added to any time. If your authority adds one, use <code>withTune()</code> below.</p>
 
 <h2 id="asr">Asr schools</h2>
-<p>Asr begins when an object's shadow equals its noon shadow plus a multiple of its height. <code>ASR_STANDARD</code> (1, one times the height) is used by the Shafi'i, Maliki, Hanbali and Ja'fari schools; <code>ASR_HANAFI</code> (2, twice the height) gives a later time.</p>
+<p>Asr begins when an object's shadow equals its noon shadow plus a multiple of its height. <code>ASR_STANDARD</code> (1, one times the height) is used by the Shafi'i, Maliki, Hanbali and Ja'fari schools. <code>ASR_HANAFI</code> (2, twice the height) gives a later time.</p>
 <pre><code class="language-php">$hanafi = PrayerTimes::forCity('tehran', 'Tehran', PrayerTimes::ASR_HANAFI);
-echo $hanafi->getTimes($day)['asr'];   // 16:32  (standard: 15:39)</code></pre>
+echo $hanafi-&gt;getTimes($day)['asr'];   // 16:32  (standard: 15:39)</code></pre>
 
 <h2 id="makkah-isha">Makkah: Isha in Ramadan</h2>
-<p>The Umm al-Qura convention sets Isha at 90 minutes after Maghrib, and at 120 minutes during Ramadan. The calculator picks 120 when the local calendar date falls in Ramadan of the package's own Umm al-Qura Hijri table (month 9), and 90 otherwise. The decision follows the civil date, not a sunset-based Islamic day.</p>
+<p>The Umm al-Qura convention sets Isha 90 minutes after Maghrib, and 120 minutes after Maghrib in Ramadan. The calculator uses 120 when the local calendar date falls in Ramadan of the package's own Umm al-Qura table (month 9), and 90 otherwise. It follows the civil date, not an Islamic day that starts at sunset.</p>
 <pre><code class="language-php">$mk = PrayerTimes::forCity('mecca', 'Makkah');
 foreach (['2026-02-20', '2026-03-01', '2026-03-21'] as $s) {
-    $t = $mk->getTimes(new DateTimeImmutable($s, new DateTimeZone('Asia/Riyadh')));
+    $t = $mk-&gt;getTimes(new DateTimeImmutable($s, new DateTimeZone('Asia/Riyadh')));
     echo $s, ' maghrib ', $t['maghrib'], ' isha ', $t['isha'], "\n";
 }
 // 2026-02-20 maghrib 18:21 isha 20:21   (+120, Ramadan)
@@ -77,64 +77,99 @@ foreach (['2026-02-20', '2026-03-01', '2026-03-21'] as $s) {
 // 2026-03-21 maghrib 18:32 isha 20:02   (+90, after Ramadan)</code></pre>
 
 <h2 id="elevation">Elevation</h2>
-<p>The <code>elevation</code> argument is the observer's height in metres. It lowers the sunrise/sunset altitude by the geometric dip <code>0.0347 * sqrt(h)</code> degrees, so sunrise is earlier and sunset later on a mountain. Negative values are treated as 0. It affects sunrise, sunset and the times derived from sunset only.</p>
+<p>The <code>elevation</code> argument is the height of the observer in metres. It lowers the sunrise and sunset altitude by the geometric dip <code>0.0347 * sqrt(h)</code> degrees. On a mountain, sunrise is earlier and sunset later. Negative values count as 0. It affects sunrise, sunset and the times derived from sunset.</p>
 <pre><code class="language-php">$a = new PrayerTimes(35.6892, 51.3890, 'Tehran', 1, $tz);
 $b = new PrayerTimes(35.6892, 51.3890, 'Tehran', 1, $tz, 1500.0);
 $d = new DateTimeImmutable('2026-06-21', $tz);
-echo $a->getTimes($d)['sunrise'], "\n"; // 04:49
-echo $b->getTimes($d)['sunrise'], "\n"; // 04:41</code></pre>
-<p>For the Tehran method, Maghrib is defined by the 4.5-degree angle, not by sunset, so it does not change with elevation (19:45 in both cases above).</p>
+echo $a-&gt;getTimes($d)['sunrise'], "\n"; // 04:49
+echo $b-&gt;getTimes($d)['sunrise'], "\n"; // 04:41</code></pre>
+<p>With the Tehran method, Maghrib is set by the 4.5-degree angle and not by sunset. So it does not change with elevation (19:45 in both cases above).</p>
 
 <h2 id="dst">Time zones and daylight saving</h2>
-<p>Each time is converted using the zone's real UTC offset at that instant, so a daylight-saving change in the middle of the year is handled without any extra work. Berlin changes on 2026-03-29:</p>
+<p>Each time is converted with the real UTC offset of the zone at that moment. A daylight-saving change in the middle of the year needs no extra work. Berlin changes on 2026-03-29:</p>
 <pre><code class="language-php">$tzb = new DateTimeZone('Europe/Berlin');
 $ber = new PrayerTimes(52.52, 13.405, 'MWL', 1, $tzb);
 foreach (['2026-03-28', '2026-03-29'] as $s) {
-    echo $s, ' ', json_encode($ber->getTimes(new DateTimeImmutable($s, $tzb))), "\n";
+    echo $s, ' ', json_encode($ber-&gt;getTimes(new DateTimeImmutable($s, $tzb))), "\n";
 }
 // 2026-03-28 {"fajr":"03:51","sunrise":"05:50","dhuhr":"12:11","asr":"15:39","maghrib":"18:34","isha":"20:26"}
 // 2026-03-29 {"fajr":"04:48","sunrise":"06:48","dhuhr":"13:11","asr":"16:40","maghrib":"19:35","isha":"21:28"}</code></pre>
-<p>Pass the zone that your users read the clock in. If you leave it out, <code>date_default_timezone_get()</code> is used.</p>
+<p>Pass the zone in which your users read the clock. If you leave it out, <code>date_default_timezone_get()</code> is used.</p>
 
 <h2 id="next">The next prayer</h2>
-<p><code>nextPrayer()</code> returns the first prayer strictly after a moment (default: now). After Isha it rolls over to tomorrow's Fajr, and <code>date</code> tells you which day the returned prayer falls on.</p>
+<p><code>nextPrayer()</code> returns the first prayer after a moment (default: now). After Isha it moves on to tomorrow's Fajr. The <code>date</code> field tells you on which day the prayer falls. A prayer that falls after midnight is found too, with its own date.</p>
 <pre><code class="language-php">$p = PrayerTimes::forCity('tehran');
-echo json_encode($p->nextPrayer(new DateTimeImmutable('2026-03-21 10:00', $tz)));
+echo json_encode($p-&gt;nextPrayer(new DateTimeImmutable('2026-03-21 10:00', $tz)));
 // {"name":"dhuhr","time":"12:12","date":"2026-03-21"}
-echo json_encode($p->nextPrayer(new DateTimeImmutable('2026-03-21 20:00', $tz)));
+echo json_encode($p-&gt;nextPrayer(new DateTimeImmutable('2026-03-21 20:00', $tz)));
 // {"name":"fajr","time":"04:42","date":"2026-03-22"}</code></pre>
-<p>Note that the sunrise counts as an entry in this sequence (the order is fajr, sunrise, dhuhr, asr, maghrib, isha).</p>
+<p>Sunrise is part of the sequence: fajr, sunrise, dhuhr, asr, maghrib, isha.</p>
 
 <h2 id="high-latitude">High latitudes</h2>
-<p>Far from the equator the sun may never reach an angle (no real night in summer). The affected times are returned as <code>null</code> rather than a misleading clamped value. Tromso, 21 June:</p>
-<pre><code class="language-php">$osl = new PrayerTimes(69.65, 18.96, 'MWL', 1, new DateTimeZone('Europe/Oslo'));
-echo json_encode($osl->getTimes(new DateTimeImmutable('2026-06-21', new DateTimeZone('Europe/Oslo'))));
-// {"fajr":null,"sunrise":null,"dhuhr":"12:46","asr":"17:58","maghrib":null,"isha":null}</code></pre>
-<p>Handle the <code>null</code> case in your UI. The library does not apply a high-latitude rule such as "angle-based" or "one-seventh of the night".</p>
+<p>Far from the equator, in summer the sun may not sink deep enough for Fajr or Isha to exist, or the twilight may last most of the night. <code>HighLatitudeRule</code> tells the calculator what to do. The night is the time from sunset to the next sunrise.</p>
+<table>
+<thead><tr><th>Rule</th><th>Fajr and Isha are limited to this part of the night</th></tr></thead>
+<tbody>
+<tr><td><code>HighLatitudeRule::None</code></td><td>No limit. A time whose angle is never reached is <code>null</code></td></tr>
+<tr><td><code>HighLatitudeRule::NightMiddle</code></td><td>Half of the night</td></tr>
+<tr><td><code>HighLatitudeRule::OneSeventh</code></td><td>One seventh of the night</td></tr>
+<tr><td><code>HighLatitudeRule::AngleBased</code> (default)</td><td>The twilight angle divided by 60, for example 18 degrees gives 0.3 of the night</td></tr>
+</tbody>
+</table>
+<p>The rule acts only where a time would otherwise be missing, or farther from sunrise or sunset than the rule allows. All other times keep their exact astronomical value. A fixed rule such as the Makkah Isha (Maghrib + 90 or 120 minutes) is never changed. Choose a rule with <code>withHighLatitudeRule()</code>. It returns a new calculator. Stockholm, 21 June, with the MWL method:</p>
+<pre><code class="language-php">use RtlyKit\Prayer\HighLatitudeRule;
+
+$tzs = new DateTimeZone('Europe/Stockholm');
+$st  = new PrayerTimes(59.33, 18.07, 'MWL', 1, $tzs);
+$june = new DateTimeImmutable('2026-06-21', $tzs);
+
+foreach (HighLatitudeRule::cases() as $rule) {
+    $t = $st-&gt;withHighLatitudeRule($rule)-&gt;getTimes($june);
+    echo str_pad($rule-&gt;name, 12), $t['fajr'] ?? 'null', ' ', $t['isha'] ?? 'null', "\n";
+}
+// None         null null
+// NightMiddle  00:49 00:50
+// OneSeventh   02:45 22:54
+// AngleBased   01:54 23:40</code></pre>
+<p>In places with no sunrise or sunset at all (polar day or polar night), <code>sunrise</code> and <code>maghrib</code> stay <code>null</code>. <code>dhuhr</code> is always defined. <code>asr</code> is <code>null</code> only when the sun stays below the horizon all day. Fajr and Isha then come from the rule, using a night of 12 hours around solar noon as the reference. If you need another convention, use <code>HighLatitudeRule::None</code> and decide for yourself.</p>
+<div class="note"><strong>Good to know.</strong> The default rule is <code>AngleBased</code>. Below about 44 degrees north all times are the same as in version 0.1.x. North of about 44 to 46 degrees, around the June solstice, some Fajr and Isha values differ from 0.1.x, and a time that used to be <code>null</code> now has a value. To get the old output, call <code>withHighLatitudeRule(HighLatitudeRule::None)</code>.</div>
+
+<h2 id="tune">Manual tuning</h2>
+<p>Many authorities add a few minutes to a time for safety. <code>withTune()</code> does this. Pass minutes from -30 to +30 for any of <code>fajr</code>, <code>sunrise</code>, <code>dhuhr</code>, <code>asr</code>, <code>maghrib</code> and <code>isha</code>. Names you leave out get 0, so a new call replaces an earlier tune, and <code>withTune([])</code> clears it. The minutes are added before the time is rounded, so a tuned time can cross midnight on the clock. <code>nextPrayer()</code> uses the tuned times.</p>
+<pre><code class="language-php">$p = PrayerTimes::forCity('tehran');
+$t = $p-&gt;withTune(['fajr' =&gt; 2, 'maghrib' =&gt; 3]);
+
+echo json_encode($p-&gt;getTimes($day));
+// {"fajr":"04:43","sunrise":"06:07","dhuhr":"12:12","asr":"15:39","maghrib":"18:35","isha":"19:22"}
+echo json_encode($t-&gt;getTimes($day));
+// {"fajr":"04:45","sunrise":"06:07","dhuhr":"12:12","asr":"15:39","maghrib":"18:38","isha":"19:22"}</code></pre>
+<p>An unknown key, a value that is not an <code>int</code> (floats, numeric strings and <code>null</code> too) or a value outside -30 to 30 throws <code>InvalidPrayerConfigException</code>.</p>
 
 <h2 id="errors">Exceptions</h2>
-<p>Invalid configuration throws <code>InvalidPrayerConfigException</code>, which extends <code>RtlyKitException</code> (and therefore <code>\InvalidArgumentException</code>), for example:</p>
+<p>Invalid configuration throws <code>InvalidPrayerConfigException</code>. It extends <code>RtlyKitException</code> and so also <code>\InvalidArgumentException</code>. For example:</p>
 <pre><code class="language-php">new PrayerTimes(35, 51, 'Foo');
 // Unknown calculation method: Foo. Available: MWL, ISNA, Egypt, Makkah, Karachi, Tehran
 new PrayerTimes(35, 51, 'MWL', 3);
 // Invalid Asr factor: 3 (use 1 or 2)
 PrayerTimes::forCity('paris');
-// Unknown city: paris</code></pre>
-<p>See <a href="error-handling.html">Error handling</a> for catching all library errors with one <code>catch</code>.</p>
+// Unknown city: paris
+$p-&gt;withTune(['fajr' =&gt; 31]);
+// Tune for fajr must be an integer from -30 to 30 minutes</code></pre>
+<p>See <a href="error-handling.html">Error handling</a> to catch all library errors with one <code>catch</code>.</p>
 
-<h2 id="verification">Verification status</h2>
-<p>The angles are conventions, so the meaningful check is to compare our output for a city and date with the timetable published by the authority that defines the method. Tolerance used: within about 1 minute counts as agreement. Aggregator websites are deliberately not counted as verification, because they use the same published angles.</p>
+<h2 id="verification">What we checked</h2>
+<p>The angles are conventions, so the useful test is to compute a city and a date and compare the result with a timetable published by a body that uses the method. We did this on 2026-10-08. Agreement within about 1 to 2 minutes counts as a match. Aggregator websites are not counted, because they use the same published angles.</p>
 <table>
-<thead><tr><th>Method</th><th>Status</th><th>Maximum deviation</th><th>Reference and gaps</th></tr></thead>
+<thead><tr><th>Method</th><th>Compared with</th><th>Result</th></tr></thead>
 <tbody>
-<tr><td>Tehran</td><td>Verified for Fajr, sunrise, Dhuhr and Maghrib</td><td>1 min (Shiraz), 0 elsewhere</td><td>Institute of Geophysics, University of Tehran, tables for 1405: Tehran, Mashhad, Isfahan and Shiraz on four dates. The tables publish no Asr and no Isha, so the 14-degree Isha and Asr are <strong>not covered</strong> by a reference table.</td></tr>
-<tr><td>Makkah</td><td>Verified, including Ramadan Isha</td><td>1 min</td><td>Umm Al-Qura Calendar: five dates outside Ramadan, and two Ramadan 1447 dates that confirm Isha = Maghrib + 120.</td></tr>
-<tr><td>Sunrise and sunset</td><td>Verified</td><td>1 min</td><td>11 city/date pairs against timeanddate.</td></tr>
-<tr><td>Egypt</td><td>Consistent, weaker evidence</td><td>1 min</td><td>Dar al-Ifta, Cairo: three dates in one season. The publisher does not name the angle source.</td></tr>
-<tr><td>Karachi</td><td>Unverified</td><td>n/a</td><td>No official timetable found.</td></tr>
-<tr><td>MWL</td><td>Unverified</td><td>n/a</td><td>The method defines angles only and publishes no city timetables.</td></tr>
-<tr><td>ISNA</td><td>Unverified</td><td>n/a</td><td>Same as MWL.</td></tr>
+<tr><td>Tehran</td><td>Institute of Geophysics, University of Tehran, tables for 1405: Tehran, Mashhad, Isfahan and Shiraz on four dates</td><td>Fajr, sunrise, noon and Maghrib agree within 1 minute. The tables have no Asr and no Isha column. A council member of the Institute states Fajr 17.7 and Maghrib 4.5 degrees</td></tr>
+<tr><td>Makkah</td><td>Umm Al-Qura Calendar: five dates outside Ramadan and two dates in Ramadan 1447</td><td>All six times agree within 1 minute, including Isha = Maghrib + 120 in Ramadan</td></tr>
+<tr><td>Egypt</td><td>Dar al-Ifta, Cairo: six dates in October 2026</td><td>All six times agree within 1 minute</td></tr>
+<tr><td>MWL (18 / 17)</td><td>Turkey, Diyanet: Istanbul, Ankara and Izmir on four dates between 8 October and 7 November 2026</td><td>The published imsak and yatsi agree with our Fajr and Isha within 1 minute, so they fit the same 18 / 17 angles</td></tr>
+<tr><td>Karachi (18 / 18) with Hanafi Asr</td><td>Jamia Uloom-e-Islamia Allama Banuri Town, Karachi: all 31 days of October 2026</td><td>Fajr, sunrise, Asr, sunset and Isha agree within 1 minute, exactly on most days. The Hanafi rule (shadow of twice the height) is the one stated by Darul Uloom Deoband</td></tr>
+<tr><td>Karachi (18 / 18)</td><td>Malaysia, JAKIM e-solat, zone SGR01: four dates in October 2026</td><td>Fajr and Isha differ by 1 to 2 minutes, which fits 18 / 18</td></tr>
+<tr><td>ISNA (15 / 15)</td><td>Fiqh Council of North America</td><td>The Council names 15 degrees for both Fajr and Isha for the setting that corresponds to ISNA</td></tr>
+<tr><td>Sunrise and sunset</td><td>NOAA Solar Calculator and timeanddate</td><td>Agree within 1 minute</td></tr>
 </tbody>
 </table>
-<div class="known"><strong>Known limitation.</strong> Unverified does not mean wrong: Karachi, MWL and ISNA use the published angles with the same solar model that matches the verified methods. It means no official timetable was available to compare against. Also not tested: Asr under the Hanafi convention, high latitudes, elevation, and dates outside those listed. For religious or legal use, check against your local authority's timetable.</div>
-<p>The Tehran method matches the Institute of Geophysics tables, but the angles 17.7 degrees (Fajr) and 4.5 degrees (Maghrib) were confirmed here only by this numerical agreement, not from the authority's own description of its method.</p>
+<div class="note"><strong>Good to know.</strong> The Banuri Town, Diyanet and JAKIM pages do not state their angles, so those comparisons show that the tables fit our angles. We did not find timetables issued by the University of Islamic Sciences in Karachi, by ISNA or by the Muslim World League, and no official Tehran table with Isha and Asr. The Tehran Isha of 14 degrees is attributed to the Lavaa Institute in Qom by secondary pages. High latitudes, elevation and dates outside those listed were checked against independent calculations and not against published tables. For religious or legal use, compare with the timetable of your local authority.</div>

@@ -1,16 +1,16 @@
 <!--
 title: تبدیل و مقایسهٔ تاریخ‌ها
-description: قرارداد مشترک CalendarDate در Jalali، Hijri و Hebrew، تبدیل تاریخ بین تقویم‌ها، و چگونگی مقایسه و محاسبهٔ اختلاف بین تقویم‌ها و منطقه‌های زمانی.
+description: قرارداد مشترک CalendarDate در Jalali و Hijri و Hebrew، تبدیل تاریخ بین تقویم‌ها، و مقایسه و اختلاف بین تقویم‌ها و منطقه‌های زمانی مختلف.
 group: calendars
 order: 40
 -->
 <h2 id="idea">یک لحظه، سه تقویم</h2>
-<p>سه کلاس تقویم (<a href="jalali.html">جلالی</a>، <a href="hijri.html">هجری</a>، <a href="hebrew.html">عبری</a>) یک طراحی مشترک دارند: هر کدام فقط یک لحظهٔ <code>DateTimeImmutable</code> را در خود نگه می‌دارد و آن را در تقویم خودش <em>نمایش می‌دهد</em>. پس تبدیل بین تقویم‌ها هرگز از متن عبور نمی‌کند؛ همان لحظه است که با قواعد دیگری خوانده می‌شود. دو نتیجه:</p>
+<p>سه کلاس تقویم (<a href="jalali.html">جلالی</a>، <a href="hijri.html">هجری</a> و <a href="hebrew.html">عبری</a>) یک طراحی دارند. هر کدام فقط یک لحظه (<code>DateTimeImmutable</code>) نگه می‌دارد و آن را با تقویم خودش <em>نشان می‌دهد</em>. پس تبدیل بین تقویم‌ها از متن رد نمی‌شود. همان لحظه است که با قاعده‌ای دیگر خوانده می‌شود. دو نتیجه دارد:</p>
 <ul>
-<li>تبدیل یک تاریخ و بازگرداندن آن همان لحظه را برمی‌گرداند.</li>
-<li>مقایسه یا تفریق تاریخ‌های تقویم‌های مختلف همیشه معنا دارد، چون به‌صورت لحظه مقایسه می‌شوند.</li>
+<li>اگر تاریخی را تبدیل کنید و برگردانید، همان لحظهٔ اول را می‌گیرید.</li>
+<li>مقایسه و تفریقِ تاریخ‌های تقویم‌های مختلف همیشه معنا دارد، چون لحظه‌ها مقایسه می‌شوند.</li>
 </ul>
-<p>همهٔ مثال‌ها این ابتدای فایل را دارند:</p>
+<p>مثال‌ها با این چند خط شروع می‌شوند:</p>
 <pre><code class="language-php">&lt;?php
 require 'vendor/autoload.php';
 
@@ -24,22 +24,22 @@ $utc = new DateTimeZone('UTC');</code></pre>
 
 <h2 id="convert">تبدیل بین تقویم‌ها</h2>
 <h3 id="make-from-calendar">تاریخ را به <code>make()</code> کلاس دیگر بدهید</h3>
-<p>هر <code>make()</code> یک <code>CalendarDate</code> را می‌پذیرد (و همچنین <code>DateTimeInterface</code>، زمان یونیکس، رشته یا <code>null</code>). تاریخی را که دارید به کلاسی که می‌خواهید بدهید:</p>
+<p>هر <code>make()</code> یک <code>CalendarDate</code> قبول می‌کند (و <code>DateTimeInterface</code>، زمان یونیکس، رشته یا <code>null</code> هم قبول می‌کند). تاریخی را که دارید به کلاسِ تقویم مقصد بدهید:</p>
 <pre><code class="language-php">$j = Jalali::create(1405, 1, 1, 12, 0, 0, $utc);
 
 echo Hijri::make($j)-&gt;format('Y/m/d F', 'en');    // 1447/10/02 Shawwal
 echo Hebrew::make($j)-&gt;format('Y/m/d F');          // 5786/07/03 Nisan
 echo Jalali::make(Hijri::make($j));                 // 1405/01/01 12:00:00</code></pre>
-<p>ساعت و منطقهٔ زمانی منتقل می‌شوند. برای بیان نتیجه در منطقهٔ دیگر، <code>DateTimeZone</code> را آرگومان دوم <code>make()</code> بدهید:</p>
+<p>ساعت و منطقهٔ زمانی همراه تاریخ می‌آیند. اگر نتیجه را در منطقهٔ دیگری می‌خواهید، <code>DateTimeZone</code> را آرگومان دوم <code>make()</code> بدهید:</p>
 <pre><code class="language-php">$tehran = new DateTimeZone('Asia/Tehran');
 
 $h = Hijri::make($j, $tehran);
 echo $h-&gt;getTimezone()-&gt;getName();      // Asia/Tehran
 echo $h-&gt;getHour(), ':', $h-&gt;getMinute();   // 15:30   (ساعت 12:00 UTC)</code></pre>
-<div class="note"><strong>میان‌بر هم‌کلاس.</strong> <code>Hijri::make($hijri)</code> و <code>Hebrew::make($hebrew)</code> همان نمونه‌ای را که داده‌اید برمی‌گردانند (آرگومان منطقهٔ زمانی یا گونه نادیده گرفته می‌شود). <code>Jalali::make($jalali)</code> هم همان را برمی‌گرداند، مگر منطقهٔ زمانی بدهید که آنگاه نسخه‌ای در آن منطقه می‌گیرید. برای عوض کردن گونهٔ یک تاریخ هجری از لحظه عبور کنید: <code>Hijri::make($h-&gt;toGregorian(), null, HijriVariant::Tabular)</code>.</div>
+<div class="note"><strong>میان‌بر برای هم‌کلاس.</strong> <code>Hijri::make($hijri)</code> و <code>Hebrew::make($hebrew)</code> همان شیئی را که داده‌اید برمی‌گردانند (منطقهٔ زمانی یا گونه نادیده گرفته می‌شود). <code>Jalali::make($jalali)</code> هم همین‌طور است، مگر اینکه منطقه بدهید. آن‌وقت نسخه‌ای در آن منطقه می‌گیرید. برای عوض کردن گونهٔ یک تاریخ هجری از لحظه شروع کنید: <code>Hijri::make($h-&gt;toGregorian(), null, HijriVariant::Tabular)</code>.</div>
 
-<h3 id="gregorian">از و به میلادی</h3>
-<p><code>toGregorian()</code> همان <code>DateTimeImmutable</code> زیرین را می‌دهد و دادن <code>DateTimeInterface</code> به <code>make()</code> مسیر برعکس است. مبدل‌های استاتیک روی عددهای ساده کار می‌کنند:</p>
+<h3 id="gregorian">از میلادی و به میلادی</h3>
+<p>متد <code>toGregorian()</code> همان <code>DateTimeImmutable</code> زیرین را می‌دهد. برای مسیر برعکس، <code>DateTimeInterface</code> را به <code>make()</code> بدهید. تبدیل‌های استاتیک هم روی عدد ساده کار می‌کنند:</p>
 <pre><code class="language-php">$g = new DateTimeImmutable('2026-03-21 12:00', $utc);
 
 echo json_encode([
@@ -51,21 +51,21 @@ echo json_encode([
 
 echo json_encode(Jalali::jalaliToGregorian(1405, 1, 1));   // [2026,3,21]
 echo get_class($j-&gt;toGregorian());                         // DateTimeImmutable</code></pre>
-<p>سال میلادی باید 1 تا 9999 باشد. بازهٔ هر تقویم (جلالی -620 تا 9377، هجری 1 تا 9665، عبری 3762 تا 13759) بخشی از این بازه است که آن تقویم می‌تواند نمایش دهد؛ پس تبدیل یک تاریخ میلادیِ قدیمی به عبری یا هجری ممکن است <code>InvalidDateException</code> بدهد، حتی اگر خودِ تاریخ میلادی معتبر باشد:</p>
+<p>سال میلادی باید بین ۱ و ۹۹۹۹ باشد. بازهٔ هر تقویم (جلالی ‎-۶۲۰ تا ۹۳۷۷، هجری ۱ تا ۹۶۶۵، عبری ۳۷۶۲ تا ۱۳۷۵۹) بخشی از همین بازه است. برای همین ممکن است تاریخ میلادیِ قدیمی را نتوان به عبری یا هجری برد. در این حالت <code>InvalidDateException</code> می‌گیرید، حتی اگر خود تاریخ میلادی درست باشد:</p>
 <pre><code class="language-php">try { Hebrew::make(new DateTimeImmutable('0001-01-01', $utc)); }
 catch (InvalidDateException $e) { echo $e-&gt;getMessage(); }
 // Date out of the supported Hebrew range (3762..13759): 3761</code></pre>
 
-<h3 id="time-zones">منطقهٔ زمانی تاریخ را تعیین می‌کند</h3>
-<p>تاریخ تقویمی یک لحظه به منطقه‌ای که در آن نگاهش می‌کنید بستگی دارد. همین لحظه در UTC هنوز اول فروردین 1405 (۲۱ مارس) است ولی در تهران، که 3.5 ساعت جلوتر است، دوم فروردین شده است:</p>
+<h3 id="time-zones">منطقهٔ زمانی تاریخ را عوض می‌کند</h3>
+<p>تاریخ تقویمیِ یک لحظه به منطقه‌ای بستگی دارد که از آن نگاه می‌کنید. این لحظه در UTC هنوز اول فروردین ۱۴۰۵ (۲۱ مارس) است، ولی در تهران که ۳٫۵ ساعت جلوتر است، دوم فروردین شده:</p>
 <pre><code class="language-php">$instant = new DateTimeImmutable('2026-03-21 22:30', $utc);
 
 echo Jalali::make($instant);            // 1405/01/01 22:30:00   (UTC)
 echo Jalali::make($instant, $tehran);   // 1405/01/02 02:00:00   (تهران، +03:30)</code></pre>
-<p>هر جا روز تقویمی مهم است منطقه را صریح بدهید و به پیش‌فرض سرور تکیه نکنید.</p>
+<p>هر جا روز تقویمی مهم است، منطقه را صریح بدهید و به پیش‌فرض سرور تکیه نکنید.</p>
 
 <h2 id="contract">قرارداد <code>CalendarDate</code></h2>
-<p><code>RtlyKit\Contracts\CalendarDate</code> اینترفیسی است که <code>Stringable</code> را گسترش می‌دهد و <code>Jalali</code>، <code>Hijri</code> و <code>Hebrew</code> آن را پیاده می‌کنند. برای نوشتن کدی که با هر تقویمی کار کند، همین نوع را تایپ‌هینت کنید:</p>
+<p><code>RtlyKit\Contracts\CalendarDate</code> یک اینترفیس است که <code>Stringable</code> را گسترش می‌دهد. <code>Jalali</code>، <code>Hijri</code> و <code>Hebrew</code> آن را پیاده می‌کنند. اگر می‌خواهید کدی بنویسید که با هر تقویمی کار کند، همین نوع را تایپ‌هینت کنید:</p>
 <pre><code class="language-php">function describe(CalendarDate $d): string
 {
     return sprintf('%s %d/%02d/%02d', (new ReflectionClass($d))-&gt;getShortName(),
@@ -82,27 +82,27 @@ foreach ([Jalali::class, Hijri::class, Hebrew::class] as $class) {
 <thead><tr><th>گروه</th><th>اعضا</th></tr></thead>
 <tbody>
 <tr><td>ساخت</td><td><code>make()</code>، <code>now()</code>، <code>today()</code>، <code>create()</code></td></tr>
-<tr><td>محاسبات تقویمی (استاتیک)</td><td><code>isValid()</code>، <code>isLeapYear()</code>، <code>daysInYear()</code>، <code>daysInMonth()</code></td></tr>
-<tr><td>گیرنده‌ها</td><td><code>getYear()</code>، <code>getMonth()</code>، <code>getDay()</code>، <code>getHour()</code>، <code>getMinute()</code>، <code>getSecond()</code>، <code>getDayOfWeek()</code>، <code>getTimestamp()</code>، <code>getTimezone()</code>، <code>toGregorian()</code></td></tr>
+<tr><td>محاسبه‌های تقویمی (استاتیک)</td><td><code>isValid()</code>، <code>isLeapYear()</code>، <code>daysInYear()</code>، <code>daysInMonth()</code></td></tr>
+<tr><td>خواندن</td><td><code>getYear()</code>، <code>getMonth()</code>، <code>getDay()</code>، <code>getHour()</code>، <code>getMinute()</code>، <code>getSecond()</code>، <code>getDayOfWeek()</code>، <code>getTimestamp()</code>، <code>getTimezone()</code>، <code>toGregorian()</code></td></tr>
 <tr><td>قالب‌بندی</td><td><code>format()</code>، <code>toDateString()</code>، <code>toDateTimeString()</code>، <code>__toString()</code></td></tr>
-<tr><td>تغییر</td><td><code>add</code>/<code>sub</code> برای <code>Days</code>، <code>Hours</code>، <code>Minutes</code>، <code>Seconds</code>، <code>Months</code>، <code>Years</code>؛ <code>startOf</code>/<code>endOf</code> برای <code>Day</code>، <code>Month</code>، <code>Year</code></td></tr>
+<tr><td>تغییر</td><td><code>add</code> و <code>sub</code> برای <code>Days</code>، <code>Hours</code>، <code>Minutes</code>، <code>Seconds</code>، <code>Months</code>، <code>Years</code>. و <code>startOf</code> و <code>endOf</code> برای <code>Day</code>، <code>Month</code>، <code>Year</code></td></tr>
 <tr><td>مقایسه</td><td><code>eq</code>، <code>ne</code>، <code>gt</code>، <code>gte</code>، <code>lt</code>، <code>lte</code>، <code>equals</code>، <code>isBefore</code>، <code>isAfter</code>، <code>between</code>، <code>isPast</code>، <code>isFuture</code>، <code>isToday</code></td></tr>
 <tr><td>اختلاف</td><td><code>diffInDays()</code>، <code>diffInMonths()</code>، <code>diffInYears()</code></td></tr>
 </tbody>
 </table>
-<p>تضمین‌هایی که برای هر پیاده‌سازی برقرار است:</p>
+<p>این‌ها برای هر سه کلاس برقرار است:</p>
 <ul>
-<li>نمونه‌ها <code>final</code> و تغییرناپذیرند؛ متدهای تغییردهنده شیء تازه برمی‌گردانند.</li>
-<li>هر متدی که تاریخ، زمان یونیکس یا مقدار جابه‌جایی می‌گیرد، برای ورودی بیرون از بازه فقط <code>InvalidDateException</code> پرتاب می‌کند؛ هرگز <code>TypeError</code> یا <code>ValueError</code>.</li>
-<li><code>format()</code> در قرارداد فقط با الگو تعریف شده است؛ هر کلاس پارامترهای اختیاری پایانی خودش را اضافه می‌کند (<code>$persianDigits</code> برای جلالی؛ <code>$locale</code> و <code>$digits</code> برای هجری؛ <code>$locale</code> برای عبری). از طریق اینترفیس فقط <code>format($pattern)</code> قابل فراخوانی است.</li>
-<li>شمارهٔ روز هفته یکسان <em>نیست</em>: جلالی شنبه‌محور و هجری و عبری یکشنبه‌محورند.</li>
+<li>شیءها <code>final</code> و تغییرناپذیرند. متدهایی که تاریخ را عوض می‌کنند شیء تازه می‌دهند.</li>
+<li>هر متدی که تاریخ یا زمان یونیکس یا مقدار جابه‌جایی بگیرد، برای ورودی بیرون از بازه فقط <code>InvalidDateException</code> می‌دهد. <code>TypeError</code> یا <code>ValueError</code> بیرون نمی‌آید.</li>
+<li>در قرارداد، <code>format()</code> فقط الگو می‌گیرد. هر کلاس پارامترهای اختیاری خودش را آخر آن اضافه می‌کند (<code>$persianDigits</code> برای جلالی، <code>$locale</code> و <code>$digits</code> برای هجری، <code>$locale</code> برای عبری). از راه اینترفیس فقط <code>format($pattern)</code> را می‌توانید صدا بزنید.</li>
+<li>شمارهٔ روز هفته یکسان <em>نیست</em>. جلالی از شنبه شروع می‌کند. هجری و عبری از یکشنبه.</li>
 </ul>
 <pre><code class="language-php">$i = new DateTimeImmutable('2025-10-07', $utc);   // سه‌شنبه
 echo Jalali::make($i)-&gt;getDayOfWeek(), ' ', Hijri::make($i)-&gt;getDayOfWeek(), ' ', Hebrew::make($i)-&gt;getDayOfWeek();
-// 3 2 2   (جلالی: شنبه = 0؛ دو تقویم دیگر: یکشنبه = 0)</code></pre>
+// 3 2 2   (جلالی: شنبه = 0. دو تقویم دیگر: یکشنبه = 0)</code></pre>
 
 <h2 id="compare">مقایسه بین تقویم‌ها</h2>
-<p>همهٔ متدهای مقایسه <code>CalendarDate|DateTimeInterface</code> می‌گیرند و زمان یونیکس را مقایسه می‌کنند؛ نیازی به تبدیل قبلی نیست:</p>
+<p>همهٔ متدهای مقایسه <code>CalendarDate|DateTimeInterface</code> می‌گیرند و زمان یونیکس را مقایسه می‌کنند. لازم نیست اول تبدیل کنید:</p>
 <pre><code class="language-php">$nowruz = Jalali::create(1405, 1, 1, 12, 0, 0, $utc);
 
 var_dump($nowruz-&gt;eq(Hijri::make($nowruz)));                     // bool(true)
@@ -110,8 +110,8 @@ var_dump($nowruz-&gt;eq($nowruz-&gt;toGregorian()));                   // bool(t
 var_dump($nowruz-&gt;gt(Hebrew::create(5785, 1, 1, 0, 0, 0, $utc)));  // bool(true)
 var_dump($nowruz-&gt;between(Hijri::create(1447, 8, 1, 0, 0, 0, $utc),
                           Hebrew::create(5787, 1, 1, 0, 0, 0, $utc))); // bool(true)</code></pre>
-<p><code>between($a, $b, $equal = true)</code> کران‌ها را به هر ترتیبی می‌پذیرد و، مگر <code>false</code> بدهید، آن‌ها را هم شامل می‌شود. برابری یعنی برابریِ لحظه: <code>Jalali::create(1405, 1, 1)</code> ساخته‌شده در UTC با همان تاریخ مدنی ساخته‌شده در تهران برابر نیست، چون 3.5 ساعت فاصله دارند.</p>
-<p>برای مرتب‌سازی فهرست مخلوط، بر پایهٔ <code>getTimestamp()</code> مرتب کنید:</p>
+<p>متد <code>between($a, $b, $equal = true)</code> دو کران را به هر ترتیبی قبول می‌کند. اگر <code>false</code> ندهید، خود کران‌ها هم داخل بازه‌اند. برابری یعنی یک لحظه بودن. <code>Jalali::create(1405, 1, 1)</code> در UTC با همان تاریخ در تهران برابر نیست، چون ۳٫۵ ساعت فاصله دارند.</p>
+<p>برای مرتب‌کردن فهرستی از تقویم‌های مختلف، با <code>getTimestamp()</code> مرتب کنید:</p>
 <pre><code class="language-php">$list = [
     Hebrew::create(5786, 1, 1, 0, 0, 0, $utc),
     Jalali::create(1405, 1, 1, 0, 0, 0, $utc),
@@ -125,7 +125,7 @@ foreach ($list as $d) { echo $d::class, ' ', $d-&gt;toGregorian()-&gt;format('Y-
 // RtlyKit\Calendar\Jalali 2026-03-21</code></pre>
 
 <h2 id="diff">اختلاف بین تقویم‌ها</h2>
-<p><code>diffInDays()</code> روزهای کامل بین دو لحظه را می‌شمارد و به تقویم کاری ندارد. <code>diffInMonths()</code> و <code>diffInYears()</code> ماه و سال کامل را <em>در تقویمِ شیئی که روی آن صدا می‌زنید</em> می‌شمارند؛ تاریخ دیگر ابتدا در همان تقویم بیان می‌شود. با <code>$absolute = false</code> علامت همان علامت <code>$this - $other</code> است.</p>
+<p>متد <code>diffInDays()</code> روزهای کامل بین دو لحظه را می‌شمارد و به تقویم کاری ندارد. <code>diffInMonths()</code> و <code>diffInYears()</code> ماه و سال کامل را <em>در تقویمِ همان شیئی که صدا می‌زنید</em> می‌شمارند. تاریخ دیگر اول به همان تقویم برده می‌شود. اگر <code>$absolute = false</code> بدهید، علامت نتیجه علامتِ <code>$this - $other</code> است.</p>
 <pre><code class="language-php">$target = Hijri::create(1447, 9, 1, 0, 0, 0, $utc);   // اول رمضان 1447
 
 echo $nowruz-&gt;diffInDays($target);          // 31
@@ -135,12 +135,12 @@ echo $target-&gt;diffInDays($nowruz, false);   // -31
 echo $nowruz-&gt;diffInMonths($target);        // 1    (ماه جلالی)
 echo Hijri::make($nowruz)-&gt;diffInMonths($nowruz-&gt;addMonths(3));  // 3  (ماه هجری)
 echo $nowruz-&gt;diffInYears(Hijri::create(1450, 1, 1, 0, 0, 0, $utc)); // 2</code></pre>
-<p>پس «چند ماه مانده» به تقویمی که می‌پرسید بستگی دارد؛ همان تقویمی را انتخاب کنید که کاربرانتان در آن فکر می‌کنند. جدول واحدها برای هر تقویم در <a href="jalali.html#compare-diff">جلالی</a>، <a href="hijri.html#compare-diff">هجری</a> و <a href="hebrew.html#compare-diff">عبری</a> آمده است.</p>
+<p>پس جواب «چند ماه مانده» به تقویمی که می‌پرسید بستگی دارد. همان تقویمی را بردارید که کاربرانتان با آن فکر می‌کنند. جدول واحدها برای هر تقویم در <a href="jalali.html#compare-diff">جلالی</a>، <a href="hijri.html#compare-diff">هجری</a> و <a href="hebrew.html#compare-diff">عبری</a> هست.</p>
 
 <h2 id="limits">موارد مرزی و محدودیت‌ها</h2>
 <ul>
-<li><strong>بازه‌ها.</strong> جلالی -620..9377، هجری 1..9665، عبری 3762..13759. تبدیل به تقویمی که بازه‌اش آن لحظه را در بر نمی‌گیرد <code>InvalidDateException</code> پرتاب می‌کند.</li>
-<li><strong>گونهٔ هجری.</strong> تاریخ هجری که به تقویم دیگر و بازمی‌گردد همان لحظه را نگه می‌دارد، ولی گونه همان است که در فراخوانی <code>make()</code> مقصد آمده (به‌طور پیش‌فرض ام‌القری).</li>
-<li><strong>دقت.</strong> جلالی قاعدهٔ حسابی ۳۳ ساله است، نه تقویم نجومی رسمی. دادهٔ ام‌القری برای 1300 تا 1500 هجری قمری از ICU/CLDR آمده و ماه‌به‌ماه با انتشار رسمی راستی‌آزمایی نشده است؛ بیرون از این بازه قواعد حسابی Tabular به کار می‌رود. یادداشت‌های <em>محدودیت شناخته‌شده</em> در صفحه‌های تقویم را ببینید.</li>
-<li><strong>خطاها.</strong> برای مشکلات تقویمی <code>InvalidDateException</code> و برای هر خطای کتابخانه <code>RtlyKit\Exceptions\RtlyKitException</code> را بگیرید (<a href="error-handling.html">مدیریت خطا</a>).</li>
+<li><strong>بازه‌ها.</strong> جلالی ‎-۶۲۰ تا ۹۳۷۷، هجری ۱ تا ۹۶۶۵، عبری ۳۷۶۲ تا ۱۳۷۵۹. اگر تقویم مقصد آن لحظه را در بازهٔ خود نداشته باشد، <code>InvalidDateException</code> می‌گیرید.</li>
+<li><strong>گونهٔ هجری.</strong> وقتی تاریخ هجری را به تقویم دیگر ببرید و برگردانید، لحظه همان می‌ماند. گونه همان است که در <code>make()</code> مقصد داده‌اید (به‌طور پیش‌فرض ام‌القری).</li>
+<li><strong>دقت.</strong> جلالی با قاعدهٔ حسابی ۳۳ ساله کار می‌کند و برای ۱۲۰۶ تا ۱۴۹۷ با تقویم رسمی دانشگاه تهران برابر است. جدول ام‌القری برای ۱۳۱۸ تا ۱۵۰۰ هجری قمری با تقویم رسمی KACST می‌خواند (بررسی در 2026-10-08). برای ۱۳۰۰ تا ۱۳۱۷ داده از ICU/CLDR است. بیرون از ۱۳۰۰ تا ۱۵۰۰ قاعدهٔ حسابی Tabular کار می‌کند. جزئیات در <a href="accuracy-and-data.html">دقت و داده</a>.</li>
+<li><strong>خطاها.</strong> برای مشکل تقویمی <code>InvalidDateException</code> را بگیرید و برای هر خطای کتابخانه <code>RtlyKit\Exceptions\RtlyKitException</code> را (<a href="error-handling.html">مدیریت خطا</a>).</li>
 </ul>

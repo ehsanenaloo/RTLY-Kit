@@ -1,13 +1,13 @@
 <!--
 title: Limits
-description: Every hard limit in one place: supported year ranges, input size caps, number-word ranges, the Umm al-Qura range and the other numeric boundaries of the library.
+description: Every hard limit in one place. Supported year ranges, input size caps, number-word ranges, the Umm al-Qura range, tuning ranges and the other numeric boundaries of the library.
 group: reference
 order: 60
 -->
-<p>The limits below are deliberate. They keep every call cheap and predictable, and keep untrusted input from turning into a wrapped-around date or an expensive computation. Exceeding one always raises a documented <code>RtlyKitException</code> (see <a href="error-handling.html">Error handling</a>) or, for validators, an invalid <code>Result</code>.</p>
+<p>These limits are on purpose. They keep every call cheap and predictable, and they stop untrusted input from turning into a wrapped-around date or an expensive computation. Going over a limit always raises a documented <code>RtlyKitException</code> (see <a href="error-handling.html">Error handling</a>) or, for validators, gives an invalid <code>Result</code>.</p>
 
 <h2 id="calendars">Calendar year ranges</h2>
-<p>Every supported date of every calendar maps to a Gregorian year between 1 and 9999, so any value the classes produce can be held by a <code>DateTimeImmutable</code> without wraparound. The ranges are the public constants <code>MIN_YEAR</code> and <code>MAX_YEAR</code>:</p>
+<p>Every supported date of every calendar maps to a Gregorian year between 1 and 9999. So any value the classes produce fits in a <code>DateTimeImmutable</code> without wrapping around. The ranges are the public constants <code>MIN_YEAR</code> and <code>MAX_YEAR</code>:</p>
 <table>
 <thead><tr><th>Calendar</th><th><code>MIN_YEAR</code></th><th><code>MAX_YEAR</code></th><th>Gregorian date of 1/1 of those years</th></tr></thead>
 <tbody>
@@ -34,17 +34,17 @@ foreach ([Jalali::class, Hijri::class, Hebrew::class] as $class) {
 // Jalali   -620..9377   0001-03-21 .. 9998-03-20
 // Hijri       1..9665   0622-07-19 .. 9998-10-12
 // Hebrew   3762..13759  0001-09-06 .. 9998-10-15</code></pre>
-<p>Every entry point obeys the range: <code>make</code>, <code>create</code>, <code>createFromFormat</code>, Unix timestamps, <code>add*()</code> / <code>sub*()</code> (including huge deltas), the helpers and the Carbon macros. A value outside the range throws <code>InvalidDateException</code>; nothing returns a wrapped-around date, and no <code>TypeError</code> or <code>ValueError</code> escapes.</p>
+<p>Every entry point follows the range: <code>make</code>, <code>create</code>, <code>createFromFormat</code>, Unix timestamps, <code>add*()</code> and <code>sub*()</code> (including huge amounts), the helpers and the Carbon macros. A value outside the range throws <code>InvalidDateException</code>. Nothing returns a wrapped-around date, and no <code>TypeError</code> or <code>ValueError</code> escapes.</p>
 
-<h3 id="deltas">Deltas and timestamps</h3>
+<h3 id="deltas">Amounts and timestamps</h3>
 <ul>
-<li>An <code>addDays()</code> / <code>subDays()</code> (and hours, minutes, seconds) amount larger than the span of the whole supported calendar (about 3.7 million days, or the same span in hours, minutes or seconds) is rejected up front with <code>InvalidDateException</code>; a smaller amount that lands outside the supported years is rejected as well.</li>
-<li>A Unix timestamp must fall within Gregorian years 1 to 9999 (with a little slack for the time zone); anything further out is rejected.</li>
-<li><code>Hebrew::addMonths()</code> and <code>addYears()</code> run in constant time, however large the amount.</li>
+<li>An <code>addDays()</code> or <code>subDays()</code> amount (and hours, minutes, seconds) larger than the span of the whole supported calendar (about 3.7 million days, or the same span in hours, minutes or seconds) is refused up front with <code>InvalidDateException</code>. A smaller amount that lands outside the supported years is refused too.</li>
+<li>A Unix timestamp must fall within Gregorian years 1 to 9999 (with a little room for the time zone). Anything further out is refused.</li>
+<li><code>Hebrew::addMonths()</code> and <code>addYears()</code> take the same short time however large the amount is.</li>
 </ul>
 
 <h3 id="string-years">String-year thresholds</h3>
-<p>A string such as <code>1405/01/01</code> or <code>1405-01-01</code> passed to <code>make()</code> or a helper is read as the calendar's own date when the year is below the threshold, and as a Gregorian string otherwise:</p>
+<p>A string such as <code>1405/01/01</code> or <code>1405-01-01</code> passed to <code>make()</code> or a helper is read as a date of the calendar itself when the year is below the threshold. Otherwise it is read as a Gregorian string:</p>
 <table>
 <thead><tr><th>Class</th><th>Own-calendar year</th><th>Otherwise</th></tr></thead>
 <tbody>
@@ -53,12 +53,12 @@ foreach ([Jalali::class, Hijri::class, Hebrew::class] as $class) {
 <tr><td><code>Hebrew</code> / <code>hebrew_date()</code></td><td>3000 or more</td><td>Gregorian</td></tr>
 </tbody>
 </table>
-<p>To pass a real Gregorian date below the threshold (for example the year 999), use a <code>DateTimeImmutable</code>, which is never reinterpreted. See <a href="troubleshooting-faq.html#string-year">the FAQ</a>.</p>
+<p>To pass a real Gregorian date below the threshold (for example the year 999), use a <code>DateTimeImmutable</code>. It is never reinterpreted. See <a href="troubleshooting-faq.html#string-year">the FAQ</a>.</p>
 
 <h3 id="umm-al-qura">Umm al-Qura range</h3>
 <ul>
-<li>The embedded Umm al-Qura month table covers AH 1300 to 1500 (1882-11-12 to 2077-11-16). Outside it, and always for <code>HijriVariant::Tabular</code>, <code>Hijri</code> uses arithmetic rules that can differ from observation by a day or two. <code>Hijri::hasUmmAlQuraData($year)</code> tells whether a year is covered.</li>
-<li><code>IranHolidays</code> reports Islamic holidays only inside that range. Outside it, only the fixed Jalali holidays are returned.</li>
+<li>The embedded Umm al-Qura month table covers AH 1300 to 1500 (1882-11-12 to 2077-11-16). Outside it, and always for <code>HijriVariant::Tabular</code>, <code>Hijri</code> uses arithmetic rules that can differ from observation by a day or two. <code>Hijri::hasUmmAlQuraData($year)</code> tells you whether a year is covered. Years AH 1318 to 1500 are the ones checked against the official KACST calendar (<code>Hijri::ummAlQuraVerifiedRange()</code>).</li>
+<li><code>IranHolidays</code> uses official or reported dates for the Jalali years 1380 to 1405. For other years it reports Islamic holidays only inside the Umm al-Qura range. Outside it, and for years before the Hijri epoch, only the fixed Jalali holidays are returned, without an exception. <code>all()</code>, <code>allTitles()</code> and <code>allFixed()</code> work for every Jalali year from -620 to 9377.</li>
 </ul>
 
 <h2 id="input-caps">Input size caps</h2>
@@ -68,9 +68,9 @@ foreach ([Jalali::class, Hijri::class, Hebrew::class] as $class) {
 <tr><td>Validators (<code>NationalCode</code>, <code>Sheba</code>, <code>BankCard</code>, <code>Mobile</code>, <code>PostalCode</code>, <code>VehiclePlate</code>)</td><td>4096 bytes per string</td><td>invalid <code>Result</code>, error <code>input_too_long</code></td></tr>
 <tr><td><code>NumberToWords::convert()</code> and <code>fromWords()</code> (string input)</td><td>4096 bytes</td><td><code>InvalidNumberException</code>, <code>input_too_long</code></td></tr>
 <tr><td><code>Format</code> string input (<code>withSeparator()</code>)</td><td>4096 bytes</td><td><code>InvalidNumberException</code>, <code>input_too_long</code></td></tr>
-<tr><td><code>Format::withSeparator()</code> / <code>format_number()</code></td><td>1000 characters in the plain decimal number (integer and fraction digits together)</td><td><code>InvalidNumberException</code>, <code>input_too_long</code></td></tr>
-<tr><td><code>Slugify::make()</code> separator</td><td>64 bytes, valid UTF-8</td><td><code>RtlyKitException</code> (<code>input_too_long</code> / <code>invalid_argument</code>)</td></tr>
-<tr><td><code>Jalali::format()</code> pattern</td><td>256 bytes (<code>Jalali::MAX_FORMAT_LENGTH</code>)</td><td><code>InvalidDateException</code></td></tr>
+<tr><td><code>Format::withSeparator()</code> and <code>format_number()</code></td><td>1000 characters in the plain decimal number (whole and fraction digits together)</td><td><code>InvalidNumberException</code>, <code>input_too_long</code></td></tr>
+<tr><td><code>Slugify::make()</code> separator</td><td>64 bytes, valid UTF-8</td><td><code>RtlyKitException</code> (<code>input_too_long</code> or <code>invalid_argument</code>)</td></tr>
+<tr><td><code>format()</code> pattern (Jalali, Hijri, Hebrew)</td><td>256 bytes (<code>MAX_FORMAT_LENGTH</code> on each class)</td><td><code>InvalidDateException</code></td></tr>
 </tbody>
 </table>
 <p>The caps are part of the contract (see <a href="api-stability.html">API stability</a>).</p>
@@ -79,10 +79,11 @@ foreach ([Jalali::class, Hijri::class, Hebrew::class] as $class) {
 <table>
 <thead><tr><th>Function</th><th>Range</th><th>Beyond it</th></tr></thead>
 <tbody>
-<tr><td><code>number_to_words($n)</code> (Persian, default)</td><td>integers up to 21 digits (less than 10^21) and negatives</td><td><code>InvalidNumberException</code>, <code>number_too_large</code></td></tr>
-<tr><td><code>number_to_words($n, 'ar')</code></td><td>0 to 999,999,999 and negatives, masculine counting form only</td><td><code>InvalidNumberException</code>, <code>number_too_large</code></td></tr>
+<tr><td><code>number_to_words($n)</code> (Persian, default)</td><td>integers up to 21 digits (less than 10^21), and negatives</td><td><code>InvalidNumberException</code>, <code>number_too_large</code></td></tr>
+<tr><td><code>number_to_words($n, 'ar')</code> and <code>NumberToWords::convert($n, 'ar', $options)</code></td><td>integers less than 10^27, and negatives</td><td><code>InvalidNumberException</code>, <code>number_too_large</code></td></tr>
+<tr><td><code>NumberToWords::ordinal($n, 'ar')</code></td><td>1 to 99</td><td><code>InvalidNumberException</code> (<code>invalid_number</code> for 0 or less, <code>number_too_large</code> above 99)</td></tr>
 <tr><td><code>number_to_words($n, 'de')</code> or any other locale</td><td>only <code>fa</code> and <code>ar</code></td><td><code>UnsupportedLocaleException</code></td></tr>
-<tr><td><code>NumberToWords::convert()</code>, <code>Format::ordinal()</code></td><td>whole numbers; integral floats such as <code>3.0</code> are accepted</td><td><code>InvalidNumberException</code> for <code>1.5</code>, <code>NaN</code>, <code>INF</code></td></tr>
+<tr><td><code>NumberToWords::convert()</code>, <code>Format::ordinal()</code></td><td>whole numbers. Whole floats such as <code>3.0</code> are accepted</td><td><code>InvalidNumberException</code> for <code>1.5</code>, <code>NaN</code>, <code>INF</code></td></tr>
 <tr><td><code>Format::ordinal()</code></td><td>non-negative integers</td><td><code>InvalidNumberException</code></td></tr>
 </tbody>
 </table>
@@ -90,22 +91,33 @@ foreach ([Jalali::class, Hijri::class, Hebrew::class] as $class) {
 
 echo number_to_words(999999999, 'ar'), "\n";
 // تسعمئة وتسعة وتسعون مليون وتسعمئة وتسعة وتسعون ألف وتسعمئة وتسعة وتسعون
-// number_to_words(1000000000, 'ar') throws InvalidNumberException (number_too_large, limit "10^9")
+// number_to_words(str_repeat('9', 27), 'ar') throws InvalidNumberException (number_too_large, limit "10^27 - 1")
 // number_to_words(str_repeat('9', 22)) throws InvalidNumberException (number_too_large, limit "10^21 - 1")</code></pre>
 
-<h2 id="data">Data coverage limits</h2>
+<h2 id="settings">Setting ranges</h2>
+<table>
+<thead><tr><th>Setting</th><th>Range</th><th>Beyond it</th></tr></thead>
+<tbody>
+<tr><td><code>HolidayCalendar::withIslamicOffset()</code></td><td>-3 to +3 days</td><td><code>InvalidDateException</code></td></tr>
+<tr><td><code>HolidayCalendar::withHijriMonthStart()</code></td><td>within 3 days of the computed start. 29 or 30 days from a neighbouring month start you gave</td><td><code>InvalidDateException</code></td></tr>
+<tr><td><code>PrayerTimes::withTune()</code></td><td>-30 to +30 minutes, whole numbers, for <code>fajr</code>, <code>sunrise</code>, <code>dhuhr</code>, <code>asr</code>, <code>maghrib</code>, <code>isha</code></td><td><code>InvalidPrayerConfigException</code></td></tr>
+</tbody>
+</table>
+
+<h2 id="data">Data coverage</h2>
 <table>
 <thead><tr><th>Data</th><th>Coverage</th></tr></thead>
 <tbody>
-<tr><td>Bank card BINs</td><td>39 BINs; others give <code>null</code> from <code>getBankName()</code></td></tr>
-<tr><td>Sheba bank codes</td><td>38 codes; others give <code>null</code></td></tr>
-<tr><td>National-code place of issuance</td><td>547 prefixes; others give <code>null</code></td></tr>
-<tr><td>Prayer-time cities (<code>PrayerTimes::forCity()</code>)</td><td>14: tehran, mashhad, isfahan, shiraz, tabriz, qom, mecca, medina, riyadh, istanbul, cairo, dubai, baghdad, jakarta. For any other place use <code>new PrayerTimes($lat, $lng, ...)</code>.</td></tr>
-<tr><td>Prayer methods</td><td>Tehran, MWL, ISNA, Egypt, Makkah, Karachi; Asr factor 1 (standard) or 2 (Hanafi)</td></tr>
-<tr><td>Prayer times at high latitudes</td><td>a time the sun cannot produce on that day is <code>null</code>, not an error</td></tr>
+<tr><td>Bank card BINs</td><td>39 BINs. Others give <code>null</code> from <code>getBankName()</code></td></tr>
+<tr><td>Sheba bank codes</td><td>38 codes. Others give <code>null</code></td></tr>
+<tr><td>National-code place of issue</td><td>547 prefixes. Others give <code>null</code></td></tr>
+<tr><td>Official holiday dates</td><td>Jalali years 1394 and 1396 to 1405 (official), 1380 to 1393 and 1395 (reported). Other years are estimated</td></tr>
+<tr><td>Prayer-time cities (<code>PrayerTimes::forCity()</code>)</td><td>14: tehran, mashhad, isfahan, shiraz, tabriz, qom, mecca, medina, riyadh, istanbul, cairo, dubai, baghdad, jakarta. For any other place, use <code>new PrayerTimes($lat, $lng, ...)</code></td></tr>
+<tr><td>Prayer methods</td><td>Tehran, MWL, ISNA, Egypt, Makkah, Karachi. Asr factor 1 (standard) or 2 (Hanafi)</td></tr>
+<tr><td>Prayer times at high latitudes</td><td>The default rule fills in a time the sun cannot produce. With <code>HighLatitudeRule::None</code> that time is <code>null</code>, not an error</td></tr>
 </tbody>
 </table>
 <p>See <a href="accuracy-and-data.html">Accuracy and data</a> for what these tables are based on.</p>
 
 <h2 id="platform">Platform limits</h2>
-<p>PHP 8.2 to 8.4 with <code>ext-mbstring</code>; Laravel 11 and 12; Carbon 3. See <a href="api-stability.html#platforms">API stability</a>.</p>
+<p>PHP 8.2 to 8.5 with no extension beyond a standard build, Laravel 11, 12 and 13, and Carbon 3. See <a href="api-stability.html#platforms">API stability</a>.</p>

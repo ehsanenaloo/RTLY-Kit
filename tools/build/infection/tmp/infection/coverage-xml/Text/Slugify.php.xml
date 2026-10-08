@@ -1,0 +1,738 @@
+<?xml version="1.0"?>
+<phpunit xmlns="https://schema.phpunit.de/coverage/1.0">
+  <file name="Slugify.php" path="/Text">
+    <totals>
+      <lines total="66" comments="19" code="47" executable="18" executed="18" percent="100.00"/>
+      <methods count="1" tested="1" percent="100.00"/>
+      <functions count="0" tested="0" percent="0"/>
+      <classes count="1" tested="1" percent="100.00"/>
+      <traits count="0" tested="0" percent="0"/>
+    </totals>
+    <class name="RtlyKit\Text\Slugify" start="26" executable="18" executed="18" crap="5">
+      <namespace name="RtlyKit\Text"/>
+      <method name="make" signature="make(string $text, string $separator): string" start="31" end="64" crap="5" executable="18" executed="18" coverage="100"/>
+    </class>
+    <coverage>
+      <line nr="33">
+        <covered by="RtlyKit\Tests\Unit\Exceptions\ErrorCodeTest::test_library_failures_carry_specific_codes_and_context"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_text_functions_survive_awkward_input"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_text_functions_keep_their_documented_return_shapes"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyTest::test_slugify"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyTest::test_slugify_separators_and_mixed_scripts"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyUtf8Test::test_lower_cases_non_ascii_letters"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyUtf8Test::test_dots_are_dropped"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyUtf8Test::test_invalid_utf8_text_is_rejected"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyUtf8Test::test_invalid_utf8_separator_is_rejected"/>
+      </line>
+      <line nr="34">
+        <covered by="RtlyKit\Tests\Unit\Exceptions\ErrorCodeTest::test_library_failures_carry_specific_codes_and_context"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_text_functions_survive_awkward_input"/>
+      </line>
+      <line nr="37">
+        <covered by="RtlyKit\Tests\Unit\Exceptions\ErrorCodeTest::test_library_failures_carry_specific_codes_and_context"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_text_functions_survive_awkward_input"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_text_functions_keep_their_documented_return_shapes"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyTest::test_slugify"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyTest::test_slugify_separators_and_mixed_scripts"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyUtf8Test::test_lower_cases_non_ascii_letters"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyUtf8Test::test_dots_are_dropped"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyUtf8Test::test_invalid_utf8_text_is_rejected"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyUtf8Test::test_invalid_utf8_separator_is_rejected"/>
+      </line>
+      <line nr="38">
+        <covered by="RtlyKit\Tests\Unit\Exceptions\ErrorCodeTest::test_library_failures_carry_specific_codes_and_context"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_text_functions_survive_awkward_input"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyUtf8Test::test_invalid_utf8_separator_is_rejected"/>
+      </line>
+      <line nr="41">
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_text_functions_survive_awkward_input"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_text_functions_keep_their_documented_return_shapes"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyTest::test_slugify"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyTest::test_slugify_separators_and_mixed_scripts"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyUtf8Test::test_lower_cases_non_ascii_letters"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyUtf8Test::test_dots_are_dropped"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyUtf8Test::test_invalid_utf8_text_is_rejected"/>
+      </line>
+      <line nr="42">
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_text_functions_survive_awkward_input"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_text_functions_keep_their_documented_return_shapes"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyUtf8Test::test_invalid_utf8_text_is_rejected"/>
+      </line>
+      <line nr="45">
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_text_functions_survive_awkward_input"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_text_functions_keep_their_documented_return_shapes"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyTest::test_slugify"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyTest::test_slugify_separators_and_mixed_scripts"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyUtf8Test::test_lower_cases_non_ascii_letters"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyUtf8Test::test_dots_are_dropped"/>
+      </line>
+      <line nr="48">
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_text_functions_survive_awkward_input"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_text_functions_keep_their_documented_return_shapes"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyTest::test_slugify"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyTest::test_slugify_separators_and_mixed_scripts"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyUtf8Test::test_lower_cases_non_ascii_letters"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyUtf8Test::test_dots_are_dropped"/>
+      </line>
+      <line nr="49">
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_text_functions_survive_awkward_input"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_text_functions_keep_their_documented_return_shapes"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyTest::test_slugify"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyTest::test_slugify_separators_and_mixed_scripts"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyUtf8Test::test_lower_cases_non_ascii_letters"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyUtf8Test::test_dots_are_dropped"/>
+      </line>
+      <line nr="52">
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_text_functions_survive_awkward_input"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_text_functions_keep_their_documented_return_shapes"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyTest::test_slugify"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyTest::test_slugify_separators_and_mixed_scripts"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyUtf8Test::test_lower_cases_non_ascii_letters"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyUtf8Test::test_dots_are_dropped"/>
+      </line>
+      <line nr="53">
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_text_functions_survive_awkward_input"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_text_functions_keep_their_documented_return_shapes"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyTest::test_slugify"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyTest::test_slugify_separators_and_mixed_scripts"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyUtf8Test::test_lower_cases_non_ascii_letters"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyUtf8Test::test_dots_are_dropped"/>
+      </line>
+      <line nr="54">
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_text_functions_survive_awkward_input"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_text_functions_keep_their_documented_return_shapes"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyTest::test_slugify"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyTest::test_slugify_separators_and_mixed_scripts"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyUtf8Test::test_lower_cases_non_ascii_letters"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyUtf8Test::test_dots_are_dropped"/>
+      </line>
+      <line nr="55">
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_text_functions_survive_awkward_input"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_text_functions_keep_their_documented_return_shapes"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyTest::test_slugify"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyTest::test_slugify_separators_and_mixed_scripts"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyUtf8Test::test_lower_cases_non_ascii_letters"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyUtf8Test::test_dots_are_dropped"/>
+      </line>
+      <line nr="57">
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_text_functions_survive_awkward_input"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_text_functions_keep_their_documented_return_shapes"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyTest::test_slugify"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyTest::test_slugify_separators_and_mixed_scripts"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyUtf8Test::test_lower_cases_non_ascii_letters"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyUtf8Test::test_dots_are_dropped"/>
+      </line>
+      <line nr="58">
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_text_functions_survive_awkward_input"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_text_functions_keep_their_documented_return_shapes"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyTest::test_slugify"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyTest::test_slugify_separators_and_mixed_scripts"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyUtf8Test::test_lower_cases_non_ascii_letters"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyUtf8Test::test_dots_are_dropped"/>
+      </line>
+      <line nr="59">
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_text_functions_survive_awkward_input"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_text_functions_keep_their_documented_return_shapes"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyTest::test_slugify"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyTest::test_slugify_separators_and_mixed_scripts"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyUtf8Test::test_lower_cases_non_ascii_letters"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyUtf8Test::test_dots_are_dropped"/>
+      </line>
+      <line nr="60">
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_text_functions_survive_awkward_input"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_text_functions_keep_their_documented_return_shapes"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyTest::test_slugify"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyTest::test_slugify_separators_and_mixed_scripts"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyUtf8Test::test_lower_cases_non_ascii_letters"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyUtf8Test::test_dots_are_dropped"/>
+      </line>
+      <line nr="63">
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_text_functions_survive_awkward_input"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_text_functions_keep_their_documented_return_shapes"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyTest::test_slugify"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyTest::test_slugify_separators_and_mixed_scripts"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyUtf8Test::test_lower_cases_non_ascii_letters"/>
+        <covered by="RtlyKit\Tests\Unit\Text\SlugifyUtf8Test::test_dots_are_dropped"/>
+      </line>
+    </coverage>
+    <source>
+      <line no="1">
+        <token name="T_OPEN_TAG">&lt;?php</token>
+      </line>
+      <line no="2"/>
+      <line no="3">
+        <token name="T_DECLARE">declare</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">strict_types</token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_LNUMBER">1</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="4"/>
+      <line no="5">
+        <token name="T_NAMESPACE">namespace</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_NAME_QUALIFIED">RtlyKit\Text</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="6"/>
+      <line no="7">
+        <token name="T_USE">use</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_NAME_QUALIFIED">RtlyKit\Exceptions\ErrorCode</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="8">
+        <token name="T_USE">use</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_NAME_QUALIFIED">RtlyKit\Exceptions\RtlyKitException</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="9"/>
+      <line no="10">
+        <token name="T_DOC_COMMENT">/**</token>
+      </line>
+      <line no="11">
+        <token name="T_DOC_COMMENT"> * Persian / Arabic aware slug generator.</token>
+      </line>
+      <line no="12">
+        <token name="T_DOC_COMMENT"> *</token>
+      </line>
+      <line no="13">
+        <token name="T_DOC_COMMENT"> * Letters (any script) and digits are kept; whitespace and ZWNJ become the</token>
+      </line>
+      <line no="14">
+        <token name="T_DOC_COMMENT"> * separator; existing hyphens and underscores are preserved (repeats are</token>
+      </line>
+      <line no="15">
+        <token name="T_DOC_COMMENT"> * collapsed); everything else is dropped.</token>
+      </line>
+      <line no="16">
+        <token name="T_DOC_COMMENT"> *</token>
+      </line>
+      <line no="17">
+        <token name="T_DOC_COMMENT"> * Invalid UTF-8: both the text and the separator must be valid UTF-8; otherwise</token>
+      </line>
+      <line no="18">
+        <token name="T_DOC_COMMENT"> * an exception with {@see ErrorCode::InvalidArgument} is thrown (a slug is an</token>
+      </line>
+      <line no="19">
+        <token name="T_DOC_COMMENT"> * identifier, so garbage is rejected instead of passed through, unlike the</token>
+      </line>
+      <line no="20">
+        <token name="T_DOC_COMMENT"> * best-effort {@see Normalizer}). Dots are not letters, digits, hyphens or</token>
+      </line>
+      <line no="21">
+        <token name="T_DOC_COMMENT"> * underscores, so they are dropped ("v1.2" becomes "v12"). Lower-casing uses the</token>
+      </line>
+      <line no="22">
+        <token name="T_DOC_COMMENT"> * Unicode simple case mapping.</token>
+      </line>
+      <line no="23">
+        <token name="T_DOC_COMMENT"> *</token>
+      </line>
+      <line no="24">
+        <token name="T_DOC_COMMENT"> * @throws RtlyKitException when the text or separator is not valid UTF-8, or the separator is longer than 64 bytes</token>
+      </line>
+      <line no="25">
+        <token name="T_DOC_COMMENT"> */</token>
+      </line>
+      <line no="26">
+        <token name="T_FINAL">final</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CLASS">class</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">Slugify</token>
+      </line>
+      <line no="27">
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="28">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_DOC_COMMENT">/** Maximum bytes of the separator. */</token>
+      </line>
+      <line no="29">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PRIVATE">private</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONST">const</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">MAX_SEPARATOR_BYTES</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_LNUMBER">64</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="30"/>
+      <line no="31">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STATIC">static</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">make</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">string</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$text</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">string</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$separator</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'-'</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">string</token>
+      </line>
+      <line no="32">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="33">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_IF">if</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">strlen</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_VARIABLE">$separator</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_GT">&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">self</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_STRING">MAX_SEPARATOR_BYTES</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="34">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_THROW">throw</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_NEW">new</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">RtlyKitException</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'The slug separator is too long.'</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">errorCode</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">ErrorCode</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_STRING">InputTooLong</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">context</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_SQUARE">[</token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'argument'</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'separator'</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'limit'</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">self</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_STRING">MAX_SEPARATOR_BYTES</token>
+        <token name="T_CLOSE_SQUARE">]</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="35">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_CLOSE_CURLY">}</token>
+      </line>
+      <line no="36"/>
+      <line no="37">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_IF">if</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_EXCLAMATION_MARK">!</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">Utf8</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_STRING">isValid</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_VARIABLE">$separator</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="38">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_THROW">throw</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_NEW">new</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">RtlyKitException</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'The slug separator must be valid UTF-8.'</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">errorCode</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">ErrorCode</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_STRING">InvalidArgument</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">context</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_SQUARE">[</token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'argument'</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'separator'</token>
+        <token name="T_CLOSE_SQUARE">]</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="39">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_CLOSE_CURLY">}</token>
+      </line>
+      <line no="40"/>
+      <line no="41">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_IF">if</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_EXCLAMATION_MARK">!</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">Utf8</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_STRING">isValid</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_VARIABLE">$text</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="42">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_THROW">throw</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_NEW">new</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">RtlyKitException</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'The text to slugify must be valid UTF-8.'</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">errorCode</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">ErrorCode</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_STRING">InvalidArgument</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">context</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_SQUARE">[</token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'argument'</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'text'</token>
+        <token name="T_CLOSE_SQUARE">]</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="43">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_CLOSE_CURLY">}</token>
+      </line>
+      <line no="44"/>
+      <line no="45">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_VARIABLE">$text</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">Normalizer</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_STRING">normalize</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_VARIABLE">$text</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="46"/>
+      <line no="47">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_COMMENT">// Whitespace and half-space become a placeholder, later the separator.</token>
+      </line>
+      <line no="48">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_VARIABLE">$text</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">preg_replace</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'/[\s\x{200C}]+/u'</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">"\x01"</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$text</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_COALESCE">??</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$text</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="49">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_VARIABLE">$text</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">preg_replace</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'/[^\p{L}\p{M}\p{N}_\-\x01]+/u'</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">''</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$text</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_COALESCE">??</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$text</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="50"/>
+      <line no="51">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_COMMENT">// Collapse runs of separators, hyphens and underscores.</token>
+      </line>
+      <line no="52">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_VARIABLE">$text</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">preg_replace</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'/\x01+/'</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">"\x01"</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$text</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_COALESCE">??</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$text</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="53">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_VARIABLE">$text</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">preg_replace</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'/-{2,}/'</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'-'</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$text</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_COALESCE">??</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$text</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="54">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_VARIABLE">$text</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">preg_replace</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'/_{2,}/'</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'_'</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$text</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_COALESCE">??</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$text</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="55">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_VARIABLE">$text</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">str_replace</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">"\x01"</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$separator</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$text</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="56"/>
+      <line no="57">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_IF">if</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_VARIABLE">$separator</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_IS_NOT_IDENTICAL">!==</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">''</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="58">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_VARIABLE">$q</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">preg_quote</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_VARIABLE">$separator</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'/'</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="59">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_VARIABLE">$text</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">preg_replace</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'/('</token>
+        <token name="T_DOT">.</token>
+        <token name="T_VARIABLE">$q</token>
+        <token name="T_DOT">.</token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'){2,}/u'</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$separator</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$text</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_COALESCE">??</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$text</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="60">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_VARIABLE">$text</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">preg_replace</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'/^('</token>
+        <token name="T_DOT">.</token>
+        <token name="T_VARIABLE">$q</token>
+        <token name="T_DOT">.</token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">')+|('</token>
+        <token name="T_DOT">.</token>
+        <token name="T_VARIABLE">$q</token>
+        <token name="T_DOT">.</token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">')+$/u'</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">''</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$text</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_COALESCE">??</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$text</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="61">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_CLOSE_CURLY">}</token>
+      </line>
+      <line no="62"/>
+      <line no="63">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_RETURN">return</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">Utf8</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_STRING">lower</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_VARIABLE">$text</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="64">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_CLOSE_CURLY">}</token>
+      </line>
+      <line no="65">
+        <token name="T_CLOSE_CURLY">}</token>
+      </line>
+      <line no="66"/>
+    </source>
+  </file>
+</phpunit>

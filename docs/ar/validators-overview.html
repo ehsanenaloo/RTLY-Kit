@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="ar" dir="rtl" data-i18n="{&quot;dark&quot;:&quot;الوضع الداكن&quot;,&quot;light&quot;:&quot;الوضع الفاتح&quot;,&quot;to_dark&quot;:&quot;التبديل إلى السمة الداكنة&quot;,&quot;to_light&quot;:&quot;التبديل إلى السمة الفاتحة&quot;,&quot;copy&quot;:&quot;نسخ&quot;,&quot;copied&quot;:&quot;تم النسخ&quot;,&quot;copy_failed&quot;:&quot;تم التحديد؛ انسخ يدويًا&quot;,&quot;copy_label&quot;:&quot;نسخ مثال الشيفرة أعلاه&quot;,&quot;no_results&quot;:&quot;لا يوجد دليل مطابق. جرّب كلمة أقصر.&quot;,&quot;loading&quot;:&quot;ما زال فهرس البحث قيد التحميل. حاول مرة أخرى بعد قليل.&quot;,&quot;results&quot;:&quot;نتائج البحث&quot;,&quot;status&quot;:&quot;يُعرض %d من %d دليلًا&quot;,&quot;suggest&quot;:&quot;النسخة العربية&quot;,&quot;search_label&quot;:&quot;البحث في الدليل&quot;,&quot;search_placeholder&quot;:&quot;البحث في الدليل&quot;}" data-search-index="search-index.js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>نظرة عامة على أدوات التحقق | RTLY-Kit دليل المستخدم</title>
+<meta name="description" content="كيف تعمل أدوات التحقق الإيرانية الست: عقد Validator المشترك، وكائن Result، ومفاتيح الأخطاء الثابتة، وتطبيع المدخلات وحدود الحجم.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="نظرة عامة على أدوات التحقق | RTLY-Kit دليل المستخدم">
+<meta property="og:description" content="كيف تعمل أدوات التحقق الإيرانية الست: عقد Validator المشترك، وكائن Result، ومفاتيح الأخطاء الثابتة، وتطبيع المدخلات وحدود الحجم.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ar_AR">
+<meta property="og:locale:alternate" content="fa_IR">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:url" content="https://ehsanenaloo.github.io/RTLY-Kit/ar/validators-overview.html">
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+<link rel="canonical" href="https://ehsanenaloo.github.io/RTLY-Kit/ar/validators-overview.html">
+<link rel="alternate" hreflang="ar" href="https://ehsanenaloo.github.io/RTLY-Kit/ar/validators-overview.html">
+<link rel="alternate" hreflang="fa" href="https://ehsanenaloo.github.io/RTLY-Kit/fa/validators-overview.html">
+<link rel="alternate" hreflang="en" href="https://ehsanenaloo.github.io/RTLY-Kit/en/validators-overview.html">
+<link rel="alternate" hreflang="x-default" href="https://ehsanenaloo.github.io/RTLY-Kit/">
+<link rel="stylesheet" href="../styles.css">
+<script>try{var t=localStorage.getItem("rtly-docs-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<script defer src="../app.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">انتقل إلى المحتوى</a><header class="site-header"><div class="shell header-inner"><a class="brand" href="index.html"><img src="../assets/logo.svg" width="34" height="34" alt=""><span><span class="name">RTLY-Kit</span><small>دليل المستخدم</small></span></a><nav class="top-nav" aria-label="التنقل الرئيسي"><a href="index.html">نظرة عامة</a><a href="quick-start.html">بدء سريع</a><a href="all.html">كل الأدلة</a><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">جيت هب &#8599;</a></nav><div class="header-tools"><span data-search-host></span><button type="button" class="icon-button" data-theme-toggle hidden>Theme</button><div class="lang-switch" role="group" aria-label="اللغة"><a class="icon-button" href="../fa/validators-overview.html" hreflang="fa" lang="fa">فارسی</a><a class="icon-button" href="../en/validators-overview.html" hreflang="en" lang="en">English</a><span class="icon-button is-current" lang="ar" aria-current="true">العربية</span></div></div></div></header>
+<main id="main">
+<div class="shell page-intro"><nav class="breadcrumbs" aria-label="مسار الصفحة"><ol><li><a href="index.html">الرئيسية</a></li><li><a href="all.html#group-validation">التحقق من الصحة</a></li><li aria-current="page">نظرة عامة على أدوات التحقق</li></ol></nav><h1>نظرة عامة على أدوات التحقق</h1><p class="lead">كيف تعمل أدوات التحقق الإيرانية الست: عقد Validator المشترك، وكائن Result، ومفاتيح الأخطاء الثابتة، وتطبيع المدخلات وحدود الحجم.</p></div>
+<div class="shell doc-layout has-toc">
+<aside class="sidebar"><details open><summary>تصفح الأدلة</summary><nav aria-label="الأدلة"><a href="all.html">كل الأدلة</a><p>البدء</p><a href="quick-start.html">البدء السريع</a><a href="installation.html">التثبيت</a><p>التقاويم</p><a href="jalali.html">التقويم الجلالي</a><a href="hijri.html">التقويم الهجري</a><a href="hebrew.html">التقويم العبري</a><a href="convert-and-compare.html">التحويل والمقارنة بين التواريخ</a><a href="carbon-macros.html">ماكروات Carbon</a><p>التحقق من الصحة</p><a href="validators-overview.html" aria-current="page">نظرة عامة على أدوات التحقق</a><a href="national-code.html">الرقم الوطني</a><a href="sheba-and-bank-card.html">شبا والبطاقة المصرفية</a><a href="mobile-postal-plate.html">الجوال والرمز البريدي ولوحة المركبة</a><p>الأرقام والنصوص</p><a href="digits-and-format.html">الأرقام وتنسيق الأعداد</a><a href="number-words.html">تحويل الأعداد إلى كلمات</a><a href="arabic-number-words.html">الأعداد بالحروف العربية</a><a href="text-tools.html">أدوات النصوص</a><p>العطل وأوقات الصلاة</p><a href="holidays.html">العطل الرسمية الإيرانية</a><a href="holiday-calendar.html">تقويم العطل القابل للتعديل</a><a href="prayer-times.html">أوقات الصلاة</a><p>لارافيل</p><a href="laravel-setup.html">إعداد Laravel</a><a href="laravel-validation-and-cast.html">قواعد التحقق وتحويل Eloquent</a><p>المرجع</p><a href="helpers-and-globals.html">الدوال المساعدة والدوال العامة</a><a href="error-handling.html">معالجة الأخطاء</a><a href="api-stability.html">استقرار واجهة API</a><a href="accuracy-and-data.html">الدقة والبيانات</a><a href="benchmarks.html">قياس الأداء</a><a href="limits.html">الحدود</a><a href="troubleshooting-faq.html">استكشاف الأخطاء والأسئلة الشائعة</a><a href="upgrade.html">دليل الترقية</a><a href="verifying-releases.html">التحقق من الإصدارات</a></nav></details></aside>
+<article class="prose">
+<details class="toc-inline"><summary>في هذه الصفحة</summary><ol><li><a href="#six-validators">أدوات التحقق الست</a></li><li><a href="#two-ways">طريقتان للاستدعاء</a></li><li><a href="#contract">عقد Validator</a></li><li><a href="#result">كائن Result</a><ol><li><a href="#detail-keys">مفاتيح التفاصيل لكل أداة تحقق</a></li></ol></li><li><a href="#error-keys">مفاتيح الأخطاء</a></li><li><a href="#input-handling">معالجة المدخلات</a></li><li><a href="#normalization">التطبيع</a></li><li><a href="#lookups">جداول البحث ومصادرها</a></li><li><a href="#next">إلى أين تذهب بعد ذلك</a></li></ol></details>
+<h2 id="six-validators">أدوات التحقق الست<a class="anchor" href="#six-validators" aria-label="رابط إلى هذا القسم">#</a></h2>
+<p>تضم RTLY-Kit ست أدوات تحقق للبيانات التي تتعامل معها التطبيقات الإيرانية كل يوم. وكلها تتبع شكلًا واحداً، فإذا عرفت واحدة منها عرفت الباقي.</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="جدول"><table>
+<thead><tr><th scope="col">الصنف</th><th scope="col">ما يتحقق منه</th><th scope="col">الصفحة</th></tr></thead>
+<tbody>
+<tr><td><code>NationalCode</code></td><td>10 أرقام، ورقم تحقق بطريقة mod-11، وتلميح بمكان الإصدار</td><td><a href="national-code.html">الرقم الوطني</a></td></tr>
+<tr><td><code>Sheba</code></td><td><code>IR</code> + 24 رقماً، وفق ISO 7064 mod-97-10، مع البحث عن المصرف</td><td><a href="sheba-and-bank-card.html">شبا والبطاقة المصرفية</a></td></tr>
+<tr><td><code>BankCard</code></td><td>16 رقماً، ومجموع تحقق Luhn، والبحث عن المصرف عبر BIN</td><td><a href="sheba-and-bank-card.html">شبا والبطاقة المصرفية</a></td></tr>
+<tr><td><code>Mobile</code></td><td>صيغة <code>09xxxxxxxxx</code> في خمسة أشكال للإدخال، وتلميح بالمشغّل</td><td><a href="mobile-postal-plate.html">الجوال والرمز البريدي واللوحة</a></td></tr>
+<tr><td><code>PostalCode</code></td><td>10 أرقام، والرقم الأول ليس <code>0</code></td><td><a href="mobile-postal-plate.html">الجوال والرمز البريدي واللوحة</a></td></tr>
+<tr><td><code>VehiclePlate</code></td><td>صيغة لوحة السيارة الخاصة، مع تحليلها إلى أجزائها</td><td><a href="mobile-postal-plate.html">الجوال والرمز البريدي واللوحة</a></td></tr>
+</tbody>
+</table></div>
+<p>تقع جميعها في فضاء الأسماء <code>RtlyKit\Validation</code>، وتقبل الأرقام الفارسية والعربية كما يكتبها المستخدمون، فيمكنك تمرير مدخلات النماذج إليها مباشرة دون تنظيفها أولًا.</p>
+
+<h2 id="two-ways">طريقتان للاستدعاء<a class="anchor" href="#two-ways" aria-label="رابط إلى هذا القسم">#</a></h2>
+<p>تقدّم كل أداة تحقق قيمة منطقية بسيطة ونتيجة منظّمة. استخدم <code>isValid()</code> حين تحتاج إلى «نعم» أو «لا» فقط، واستخدم <code>validate()</code> حين تريد إخبار المستخدم بسبب رفض القيمة.</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">&lt;?php
+require</span> <span class="tok-s">'vendor/autoload.php'</span>;
+
+<span class="tok-k">use</span> RtlyKit\Validation\NationalCode;
+<span class="tok-k">use</span> <span class="tok-k">function</span> RtlyKit\is_national_code;
+
+var_dump(NationalCode::isValid(<span class="tok-s">'۰۴۹۹۳۷۰۸۹۹'</span>));   <span class="tok-c">// bool(true)</span>
+var_dump(is_national_code(<span class="tok-s">'0499370899'</span>));        <span class="tok-c">// bool(true)</span>
+
+<span class="tok-v">$result</span> = NationalCode::validate(<span class="tok-s">'0499370898'</span>);
+var_dump(<span class="tok-v">$result</span>-&gt;isValid());                    <span class="tok-c">// bool(false)</span>
+print_r(<span class="tok-v">$result</span>-&gt;errors());                      <span class="tok-c">// Array ( [0] =&gt; invalid_checksum )</span></code></pre>
+<p>الدوال المساعدة (<code>is_national_code()</code> و<code>validate_sheba()</code> وغيرها) تقع ضمن فضاء أسماء؛ استورِدها بـ <code>use function RtlyKit\is_national_code;</code>. أما الأسماء العامة القصيرة فهي اختيارية؛ راجع <a href="helpers-and-globals.html">الدوال المساعدة والأسماء العامة</a>.</p>
+
+<h2 id="contract">عقد Validator<a class="anchor" href="#contract" aria-label="رابط إلى هذا القسم">#</a></h2>
+<p>تنفّذ كل أداة تحقق الواجهة <code>RtlyKit\Contracts\Validator</code>، وفيها دالتان ساكنتان (static) فقط:</p>
+<ul>
+<li><code>validate(mixed $value): Result</code></li>
+<li><code>isValid(mixed $value): bool</code>، وهي اختصار لـ <code>validate($value)-&gt;isValid()</code></li>
+</ul>
+<p>أدوات التحقق عديمة الحالة، ولذلك كانت الدوال ساكنة. وهذا يسهّل اختيار أداة التحقق وقت التشغيل عبر اسم الصنف كسلسلة نصية (class-string)، مثلًا من مصفوفة إعدادات:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">use</span> RtlyKit\Contracts\Validator;
+<span class="tok-k">use</span> RtlyKit\Validation\Mobile;
+<span class="tok-k">use</span> RtlyKit\Validation\NationalCode;
+<span class="tok-k">use</span> RtlyKit\Validation\PostalCode;
+
+<span class="tok-c">/** @var array&lt;string, class-string&lt;Validator&gt;&gt; $rules */</span>
+<span class="tok-v">$rules</span> = [
+    <span class="tok-s">'national_code'</span> =&gt; NationalCode::<span class="tok-k">class</span>,
+    <span class="tok-s">'mobile'</span>        =&gt; Mobile::<span class="tok-k">class</span>,
+    <span class="tok-s">'postal'</span>        =&gt; PostalCode::<span class="tok-k">class</span>,
+];
+<span class="tok-v">$input</span> = [<span class="tok-s">'national_code'</span> =&gt; <span class="tok-s">'0499370899'</span>, <span class="tok-s">'mobile'</span> =&gt; <span class="tok-s">'0912'</span>, <span class="tok-s">'postal'</span> =&gt; <span class="tok-s">'1234567890'</span>];
+
+<span class="tok-k">foreach</span> (<span class="tok-v">$rules</span> <span class="tok-k">as</span> <span class="tok-v">$field</span> =&gt; <span class="tok-v">$class</span>) {
+    <span class="tok-v">$result</span> = <span class="tok-v">$class</span>::validate(<span class="tok-v">$input</span>[<span class="tok-v">$field</span>]);
+    <span class="tok-k">echo</span> <span class="tok-v">$field</span>, <span class="tok-s">': '</span>, <span class="tok-v">$result</span>-&gt;isValid() ? <span class="tok-s">'ok'</span> : implode(<span class="tok-s">','</span>, <span class="tok-v">$result</span>-&gt;errors()), <span class="tok-s">"\n"</span>;
+}
+<span class="tok-c">// national_code: ok</span>
+<span class="tok-c">// mobile: invalid_format</span>
+<span class="tok-c">// postal: ok</span></code></pre>
+<div class="callout note" role="note"><strong>لا تُطلق استثناءً أبدًا.</strong> لا تُطلق أي من الدالتين استثناءً بسبب مدخل سيئ. فأي قيمة، بما فيها <code>null</code> والمصفوفات والكائنات والسلاسل الطويلة جدًا وUTF-8 غير الصالح، تُنتج <code>Result</code> غير صالحة بمفتاح خطأ ثابت. أما الاستثناءات فهي مخصصة لأخطاء المبرمج في أجزاء أخرى من المكتبة؛ راجع <a href="error-handling.html">معالجة الأخطاء</a>.</div>
+
+<h2 id="result">كائن Result<a class="anchor" href="#result" aria-label="رابط إلى هذا القسم">#</a></h2>
+<p>الصنف <code>RtlyKit\Validation\Result</code> كائن قيمة غير قابل للتغيير، وله ثلاث دوال قراءة:</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="جدول"><table>
+<thead><tr><th scope="col">الدالة</th><th scope="col">ما تُرجعه</th></tr></thead>
+<tbody>
+<tr><td><code>isValid()</code></td><td><code>bool</code></td></tr>
+<tr><td><code>errors()</code></td><td><code>list&lt;string&gt;</code>: مفاتيح أخطاء ثابتة، وتكون فارغة إذا كانت القيمة صالحة</td></tr>
+<tr><td><code>details()</code></td><td><code>array&lt;string, mixed&gt;</code>: معلومات عرفتها أداة التحقق أثناء الفحص</td></tr>
+</tbody>
+</table></div>
+<p>التفاصيل موجودة في النتائج الصالحة وغير الصالحة (بقدر ما وصلت إليه أداة التحقق قبل أن تتوقف)، فيمكنك عرض القيمة المطبَّعة أو اسم المصرف حتى بجوار خطأ:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">use</span> RtlyKit\Validation\BankCard;
+
+<span class="tok-v">$result</span> = BankCard::validate(<span class="tok-s">'6037991234567890'</span>);
+var_dump(<span class="tok-v">$result</span>-&gt;isValid());   <span class="tok-c">// bool(false)</span>
+print_r(<span class="tok-v">$result</span>-&gt;errors());     <span class="tok-c">// Array ( [0] =&gt; invalid_checksum )</span>
+<span class="tok-k">echo</span> json_encode(<span class="tok-v">$result</span>-&gt;details(), JSON_UNESCAPED_UNICODE);
+<span class="tok-c">// {"normalized":"6037991234567890","bin":"603799","bank_name":"بانک ملی ایران"}</span></code></pre>
+
+<h3 id="detail-keys">مفاتيح التفاصيل لكل أداة تحقق<a class="anchor" href="#detail-keys" aria-label="رابط إلى هذا القسم">#</a></h3>
+<div class="table-wrap" tabindex="0" role="region" aria-label="جدول"><table>
+<thead><tr><th scope="col">أداة التحقق</th><th scope="col">مفاتيح التفاصيل</th></tr></thead>
+<tbody>
+<tr><td><code>NationalCode</code></td><td><code>normalized</code>، <code>location</code> (<code>{province, city}</code> أو <code>null</code>)</td></tr>
+<tr><td><code>Sheba</code></td><td><code>normalized</code>، <code>bank_code</code>، <code>bank_name</code></td></tr>
+<tr><td><code>BankCard</code></td><td><code>normalized</code>، <code>bin</code>، <code>bank_name</code></td></tr>
+<tr><td><code>Mobile</code></td><td><code>normalized</code>، <code>operator</code>، <code>allocated</code> (قيمة <code>bool</code>: هل تقع بادئة الرقم في خطة الترقيم المنشورة للهاتف المحمول)</td></tr>
+<tr><td><code>PostalCode</code></td><td><code>normalized</code></td></tr>
+<tr><td><code>VehiclePlate</code></td><td><code>normalized</code>، وعند مطابقة الصيغة: <code>two_digit</code>، <code>letter</code>، <code>three_digit</code>، <code>region</code></td></tr>
+</tbody>
+</table></div>
+<p>قيم البحث (<code>location</code> و<code>bank_name</code> و<code>operator</code>) تكون <code>null</code> إذا لم يكن في الجدول مدخل مطابق. وغياب المدخل يعني «غير معروف» ولا يعني «غير صالح» أبدًا.</p>
+
+<h2 id="error-keys">مفاتيح الأخطاء<a class="anchor" href="#error-keys" aria-label="رابط إلى هذا القسم">#</a></h2>
+<p>الأخطاء مفاتيح ثابتة مقروءة آليًا. لا تتغير بين الإصدارات، فيمكنك ربطها برسائلك أو ترجماتك الخاصة. وهذا ما يفعله تكامل Laravel بالضبط؛ راجع <a href="laravel-validation-and-cast.html">قواعد التحقق والتحويل في Laravel</a>.</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="جدول"><table>
+<thead><tr><th scope="col">المفتاح</th><th scope="col">المعنى</th><th scope="col">يستخدمه</th></tr></thead>
+<tbody>
+<tr><td><code>invalid_type</code></td><td>القيمة ليست سلسلة نصية ولا عددًا صحيحًا ولا عددًا عشريًا صحيحًا منتهيًا</td><td>الجميع</td></tr>
+<tr><td><code>input_too_long</code></td><td>سلسلة نصية أطول من 4096 بايت</td><td>الجميع</td></tr>
+<tr><td><code>invalid_format</code></td><td>الصيغة خاطئة (مجموعة المحارف أو عدد الأرقام أو النمط)</td><td>الجميع عدا <code>PostalCode</code>، التي تستخدمه عند وجود <code>0</code> في البداية</td></tr>
+<tr><td><code>invalid_length</code></td><td>عدد الأرقام ليس 10</td><td><code>PostalCode</code></td></tr>
+<tr><td><code>repeated_digits</code></td><td>جميع الأرقام متماثلة (<code>1111111111</code>)</td><td><code>NationalCode</code>، <code>BankCard</code></td></tr>
+<tr><td><code>invalid_checksum</code></td><td>رقم التحقق أو أرقام التحقق لا تطابق</td><td><code>NationalCode</code>، <code>Sheba</code>، <code>BankCard</code></td></tr>
+<tr><td><code>invalid_region</code></td><td>جزء رقمي من اللوحة كله أصفار</td><td><code>VehiclePlate</code></td></tr>
+</tbody>
+</table></div>
+<p>تحمل النتيجة اليوم خطأً واحدًا على الأكثر (أول فحص فشل)، لكن <code>errors()</code> تُرجع قائمة كي تتمكن فحوصات مستقبلية من الإبلاغ عن عدة أخطاء.</p>
+
+<h2 id="input-handling">معالجة المدخلات<a class="anchor" href="#input-handling" aria-label="رابط إلى هذا القسم">#</a></h2>
+<p>قبل تشغيل أي قاعدة، تمرّ القيمة عبر بوابة مشتركة واحدة:</p>
+<ul>
+<li><strong>السلاسل النصية</strong> حتى <strong>4096 بايت</strong> تمرّ. يشغل الرقم الفارسي أو العربي بايتين، فالحد الأقصى نحو 2000 رقم من هذا النوع. والسلسلة الأطول تُنتج <code>input_too_long</code>.</li>
+<li><strong><code>int</code></strong> يُحوَّل بـ <code>(string)</code>.</li>
+<li><strong><code>float</code></strong> يجب أن يكون منتهيًا وصحيحًا (بلا كسر) وقيمته المطلقة أقل من 10<sup>15</sup>؛ ويُحوَّل دون أُسّ. القيم <code>NaN</code> و<code>INF</code> و<code>1.5</code> والأعداد العشرية الضخمة تُنتج <code>invalid_type</code>.</li>
+<li>كل ما عدا ذلك، أي <code>null</code> و<code>bool</code> والمصفوفات والكائنات، يُنتج <code>invalid_type</code>.</li>
+</ul>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">use</span> RtlyKit\Validation\NationalCode;
+<span class="tok-k">use</span> RtlyKit\Validation\PostalCode;
+
+print_r(NationalCode::validate(<span class="tok-k">null</span>)-&gt;errors());                  <span class="tok-c">// [invalid_type]</span>
+print_r(NationalCode::validate(<span class="tok-n">1.5</span>)-&gt;errors());                   <span class="tok-c">// [invalid_type]</span>
+print_r(NationalCode::validate(str_repeat(<span class="tok-s">'1'</span>, <span class="tok-n">4097</span>))-&gt;errors()); <span class="tok-c">// [input_too_long]</span>
+print_r(NationalCode::validate(<span class="tok-s">"\xff\xfe"</span>)-&gt;errors());            <span class="tok-c">// [invalid_format]</span>
+var_dump(PostalCode::validate(<span class="tok-n">1234567890</span>)-&gt;isValid());            <span class="tok-c">// bool(true)</span></code></pre>
+<div class="callout note" role="note"><strong>الأصفار البادئة.</strong> إذا مرّرت الرقم الوطني أو الرمز البريدي على أنه عدد صحيح فستضيع الأصفار البادئة: <code>499370899</code> ليس <code>0499370899</code>، وأداة التحقق لا ترى إلا تسعة أرقام. أبقِ هذه المعرّفات سلاسل نصية من النموذج أو من عمود قاعدة البيانات حتى تصل إلى أداة التحقق.</div>
+
+<h2 id="normalization">التطبيع<a class="anchor" href="#normalization" aria-label="رابط إلى هذا القسم">#</a></h2>
+<p>بعد البوابة، تطبّع كل أداة تحقق السلسلة بدالتها العامة <code>normalize()</code>. وتشترك في هذه القواعد:</p>
+<ul>
+<li>الأرقام الفارسية (<code>۰-۹</code>) والعربية الهندية (<code>٠-٩</code>) تتحول إلى أرقام إنجليزية باستخدام <code>Digits::toEnglish()</code>.</li>
+<li>تُحذف الفواصل التي يكتبها المستخدمون: المسافات والواصلات والنصف مسافة (ZWNJ). أما <code>Mobile</code> و<code>BankCard</code> و<code>PostalCode</code> فتذهب أبعد وتُبقي الأرقام فقط.</li>
+<li>تحوّل <code>Sheba</code> النص أيضًا إلى أحرف كبيرة وتضيف البادئة <code>IR</code> إلى سلسلة مجردة من 24 رقمًا.</li>
+</ul>
+<p>تُرجَع القيمة المطبَّعة دائمًا في <code>details()['normalized']</code>. خزّنها هي لا المدخل الخام، كي لا يُحفظ الرقم نفسه بصيغتين.</p>
+
+<h2 id="lookups">جداول البحث ومصادرها<a class="anchor" href="#lookups" aria-label="رابط إلى هذا القسم">#</a></h2>
+<p>تُرفق أربع أدوات تحقق معلومة بحث: المصرف من BIN البطاقة، والمصرف من رمز شبا، ومكان الإصدار من بادئة الرقم الوطني، والمشغّل من بادئة الجوال. هذه البيانات مجرد إضافة مريحة فوق التحقق؛ أما الصلاحية نفسها فلا تعتمد عليها أبدًا.</p>
+<ul>
+<li>BIN البطاقات المصرفية: 39 مدخلًا. رموز المصارف في شبا: 38 مدخلًا. بادئات الرقم الوطني: 547 مدخلًا.</li>
+<li>رموز المصارف الـ 19 الواردة في مواصفة IBAN المنشورة لدى البنك المركزي الإيراني تطابق جدول المكتبة. أما بقية الجداول فتتفق مع عدة صفحات عامة، لأن قائمة رسمية لم تتوفر.</li>
+<li>المدخل غير الموجود في الجدول يعني «غير معروف»، ولا يعني «غير صالح».</li>
+</ul>
+<div class="callout note" role="note"><strong>من المفيد أن تعرف.</strong> نتيجة البحث تلميح مفيد وليست سجلًا رسميًا. المصارف تندمج وتغيّر أسماءها، ويمكن نقل رقم الجوال بين المشغّلين. لذلك اعرض النتيجة على أنها معلومة إرشادية، ولا تبنِ عليها قرارًا قانونيًا أو ماليًا. تجد المصادر والتواريخ في <a href="accuracy-and-data.html">الدقة والبيانات</a>.</div>
+
+<h2 id="next">إلى أين تذهب بعد ذلك<a class="anchor" href="#next" aria-label="رابط إلى هذا القسم">#</a></h2>
+<ul>
+<li><a href="national-code.html">الرقم الوطني</a>: الخوارزمية والتطبيع وتلميح مكان الإصدار.</li>
+<li><a href="sheba-and-bank-card.html">شبا والبطاقة المصرفية</a>: mod-97 وLuhn والبحث عن المصارف.</li>
+<li><a href="mobile-postal-plate.html">الجوال والرمز البريدي ولوحة المركبة</a>.</li>
+<li><a href="limits.html">الحدود</a>: كل حدود الحجم في مكان واحد.</li>
+</ul>
+<nav class="reading-footer" aria-label="الصفحة السابقة والتالية"><a class="prev" rel="prev" href="carbon-macros.html"><small>السابق</small>ماكروات Carbon</a><a class="next" rel="next" href="national-code.html"><small>التالي</small>الرقم الوطني</a></nav>
+</article>
+<nav class="toc" aria-label="في هذه الصفحة"><p>في هذه الصفحة</p><ol><li><a href="#six-validators">أدوات التحقق الست</a></li><li><a href="#two-ways">طريقتان للاستدعاء</a></li><li><a href="#contract">عقد Validator</a></li><li><a href="#result">كائن Result</a><ol><li><a href="#detail-keys">مفاتيح التفاصيل لكل أداة تحقق</a></li></ol></li><li><a href="#error-keys">مفاتيح الأخطاء</a></li><li><a href="#input-handling">معالجة المدخلات</a></li><li><a href="#normalization">التطبيع</a></li><li><a href="#lookups">جداول البحث ومصادرها</a></li><li><a href="#next">إلى أين تذهب بعد ذلك</a></li></ol></nav>
+</div>
+</main>
+<footer class="footer"><div class="shell footer-inner"><p>دليل مستخدم RTLY-Kit · الترخيص: MIT</p><div><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">المستودع على جيت هب &#8599;</a><a href="https://github.com/ehsanenaloo/RTLY-Kit/issues" rel="noopener noreferrer">الإبلاغ عن مشكلة &#8599;</a></div></div></footer>
+</body>
+</html>

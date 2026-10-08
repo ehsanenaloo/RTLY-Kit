@@ -1,12 +1,12 @@
 <!--
 title: اوقات شرعی
-description: اذان صبح، طلوع، ظهر، عصر، مغرب و عشا را برای هر مکان با شش روش محاسبه کنید، همراه با وضعیت راستی‌آزمایی صادقانهٔ هر روش.
+description: اذان صبح، طلوع، ظهر، عصر، مغرب و عشا را برای هر مکان با شش روش حساب کنید. عرض‌های بالا، تنظیم دستی دقیقه‌ها و آنچه با جدول‌های منتشرشده سنجیده‌ایم.
 group: dates-and-times
 order: 20
 -->
 <h2 id="overview">معرفی</h2>
-<p>کلاس <code>RtlyKit\Prayer\PrayerTimes</code> شش وقت روزانه را با معادلات نجومی حساب می‌کند، بدون نیاز به اینترنت و بدون فایل داده. میل خورشید و معادلهٔ زمان از سری‌های کم‌دقت ژان میوس در کتاب <em>Astronomical Algorithms</em> گرفته شده‌اند (همان معادلات ماشین‌حساب خورشیدی NOAA). زاویهٔ ساعتی با مثلثات کروی، عصر با ضریب طول سایه و طلوع/غروب با ارتفاع ‎-0.833 درجه (شکست نور به‌علاوهٔ نیم‌قطر خورشید) به‌دست می‌آید. زاویه‌های صبح، مغرب و عشا قراردادهای منتشرشدهٔ هر روش‌اند، نه مقادیری که از نرم‌افزار دیگری مشتق شده باشند.</p>
-<p>نتیجه رشته‌هایی به شکل <code>HH:MM</code> به وقت محلی منطقهٔ زمانی محاسبه‌گر است و به نزدیک‌ترین دقیقه گرد می‌شود.</p>
+<p>کلاس <code>RtlyKit\Prayer\PrayerTimes</code> شش وقت روزانه را با معادله‌های نجومی حساب می‌کند. اینترنت و فایل داده لازم نیست. میل خورشید و معادلهٔ زمان از سری‌های ساده‌شدهٔ ژان میوس در کتاب <em>Astronomical Algorithms</em> گرفته شده (همان معادله‌های ماشین‌حساب خورشیدی NOAA). زاویهٔ ساعتی با مثلثات کروی به دست می‌آید. عصر با ضریب طول سایه حساب می‌شود و طلوع و غروب با ارتفاع ‎-0٫833 درجه (شکست نور به‌علاوهٔ نیم‌قطر خورشید). زاویه‌های صبح و مغرب و عشا همان قراردادهای منتشرشدهٔ هر روش‌اند.</p>
+<p>نتیجه رشته‌هایی مثل <code>HH:MM</code> به وقت محلی منطقهٔ زمانی محاسبه‌گر است و به نزدیک‌ترین دقیقه گرد می‌شود.</p>
 
 <h2 id="quick">شروع سریع</h2>
 <pre><code class="language-php">use RtlyKit\Prayer\PrayerTimes;
@@ -14,13 +14,13 @@ order: 20
 $tz  = new DateTimeZone('Asia/Tehran');
 $day = new DateTimeImmutable('2026-03-21 12:00', $tz);
 
-$times = PrayerTimes::forCity('tehran')->getTimes($day);
+$times = PrayerTimes::forCity('tehran')-&gt;getTimes($day);
 echo json_encode($times);
 // {"fajr":"04:43","sunrise":"06:07","dhuhr":"12:12","asr":"15:39","maghrib":"18:35","isha":"19:22"}</code></pre>
-<p>اگر تاریخ ندهید، <code>getTimes()</code> امروز را در منطقهٔ زمانی محاسبه‌گر برمی‌دارد. تاریخی که می‌دهید <em>روز تقویمی محلی</em> همان منطقه را مشخص می‌کند. میان‌بر فضای‌نامی هم هست که برای امروز همین آرایه را می‌دهد: <code>\RtlyKit\prayer_times('tehran', 'Tehran')</code> (<a href="helpers-and-globals.html">توابع کمکی و سراسری</a>).</p>
+<p>اگر تاریخ ندهید، <code>getTimes()</code> امروز را در منطقهٔ زمانی محاسبه‌گر برمی‌دارد. تاریخی که می‌دهید، <em>روز تقویمی محلی</em> همان منطقه را مشخص می‌کند. یک میان‌بر فضای‌نام‌دار هم هست که همین آرایه را برای امروز می‌دهد: <code>\RtlyKit\prayer_times('tehran', 'Tehran')</code> (<a href="helpers-and-globals.html">توابع کمکی و سراسری</a>).</p>
 
-<h2 id="construct">ساخت محاسبه‌گر</h2>
-<p>دو راه برای ساخت وجود دارد.</p>
+<h2 id="construct">ساختن محاسبه‌گر</h2>
+<p>دو راه دارد.</p>
 <pre><code class="language-php">// ۱) شهر داخلی: مختصات و منطقهٔ زمانی خودکار پر می‌شود.
 $p = PrayerTimes::forCity('mecca', PrayerTimes::METHOD_MAKKAH);
 
@@ -33,10 +33,10 @@ $p = new PrayerTimes(
     timezone:  new DateTimeZone('Asia/Tehran'), // پیش‌فرض: date_default_timezone_get()
     elevation: 0.0,                          // متر، پیش‌فرض ۰
 );</code></pre>
-<p>تابع <code>forCity()</code> این نام‌ها را می‌شناسد (بدون حساسیت به حروف): ‎<code>tehran</code>، <code>mashhad</code>، <code>isfahan</code>، <code>shiraz</code>، <code>tabriz</code>، <code>qom</code>، <code>mecca</code>، <code>medina</code>، <code>riyadh</code>، <code>istanbul</code>، <code>cairo</code>، <code>dubai</code>، <code>baghdad</code>، <code>jakarta</code>. نام دیگر خطا می‌دهد؛ برای شهرهای دیگر سازنده را با مختصات خودتان به کار ببرید.</p>
+<p><code>forCity()</code> این نام‌ها را می‌شناسد (بزرگی و کوچکی حرف مهم نیست): <code>tehran</code>، <code>mashhad</code>، <code>isfahan</code>، <code>shiraz</code>، <code>tabriz</code>، <code>qom</code>، <code>mecca</code>، <code>medina</code>، <code>riyadh</code>، <code>istanbul</code>، <code>cairo</code>، <code>dubai</code>، <code>baghdad</code>، <code>jakarta</code>. نام دیگر خطا می‌دهد. برای شهرهای دیگر سازنده را با مختصات خودتان صدا بزنید.</p>
 
 <h2 id="methods">روش‌ها و زاویه‌ها</h2>
-<p>روش، زاویهٔ فرورفتن خورشید را برای صبح و عشا (و در تهران برای مغرب) تعیین می‌کند. به‌جای رشته از ثابت‌های کلاس استفاده کنید.</p>
+<p>روش، زاویهٔ فرورفتن خورشید را برای صبح و عشا (و در تهران برای مغرب) مشخص می‌کند. به‌جای رشته از ثابت‌های کلاس استفاده کنید.</p>
 <table>
 <thead><tr><th>ثابت</th><th>صبح</th><th>مغرب</th><th>عشا</th></tr></thead>
 <tbody>
@@ -48,9 +48,9 @@ $p = new PrayerTimes(
 <tr><td><code>METHOD_KARACHI</code> (‎<code>Karachi</code>)</td><td>۱۸ درجه</td><td>غروب</td><td>۱۸ درجه</td></tr>
 </tbody>
 </table>
-<p>همان روز تهران با هر روش (فقط صبح، مغرب و عشا فرق می‌کنند؛ طلوع، ظهر و عصر به روش بستگی ندارند):</p>
+<p>همین روز در تهران با هر شش روش. فقط صبح و مغرب و عشا فرق می‌کنند. طلوع و ظهر و عصر به روش بستگی ندارند:</p>
 <pre><code class="language-php">foreach (['Tehran', 'MWL', 'ISNA', 'Egypt', 'Makkah', 'Karachi'] as $m) {
-    echo str_pad($m, 8), json_encode(PrayerTimes::forCity('tehran', $m)->getTimes($day)), "\n";
+    echo str_pad($m, 8), json_encode(PrayerTimes::forCity('tehran', $m)-&gt;getTimes($day)), "\n";
 }
 // Tehran  {"fajr":"04:43","sunrise":"06:07","dhuhr":"12:12","asr":"15:39","maghrib":"18:35","isha":"19:22"}
 // MWL     {"fajr":"04:42","sunrise":"06:07","dhuhr":"12:12","asr":"15:39","maghrib":"18:17","isha":"19:37"}
@@ -58,83 +58,116 @@ $p = new PrayerTimes(
 // Egypt   {"fajr":"04:34","sunrise":"06:07","dhuhr":"12:12","asr":"15:39","maghrib":"18:17","isha":"19:40"}
 // Makkah  {"fajr":"04:39","sunrise":"06:07","dhuhr":"12:12","asr":"15:39","maghrib":"18:17","isha":"19:47"}
 // Karachi {"fajr":"04:42","sunrise":"06:07","dhuhr":"12:12","asr":"15:39","maghrib":"18:17","isha":"19:42"}</code></pre>
-<p>ظهر همان عبور خورشید از نصف‌النهار است و هیچ زمان احتیاطی به هیچ‌یک از وقت‌ها اضافه نمی‌شود.</p>
+<p>ظهر همان لحظهٔ عبور خورشید از نصف‌النهار است. به هیچ وقتی زمان احتیاط اضافه نمی‌شود.</p>
 
 <h2 id="asr">مذهب‌های عصر</h2>
-<p>عصر وقتی آغاز می‌شود که سایهٔ جسم برابر سایهٔ ظهر به‌علاوهٔ مضربی از ارتفاع آن شود. <code>ASR_STANDARD</code> (مقدار ۱، یک برابر ارتفاع) برای شافعی، مالکی، حنبلی و جعفری است و <code>ASR_HANAFI</code> (مقدار ۲، دو برابر ارتفاع) وقت دیرتری می‌دهد.</p>
+<p>عصر وقتی شروع می‌شود که سایهٔ هر جسم برابر سایهٔ ظهر به‌علاوهٔ مضربی از ارتفاع جسم شود. <code>ASR_STANDARD</code> (مقدار ۱، یک برابر ارتفاع) برای شافعی، مالکی، حنبلی و جعفری است. <code>ASR_HANAFI</code> (مقدار ۲، دو برابر ارتفاع) وقت دیرتری می‌دهد.</p>
 <pre><code class="language-php">$hanafi = PrayerTimes::forCity('tehran', 'Tehran', PrayerTimes::ASR_HANAFI);
-echo $hanafi->getTimes($day)['asr'];   // 16:32  (استاندارد: 15:39)</code></pre>
+echo $hanafi-&gt;getTimes($day)['asr'];   // 16:32  (استاندارد: 15:39)</code></pre>
 
 <h2 id="makkah-isha">مکه: عشا در رمضان</h2>
-<p>قرارداد ام‌القری عشا را ۹۰ دقیقه پس از مغرب و در ماه رمضان ۱۲۰ دقیقه پس از مغرب می‌گذارد. محاسبه‌گر وقتی روز تقویمی محلی در رمضانِ جدول ام‌القریِ خود کتابخانه (ماه ۹) باشد ۱۲۰ و در غیر این صورت ۹۰ را برمی‌دارد. تصمیم بر پایهٔ تاریخ مدنی است، نه روز اسلامی که از غروب شروع می‌شود.</p>
+<p>در قرارداد ام‌القری، عشا ۹۰ دقیقه بعد از مغرب است و در رمضان ۱۲۰ دقیقه بعد از مغرب. اگر روز تقویمی محلی در رمضانِ جدول ام‌القریِ همین کتابخانه باشد (ماه ۹)، ۱۲۰ دقیقه به کار می‌رود، وگرنه ۹۰. تشخیص بر اساس تاریخ مدنی است، نه روز اسلامی که از غروب شروع می‌شود.</p>
 <pre><code class="language-php">$mk = PrayerTimes::forCity('mecca', 'Makkah');
 foreach (['2026-02-20', '2026-03-01', '2026-03-21'] as $s) {
-    $t = $mk->getTimes(new DateTimeImmutable($s, new DateTimeZone('Asia/Riyadh')));
+    $t = $mk-&gt;getTimes(new DateTimeImmutable($s, new DateTimeZone('Asia/Riyadh')));
     echo $s, ' maghrib ', $t['maghrib'], ' isha ', $t['isha'], "\n";
 }
 // 2026-02-20 maghrib 18:21 isha 20:21   (+120، رمضان)
 // 2026-03-01 maghrib 18:25 isha 20:25   (+120، رمضان)
-// 2026-03-21 maghrib 18:32 isha 20:02   (+90، پس از رمضان)</code></pre>
+// 2026-03-21 maghrib 18:32 isha 20:02   (+90، بعد از رمضان)</code></pre>
 
 <h2 id="elevation">ارتفاع از سطح دریا</h2>
-<p>آرگومان <code>elevation</code> ارتفاع ناظر بر حسب متر است. ارتفاع طلوع/غروب را به‌اندازهٔ فرورفتگی هندسی افق، یعنی <code>0.0347 * sqrt(h)</code> درجه، کم می‌کند؛ پس بر بلندی طلوع زودتر و غروب دیرتر می‌شود. مقدار منفی صفر در نظر گرفته می‌شود. اثر آن فقط بر طلوع، غروب و وقت‌هایی است که از غروب مشتق می‌شوند.</p>
+<p>آرگومان <code>elevation</code> ارتفاع ناظر از سطح دریا بر حسب متر است. ارتفاع طلوع و غروب را به اندازهٔ فرورفتگی هندسی افق کم می‌کند، یعنی <code>0.0347 * sqrt(h)</code> درجه. پس در ارتفاع، طلوع زودتر و غروب دیرتر می‌شود. مقدار منفی صفر حساب می‌شود. اثرش فقط روی طلوع و غروب و وقت‌هایی است که از غروب می‌آیند.</p>
 <pre><code class="language-php">$a = new PrayerTimes(35.6892, 51.3890, 'Tehran', 1, $tz);
 $b = new PrayerTimes(35.6892, 51.3890, 'Tehran', 1, $tz, 1500.0);
 $d = new DateTimeImmutable('2026-06-21', $tz);
-echo $a->getTimes($d)['sunrise'], "\n"; // 04:49
-echo $b->getTimes($d)['sunrise'], "\n"; // 04:41</code></pre>
-<p>در روش تهران مغرب با زاویهٔ ۴٫۵ درجه تعریف می‌شود نه با غروب، پس با ارتفاع تغییر نمی‌کند (در هر دو حالت بالا ‎19:45).</p>
+echo $a-&gt;getTimes($d)['sunrise'], "\n"; // 04:49
+echo $b-&gt;getTimes($d)['sunrise'], "\n"; // 04:41</code></pre>
+<p>در روش تهران مغرب با زاویهٔ ۴٫۵ درجه تعریف می‌شود، نه با غروب. پس با ارتفاع عوض نمی‌شود (در هر دو حالت بالا 19:45).</p>
 
 <h2 id="dst">منطقهٔ زمانی و ساعت تابستانی</h2>
-<p>هر وقت با اختلاف واقعی UTC همان لحظه به وقت محلی تبدیل می‌شود، بنابراین تغییر ساعت تابستانی در میانهٔ سال بدون کار اضافه درست کار می‌کند. برلین در ۲۹ مارس ۲۰۲۶ ساعت را تغییر می‌دهد:</p>
+<p>هر وقت با اختلاف واقعی UTC همان لحظه به وقت محلی تبدیل می‌شود. پس تغییر ساعت تابستانی بدون کار اضافه درست کار می‌کند. برلین در ۲۹ مارس ۲۰۲۶ ساعت را تغییر می‌دهد:</p>
 <pre><code class="language-php">$tzb = new DateTimeZone('Europe/Berlin');
 $ber = new PrayerTimes(52.52, 13.405, 'MWL', 1, $tzb);
 foreach (['2026-03-28', '2026-03-29'] as $s) {
-    echo $s, ' ', json_encode($ber->getTimes(new DateTimeImmutable($s, $tzb))), "\n";
+    echo $s, ' ', json_encode($ber-&gt;getTimes(new DateTimeImmutable($s, $tzb))), "\n";
 }
 // 2026-03-28 {"fajr":"03:51","sunrise":"05:50","dhuhr":"12:11","asr":"15:39","maghrib":"18:34","isha":"20:26"}
 // 2026-03-29 {"fajr":"04:48","sunrise":"06:48","dhuhr":"13:11","asr":"16:40","maghrib":"19:35","isha":"21:28"}</code></pre>
-<p>منطقه‌ای را بدهید که کاربران شما ساعتشان را با آن می‌خوانند. اگر ندهید <code>date_default_timezone_get()</code> به کار می‌رود.</p>
+<p>منطقه‌ای بدهید که کاربرانتان ساعتشان را با آن می‌خوانند. اگر ندهید، <code>date_default_timezone_get()</code> به کار می‌رود.</p>
 
 <h2 id="next">نماز بعدی</h2>
-<p>متد <code>nextPrayer()</code> نخستین نماز را که کاملاً پس از یک لحظه (پیش‌فرض: اکنون) باشد برمی‌گرداند. پس از عشا به اذان صبح فردا می‌رود و <code>date</code> نشان می‌دهد نمازِ برگشتی در کدام روز است.</p>
+<p>متد <code>nextPrayer()</code> اولین نمازی را می‌دهد که بعد از یک لحظه (پیش‌فرض: همین الان) باشد. بعد از عشا به اذان صبح فردا می‌رسد و کلید <code>date</code> می‌گوید نماز برگشتی مال کدام روز است. نمازی که بعد از نیمه‌شب بیفتد (مثلاً عشا یا صبح در عرض‌های بالا) هم با تاریخ خودش پیدا می‌شود.</p>
 <pre><code class="language-php">$p = PrayerTimes::forCity('tehran');
-echo json_encode($p->nextPrayer(new DateTimeImmutable('2026-03-21 10:00', $tz)));
+echo json_encode($p-&gt;nextPrayer(new DateTimeImmutable('2026-03-21 10:00', $tz)));
 // {"name":"dhuhr","time":"12:12","date":"2026-03-21"}
-echo json_encode($p->nextPrayer(new DateTimeImmutable('2026-03-21 20:00', $tz)));
+echo json_encode($p-&gt;nextPrayer(new DateTimeImmutable('2026-03-21 20:00', $tz)));
 // {"name":"fajr","time":"04:42","date":"2026-03-22"}</code></pre>
-<p>توجه کنید که طلوع هم در این ترتیب یک ورودی است (ترتیب: fajr، sunrise، dhuhr، asr، maghrib، isha).</p>
+<p>طلوع هم در این ترتیب یک مورد است (ترتیب: fajr، sunrise، dhuhr، asr، maghrib، isha). اگر وقتی را با <code>withTune()</code> جابه‌جا کرده باشید، <code>nextPrayer()</code> با وقت‌های جابه‌جاشده کار می‌کند.</p>
 
 <h2 id="high-latitude">عرض‌های جغرافیایی بالا</h2>
-<p>در عرض‌های بالا ممکن است خورشید هرگز به یک زاویه نرسد (در تابستان شب واقعی نیست). در این حالت زمان‌های مربوط <code>null</code> برمی‌گردند و مقدار گمراه‌کنندهٔ جایگزین داده نمی‌شود. ترومسو، ۲۱ ژوئن:</p>
-<pre><code class="language-php">$osl = new PrayerTimes(69.65, 18.96, 'MWL', 1, new DateTimeZone('Europe/Oslo'));
-echo json_encode($osl->getTimes(new DateTimeImmutable('2026-06-21', new DateTimeZone('Europe/Oslo'))));
-// {"fajr":null,"sunrise":null,"dhuhr":"12:46","asr":"17:58","maghrib":null,"isha":null}</code></pre>
-<p>حالت <code>null</code> را در رابط کاربری مدیریت کنید. کتابخانه قاعدهٔ عرض بالا (مثل «بر پایهٔ زاویه» یا «یک‌هفتم شب») اعمال نمی‌کند.</p>
+<p>در عرض‌های بالا، تابستان‌ها خورشید گاهی به زاویهٔ صبح یا عشا نمی‌رسد (شب واقعی نیست). برای این حالت <code>HighLatitudeRule</code> هست. چهار قاعده دارد:</p>
+<table>
+<thead><tr><th>قاعده</th><th>صبح و عشا را در چه حدی نگه می‌دارد</th></tr></thead>
+<tbody>
+<tr><td><code>HighLatitudeRule::AngleBased</code> (پیش‌فرض)</td><td>زاویه تقسیم بر ۶۰ از طول شب (برای ۱۸ درجه، ۰٫۳ شب)</td></tr>
+<tr><td><code>HighLatitudeRule::NightMiddle</code></td><td>نیمی از شب</td></tr>
+<tr><td><code>HighLatitudeRule::OneSeventh</code></td><td>یک‌هفتم شب</td></tr>
+<tr><td><code>HighLatitudeRule::None</code></td><td>بدون تغییر. وقتی زاویه به دست نیاید، مقدار <code>null</code> است</td></tr>
+</tbody>
+</table>
+<p>«شب» یعنی از غروب تا طلوع روز بعد. قاعده فقط وقتی کار می‌کند که وقتی تعریف‌نشده (<code>null</code>) باشد یا از حد شبِ قاعده دورتر بیفتد. وقت‌های دیگر مقدار نجومی خودشان را نگه می‌دارند. عشای ثابت مکه (مغرب + دقیقه) زاویه نیست و قاعده آن را عوض نمی‌کند.</p>
+<pre><code class="language-php">use RtlyKit\Prayer\HighLatitudeRule;
 
-<h2 id="errors">استثناها</h2>
-<p>پیکربندی نامعتبر <code>InvalidPrayerConfigException</code> پرتاب می‌کند که از <code>RtlyKitException</code> (و از این رو از <code>\InvalidArgumentException</code>) ارث می‌برد، مثلاً:</p>
+$sto = new PrayerTimes(59.33, 18.07, 'MWL', 1, new DateTimeZone('Europe/Stockholm'));
+$d   = new DateTimeImmutable('2026-06-21', new DateTimeZone('Europe/Stockholm'));
+
+echo json_encode($sto-&gt;getTimes($d)), "\n";
+// {"fajr":"01:54","sunrise":"03:31","dhuhr":"12:50","asr":"17:30","maghrib":"22:08","isha":"23:40"}
+echo json_encode($sto-&gt;withHighLatitudeRule(HighLatitudeRule::OneSeventh)-&gt;getTimes($d)), "\n";
+// {"fajr":"02:45","sunrise":"03:31","dhuhr":"12:50","asr":"17:30","maghrib":"22:08","isha":"22:54"}
+echo json_encode($sto-&gt;withHighLatitudeRule(HighLatitudeRule::None)-&gt;getTimes($d)), "\n";
+// {"fajr":null,"sunrise":"03:31","dhuhr":"12:50","asr":"17:30","maghrib":"22:08","isha":null}</code></pre>
+<p>در روز و شب قطبی، طلوع و غروب <code>null</code> می‌شوند (خورشید واقعاً طلوع یا غروب نمی‌کند). ظهر همیشه مقدار دارد. صبح و عشا با شبی مرجع حساب می‌شوند که طلوع را ساعت ۶ و غروب را ساعت ۱۸ خورشیدی فرض می‌کند. این قرارداد خود کتابخانه است، نه قرارداد منتشرشده. اگر چیز دیگری می‌خواهید، <code>None</code> را بزنید و خودتان تصمیم بگیرید.</p>
+<div class="note"><strong>خوب است بدانید.</strong> قاعدهٔ پیش‌فرض (<code>AngleBased</code>) فقط جایی اثر می‌کند که وقتی تعریف‌نشده باشد یا از حد شبش دورتر بیفتد. شمال حدود ۴۴ تا ۴۶ درجه، نزدیک انقلاب تابستانی (ژوئن)، بعضی وقت‌های صبح و عشا با نسخه‌های ۰٫۱ فرق دارند. در جنوب ۴۴ درجه خروجی همان است. اگر خروجی قبلی را می‌خواهید، <code>withHighLatitudeRule(HighLatitudeRule::None)</code> را بزنید.</div>
+
+<h2 id="tune">تنظیم دستی دقیقه‌ها</h2>
+<p>بعضی مراجع محلی چند دقیقه احتیاط اضافه می‌کنند. با <code>withTune()</code> می‌توانید برای هر وقت یک عدد صحیح از ‎-۳۰ تا ۳۰ دقیقه بدهید. کلیدها <code>fajr</code>، <code>sunrise</code>، <code>dhuhr</code>، <code>asr</code>، <code>maghrib</code> و <code>isha</code> هستند. وقتی که نام نبرید صفر است. هر بار صدا زدن، تنظیم قبلی را عوض می‌کند و <code>withTune([])</code> آن را پاک می‌کند. دقیقه‌ها به وقت اضافه می‌شوند، پس وقت می‌تواند از نیمه‌شب هم رد شود.</p>
+<pre><code class="language-php">$p = PrayerTimes::forCity('tehran');
+
+echo json_encode($p-&gt;withTune(['fajr' =&gt; 2, 'maghrib' =&gt; 3])-&gt;getTimes($day)), "\n";
+// {"fajr":"04:45","sunrise":"06:07","dhuhr":"12:12","asr":"15:39","maghrib":"18:38","isha":"19:22"}
+echo json_encode($p-&gt;getTimes($day)), "\n";   // خود $p تغییر نکرده
+// {"fajr":"04:43","sunrise":"06:07","dhuhr":"12:12","asr":"15:39","maghrib":"18:35","isha":"19:22"}</code></pre>
+<p>هر دو متد <code>withHighLatitudeRule()</code> و <code>withTune()</code> یک نمونهٔ تازه برمی‌گردانند و نمونهٔ اصلی عوض نمی‌شود.</p>
+
+<h2 id="errors">خطاها</h2>
+<p>تنظیم نامعتبر <code>InvalidPrayerConfigException</code> می‌دهد. این کلاس از <code>RtlyKitException</code> (و از آن‌جا <code>\InvalidArgumentException</code>) ارث می‌برد. مثلاً:</p>
 <pre><code class="language-php">new PrayerTimes(35, 51, 'Foo');
 // Unknown calculation method: Foo. Available: MWL, ISNA, Egypt, Makkah, Karachi, Tehran
 new PrayerTimes(35, 51, 'MWL', 3);
 // Invalid Asr factor: 3 (use 1 or 2)
 PrayerTimes::forCity('paris');
-// Unknown city: paris</code></pre>
-<p>برای گرفتن همهٔ خطاهای کتابخانه با یک <code>catch</code>، <a href="error-handling.html">مدیریت خطا</a> را ببینید.</p>
+// Unknown city: paris
+$p-&gt;withTune(['fajr' =&gt; 40]);
+// Tune for fajr must be an integer from -30 to 30 minutes
+$p-&gt;withTune(['foo' =&gt; 1]);
+// Unknown tune key: foo. Available: fajr, sunrise, dhuhr, asr, maghrib, isha</code></pre>
+<p>برای اینکه همهٔ خطاهای کتابخانه را با یک <code>catch</code> بگیرید، <a href="error-handling.html">مدیریت خطا</a> را ببینید.</p>
 
-<h2 id="verification">وضعیت راستی‌آزمایی</h2>
-<p>زاویه‌ها قرارداد هستند، پس بررسی معنادار این است که خروجی ما برای یک شهر و تاریخ با جدول منتشرشدهٔ مرجعِ تعریف‌کنندهٔ آن روش مقایسه شود. معیار: اختلاف تا حدود ۱ دقیقه همخوانی حساب می‌شود. سایت‌های تجمیع‌کننده عمداً شمرده نشده‌اند، چون همان زاویه‌های منتشرشده را به کار می‌برند.</p>
+<h2 id="verification">چه چیزهایی را بررسی کرده‌ایم</h2>
+<p>زاویه‌ها قرارداد هستند. پس بررسی درست این است که خروجی ما را برای یک شهر و تاریخ با جدول منتشرشدهٔ همان مرجع مقایسه کنیم. تا ۱ دقیقه اختلاف را همخوانی حساب کرده‌ایم. سایت‌های تجمیع‌کننده را نشمرده‌ایم، چون آن‌ها هم از همان زاویه‌ها استفاده می‌کنند و مقایسه با آن‌ها چیزی را ثابت نمی‌کند.</p>
 <table>
-<thead><tr><th>روش</th><th>وضعیت</th><th>بیشترین اختلاف</th><th>مرجع و کاستی‌ها</th></tr></thead>
+<thead><tr><th>روش</th><th>چه چیزی را سنجیده‌ایم</th><th>بیشترین اختلاف</th><th>مرجع</th></tr></thead>
 <tbody>
-<tr><td>تهران</td><td>صبح، طلوع، ظهر و مغرب راستی‌آزمایی شده</td><td>۱ دقیقه (شیراز)، در بقیه ۰</td><td>مؤسسهٔ ژئوفیزیک دانشگاه تهران، جدول‌های ۱۴۰۵: تهران، مشهد، اصفهان و شیراز در چهار تاریخ. این جدول‌ها عصر و عشا ندارند، پس عشای ۱۴ درجه و عصر <strong>با جدول مرجع پوشش داده نشده‌اند</strong>.</td></tr>
-<tr><td>مکه</td><td>راستی‌آزمایی شده، از جمله عشای رمضان</td><td>۱ دقیقه</td><td>تقویم ام‌القری: پنج تاریخ بیرون از رمضان و دو تاریخ رمضان ۱۴۴۷ که عشا = مغرب + ۱۲۰ را تأیید می‌کنند.</td></tr>
-<tr><td>طلوع و غروب</td><td>راستی‌آزمایی شده</td><td>۱ دقیقه</td><td>۱۱ جفت شهر/تاریخ در برابر timeanddate.</td></tr>
-<tr><td>مصر</td><td>همخوان، شواهد ضعیف‌تر</td><td>۱ دقیقه</td><td>دارالافتاء، قاهره: سه تاریخ در یک فصل. ناشر منبع زاویه را نام نمی‌برد.</td></tr>
-<tr><td>کراچی</td><td>راستی‌آزمایی نشده</td><td>ندارد</td><td>جدول رسمی پیدا نشد.</td></tr>
-<tr><td>MWL</td><td>راستی‌آزمایی نشده</td><td>ندارد</td><td>این روش فقط زاویه تعریف می‌کند و جدول شهری منتشر نمی‌کند.</td></tr>
-<tr><td>ISNA</td><td>راستی‌آزمایی نشده</td><td>ندارد</td><td>مانند MWL.</td></tr>
+<tr><td>تهران</td><td>صبح، طلوع، ظهر و مغرب</td><td>۱ دقیقه (شیراز)، در بقیه ۰</td><td>جدول‌های ۱۴۰۵ مؤسسهٔ ژئوفیزیک دانشگاه تهران: تهران، مشهد، اصفهان و شیراز در چهار تاریخ.</td></tr>
+<tr><td>مکه</td><td>همهٔ وقت‌ها، از جمله عشای رمضان</td><td>۱ دقیقه</td><td>تقویم ام‌القری (KACST): پنج تاریخ بیرون از رمضان و دو تاریخ در رمضان ۱۴۴۷.</td></tr>
+<tr><td>مصر</td><td>هر شش وقت</td><td>۱ دقیقه</td><td>جدول دارالافتاء، قاهره، چند تاریخ در اکتبر 2026.</td></tr>
+<tr><td>ترکیه (دیانت)</td><td>صبح و عشا. با زاویه‌های ۱۸ و ۱۷ درجه (مثل MWL) هماهنگ است</td><td>۱ دقیقه</td><td>جدول‌های ریاست امور دینی برای استانبول، آنکارا و ازمیر، از ۸ اکتبر تا ۷ نوامبر 2026.</td></tr>
+<tr><td>کراچی با عصر حنفی</td><td>همهٔ وقت‌ها. همخوان با یک جدول منتشرشدهٔ کراچی</td><td>۱ دقیقه</td><td>جدول اکتبر 2026 جامعه علوم اسلامیه بنوری‌تاون، کراچی: ۳۱ روز.</td></tr>
+<tr><td>عصر حنفی (ضریب ۲)</td><td>تعریف</td><td>-</td><td>تعریف مدرسهٔ دارالعلوم دیوبند.</td></tr>
+<tr><td>ISNA (۱۵ و ۱۵)</td><td>زاویه‌ها</td><td>-</td><td>جفت زاویه‌ای که شورای فقهی آمریکای شمالی برای این روش می‌گوید.</td></tr>
+<tr><td>طلوع و غروب</td><td>همهٔ شهرها</td><td>۱ دقیقه</td><td>۱۱ جفت شهر و تاریخ در برابر timeanddate و ماشین‌حساب NOAA.</td></tr>
 </tbody>
 </table>
-<div class="known"><strong>محدودیت شناخته‌شده.</strong> راستی‌آزمایی‌نشده یعنی نادرست نیست: کراچی، MWL و ISNA همان زاویه‌های منتشرشده را با همان مدل خورشیدیِ همخوان با روش‌های تأییدشده به کار می‌برند؛ فقط جدول رسمی برای مقایسه در دسترس نبود. آزمون نشده‌اند: عصر به روش حنفی، عرض‌های بالا، ارتفاع و تاریخ‌های بیرون از فهرست بالا. برای استفادهٔ شرعی یا حقوقی با جدول مرجع محلی خود تطبیق دهید.</div>
-<p>روش تهران با جدول‌های مؤسسهٔ ژئوفیزیک همخوان است، اما زاویه‌های ۱۷٫۷ درجه (صبح) و ۴٫۵ درجه (مغرب) در اینجا فقط با همین همخوانی عددی تأیید شده‌اند، نه با توضیح خود مرجع دربارهٔ روشش.</p>
+<div class="note"><strong>خوب است بدانید.</strong> جدول‌های مؤسسهٔ ژئوفیزیک عشا و عصر ندارند، پس عشای ۱۴ درجه و عصرِ روش تهران را با جدول رسمی نسنجیده‌ایم. جدولی هم از خود ناشر روش‌های کراچی (دانشگاه علوم اسلامی)، ISNA و MWL پیدا نکردیم. قرارداد روز و شب قطبی هم قرارداد خود کتابخانه است. برای استفادهٔ شرعی یا حقوقی با جدول مرجع محل خودتان تطبیق بدهید.</div>

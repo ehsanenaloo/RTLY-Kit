@@ -1,0 +1,91 @@
+<!--
+title: البدء السريع
+description: ثبّت RTLY-Kit عبر Composer، وخلال خمس دقائق تقريبًا حوّل تاريخًا جلاليًا، وتحقق من رقم وطني إيراني، وتعرّف على استثناءات المكتبة.
+group: start
+order: 10
+-->
+<h2 id="goal">ما الذي ستفعله</h2>
+<p>في هذه الصفحة ستثبّت الحزمة، وتطبع أول تاريخ جلالي، وتجري أول عملية تحقق، وتلتقط أول استثناء من المكتبة. كل شيء يعمل على PHP العادي: لا إطار عمل، ولا ملف إعدادات، ولا اعتماديات إضافية.</p>
+<p><strong>المتطلبات.</strong> PHP 8.2 أو أحدث (ولا شيء غيره)، وأداة <a href="https://getcomposer.org/">Composer</a>. إذا لم يكن PHP ولا Composer على جهازك، فاتبع طريقة Docker في <a href="installation.html#docker">التثبيت</a>.</p>
+
+<h2 id="install">1. التثبيت</h2>
+<pre><code class="language-bash">composer require enaxon/rtly-kit</code></pre>
+<p>يثبّت Composer الحزمة وينشئ الملف <code>vendor/autoload.php</code>. لا تحتاج المكتبة إلى أي اعتمادية إلزامية. أما التكاملات الاختيارية (ماكروات Carbon وLaravel) فتعمل تلقائيًا إذا كان Carbon أو Laravel موجودًا. التفاصيل في <a href="installation.html">التثبيت</a>.</p>
+
+<h2 id="first-date">2. أول تاريخ</h2>
+<p>أنشئ ملفًا باسم <code>quick.php</code> بجانب المجلد <code>vendor/</code>:</p>
+<pre><code class="language-php">&lt;?php
+declare(strict_types=1);
+
+require __DIR__.'/vendor/autoload.php';
+
+use function RtlyKit\hdate;
+use function RtlyKit\jdate;
+
+echo jdate('2026-03-21')-&gt;format('l j F Y'), "\n";   // شنبه 1 فروردین 1405
+echo hdate('2026-03-21')-&gt;format('j F Y', 'en'), "\n"; // 2 Shawwal 1447</code></pre>
+<p>شغّله بالأمر <code>php quick.php</code>. يطبع السطر الأول التاريخ الجلالي ليوم 21 مارس 2026، وهو عيد النوروز 1405. ويعرض السطر الثاني اليوم نفسه في التقويم الهجري.</p>
+<p>لاحظ أمرين:</p>
+<ul>
+<li>دوال المساعدة موجودة في النطاق <code>RtlyKit</code> وتُستورد بالعبارة <code>use function</code>. لذلك لا تتعارض مع دالة من كتابتك أو من حزمة أخرى.</li>
+<li>تُقرأ السلسلة <code>'2026-03-21'</code> على أنها تاريخ ميلادي. أما سلسلة مثل <code>'1405/01/01'</code> (سنة أقل من 1700 بصيغة <code>Y/m/d</code>) فتُقرأ على أنها تاريخ جلالي. التفاصيل في <a href="jalali.html#string-rules">قراءة السلاسل في make()</a>.</li>
+</ul>
+<pre><code class="language-php">echo jdate('1405/01/01')-&gt;toGregorian()-&gt;format('Y-m-d'), "\n";   // 2026-03-21</code></pre>
+<p>تُرجع الدالة كائنًا من <a href="jalali.html">Jalali</a>، وتُرجع <code>hdate()</code> كائنًا من <a href="hijri.html">Hijri</a>، وتُرجع <code>hebrew_date()</code> كائنًا من <a href="hebrew.html">Hebrew</a>. هذه الكائنات غير قابلة للتغيير: <code>addDays()</code> و<code>startOfMonth()</code> وبقية المعدِّلات تُرجع كائنًا جديدًا.</p>
+
+<h2 id="globals">3. اختياري: أسماء عامة قصيرة</h2>
+<p>لا تُعرَّف أي دالة عامة افتراضيًا. إذا فضّلت كتابة <code>jdate()</code> و<code>is_national_code()</code> مباشرة، فعِّل ذلك مرة واحدة، مثلًا في ملف الإقلاع:</p>
+<pre><code class="language-php">$skipped = \RtlyKit\Globals::register();   // مصفوفة بالأسماء التي تعذّر تعريفها
+
+echo jdate('2026-03-21')-&gt;format('Y/m/d'), "\n";   // 1405/01/01</code></pre>
+<p>تعرّف <code>register()</code> أسماء المساعدات الـ 27 التي ما زالت متاحة. هي لا تستبدل دالة موجودة ولا تُلقي استثناءً، وتُرجع قائمة الأسماء التي تخطّتها (مصفوفة فارغة إذا عُرّف كل شيء). ويمكن استدعاؤها أكثر من مرة بأمان. استخدم الصيغة ذات النطاق لأي اسم جرى تخطّيه. التفاصيل في <a href="helpers-and-globals.html">الدوال المساعدة والعامة</a>.</p>
+
+<h2 id="first-validation">4. أول عملية تحقق</h2>
+<pre><code class="language-php">use function RtlyKit\is_national_code;
+use function RtlyKit\validate_national_code;
+use function RtlyKit\to_persian_digits;
+use function RtlyKit\number_to_words;
+
+var_dump(is_national_code('0013542419'));       // bool(true)
+
+$result = validate_national_code('0013542410');
+var_dump($result-&gt;isValid());                  // bool(false)
+print_r($result-&gt;errors());                    // [0] =&gt; invalid_checksum
+
+echo to_persian_digits('1405/01/01'), "\n";    // ۱۴۰۵/۰۱/۰۱
+echo number_to_words(1405), "\n";              // یک هزار و چهارصد و پنج</code></pre>
+<p>تُرجع الدوال <code>is_*()</code> قيمة <code>bool</code> بسيطة. أما <code>validate_*()</code> فتُرجع <code>Result</code> فيه <code>isValid()</code> ومفاتيح <code>errors()</code> الثابتة التي تقرؤها الآلة، إضافة إلى <code>details()</code>. لا تُلقي أدوات التحقق استثناءً بسبب إدخال خاطئ من المستخدم؛ بل تُبلغ عنه. انظر <a href="validators-overview.html">نظرة عامة على أدوات التحقق</a> و<a href="national-code.html">الرقم الوطني</a>.</p>
+
+<h2 id="first-exception">5. أول استثناء</h2>
+<p>التقويم يختلف عن التحقق: بناء تاريخ مستحيل خطأ في البرنامج أو في البيانات، ولذلك تُلقي فئات التقويم استثناءً. السنة 1404 ليست كبيسة، فلا وجود لـ 30 إسفند 1404:</p>
+<pre><code class="language-php">use RtlyKit\Exceptions\InvalidDateException;
+use RtlyKit\Exceptions\RtlyKitThrowable;
+
+try {
+    jdate('1404/12/30');
+} catch (InvalidDateException $e) {
+    echo get_class($e), ': ', $e-&gt;getMessage(), ' [', $e-&gt;getErrorCode()-&gt;value, "]\n";
+}
+// RtlyKit\Exceptions\InvalidDateException: Invalid Jalali date: 1404/12/30 [invalid_date]
+
+try {
+    jdate('not a date');
+} catch (RtlyKitThrowable $e) {
+    echo 'library error: ', $e-&gt;getMessage(), "\n";   // library error: Unable to parse date: not a date
+}</code></pre>
+<p>كل استثناء في المكتبة يطبّق الواجهة <code>RtlyKit\Exceptions\RtlyKitThrowable</code> ويرث من <code>\InvalidArgumentException</code>، فتكفي كتلة <code>catch</code> واحدة لالتقاطها جميعًا. وتعطيك <code>getErrorCode()</code> قيمة ثابتة يمكنك التفرّع بحسبها (لا تحلّل نص الرسالة). وأي إدخال خارج النطاق، ومنه السنوات خارج النطاقات المدعومة (الجلالي من -620 إلى 9377، والهجري من 1 إلى 9665، والعبري من 3762 إلى 13759)، يُثير <code>InvalidDateException</code> دائمًا، ولا يُثير <code>TypeError</code>. المزيد في <a href="error-handling.html">معالجة الأخطاء</a>.</p>
+
+<h2 id="notes">من المفيد أن تعرف</h2>
+<div class="note"><strong>من المفيد أن تعرف.</strong> يعتمد التقويم الجلالي قاعدة حسابية ثابتة بدورة من 33 سنة. وقد قورنت بدايات السنوات بالتقويم الرسمي للسنوات 1206 إلى 1497 هـ ش، وبالتعريف الفلكي للسنوات 1178 إلى 1502، وجاءت مطابقة. وفي التقويم الهجري تطابق بدايات الأشهر في جدول أم القرى تقويمَ KACST الرسمي للسنوات 1318 إلى 1500 هـ (فُحصت في 2026-10-08)، أما السنوات 1300 إلى 1317 فمصدرها بيانات ICU/CLDR. التفاصيل في <a href="accuracy-and-data.html">الدقة والبيانات</a>.</div>
+<ul>
+<li><strong>المناطق الزمنية.</strong> إذا لم تمرّر <code>DateTimeZone</code> صراحةً، تُستخدم المنطقة الافتراضية في PHP. مرّر منطقة زمنية (مثل <code>new DateTimeZone('Asia/Tehran')</code>) عندما يكون يوم التقويم مهمًا.</li>
+<li><strong>أيام الأسبوع.</strong> يرقّم التقويم الجلالي الأيام من السبت = 0، أما الهجري والعبري فمن الأحد = 0.</li>
+</ul>
+
+<h2 id="next">إلى أين تذهب بعد ذلك</h2>
+<ul>
+<li>التواريخ: <a href="jalali.html">الجلالي</a>، <a href="hijri.html">الهجري</a>، <a href="hebrew.html">العبري</a>، <a href="convert-and-compare.html">التحويل والمقارنة</a>.</li>
+<li>التحقق: <a href="validators-overview.html">نظرة عامة على أدوات التحقق</a>.</li>
+<li>مشاريع Laravel: <a href="laravel-setup.html">إعداد Laravel</a>.</li>
+<li>المشكلات: <a href="troubleshooting-faq.html">استكشاف الأخطاء والأسئلة الشائعة</a>.</li>
+</ul>

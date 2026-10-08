@@ -1,0 +1,83 @@
+<!--
+title: إعداد Laravel
+description: كيف يتكامل RTLY-Kit مع Laravel: الاكتشاف التلقائي للحزمة، وما يسجّله مزوّد الخدمة، وواجهة Jalali، ورسائل التحقق بالفارسية والإنجليزية والعربية التي يمكنك تجاوزها.
+group: laravel
+order: 10
+-->
+<h2 id="install">التثبيت والاكتشاف التلقائي</h2>
+<p>لا حاجة إلى شيء غير Composer. تعلن الحزمة عن مزوّد الخدمة واسم الواجهة المستعار في <code>composer.json</code> تحت <code>extra.laravel</code>، فيسجّلهما الاكتشاف التلقائي للحزم في Laravel عند تنفيذ <code>composer install</code> أو <code>composer update</code> التالي.</p>
+<pre><code class="language-bash">composer require enaxon/rtly-kit</code></pre>
+<p>يستخدم التكامل مكوّنات Laravel التالية: <code>illuminate/support</code> و<code>illuminate/translation</code> و<code>illuminate/validation</code> و<code>illuminate/database</code>، وهي موجودة أصلًا في أي تطبيق Laravel. وتعمل مجموعة الاختبارات على هذه المكوّنات بالإصدارات 11 و12 و13 (ويتطلب Laravel 13 نفسه PHP 8.3 أو أحدث). أما المكتبة نفسها فتحتاج إلى PHP 8.2 فقط وتعمل بدون Laravel.</p>
+<div class="note"><strong>ملاحظة.</strong> تختبر اختبارات التكامل الحاوية (container) والمترجم ومصنع التحقق وفئات نموذج Eloquent الحقيقية، لا هيكل تطبيق كاملًا. وقد شُغِّلت الأمثلة البرمجية في هذه الصفحات بالطريقة نفسها.</div>
+<p>إذا عطّل تطبيقك الاكتشاف لهذه الحزمة (<code>"dont-discover": ["enaxon/rtly-kit"]</code>) فسجّل المزوّد بنفسك. في Laravel 11 وما بعده أضِفه إلى <code>bootstrap/providers.php</code>:</p>
+<pre><code class="language-php">return [
+    App\Providers\AppServiceProvider::class,
+    RtlyKit\Laravel\RtlyKitServiceProvider::class,
+];</code></pre>
+<p>وفي هياكل التطبيقات الأقدم أضِف الفئة نفسها إلى المصفوفة <code>providers</code> في <code>config/app.php</code>. ملف الإعداد اختياري (انظر <a href="#config">الإعداد</a>)، ولا يوجد ترحيل (migration).</p>
+
+<h2 id="provider">ماذا يفعل مزوّد الخدمة</h2>
+<p>لـ <code>RtlyKit\Laravel\RtlyKitServiceProvider</code> مهمة واحدة في كل مرحلة:</p>
+<ul>
+<li><strong><code>register()</code></strong> تربط كائنًا وحيدًا (singleton) بمفتاح الحاوية <code>rtly-kit.jalali</code>، وهو <code>RtlyKit\Laravel\JalaliFactory</code>. وهذا هو الكائن الذي تقف خلفه الواجهة (Facade). وتدمج أيضًا إعدادات <code>rtly-kit</code> الافتراضية، وتربط <code>RtlyKit\Holiday\HolidayCalendar</code> ككائن وحيد يُبنى من <code>rtly-kit.holidays</code> عند أول طلب.</li>
+<li><strong><code>boot()</code></strong> تثبّت ماكروات Carbon (انظر <a href="carbon-macros.html">ماكروات Carbon</a>)، وتحمّل ترجمات الحزمة تحت مساحة الأسماء <code>rtly-kit</code>، وتعرض ملف الإعدادات للنشر، وتسجّل قواعد التحقق حين تحتوي الحاوية على مصنع للتحقق (انظر <a href="laravel-validation-and-cast.html">التحقق والتحويل (Cast)</a>).</li>
+</ul>
+<div class="note"><strong>ملاحظة.</strong> لا يسجّل المزوّد <strong>أي دوال عامة</strong>. يشغّل أحد الاختبارات المزوّد ويؤكد أن أيًا من أسماء الدوال المساعدة القصيرة السبعة والعشرين غير موجود بعد ذلك. وإذا أردت الأسماء العامة القصيرة فاستدعِ <code>\RtlyKit\Globals::register()</code> بنفسك؛ انظر <a href="helpers-and-globals.html">الدوال المساعدة والدوال العامة</a>.</div>
+<p>وإذا لم يكن <code>validator</code> في الحاوية من النوع <code>Illuminate\Validation\Factory</code> (بديل مخصص) فإن المزوّد يتركه كما هو ويتخطى القواعد بدل أن يفشل.</p>
+
+<h2 id="facade">واجهة Jalali</h2>
+<p>الاسم المستعار <code>Jalali</code> (الفئة <code>RtlyKit\Laravel\Facades\Jalali</code>) يحوّل الاستدعاءات إلى المصنع. ويوفّر أربع دوال تحاكي المنشئات الثابتة في <code>RtlyKit\Calendar\Jalali</code>:</p>
+<pre><code class="language-php">use RtlyKit\Laravel\Facades\Jalali;
+
+echo Jalali::create(1404, 1, 1)->format('Y/m/d l');   // 1404/01/01 جمعه
+echo Jalali::make('2025-03-21')->toDateString();       // 1404/01/01
+echo get_class(Jalali::now());                         // RtlyKit\Calendar\Jalali
+// Jalali::today() متاحة أيضاً</code></pre>
+<p>يُرجع كل استدعاء كائن <code>Jalali</code> عاديًا غير قابل للتغيير، فيسري عليه كل ما في <a href="jalali.html">صفحة التقويم الجلالي</a>. والمصنع كائن وحيد (singleton)، لذا يُرجع تكرار <code>app('rtly-kit.jalali')</code> النسخة نفسها.</p>
+<p>الواجهة اختيارية. ففي الفئات يمكنك استيراد الفئة مباشرة أو استخدام الدالة المساعدة ذات مساحة الأسماء <code>\RtlyKit\jdate()</code>؛ وفي الاختبارات لا شيء يحتاج إلى محاكاة لأن المصنع لا يحتفظ بحالة.</p>
+
+<h2 id="translations">الترجمات: الفارسية والإنجليزية والعربية</h2>
+<p>يستدعي المزوّد <code>loadTranslationsFrom()</code> مع مساحة الأسماء <code>rtly-kit</code>، فتكون الرسائل في <code>rtly-kit::validation.*</code> وتتبع لغة التطبيق. وهناك ثلاث مجموعات كاملة، بسطر واحد لكل قاعدة:</p>
+<table>
+<thead><tr><th>المفتاح</th><th>fa</th><th>en</th><th>ar</th></tr></thead>
+<tbody>
+<tr><td><code>national_code</code></td><td>:attribute کد ملی معتبر نیست.</td><td>The :attribute is not a valid Iranian national code.</td><td>:attribute ليس رقماً وطنياً إيرانياً صالحاً.</td></tr>
+<tr><td><code>sheba</code></td><td>:attribute شماره شبا معتبر نیست.</td><td>The :attribute is not a valid Iranian Sheba (IBAN).</td><td>:attribute ليس رقم شبا (IBAN) إيرانياً صالحاً.</td></tr>
+<tr><td><code>bank_card</code></td><td>:attribute شماره کارت بانکی معتبر نیست.</td><td>The :attribute is not a valid Iranian bank card.</td><td>:attribute ليس رقم بطاقة مصرفية إيرانية صالحاً.</td></tr>
+<tr><td><code>iran_mobile</code>، <code>mobile</code></td><td>:attribute شماره موبایل معتبر نیست.</td><td>The :attribute is not a valid Iranian mobile number.</td><td>:attribute ليس رقم هاتف محمول إيرانياً صالحاً.</td></tr>
+<tr><td><code>postal_code</code></td><td>:attribute کد پستی معتبر نیست.</td><td>The :attribute is not a valid Iranian postal code.</td><td>:attribute ليس رمزاً بريدياً إيرانياً صالحاً.</td></tr>
+<tr><td><code>vehicle_plate</code></td><td>:attribute پلاک خودرو معتبر نیست.</td><td>The :attribute is not a valid Iranian vehicle plate.</td><td>:attribute ليست لوحة مركبة إيرانية صالحة.</td></tr>
+</tbody>
+</table>
+<p>الملف العربي هو <code>resources/lang/ar/validation.php</code> في الحزمة، وله المفاتيح نفسها. وهذه هي القاعدة نفسها بثلاث لغات:</p>
+<pre><code class="language-php">// حقل اسمه national_code، وقيمته '1234567890'، والقاعدة national_code
+// locale fa: national code کد ملی معتبر نیست.
+// locale en: The national code is not a valid Iranian national code.
+// locale ar: national code ليس رقماً وطنياً إيرانياً صالحاً.</code></pre>
+<p>(يحوّل Laravel اسم الحقل <code>national_code</code> إلى التسمية "national code"؛ أعطِ الحقل تسمية مناسبة عبر ترجمات <code>attributes</code> لتحصل على جملة طبيعية.)</p>
+<p>إذا لم يكن للغة المفعّلة سطر فتُستخدم لغة Laravel الاحتياطية المعتادة (<code>app.fallback_locale</code>). وإذا لم يوجد أي نص مترجم إطلاقًا فالملاذ الأخير هو النص الإنجليزي المدمج.</p>
+
+<h2 id="override">تجاوز رسالة</h2>
+<p>لا تحتاج إلى نشر أي شيء. اختر ما يناسبك، من الأضيق نطاقًا إلى الأوسع:</p>
+<ol>
+<li><strong>لكل استدعاء تحقق:</strong> مرّر رسائل مخصصة إلى المُتحقِّق أو إلى <code>$request->validate()</code> بالطريقة المعتادة، مثلًا بالمفتاح <code>postal_code</code> أو <code>zip.postal_code</code>. والرسالة المخصصة تتغلب دائمًا.</li>
+<li><strong>على مستوى التطبيق:</strong> أضِف سطر القاعدة إلى ملفك <code>lang/fa/validation.php</code> (المفتاح هو اسم القاعدة، مثل <code>'sheba' => 'شبای :attribute اشتباه است.'</code>). ويُفضَّل سطر <code>validation.&lt;rule&gt;</code> في التطبيق على سطر الحزمة.</li>
+<li><strong>استبدال نصوص الحزمة:</strong> أنشئ <code>lang/vendor/rtly-kit/fa/validation.php</code> (أو <code>en</code> أو <code>ar</code>). تحمّله آلية التجاوز القياسية للحزم في Laravel فوق ملف الحزمة؛ وتحتاج فقط إلى المفاتيح التي تغيّرها.</li>
+</ol>
+<p>المخرجات المتحقَّق منها للخيارين 2 و3 مع اللغة <code>fa</code>:</p>
+<pre><code class="language-php">// lang/vendor/rtly-kit/fa/validation.php  ->  ['national_code' => 'کد ملی :attribute درست نیست.']
+// lang/fa/validation.php                  ->  ['sheba' => 'شبای :attribute اشتباه است.']
+// رسالة مخصصة في الاستدعاء                ->  ['postal_code' => 'کد پستی :attribute نادرست']
+//
+// national_code: کد ملی x درست نیست.
+// sheba:         شبای x اشتباه است.
+// postal_code:   کد پستی x نادرست</code></pre>
+<p>اسم الحقل في هذه الأمثلة <code>x</code>، ولهذا يظهر <code>x</code> في الجمل. وفي نموذج حقيقي اضبط تسميات مقروءة في المصفوفة <code>attributes</code> داخل ملف <code>validation.php</code> لديك.</p>
+
+<h2 id="config">الإعداد</h2>
+<p>ملف الإعداد اختياري، وبدونه يعمل كل شيء بالقيم الافتراضية. انشره حين تريد ضبط العطل:</p>
+<pre><code class="language-bash">php artisan vendor:publish --tag=rtly-kit-config</code></pre>
+<p>ينشئ هذا الأمر الملف <code>config/rtly-kit.php</code>. وفيه اليوم قسم واحد هو <code>holidays</code>: إزاحة التواريخ الإسلامية، وبدايات الأشهر الهجرية الفعلية، والعطل المضافة والمحذوفة، ومفتاح للبيانات الرسمية. وشرح الخيارات مع مثال عملي في صفحة <a href="holiday-calendar.html#laravel">تقويم العطل القابل للتعديل</a>.</p>
+<p>وما عدا ذلك يتحدد السلوك بالمكتبة وبلغة التطبيق. وتقرأ المكتبة المنطقة الزمنية الافتراضية من PHP (<code>date_default_timezone_get()</code>) التي يضبطها Laravel من <code>config('app.timezone')</code>، لذا تتبع <code>Jalali::now()</code> المنطقة الزمنية لتطبيقك.</p>
+<div class="note"><strong>من المفيد أن تعرف.</strong> إذا لم يكن مصنع التحقق مربوطًا عند إقلاع المزوّد فلا تُسجَّل القواعد، ولا تُضاف لاحقًا. ولا يحدث هذا إلا في عمليات إقلاع غير معتادة، مثل حاوية لسطر الأوامر فقط بلا خدمة التحقق.</div>
+<p>التالي: <a href="laravel-validation-and-cast.html">قواعد التحقق وتحويل Eloquent (Cast)</a>.</p>

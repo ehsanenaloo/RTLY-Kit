@@ -1,0 +1,169 @@
+<!--
+title: معالجة الأخطاء
+description: أي الاستدعاءات ترمي استثناءات وأيها لا يرمي أبداً، وتسلسل الاستثناءات، وقيم ErrorCode الثابتة، وكيفية التقاط الإخفاقات وتسجيلها بأمان.
+group: reference
+order: 20
+-->
+<h2 id="two-styles">أسلوبان للإخفاق</h2>
+<p>تستخدم كل دالة في RTLY-Kit أحد أسلوبين فقط، فتعرف دائمًا ما الذي يجب حمايته:</p>
+<ul>
+<li><strong>أدوات التحقق لا ترمي استثناءً أبدًا.</strong> <code>NationalCode</code> و<code>Sheba</code> و<code>BankCard</code> و<code>Mobile</code> و<code>PostalCode</code> و<code>VehiclePlate</code> (ومعها الدوال المساعدة <code>is_*</code> / <code>validate_*</code>) تقبل أي قيمة وتجيب بـ <code>false</code> أو بـ <code>Result</code> غير صالح. راجع <a href="validators-overview.html">نظرة عامة على أدوات التحقق</a>.</li>
+<li><strong>كل ما عدا ذلك يرمي</strong> <code>RtlyKit\Exceptions\RtlyKitException</code> (أو صنفًا فرعيًا منه) عند مدخل لا يستطيع قبوله. ولا يتسرب <code>TypeError</code> أو <code>ValueError</code> أو استثناء <code>DateMalformed*</code> من PHP بسبب مدخل خاطئ؛ فإن حدث ذلك فهو خلل في المكتبة، نرجو الإبلاغ عنه.</li>
+</ul>
+
+<h2 id="hierarchy">تسلسل الاستثناءات</h2>
+<pre><code class="language-text">\InvalidArgumentException
+ └─ RtlyKit\Exceptions\RtlyKitException        implements RtlyKitThrowable
+     ├─ InvalidDateException
+     ├─ InvalidNumberException
+     ├─ InvalidPrayerConfigException
+     └─ UnsupportedLocaleException</code></pre>
+<p><code>RtlyKitThrowable</code> واجهة علامة (marker interface) تعلن عن <code>getErrorCode(): ErrorCode</code> و<code>getContext(): array</code>. التقطها (أو التقط <code>RtlyKitException</code>) لمعالجة المكتبة كلها بعبارة واحدة. ولأن <code>RtlyKitException</code> ترث <code>\InvalidArgumentException</code>، فإن الشيفرة الحالية التي تستخدم <code>catch (\InvalidArgumentException)</code> و<code>catch (\LogicException)</code> تبقى تعمل.</p>
+<table>
+<thead><tr><th>الاستثناء</th><th>يُرمى عند</th></tr></thead>
+<tbody>
+<tr><td><code>InvalidDateException</code></td><td>تواريخ مستحيلة، وسنوات خارج النطاق المدعوم، ونصوص فارغة أو لا يمكن تحليلها، وقيم <code>add*()</code> / <code>sub*()</code> غير معقولة، وطوابع زمنية خارج النطاق، وأنماط تنسيق طويلة جدًا</td></tr>
+<tr><td><code>InvalidNumberException</code></td><td>مدخل غير رقمي أو كسري، و<code>NaN</code> / <code>INF</code>، ومدخل ضخم الحجم، وأعداد أكبر من المسموح، وكلمات أعداد غير معروفة</td></tr>
+<tr><td><code>InvalidPrayerConfigException</code></td><td>طريقة حساب صلاة غير معروفة، أو مدينة غير معروفة، أو معامل عصر غير صالح</td></tr>
+<tr><td><code>UnsupportedLocaleException</code></td><td>لغة (locale) لا تدعمها الدالة (مثل <code>number_to_words(5, 'de')</code>)</td></tr>
+<tr><td><code>RtlyKitException</code> نفسها</td><td>وسائط أخرى خاطئة، مثل فاصل <code>Slugify::make()</code> غير صالح أو طويل جداً، أو نص غير صالح بترميز UTF-8، أو جدول بيانات مضمَّن مفقود</td></tr>
+</tbody>
+</table>
+
+<h2 id="error-codes">رموز الأخطاء</h2>
+<p>رسائل الاستثناءات موجهة للبشر وقد تُعاد صياغتها في أي إصدار. أما <strong>رمز الخطأ</strong> فهو الجزء الثابت: وهو enum نصي من النوع <code>ErrorCode</code>، وأسماء حالاته وقيمها جزء من الواجهة العامة (راجع <a href="api-stability.html">استقرار الواجهة البرمجية</a>).</p>
+<table>
+<thead><tr><th>الحالة</th><th>القيمة</th><th>المعنى</th></tr></thead>
+<tbody>
+<tr><td><code>InvalidArgument</code></td><td><code>invalid_argument</code></td><td>رمز احتياطي عام لوسيط غير صالح لا يوجد له رمز أكثر تحديدًا</td></tr>
+<tr><td><code>InvalidDate</code></td><td><code>invalid_date</code></td><td>تاريخ أو وقت مشوّه أو مستحيل أو لا يمكن تحليله (شهر 13، أو 30 اسفند في سنة غير كبيسة، أو <code>'not a date'</code>، أو نص فارغ)</td></tr>
+<tr><td><code>DateOutOfRange</code></td><td><code>date_out_of_range</code></td><td>سنة أو تاريخ أو طابع زمني أو قيمة <code>add*()</code> / <code>sub*()</code> خارج النطاق المدعوم (راجع <a href="limits.html">الحدود</a>)</td></tr>
+<tr><td><code>InvalidNumber</code></td><td><code>invalid_number</code></td><td>لا يمكن قراءة القيمة كعدد (صحيح)</td></tr>
+<tr><td><code>NumberTooLarge</code></td><td><code>number_too_large</code></td><td>عدد أكبر من الحجم المدعوم</td></tr>
+<tr><td><code>NonFiniteNumber</code></td><td><code>non_finite_number</code></td><td><code>NaN</code> أو <code>INF</code> حيث يلزم عدد منتهٍ</td></tr>
+<tr><td><code>InvalidNumberWords</code></td><td><code>invalid_number_words</code></td><td>كلمات أعداد غير معروفة أو غير سليمة في <code>NumberToWords::fromWords()</code></td></tr>
+<tr><td><code>InputTooLong</code></td><td><code>input_too_long</code></td><td>مدخل نصي يتجاوز حدًّا موثَّقًا للحجم</td></tr>
+<tr><td><code>InvalidPrayerConfig</code></td><td><code>invalid_prayer_config</code></td><td>مدينة أو طريقة حساب أو معامل عصر غير معروف</td></tr>
+<tr><td><code>UnsupportedLocale</code></td><td><code>unsupported_locale</code></td><td>لغة (locale) غير اللغات المدعومة</td></tr>
+<tr><td><code>DataUnavailable</code></td><td><code>data_unavailable</code></td><td>جدول بيانات مضمَّن مفقود أو تالف (مشكلة في التحزيم وليست خطأ من المستخدم)</td></tr>
+</tbody>
+</table>
+<div class="note"><strong>ملاحظة.</strong> النصوص التي تُرجعها <code>Result::errors()</code> (<code>invalid_format</code> و<code>invalid_checksum</code> و<code>invalid_type</code> ...) نصوص عادية خاصة بأدوات التحقق وليست حالات من <code>ErrorCode</code>. فالـ enum مخصص للاستثناءات فقط.</div>
+
+<h2 id="reading-codes">قراءة الرمز والسياق</h2>
+<p>لكل استثناء في المكتبة الدالتان <code>getErrorCode()</code> و<code>getContext()</code>. السياق مصفوفة من الحقائق المقروءة آليًا عن الإخفاق (حدّ، أو اللغة المخالفة، أو اسم الوسيط). ولا يحتوي أسرارًا أبدًا وقد يكون فارغًا. يمرّر هذا السكربت خمسة مدخلات خاطئة إلى <code>number_to_words()</code>:</p>
+<pre><code class="language-php">&lt;?php
+require __DIR__.'/vendor/autoload.php';
+
+use function RtlyKit\number_to_words;
+use RtlyKit\Exceptions\RtlyKitThrowable;
+
+foreach ([1.5, NAN, 'abc', str_repeat('9', 22), str_repeat('1', 5000)] as $input) {
+    try {
+        number_to_words($input);
+    } catch (RtlyKitThrowable $e) {
+        echo (new ReflectionClass($e))-&gt;getShortName(), ' ',
+            $e-&gt;getErrorCode()-&gt;value, ' ',
+            json_encode($e-&gt;getContext()), "\n";
+    }
+}
+// InvalidNumberException invalid_number []
+// InvalidNumberException non_finite_number []
+// InvalidNumberException invalid_number []
+// InvalidNumberException number_too_large {"limit":"10^21 - 1"}
+// InvalidNumberException input_too_long {"limit":4096}</code></pre>
+
+<h2 id="catching">أنماط الالتقاط</h2>
+<p>تفرّع بحسب الرمز لا بحسب الرسالة. استخدم <code>match</code> مع فرع <code>default</code>، لأن حالات جديدة قد تُضاف في إصدار فرعي.</p>
+<pre><code class="language-php">&lt;?php
+require __DIR__.'/vendor/autoload.php';
+
+use RtlyKit\Calendar\Jalali;
+use RtlyKit\Exceptions\{ErrorCode, InvalidDateException, RtlyKitThrowable};
+
+function category(RtlyKitThrowable $e): string
+{
+    return match ($e-&gt;getErrorCode()) {
+        ErrorCode::InvalidDate, ErrorCode::DateOutOfRange =&gt; 'date',
+        ErrorCode::InputTooLong =&gt; 'too-long',
+        default =&gt; 'other',
+    };
+}
+
+try {
+    Jalali::create(1404, 13, 1);          // لا يوجد شهر 13
+} catch (RtlyKitThrowable $e) {
+    echo category($e), "\n";               // date
+}
+
+$e = InvalidDateException::because(ErrorCode::DateOutOfRange, 'Year is out of range', ['year' =&gt; 99999]);
+echo $e-&gt;getErrorCode()-&gt;value, ' ', json_encode($e-&gt;getContext()), "\n";
+// date_out_of_range {"year":99999}
+
+try {
+    Jalali::create(1404, 13, 1);
+} catch (\InvalidArgumentException $e) {   // الالتقاط بالأسلوب القديم ما زال يعمل
+    echo get_class($e), ' ', $e instanceof RtlyKitThrowable ? 'is RtlyKitThrowable' : '', "\n";
+    // RtlyKit\Exceptions\InvalidDateException is RtlyKitThrowable
+}</code></pre>
+<p><code>RtlyKitException::because(ErrorCode, string $message, array $context = [], ?Throwable $previous = null)</code> هي الدالة المنشئة المسمّاة التي تستخدمها المكتبة نفسها لرمي استثناء برمز محدد. يمكنك استخدامها لإخفاقاتك أنت أيضاً، لكن الرمز الذي تضيفه بهذه الطريقة مسؤوليتك أنت وليس جزءًا من عقد المكتبة.</p>
+<p>عند التسجيل في السجل، اكتب الرمز والسياق بدلًا من نص الرسالة:</p>
+<pre><code class="language-php">catch (RtlyKitThrowable $e) {
+    error_log($e-&gt;getErrorCode()-&gt;value.' '.json_encode($e-&gt;getContext()));
+}</code></pre>
+
+<h2 id="never-throws">ما لا يرمي أبدًا</h2>
+<p>تقبل أدوات التحقق أي قيمة PHP. ولا ترفع استثناءً بسبب مدخل خاطئ مهما كان نوعه أو حجمه:</p>
+<pre><code class="language-php">&lt;?php
+require __DIR__.'/vendor/autoload.php';
+
+use function RtlyKit\validate_national_code;
+use RtlyKit\Validation\Sheba;
+
+var_dump(Sheba::isValid(null));                                  // bool(false)
+echo json_encode(validate_national_code([])-&gt;errors()), "\n";                    // ["invalid_type"]
+echo json_encode(validate_national_code(str_repeat('1', 5000))-&gt;errors()), "\n"; // ["input_too_long"]
+echo json_encode(validate_national_code('0013542418')-&gt;errors()), "\n";          // ["invalid_checksum"]
+var_dump(validate_national_code('0013542419')-&gt;isValid());       // bool(true)</code></pre>
+<table>
+<thead><tr><th>مدخل أداة التحقق</th><th>النتيجة</th></tr></thead>
+<tbody>
+<tr><td><code>string</code> حتى 4096 بايت</td><td>يُفحص بصورة طبيعية (الأرقام الفارسية والعربية مقبولة)</td></tr>
+<tr><td><code>int</code>، و<code>float</code> منتهٍ وصحيح القيمة</td><td>يُحوَّل إلى نص ثم يُفحص (الأصفار البادئة مفقودة أصلًا في <code>int</code>)</td></tr>
+<tr><td><code>null</code>، و<code>bool</code>، والمصفوفات، والكائنات، و<code>NaN</code>، و<code>INF</code>، والأعداد الكسرية</td><td>غير صالح، والخطأ <code>invalid_type</code></td></tr>
+<tr><td><code>string</code> أكبر من 4096 بايت</td><td>غير صالح، والخطأ <code>input_too_long</code></td></tr>
+<tr><td>UTF-8 غير صالح</td><td>غير صالح (عادةً <code>invalid_format</code>)</td></tr>
+</tbody>
+</table>
+<p>تتبع قواعد التحقق في Laravel والتفعيل الاختياري <code>Globals::register()</code> القاعدة نفسها: تُرجع القواعد قيمة منطقية، ولا ترمي <code>Globals::register()</code> استثناءً أبدًا (بل تُرجع الأسماء التي تخطّتها).</p>
+
+<h2 id="caps">سقوف المدخلات</h2>
+<p>لكل استدعاء يأخذ نصًا غير موثوق سقف للحجم، فلا يكلّف مدخل خبيث الكثير. تجاوز السقف يرفع <code>input_too_long</code>، إما كاستثناء أو كخطأ من أداة التحقق. القائمة الكاملة في <a href="limits.html">الحدود</a>.</p>
+<table>
+<thead><tr><th>الموضع</th><th>السقف</th><th>عند التجاوز</th></tr></thead>
+<tbody>
+<tr><td>أدوات التحقق</td><td>4096 بايت لكل نص</td><td><code>Result</code> غير صالح، والخطأ <code>input_too_long</code></td></tr>
+<tr><td><code>NumberToWords::convert()</code> / <code>fromWords()</code>، ومدخل <code>Format</code> النصي</td><td>4096 بايت لكل نص</td><td><code>InvalidNumberException</code></td></tr>
+<tr><td><code>Format::withSeparator()</code> / <code>format_number()</code></td><td>1000 نويسة في العدد العشري العادي</td><td><code>InvalidNumberException</code></td></tr>
+<tr><td>فاصل <code>Slugify::make()</code></td><td>64 بايت، UTF-8 صالح</td><td><code>RtlyKitException</code></td></tr>
+<tr><td>نمط <code>format()</code> (Jalali وHijri وHebrew)</td><td>256 بايت (<code>MAX_FORMAT_LENGTH</code> في كل فئة)</td><td><code>InvalidDateException</code></td></tr>
+</tbody>
+</table>
+
+<h2 id="calendar-rule">قاعدة نطاق التقويم</h2>
+<p>كل نقطة دخول في التقويم (<code>make</code> و<code>create</code> و<code>createFromFormat</code> والطوابع الزمنية و<code>add*</code> / <code>sub*</code> والدوال المساعدة وماكروات Carbon) إما تُرجع تاريخًا صالحًا وإما ترمي <code>InvalidDateException</code>. لا شيء يلتف حول النطاق ولا يُستخدم أي نوع استثناء آخر. النطاقات: الجلالي من -620 إلى 9377، والهجري من 1 إلى 9665، والعبري من 3762 إلى 13759، وكلها ضمن السنوات الميلادية من 1 إلى 9999. راجع <a href="limits.html#calendars">الحدود</a>.</p>
+
+<h2 id="complete-example">مثال كامل</h2>
+<pre><code class="language-php">use function RtlyKit\jdate;
+use function RtlyKit\number_to_words;
+use RtlyKit\Exceptions\InvalidDateException;
+use RtlyKit\Exceptions\RtlyKitThrowable;
+
+try {
+    $date  = jdate($userInput);
+    $words = number_to_words($userAmount);
+} catch (InvalidDateException $e) {
+    echo "Please enter a valid date.\n";
+} catch (RtlyKitThrowable $e) {
+    error_log($e-&gt;getErrorCode()-&gt;value.' '.json_encode($e-&gt;getContext()));
+}</code></pre>

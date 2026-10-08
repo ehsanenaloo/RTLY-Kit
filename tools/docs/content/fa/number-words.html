@@ -1,11 +1,11 @@
 <!--
 title: عدد به حروف
-description: نوشتن عدد صحیح به حروف فارسی (تا 10^21) و عربی فصیح (زیر 10^9) و خواندن دوبارهٔ عدد از روی حروف فارسی با fromWords().
+description: نوشتن عدد صحیح با حروف فارسی (تا 10^21) و خواندن دوبارهٔ عدد از روی حروف با fromWords(). عدد به حروف عربی در صفحهٔ جدا توضیح داده شده است.
 group: numbers-text
 order: 20
 -->
-<h2 id="convert">تبدیل عدد به حروف</h2>
-<p><code>NumberToWords::convert()</code> یک عدد صحیح را به حروف می‌نویسد. زبان پیش‌فرض فارسی (<code>fa</code>) است و هر عدد صحیح زیر 10<sup>21</sup> را پوشش می‌دهد.</p>
+<h2 id="convert">عدد به حروف</h2>
+<p><code>NumberToWords::convert()</code> یک عدد صحیح را با حروف می‌نویسد. زبان پیش‌فرض فارسی (<code>fa</code>) است و هر عدد صحیح کوچک‌تر از 10<sup>21</sup> را پوشش می‌دهد.</p>
 <pre><code class="language-php">&lt;?php
 require 'vendor/autoload.php';
 
@@ -21,14 +21,14 @@ echo NumberToWords::convert(-45), "\n";      // منفی چهل و پنج
 echo number_to_words(2000000000), "\n";      // دو میلیارد
 echo NumberToWords::convert(1234567), "\n";
 // یک میلیون و دویست و سی و چهار هزار و پانصد و شصت و هفت</code></pre>
-<p>بخش‌ها با « و » به هم وصل می‌شوند و واژهٔ مقیاس بعد از هر گروه می‌آید: «هزار» (10<sup>3</sup>)، «میلیون» (10<sup>6</sup>)، «میلیارد» (10<sup>9</sup>)، «تریلیون» (10<sup>12</sup>)، «کوادریلیون» (10<sup>15</sup>) و «کوینتیلیون» (10<sup>18</sup>). گروهی که برابر ۱ باشد «یک» خود را نگه می‌دارد (۱۰۰۰ می‌شود «یک هزار»؛ برای خواندن «هزار» تنها از <code>fromWords()</code> در ادامه استفاده کنید). گروه‌های صفر نادیده گرفته می‌شوند.</p>
+<p>بخش‌ها با «و» به هم وصل می‌شوند و بعد از هر گروه نام مقیاس می‌آید: هزار (10<sup>3</sup>)، میلیون (10<sup>6</sup>)، میلیارد (10<sup>9</sup>)، تریلیون (10<sup>12</sup>)، کوادریلیون (10<sup>15</sup>) و کوینتیلیون (10<sup>18</sup>). اگر گروهی ۱ باشد، «یک» نوشته می‌شود (۱۰۰۰ می‌شود «یک هزار»). گروه‌های صفر نوشته نمی‌شوند.</p>
 
-<h3 id="accepted-input">ورودی پذیرفته‌شده</h3>
-<p>نوع پارامتر <code>int|float|string</code> است:</p>
+<h3 id="accepted-input">ورودی قابل قبول</h3>
+<p>نوع ورودی <code>int|float|string</code> است:</p>
 <ul>
-<li><strong>int:</strong> کل بازهٔ PHP از جمله <code>PHP_INT_MAX</code> کار می‌کند: «نه کوینتیلیون و دویست و بیست و سه کوادریلیون ...».</li>
-<li><strong>float:</strong> باید متناهی و صحیح باشد. <code>3.0</code> می‌شود «سه»؛ <code>1.5</code> به جای قطع بی‌صدای اعشار استثنا می‌اندازد.</li>
-<li><strong>string:</strong> علامت اختیاری و ارقام از هر دستهٔ رقمی. ویرگول، <code>٬</code> و فاصله حذف می‌شود؛ پس عددی که از فرم کپی شده کار می‌کند. رشته می‌تواند از int پی‌اچ‌پی بلندتر باشد، تا ۲۱ رقم پس از حذف صفرهای ابتدایی.</li>
+<li><strong>int:</strong> کل بازهٔ PHP، از جمله <code>PHP_INT_MAX</code>، کار می‌کند.</li>
+<li><strong>float:</strong> باید متناهی و صحیح باشد. <code>3.0</code> می‌شود «سه». برای <code>1.5</code> خطا می‌گیرید و اعشار بی‌صدا بریده نمی‌شود.</li>
+<li><strong>string:</strong> علامت اختیاری و رقم‌هایی از هر دسته. ویرگول، <code>٬</code> و فاصله حذف می‌شوند، پس عددی که از فرم کپی شده هم کار می‌کند. رشته می‌تواند از بزرگ‌ترین int پی‌اچ‌پی هم بلندتر باشد: تا ۲۱ رقم، بعد از حذف صفرهای اول.</li>
 </ul>
 <pre><code class="language-php">echo NumberToWords::convert('۱۲۳٬۴۵۶'), "\n";        // صد و بیست و سه هزار و چهارصد و پنجاه و شش
 echo NumberToWords::convert('1,000,000'), "\n";      // یک میلیون
@@ -38,13 +38,13 @@ echo NumberToWords::convert('999999999999999999999'), "\n";
 // نهصد و نود و نه کوینتیلیون و نهصد و نود و نه کوادریلیون ... و نهصد و نود و نه</code></pre>
 
 <h3 id="errors">خطاها</h3>
-<p>ورودی نامعتبر <code>InvalidNumberException</code> (زیرکلاس <code>RtlyKitException</code>) پرتاب می‌کند. کد پایدار را با <code>getErrorCode()</code> بخوانید:</p>
+<p>ورودی نامعتبر <code>InvalidNumberException</code> (زیرکلاس <code>RtlyKitException</code>) می‌دهد. کد پایدارش را با <code>getErrorCode()</code> بخوانید:</p>
 <table>
 <thead><tr><th>ورودی</th><th>کد خطا</th></tr></thead>
 <tbody>
 <tr><td><code>1.5</code>، <code>'12a'</code>، <code>''</code></td><td><code>invalid_number</code></td></tr>
 <tr><td><code>NAN</code>، <code>INF</code></td><td><code>non_finite_number</code></td></tr>
-<tr><td>رشتهٔ بلندتر از ۴۰۹۶ بایت</td><td><code>input_too_long</code></td></tr>
+<tr><td>رشته‌ای بلندتر از ۴۰۹۶ بایت</td><td><code>input_too_long</code></td></tr>
 <tr><td><code>1e21</code>، <code>'1000000000000000000000'</code> (۲۲ رقم)</td><td><code>number_too_large</code></td></tr>
 </tbody>
 </table>
@@ -54,10 +54,10 @@ echo NumberToWords::convert('999999999999999999999'), "\n";
     echo $e-&gt;getMessage(), ' [', $e-&gt;getErrorCode()-&gt;value, "]\n";
     // Number is too large (limit is 10^21 - 1). [number_too_large]
 }</code></pre>
-<p>برای گرفتن همهٔ استثناهای کتابخانه با یک نوع، <a href="error-handling.html">مدیریت خطا</a> را ببینید.</p>
+<p>برای گرفتن همهٔ خطاهای کتابخانه با یک نوع، <a href="error-handling.html">مدیریت خطا</a> را ببینید.</p>
 
 <h2 id="arabic">عربی</h2>
-<p>برای عربی فصیح، <code>'ar'</code> را آرگومان دوم بدهید. زبان بر پایهٔ دو حرف اول و بدون حساسیت به بزرگی و کوچکی حروف تطبیق داده می‌شود؛ پس <code>'ar_SA'</code> و <code>'AR'</code> کار می‌کنند و برای فارسی <code>'fa_IR'</code> هم.</p>
+<p>با آرگومان دوم <code>'ar'</code> عدد به عربی فصیح نوشته می‌شود. زبان با دو حرف اول و بدون توجه به بزرگی و کوچکی حرف‌ها تشخیص داده می‌شود، پس <code>'ar_SA'</code> و <code>'AR'</code> هم کار می‌کنند (برای فارسی هم <code>'fa_IR'</code>).</p>
 <pre><code class="language-php">echo NumberToWords::convert(11, 'ar'), "\n";        // أحد عشر
 echo NumberToWords::convert(21, 'ar'), "\n";        // واحد وعشرون
 echo NumberToWords::convert(200, 'ar'), "\n";       // مئتان
@@ -65,15 +65,8 @@ echo NumberToWords::convert(3000, 'ar'), "\n";      // ثلاثة آلاف
 echo NumberToWords::convert(2000000, 'ar'), "\n";   // مليونان
 echo NumberToWords::convert(1002003, 'ar'), "\n";   // مليون وألفان وثلاثة
 echo NumberToWords::convert(-7, 'ar'), "\n";        // سالب سبعة</code></pre>
-<p>خروجی عربی از این قاعده‌ها پیروی می‌کند و محدودیت‌هایش واقعی است:</p>
-<ul>
-<li><strong>بازه:</strong> قدرمطلق عدد باید زیر 10<sup>9</sup> باشد (تا ۹۹۹٬۹۹۹٬۹۹۹). عدد بزرگ‌تر <code>number_too_large</code> می‌اندازد. مبدل برای ۰ تا ۹۹۹٬۹۹۹٬۹۹۹ و اعداد منفی آزموده شده است.</li>
-<li><strong>فقط صورت شمارشی مذکر.</strong> مطابقت جنس با معدود، حالت‌های اعرابی و تنوین وجود ندارد.</li>
-<li><strong>گروه‌های مرکب ساده‌اند.</strong> گروهی مثل ۱۰۲ در ۱۰۲٬۰۰۰ از صورت مرکب معمولی («مئة واثنان ألف») استفاده می‌کند، بدون قاعده‌های ویژهٔ حالت اضافه که بعضی راهنمای نگارش لازم می‌دانند.</li>
-<li>عدد منفی با «سالب» شروع می‌شود.</li>
-</ul>
-<div class="known"><strong>محدودیت شناخته‌شده.</strong> خروجی عربی را عدد خوانا به حروف بدانید، نه متن حقوقی یا حروف‌چینی‌شدهٔ مناسب چک. اگر جنس یا حالت دستوری معدود مهم است، عبارت را دستی بازبینی کنید.</div>
-<p>زبان پشتیبانی‌نشده <code>UnsupportedLocaleException</code> با کد <code>unsupported_locale</code> می‌اندازد:</p>
+<p>در عربی هر عدد صحیح کوچک‌تر از 10<sup>27</sup> پشتیبانی می‌شود. جنس معدود، حالت اعرابی، اعراب‌گذاری و عدد ترتیبی ۱ تا ۹۹ هم هست. همهٔ این گزینه‌ها در صفحهٔ <a href="arabic-number-words.html">عدد به حروف عربی</a> آمده است.</p>
+<p>اگر زبان پشتیبانی نشود، <code>UnsupportedLocaleException</code> با کد <code>unsupported_locale</code> می‌گیرید:</p>
 <pre><code class="language-php">try {
     NumberToWords::convert(5, 'en');
 } catch (\RtlyKit\Exceptions\UnsupportedLocaleException $e) {
@@ -81,7 +74,7 @@ echo NumberToWords::convert(-7, 'ar'), "\n";        // سالب سبعة</code><
 }</code></pre>
 
 <h2 id="from-words">از حروف به عدد</h2>
-<p><code>NumberToWords::fromWords()</code> معکوس تبدیل فارسی برای شکل‌هایی است که <code>convert()</code> می‌سازد. اگر مقدار در int پی‌اچ‌پی جا شود <code>int</code> و در غیر این صورت رشتهٔ ارقام برمی‌گرداند.</p>
+<p><code>NumberToWords::fromWords()</code> کار برعکس <code>convert()</code> را برای متن فارسی می‌کند. اگر عدد در int پی‌اچ‌پی جا شود، <code>int</code> می‌دهد. وگرنه رشته‌ای از رقم‌ها.</p>
 <pre><code class="language-php">var_dump(NumberToWords::fromWords('بیست و سه'));                 // int(23)
 var_dump(NumberToWords::fromWords('منفی چهل و دو'));             // int(-42)
 var_dump(NumberToWords::fromWords('هزار و یک'));                 // int(1001)
@@ -93,14 +86,15 @@ var_dump(NumberToWords::fromWords(NumberToWords::convert(PHP_INT_MAX)));
 var_dump(NumberToWords::fromWords(NumberToWords::convert('999999999999999999999')));
 // string(21) "999999999999999999999"</code></pre>
 
-<h3 id="from-words-rules">چگونه حروف خوانده می‌شود</h3>
+<h3 id="from-words-rules">متن چطور خوانده می‌شود</h3>
 <ul>
-<li>ابتدا ورودی نرمال می‌شود: صورت‌های عربی حروف به فارسی تبدیل می‌شود («ك» به «ک»، «ي» به «ی»)، ZWNJ فاصله حساب می‌شود و فاصله‌های اضافه نادیده گرفته می‌شود.</li>
-<li>«منفی» در ابتدا نتیجه را منفی می‌کند؛ «منفی صفر» برابر <code>0</code> است.</li>
-<li>واژهٔ مقیاسِ بدون عدد پیش از آن یعنی یک؛ پس «هزار» برابر ۱۰۰۰ است.</li>
-<li>مقیاس‌ها باید نزولی باشند: «هزار هزار» یا «هزار میلیون» استثنا می‌اندازد.</li>
-<li>هیچ گروهی نباید از ۹۹۹ بیشتر شود.</li>
-<li>واژهٔ «و» هر جا باشد نادیده گرفته می‌شود.</li>
+<li>اول متن یکسان می‌شود. حرف‌های عربی فارسی می‌شوند («ك» به «ک» و «ي» به «ی»)، نیم‌فاصله مثل فاصله حساب می‌شود و فاصله‌های اضافه نادیده گرفته می‌شود.</li>
+<li>«منفی» در ابتدا عدد را منفی می‌کند. «منفی صفر» همان <code>0</code> است.</li>
+<li>اگر قبل از نام مقیاس عددی نباشد، یعنی یک. پس «هزار» همان ۱۰۰۰ است.</li>
+<li>مقیاس‌ها باید از بزرگ به کوچک بیایند. «هزار هزار» یا «هزار میلیون» خطا می‌دهد.</li>
+<li>در هر گروه، اول صدگان می‌آید، بعد دهگان، بعد یکان. یا یک واژه از «ده» تا «نوزده» به‌جای دهگان و یکان. «دو صد»، «پنج و بیست» و «یازده و یک» خطا می‌دهند.</li>
+<li>بین هر دو واژهٔ عددی «و» لازم است. فقط بین ضریب و نام مقیاس، مثل «دو هزار»، «و» نمی‌آید. «و» در ابتدا، در انتها، دو بار پشت هم، یا کنار نام مقیاس قبول نمی‌شود.</li>
+<li>«صفر» فقط تنها (یا بعد از «منفی») قبول می‌شود.</li>
 </ul>
 <pre><code class="language-php">try {
     NumberToWords::fromWords('یکصد');
@@ -108,5 +102,5 @@ var_dump(NumberToWords::fromWords(NumberToWords::convert('999999999999999999999'
     echo $e-&gt;getMessage(), ' [', $e-&gt;getErrorCode()-&gt;value, "]\n";
     // Unknown number word 'یکصد'. [invalid_number_words]
 }</code></pre>
-<p>خطاها کد <code>invalid_number_words</code> دارند (واژهٔ ناشناخته، دنبالهٔ بدساخت، مقیاس‌های نامرتب، متن خالی) یا برای متن بیش از ۴۰۹۶ بایت <code>input_too_long</code>.</p>
-<div class="warn"><strong>خواننده سهل‌گیر است.</strong> <code>fromWords()</code> مقدارهای داخل هر گروه را بدون بررسی ترتیب طبیعی واژه‌ها جمع می‌زند؛ بنابراین عبارت‌های غیرمعمولی مثل «دو صد» (۱۰۲) یا «و»ی زائد در انتها پذیرفته می‌شود. این تابع خوانندهٔ خروجی <code>convert()</code> و عددهای معمولی دست‌نویس است، نه بررسی‌کنندهٔ دستور زبان؛ متن نامطمئن را خودتان اعتبارسنجی کنید. فقط شکل فارسی خوانده می‌شود: واژه‌های عربی خروجی <code>convert($n, 'ar')</code> و ترتیبی‌هایی مثل «سی‌ام» فهمیده نمی‌شود و استثنا می‌اندازد. املای چسبیدهٔ «یکصد» هم ناشناخته است.</div>
+<p>خطاها کد <code>invalid_number_words</code> دارند (واژهٔ ناشناخته، ترتیب غلط، مقیاس‌های نامرتب، متن خالی). برای متن بلندتر از ۴۰۹۶ بایت هم <code>input_too_long</code> می‌گیرید.</p>
+<div class="note"><strong>خواننده سخت‌گیر است.</strong> <code>fromWords()</code> فقط ترتیب استاندارد واژه‌ها را قبول می‌کند. عبارت‌هایی مثل «دو صد»، «بیست یک» یا «و»ی اضافه در آخر <code>InvalidNumberException</code> با کد <code>invalid_number_words</code> می‌دهند. هر متنی که <code>convert()</code> بسازد درست خوانده می‌شود. نام مقیاسِ تنها در ابتدا هم مجاز است («هزار و یک»). فقط فارسی خوانده می‌شود. واژه‌های عربی خروجی <code>convert($n, 'ar')</code> و ترتیبی‌هایی مثل «سی‌ام» خطا می‌دهند. املای چسبیدهٔ «یکصد» هم شناخته نمی‌شود.</div>

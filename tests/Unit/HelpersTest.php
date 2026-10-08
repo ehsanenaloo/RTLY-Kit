@@ -227,10 +227,12 @@ final class HelpersTest extends TestCase
         number_to_words(5, 'xx');
     }
 
-    public function test_number_to_words_arabic_rejects_values_beyond_billion(): void
+    public function test_number_to_words_arabic_supports_billions_and_rejects_beyond_the_limit(): void
     {
+        $this->assertSame('مليار', number_to_words('1000000000', 'ar'));
+
         $this->expectException(InvalidNumberException::class);
-        number_to_words('1000000000', 'ar');
+        number_to_words('1' . str_repeat('0', 27), 'ar');
     }
 
     public function test_normalize_text_unifies_arabic_letters_and_digits(): void

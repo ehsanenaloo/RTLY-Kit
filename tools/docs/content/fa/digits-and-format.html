@@ -1,11 +1,11 @@
 <!--
-title: ارقام و قالب‌بندی اعداد
-description: تبدیل ارقام انگلیسی، فارسی و عربی-هندی، قالب‌بندی عدد با جداکنندهٔ فارسی و ساخت عدد ترتیبی فارسی، با همهٔ سقف‌ها و حالت‌های مرزی.
+title: رقم‌ها و قالب‌بندی عدد
+description: تبدیل رقم‌های انگلیسی، فارسی و عربی-هندی به هم، قالب‌بندی عدد با جداکنندهٔ فارسی و ساختن عدد ترتیبی فارسی، با سقف‌ها و حالت‌های مرزی.
 group: numbers-text
 order: 10
 -->
-<h2 id="digits">ارقام</h2>
-<p>کلاس <code>RtlyKit\Number\Digits</code> میان سه دستهٔ رقمی نرم‌افزارهای ایرانی تبدیل می‌کند: انگلیسی (<code>0-9</code>)، فارسی (<code>۰-۹</code>، از U+06F0 تا U+06F9) و عربی-هندی (<code>٠-٩</code>، از U+0660 تا U+0669). این کلاس فقط جایگزینی رشته‌ای است: هرگز استثنا نمی‌اندازد، به نویسه‌های دیگر دست نمی‌زند و جداکنندهٔ اعشار یا هزارگان را تغییر نمی‌دهد.</p>
+<h2 id="digits">رقم‌ها</h2>
+<p>کلاس <code>RtlyKit\Number\Digits</code> بین سه دستهٔ رقم که در نرم‌افزارهای ایرانی دیده می‌شود تبدیل می‌کند: انگلیسی (<code>0-9</code>)، فارسی (<code>۰-۹</code>، از U+06F0 تا U+06F9) و عربی-هندی (<code>٠-٩</code>، از U+0660 تا U+0669). کارش فقط جایگزینی نویسه‌هاست. خطا پرتاب نمی‌کند، به نویسه‌های دیگر دست نمی‌زند و جداکنندهٔ اعشار و هزارگان را عوض نمی‌کند.</p>
 <pre><code class="language-php">&lt;?php
 require 'vendor/autoload.php';
 
@@ -20,25 +20,25 @@ echo Digits::arabicToPersian('٠١٢ 345'), "\n";      // ۰۱۲ 345</code></pre
 <table>
 <thead><tr><th>متد</th><th>ورودی</th><th>کار</th></tr></thead>
 <tbody>
-<tr><td><code>toPersian($value)</code></td><td>رشته، int، float</td><td>ارقام انگلیسی را فارسی می‌کند. ارقام فارسی و عربی-هندی که از قبل در رشته هست دست‌نخورده می‌ماند</td></tr>
-<tr><td><code>toArabic($value)</code></td><td>رشته، int، float</td><td>ارقام انگلیسی را عربی-هندی می‌کند</td></tr>
-<tr><td><code>toEnglish($value)</code></td><td>رشته</td><td>ارقام فارسی و عربی-هندی هر دو انگلیسی می‌شوند</td></tr>
-<tr><td><code>arabicToPersian($value)</code></td><td>رشته</td><td>فقط ارقام عربی-هندی فارسی می‌شوند؛ ارقام انگلیسی می‌مانند</td></tr>
-<tr><td><code>convert($value, $to)</code></td><td>رشته</td><td>هر دستهٔ رقمی ابتدا انگلیسی و سپس به مقصد تبدیل می‌شود</td></tr>
+<tr><td><code>toPersian($value)</code></td><td>رشته، int، float</td><td>رقم‌های انگلیسی را فارسی می‌کند. رقم‌های فارسی و عربی-هندی که از قبل در رشته هستند دست نمی‌خورند</td></tr>
+<tr><td><code>toArabic($value)</code></td><td>رشته، int، float</td><td>رقم‌های انگلیسی را عربی-هندی می‌کند</td></tr>
+<tr><td><code>toEnglish($value)</code></td><td>رشته</td><td>رقم‌های فارسی و عربی-هندی را انگلیسی می‌کند</td></tr>
+<tr><td><code>arabicToPersian($value)</code></td><td>رشته</td><td>فقط رقم‌های عربی-هندی را فارسی می‌کند. رقم‌های انگلیسی می‌مانند</td></tr>
+<tr><td><code>convert($value, $to)</code></td><td>رشته</td><td>اول همه‌چیز را انگلیسی می‌کند، بعد به دستهٔ مقصد می‌برد</td></tr>
 </tbody>
 </table>
 
 <h3 id="convert">convert()</h3>
-<p>متد <code>convert()</code> ابتدا به انگلیسی نرمال می‌کند و بعد دستهٔ مقصد را می‌سازد. نام مقصد به بزرگی و کوچکی حروف حساس نیست: <code>persian</code>، <code>fa</code> و <code>farsi</code> ارقام فارسی می‌دهند؛ <code>arabic</code> و <code>ar</code> ارقام عربی-هندی؛ هر چیز دیگر، از جمله غلط املایی، انگلیسی.</p>
+<p>متد <code>convert()</code> اول رقم‌ها را انگلیسی می‌کند و بعد دستهٔ مقصد را می‌سازد. نام مقصد به بزرگی و کوچکی حرف حساس نیست. <code>persian</code> و <code>fa</code> و <code>farsi</code> رقم فارسی می‌دهند. <code>arabic</code> و <code>ar</code> رقم عربی-هندی می‌دهند. هر چیز دیگر، حتی غلط املایی، انگلیسی می‌دهد.</p>
 <pre><code class="language-php">echo Digits::convert('۱۲۳', 'ar'), "\n";        // ١٢٣
 echo Digits::convert('123', 'fa'), "\n";        // ۱۲۳
 echo Digits::convert('٣٤٥', 'FARSI'), "\n";     // ۳۴۵
 echo Digits::convert('۱۲۳', 'x'), "\n";         // 123</code></pre>
-<div class="note"><strong>عدد به‌عنوان ورودی.</strong> <code>toPersian()</code> و <code>toArabic()</code> <code>int</code> و <code>float</code> را هم می‌پذیرند و با تبدیل ساده به رشته (<code>(string)</code>) برمی‌گردانند؛ پس ممیز اعشار همان نقطهٔ لاتین می‌ماند (<code>۱۲۳۴.۵</code>) و جداکنندهٔ هزارگان ندارد. برای عددهایی که کاربر می‌بیند از <code>Format::withSeparator()</code> در ادامه استفاده کنید. توابع کمکی <code>to_persian_digits()</code>، <code>to_english_digits()</code>، <code>to_persian()</code> و <code>to_english()</code> این متدها را پوشش می‌دهند؛ <a href="helpers-and-globals.html">توابع کمکی و نام‌های سراسری</a> را ببینید.</div>
-<p>اعتبارسنج‌ها برای نرمال‌سازی از <code>Digits::toEnglish()</code> استفاده می‌کنند؛ پس کاربر می‌تواند با هر دستهٔ رقمی تایپ کند. <a href="validators-overview.html#normalization">نرمال‌سازی</a> را ببینید.</p>
+<div class="note"><strong>عدد به‌جای رشته.</strong> <code>toPersian()</code> و <code>toArabic()</code> <code>int</code> و <code>float</code> هم می‌گیرند. آن‌ها را با تبدیل ساده به رشته (<code>(string)</code>) می‌نویسند. برای همین ممیز اعشار همان نقطهٔ لاتین می‌ماند (<code>۱۲۳۴.۵</code>) و جداکنندهٔ هزارگان ندارد. برای عددی که کاربر می‌بیند، از <code>Format::withSeparator()</code> در ادامه استفاده کنید. توابع کمکی <code>to_persian_digits()</code>، <code>to_english_digits()</code>، <code>to_persian()</code> و <code>to_english()</code> همین متدها را صدا می‌زنند. <a href="helpers-and-globals.html">توابع کمکی و سراسری</a> را ببینید.</div>
+<p>اعتبارسنج‌ها برای یکسان‌سازی از <code>Digits::toEnglish()</code> استفاده می‌کنند. پس کاربر با هر دستهٔ رقمی می‌تواند تایپ کند. <a href="validators-overview.html#normalization">یکسان‌سازی</a> را ببینید.</p>
 
 <h2 id="separators">قالب‌بندی عدد</h2>
-<p><code>Format::withSeparator()</code> عدد را با جداکنندهٔ هزارگان و ارقام فارسی قالب‌بندی می‌کند. به طور پیش‌فرض از جداکنندهٔ هزارگان عربی <code>٬</code> (U+066C) و ممیز اعشار <code>٫</code> (U+066B) استفاده می‌کند؛ نویسه‌هایی که تایپوگرافی فارسی توصیه می‌کند. هرگز گرد نمی‌کند.</p>
+<p><code>Format::withSeparator()</code> عدد را با جداکنندهٔ هزارگان و رقم فارسی می‌نویسد. جداکنندهٔ هزارگان پیش‌فرض <code>٬</code> (U+066C) و ممیز اعشار <code>٫</code> (U+066B) است. این‌ها همان نویسه‌هایی هستند که تایپوگرافی فارسی پیشنهاد می‌کند. این متد گرد نمی‌کند.</p>
 <pre><code class="language-php">use RtlyKit\Number\Format;
 
 echo Format::withSeparator(1234567), "\n";            // ۱٬۲۳۴٬۵۶۷
@@ -48,33 +48,37 @@ echo Format::withSeparator('0001234'), "\n";          // ۱٬۲۳۴
 echo Format::withSeparator('+12345'), "\n";           // ۱۲٬۳۴۵
 echo Format::withSeparator(1.0), "\n";                // ۱</code></pre>
 
-<h3 id="separator-input">چه چیزی می‌پذیرد</h3>
+<h3 id="separator-input">ورودی قابل قبول</h3>
 <ul>
-<li><code>int</code>، <code>float</code> متناهی، یا رشتهٔ عددی با علامت اختیاری، ارقام از هر سه دسته و کسر اختیاری.</li>
-<li>در رشته‌ها این‌ها به‌عنوان جداکنندهٔ گروه حذف می‌شوند: <code>,</code>، <code>٬</code> (U+066C)، فاصلهٔ معمولی و فاصلهٔ بدون شکست. ممیز اعشار عربی <code>٫</code> (U+066B) به‌عنوان نقطهٔ اعشار خوانده می‌شود و <code>.</code> هم نقطهٔ اعشار است.</li>
-<li>صفرهای ابتدای بخش صحیح و <code>+</code> ابتدایی حذف می‌شود و <code>-</code> ابتدایی می‌ماند.</li>
+<li><code>int</code>، <code>float</code> متناهی، یا رشتهٔ عددی با علامت اختیاری، رقم‌هایی از هر سه دسته و کسر اختیاری.</li>
+<li>در رشته‌ها این‌ها به‌عنوان جداکنندهٔ گروه حذف می‌شوند: <code>,</code>، <code>٬</code> (U+066C)، فاصلهٔ معمولی و فاصلهٔ بدون شکست. ممیز اعشار عربی <code>٫</code> (U+066B) و نقطهٔ <code>.</code> هر دو ممیز اعشار حساب می‌شوند.</li>
+<li>صفرهای اول بخش صحیح و <code>+</code> اول حذف می‌شوند. <code>-</code> اول می‌ماند.</li>
 </ul>
-<p>هر چیزی که پس از این پاک‌سازی عدد اعشاری ساده نباشد <code>InvalidNumberException</code> پرتاب می‌کند: <code>'abc'</code>، رشتهٔ خالی، نمای علمی در رشته (<code>'1e5'</code>) و <code>NaN</code> یا <code>INF</code>. استثنا یک کد خطای پایدار دارد (<code>invalid_number</code>، <code>non_finite_number</code>، <code>input_too_long</code>) که با <code>getErrorCode()</code> خوانده می‌شود؛ <a href="error-handling.html">مدیریت خطا</a> را ببینید.</p>
+<p>اگر بعد از این تمیزکاری چیزی عدد اعشاری ساده نباشد، <code>InvalidNumberException</code> می‌گیرید. مثل <code>'abc'</code>، رشتهٔ خالی، نمای علمی در رشته (<code>'1e5'</code>) و <code>NaN</code> یا <code>INF</code>. هر خطا یک کد پایدار دارد (<code>invalid_number</code>، <code>non_finite_number</code>، <code>input_too_long</code>) که با <code>getErrorCode()</code> می‌خوانید. <a href="error-handling.html">مدیریت خطا</a> را ببینید.</p>
 
-<h3 id="custom-separators">جداکنندهٔ سفارشی</h3>
-<p>آرگومان دوم و سوم جداکنندهٔ هزارگان و اعشار را عوض می‌کنند. ارقام همچنان فارسی می‌شوند:</p>
+<h3 id="custom-separators">جداکنندهٔ دلخواه</h3>
+<p>آرگومان دوم و سوم جداکنندهٔ هزارگان و اعشار را عوض می‌کنند. رقم‌ها باز هم فارسی می‌شوند:</p>
 <pre><code class="language-php">echo Format::withSeparator(1234567, ','), "\n";            // ۱,۲۳۴,۵۶۷
 echo Format::withSeparator(1234567.5, ',', '.'), "\n";     // ۱,۲۳۴,۵۶۷.۵</code></pre>
-<p>برای ارقام انگلیسی نتیجه را با <code>Digits::toEnglish()</code> برگردانید.</p>
+<p>اگر رقم انگلیسی می‌خواهید، نتیجه را با <code>Digits::toEnglish()</code> برگردانید.</p>
 
 <h3 id="float-precision">اعشاری و دقت</h3>
-<p><code>float</code> تا ۱۵ رقم اعشار باز می‌شود و صفرهای انتها حذف می‌گردد؛ پس نویز نمایش دودویی ممکن است دیده شود. اگر عدد اعشاری دقیق لازم دارید <strong>رشته</strong> بدهید:</p>
-<pre><code class="language-php">echo Format::withSeparator(0.1 + 0.2), "\n";       // ۰٫۳
-echo Format::withSeparator(-1234567.891), "\n";    // -۱٬۲۳۴٬۵۶۷٫۸۹۱۰۰۰۰۰۰۰۶۱۴۶۷
-echo Format::withSeparator('-1234567.891'), "\n";  // -۱٬۲۳۴٬۵۶۷٫۸۹۱</code></pre>
-<div class="warn"><strong>پول و مقدارهای بزرگ.</strong> مبلغ‌ها را از ابتدا تا انتها به صورت رشته یا عدد صحیح (ریال) نگه دارید. اعشاری بیشتر کسرها را دقیق نشان نمی‌دهد و قالب‌بند همان ارقامی را بازتولید می‌کند که float واقعاً دارد.</div>
+<p><code>float</code> با کوتاه‌ترین متنی نوشته می‌شود که دوباره همان عدد را بدهد، به شرط اینکه از ۱۵ رقم معنادار بیشتر نشود. نمای علمی نمی‌آید و به تنظیمات <code>php.ini</code> هم بستگی ندارد. صفر منفی به شکل <code>۰</code> چاپ می‌شود. سقف ۱۵ رقم خطای دودویی را حذف می‌کند، پس <code>0.1 + 0.2</code> به شکل <code>۰٫۳</code> چاپ می‌شود. <code>float</code> بیشتر از حدود ۱۵ تا ۱۷ رقم معنادار نگه نمی‌دارد. اگر رقم بیشتری لازم دارید، <strong>رشته</strong> بدهید. رشته دقیق می‌ماند:</p>
+<pre><code class="language-php">echo Format::withSeparator(-1234567.891), "\n";    // -۱٬۲۳۴٬۵۶۷٫۸۹۱
+echo Format::withSeparator(0.1), "\n";             // ۰٫۱
+echo Format::withSeparator(0.1 + 0.2), "\n";       // ۰٫۳
+echo Format::withSeparator(1 / 3), "\n";           // ۰٫۳۳۳۳۳۳۳۳۳۳۳۳۳۳۳ (۱۵ رقم)
+echo Format::withSeparator(123456789.123456789), "\n";     // ۱۲۳٬۴۵۶٬۷۸۹٫۱۲۳۴۵۷ (float)
+echo Format::withSeparator('123456789.123456789'), "\n";   // ۱۲۳٬۴۵۶٬۷۸۹٫۱۲۳۴۵۶۷۸۹ (رشته، دقیق)
+echo Format::withSeparator('0.3'), "\n";           // ۰٫۳</code></pre>
+<div class="note"><strong>پول و عددهای بزرگ.</strong> مبلغ‌ها را از اول تا آخر به شکل رشته یا عدد صحیح (ریال) نگه دارید. <code>float</code> کسرها را دقیق نشان نمی‌دهد. دو مثال بالا (<code>1 / 3</code> و <code>123456789.123456789</code>) همین را نشان می‌دهند.</div>
 
 <h3 id="limits">سقف اندازه</h3>
 <table>
 <thead><tr><th>سقف</th><th>مربوط به</th><th>کد خطا</th></tr></thead>
 <tbody>
-<tr><td>۴۰۹۶ بایت</td><td>رشتهٔ ورودی خام (هر رقم فارسی یا عربی دو بایت است)</td><td><code>input_too_long</code></td></tr>
-<tr><td>۱۰۰۰ نویسه</td><td>عدد نرمال‌شده: ارقام صحیح و کسر روی‌هم</td><td><code>input_too_long</code></td></tr>
+<tr><td>۴۰۹۶ بایت</td><td>رشتهٔ خام ورودی (هر رقم فارسی یا عربی دو بایت است)</td><td><code>input_too_long</code></td></tr>
+<tr><td>۱۰۰۰ نویسه</td><td>عدد یکسان‌شده: رقم‌های بخش صحیح و کسر با هم</td><td><code>input_too_long</code></td></tr>
 </tbody>
 </table>
 <pre><code class="language-php">try {
@@ -83,14 +87,14 @@ echo Format::withSeparator('-1234567.891'), "\n";  // -۱٬۲۳۴٬۵۶۷٫۸۹�
     echo $e-&gt;getMessage(), ' [', $e-&gt;getErrorCode()-&gt;value, "]\n";
     // Number exceeds the 1000 character limit. [input_too_long]
 }</code></pre>
-<p>دقیقاً ۱۰۰۰ رقم به‌طور عادی قالب‌بندی می‌شود. همهٔ سقف‌ها در یک جدول در <a href="limits.html">سقف‌ها</a> آمده است. تابع کمکی <code>format_number()</code> همان <code>Format::withSeparator()</code> با مقدارهای پیش‌فرض است.</p>
+<p>دقیقاً ۱۰۰۰ رقم مشکلی ندارد. همهٔ سقف‌ها در <a href="limits.html">سقف‌ها</a> یک‌جا آمده‌اند. تابع کمکی <code>format_number()</code> همان <code>Format::withSeparator()</code> با مقدارهای پیش‌فرض است.</p>
 
 <h2 id="ordinal">عدد ترتیبی</h2>
-<p><code>Format::ordinal()</code> واژهٔ ترتیبی فارسی را برای یک عدد صحیح نامنفی برمی‌گرداند. ابتدا با <code>NumberToWords</code> عدد اصلی را به حروف می‌نویسد (<a href="number-words.html">عدد به حروف</a>) و سپس قاعدهٔ پسوند را اعمال می‌کند:</p>
+<p><code>Format::ordinal()</code> برای عدد صحیح نامنفی، واژهٔ ترتیبی فارسی می‌دهد. اول با <code>NumberToWords</code> عدد را به حروف می‌نویسد (<a href="number-words.html">عدد به حروف</a>) و بعد پسوند را می‌گذارد:</p>
 <ul>
-<li>۱ استثنای «اول» است.</li>
-<li>عدد اصلی که به «سه» ختم شود «سوم» می‌شود؛ ۲۳ و ۳۳ هم همین‌طورند.</li>
-<li>عدد اصلی که به «ی» ختم شود (مثل «سی») نیم‌فاصله و «ام» می‌گیرد.</li>
+<li>۱ استثناست و «اول» می‌شود.</li>
+<li>عددی که آخرش «سه» باشد «سوم» می‌شود. ۲۳ و ۳۳ هم همین‌طور.</li>
+<li>عددی که آخرش «ی» باشد (مثل «سی») نیم‌فاصله و «ام» می‌گیرد.</li>
 <li>بقیه فقط «م» می‌گیرند.</li>
 </ul>
 <pre><code class="language-php">echo Format::ordinal(1), "\n";     // اول
@@ -104,5 +108,5 @@ echo Format::ordinal(100), "\n";   // صدم
 echo Format::ordinal(1000), "\n";  // یک هزارم
 echo Format::ordinal(0), "\n";     // صفرم
 echo Format::ordinal(3.0), "\n";   // سوم</code></pre>
-<p>عدد اعشاری صحیح مثل <code>3.0</code> پذیرفته می‌شود. عدد منفی، کسر (<code>2.5</code>) و اعشاری نامتناهی <code>InvalidNumberException</code> می‌اندازند (<code>invalid_number</code>، و برای <code>INF</code> و <code>NaN</code> کد <code>non_finite_number</code>). تابع کمکی آن <code>ordinal()</code> است.</p>
-<div class="note"><strong>واژه، نه رقم.</strong> <code>ordinal()</code> واژهٔ کامل را برمی‌گرداند و شکل کوتاه عددی نمی‌سازد؛ اگر لازم دارید خودتان با <code>Digits::toPersian()</code> بسازید.</div>
+<p>عدد اعشاریِ صحیح مثل <code>3.0</code> قبول می‌شود. عدد منفی، کسر (<code>2.5</code>) و اعشاری نامتناهی <code>InvalidNumberException</code> می‌دهند (<code>invalid_number</code>، و برای <code>INF</code> و <code>NaN</code> کد <code>non_finite_number</code>). تابع کمکی آن <code>ordinal()</code> است.</p>
+<div class="note"><strong>واژه، نه رقم.</strong> <code>ordinal()</code> واژهٔ کامل را می‌دهد و شکل کوتاه عددی نمی‌سازد. اگر شکل کوتاه می‌خواهید، خودتان با <code>Digits::toPersian()</code> بسازید.</div>

@@ -1,0 +1,1479 @@
+<?xml version="1.0"?>
+<phpunit xmlns="https://schema.phpunit.de/coverage/1.0">
+  <file name="Mobile.php" path="/Validation">
+    <totals>
+      <lines total="141" comments="34" code="107" executable="24" executed="24" percent="100.00"/>
+      <methods count="5" tested="5" percent="100.00"/>
+      <functions count="0" tested="0" percent="0"/>
+      <classes count="1" tested="1" percent="100.00"/>
+      <traits count="0" tested="0" percent="0"/>
+    </totals>
+    <class name="RtlyKit\Validation\Mobile" start="28" executable="24" executed="24" crap="14">
+      <namespace name="RtlyKit\Validation"/>
+      <method name="isValid" signature="isValid(mixed $value): bool" start="72" end="75" crap="1" executable="1" executed="1" coverage="100"/>
+      <method name="validate" signature="validate(mixed $value): RtlyKit\Validation\Result" start="83" end="102" crap="3" executable="10" executed="10" coverage="100"/>
+      <method name="getOperator" signature="getOperator(mixed $value): ?string" start="104" end="109" crap="2" executable="2" executed="2" coverage="100"/>
+      <method name="normalize" signature="normalize(string $mobile): string" start="115" end="132" crap="7" executable="8" executed="8" coverage="100"/>
+      <method name="lookup" signature="lookup(string $normalized): ?string" start="134" end="139" crap="1" executable="3" executed="3" coverage="100"/>
+    </class>
+    <coverage>
+      <line nr="74">
+        <covered by="RtlyKit\Tests\Unit\GlobalsTest::test_a_colliding_user_function_is_skipped_reported_and_left_untouched"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_is_mobile"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_every_validator_returns_a_result_for_any_value_and_never_throws"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_namespaced_validation_helpers_accept_any_value"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_valid"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_invalid"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_normalize_forms"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_operators"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_validator_implements_the_contract_and_is_callable_by_class_string#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_non_scalar_values_are_rejected_as_invalid_type#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_integers_and_integral_floats_are_accepted_as_numbers"/>
+        <covered by="RtlyKit\Tests\Integration\Laravel\RtlyKitServiceProviderTest::test_rules_accept_valid_values"/>
+        <covered by="RtlyKit\Tests\Integration\Laravel\RtlyKitServiceProviderTest::test_rules_reject_invalid_values"/>
+        <covered by="RtlyKit\Tests\Integration\Laravel\TranslationTest::test_every_rule_has_a_line_in_every_locale"/>
+      </line>
+      <line nr="85">
+        <covered by="RtlyKit\Tests\Unit\GlobalsTest::test_a_colliding_user_function_is_skipped_reported_and_left_untouched"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_validate_helpers_return_structured_result#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_is_mobile"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_validate_helpers_expose_details"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_validate_helpers_return_valid_results"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_every_validator_returns_a_result_for_any_value_and_never_throws"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_validator_extras_accept_any_value"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_namespaced_validation_helpers_accept_any_value"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_valid"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_invalid"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_normalize_forms"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_operators"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_validator_implements_the_contract_and_is_callable_by_class_string#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_non_scalar_values_are_rejected_as_invalid_type#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_strings_over_the_cap_are_rejected_cheaply#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_invalid_utf8_and_nul_bytes_do_not_throw#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_integers_and_integral_floats_are_accepted_as_numbers"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_existing_string_behaviour_is_unchanged"/>
+        <covered by="RtlyKit\Tests\Integration\Laravel\RtlyKitServiceProviderTest::test_rules_accept_valid_values"/>
+        <covered by="RtlyKit\Tests\Integration\Laravel\RtlyKitServiceProviderTest::test_rules_reject_invalid_values"/>
+        <covered by="RtlyKit\Tests\Integration\Laravel\TranslationTest::test_every_rule_has_a_line_in_every_locale"/>
+      </line>
+      <line nr="86">
+        <covered by="RtlyKit\Tests\Unit\GlobalsTest::test_a_colliding_user_function_is_skipped_reported_and_left_untouched"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_validate_helpers_return_structured_result#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_is_mobile"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_validate_helpers_expose_details"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_validate_helpers_return_valid_results"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_every_validator_returns_a_result_for_any_value_and_never_throws"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_validator_extras_accept_any_value"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_namespaced_validation_helpers_accept_any_value"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_valid"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_invalid"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_normalize_forms"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_operators"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_validator_implements_the_contract_and_is_callable_by_class_string#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_non_scalar_values_are_rejected_as_invalid_type#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_strings_over_the_cap_are_rejected_cheaply#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_invalid_utf8_and_nul_bytes_do_not_throw#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_integers_and_integral_floats_are_accepted_as_numbers"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_existing_string_behaviour_is_unchanged"/>
+        <covered by="RtlyKit\Tests\Integration\Laravel\RtlyKitServiceProviderTest::test_rules_accept_valid_values"/>
+        <covered by="RtlyKit\Tests\Integration\Laravel\RtlyKitServiceProviderTest::test_rules_reject_invalid_values"/>
+        <covered by="RtlyKit\Tests\Integration\Laravel\TranslationTest::test_every_rule_has_a_line_in_every_locale"/>
+      </line>
+      <line nr="88">
+        <covered by="RtlyKit\Tests\Unit\GlobalsTest::test_a_colliding_user_function_is_skipped_reported_and_left_untouched"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_validate_helpers_return_structured_result#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_is_mobile"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_validate_helpers_expose_details"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_validate_helpers_return_valid_results"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_every_validator_returns_a_result_for_any_value_and_never_throws"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_validator_extras_accept_any_value"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_namespaced_validation_helpers_accept_any_value"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_valid"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_invalid"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_normalize_forms"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_operators"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_validator_implements_the_contract_and_is_callable_by_class_string#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_non_scalar_values_are_rejected_as_invalid_type#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_strings_over_the_cap_are_rejected_cheaply#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_invalid_utf8_and_nul_bytes_do_not_throw#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_integers_and_integral_floats_are_accepted_as_numbers"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_existing_string_behaviour_is_unchanged"/>
+        <covered by="RtlyKit\Tests\Integration\Laravel\RtlyKitServiceProviderTest::test_rules_accept_valid_values"/>
+        <covered by="RtlyKit\Tests\Integration\Laravel\RtlyKitServiceProviderTest::test_rules_reject_invalid_values"/>
+        <covered by="RtlyKit\Tests\Integration\Laravel\TranslationTest::test_every_rule_has_a_line_in_every_locale"/>
+      </line>
+      <line nr="89">
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_every_validator_returns_a_result_for_any_value_and_never_throws"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_validator_extras_accept_any_value"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_namespaced_validation_helpers_accept_any_value"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_non_scalar_values_are_rejected_as_invalid_type#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_strings_over_the_cap_are_rejected_cheaply#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_existing_string_behaviour_is_unchanged"/>
+      </line>
+      <line nr="92">
+        <covered by="RtlyKit\Tests\Unit\GlobalsTest::test_a_colliding_user_function_is_skipped_reported_and_left_untouched"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_validate_helpers_return_structured_result#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_is_mobile"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_validate_helpers_expose_details"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_validate_helpers_return_valid_results"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_every_validator_returns_a_result_for_any_value_and_never_throws"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_validator_extras_accept_any_value"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_namespaced_validation_helpers_accept_any_value"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_valid"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_invalid"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_normalize_forms"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_operators"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_validator_implements_the_contract_and_is_callable_by_class_string#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_strings_over_the_cap_are_rejected_cheaply#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_invalid_utf8_and_nul_bytes_do_not_throw#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_integers_and_integral_floats_are_accepted_as_numbers"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_existing_string_behaviour_is_unchanged"/>
+        <covered by="RtlyKit\Tests\Integration\Laravel\RtlyKitServiceProviderTest::test_rules_accept_valid_values"/>
+        <covered by="RtlyKit\Tests\Integration\Laravel\RtlyKitServiceProviderTest::test_rules_reject_invalid_values"/>
+        <covered by="RtlyKit\Tests\Integration\Laravel\TranslationTest::test_every_rule_has_a_line_in_every_locale"/>
+      </line>
+      <line nr="93">
+        <covered by="RtlyKit\Tests\Unit\GlobalsTest::test_a_colliding_user_function_is_skipped_reported_and_left_untouched"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_validate_helpers_return_structured_result#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_is_mobile"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_validate_helpers_expose_details"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_validate_helpers_return_valid_results"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_every_validator_returns_a_result_for_any_value_and_never_throws"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_validator_extras_accept_any_value"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_namespaced_validation_helpers_accept_any_value"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_valid"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_invalid"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_normalize_forms"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_operators"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_validator_implements_the_contract_and_is_callable_by_class_string#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_strings_over_the_cap_are_rejected_cheaply#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_invalid_utf8_and_nul_bytes_do_not_throw#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_integers_and_integral_floats_are_accepted_as_numbers"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_existing_string_behaviour_is_unchanged"/>
+        <covered by="RtlyKit\Tests\Integration\Laravel\RtlyKitServiceProviderTest::test_rules_accept_valid_values"/>
+        <covered by="RtlyKit\Tests\Integration\Laravel\RtlyKitServiceProviderTest::test_rules_reject_invalid_values"/>
+        <covered by="RtlyKit\Tests\Integration\Laravel\TranslationTest::test_every_rule_has_a_line_in_every_locale"/>
+      </line>
+      <line nr="95">
+        <covered by="RtlyKit\Tests\Unit\GlobalsTest::test_a_colliding_user_function_is_skipped_reported_and_left_untouched"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_validate_helpers_return_structured_result#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_is_mobile"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_validate_helpers_expose_details"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_validate_helpers_return_valid_results"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_every_validator_returns_a_result_for_any_value_and_never_throws"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_validator_extras_accept_any_value"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_namespaced_validation_helpers_accept_any_value"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_valid"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_invalid"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_normalize_forms"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_operators"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_validator_implements_the_contract_and_is_callable_by_class_string#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_strings_over_the_cap_are_rejected_cheaply#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_invalid_utf8_and_nul_bytes_do_not_throw#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_integers_and_integral_floats_are_accepted_as_numbers"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_existing_string_behaviour_is_unchanged"/>
+        <covered by="RtlyKit\Tests\Integration\Laravel\RtlyKitServiceProviderTest::test_rules_accept_valid_values"/>
+        <covered by="RtlyKit\Tests\Integration\Laravel\RtlyKitServiceProviderTest::test_rules_reject_invalid_values"/>
+        <covered by="RtlyKit\Tests\Integration\Laravel\TranslationTest::test_every_rule_has_a_line_in_every_locale"/>
+      </line>
+      <line nr="96">
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_validate_helpers_return_structured_result#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_is_mobile"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_every_validator_returns_a_result_for_any_value_and_never_throws"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_validator_extras_accept_any_value"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_namespaced_validation_helpers_accept_any_value"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_invalid"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_normalize_forms"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_operators"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_strings_over_the_cap_are_rejected_cheaply#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_invalid_utf8_and_nul_bytes_do_not_throw#mobile"/>
+        <covered by="RtlyKit\Tests\Integration\Laravel\RtlyKitServiceProviderTest::test_rules_reject_invalid_values"/>
+        <covered by="RtlyKit\Tests\Integration\Laravel\TranslationTest::test_every_rule_has_a_line_in_every_locale"/>
+      </line>
+      <line nr="99">
+        <covered by="RtlyKit\Tests\Unit\GlobalsTest::test_a_colliding_user_function_is_skipped_reported_and_left_untouched"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_validate_helpers_return_structured_result#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_is_mobile"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_validate_helpers_expose_details"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_validate_helpers_return_valid_results"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_every_validator_returns_a_result_for_any_value_and_never_throws"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_validator_extras_accept_any_value"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_namespaced_validation_helpers_accept_any_value"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_valid"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_normalize_forms"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_operators"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_validator_implements_the_contract_and_is_callable_by_class_string#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_invalid_utf8_and_nul_bytes_do_not_throw#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_integers_and_integral_floats_are_accepted_as_numbers"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_existing_string_behaviour_is_unchanged"/>
+        <covered by="RtlyKit\Tests\Integration\Laravel\RtlyKitServiceProviderTest::test_rules_accept_valid_values"/>
+      </line>
+      <line nr="101">
+        <covered by="RtlyKit\Tests\Unit\GlobalsTest::test_a_colliding_user_function_is_skipped_reported_and_left_untouched"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_validate_helpers_return_structured_result#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_is_mobile"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_validate_helpers_expose_details"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_validate_helpers_return_valid_results"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_every_validator_returns_a_result_for_any_value_and_never_throws"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_validator_extras_accept_any_value"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_namespaced_validation_helpers_accept_any_value"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_valid"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_normalize_forms"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_operators"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_validator_implements_the_contract_and_is_callable_by_class_string#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_invalid_utf8_and_nul_bytes_do_not_throw#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_integers_and_integral_floats_are_accepted_as_numbers"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_existing_string_behaviour_is_unchanged"/>
+        <covered by="RtlyKit\Tests\Integration\Laravel\RtlyKitServiceProviderTest::test_rules_accept_valid_values"/>
+      </line>
+      <line nr="106">
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_validator_extras_accept_any_value"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_valid"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_operators"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_existing_string_behaviour_is_unchanged"/>
+      </line>
+      <line nr="108">
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_validator_extras_accept_any_value"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_valid"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_operators"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_existing_string_behaviour_is_unchanged"/>
+      </line>
+      <line nr="117">
+        <covered by="RtlyKit\Tests\Unit\GlobalsTest::test_a_colliding_user_function_is_skipped_reported_and_left_untouched"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_validate_helpers_return_structured_result#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_is_mobile"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_validate_helpers_expose_details"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_validate_helpers_return_valid_results"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_every_validator_returns_a_result_for_any_value_and_never_throws"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_validator_extras_accept_any_value"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_validator_string_helpers_survive_awkward_strings"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_namespaced_validation_helpers_accept_any_value"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_valid"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_invalid"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_normalize_forms"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_operators"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_validator_implements_the_contract_and_is_callable_by_class_string#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_strings_over_the_cap_are_rejected_cheaply#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_invalid_utf8_and_nul_bytes_do_not_throw#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_integers_and_integral_floats_are_accepted_as_numbers"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_existing_string_behaviour_is_unchanged"/>
+        <covered by="RtlyKit\Tests\Integration\Laravel\RtlyKitServiceProviderTest::test_rules_accept_valid_values"/>
+        <covered by="RtlyKit\Tests\Integration\Laravel\RtlyKitServiceProviderTest::test_rules_reject_invalid_values"/>
+        <covered by="RtlyKit\Tests\Integration\Laravel\TranslationTest::test_every_rule_has_a_line_in_every_locale"/>
+      </line>
+      <line nr="119">
+        <covered by="RtlyKit\Tests\Unit\GlobalsTest::test_a_colliding_user_function_is_skipped_reported_and_left_untouched"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_validate_helpers_return_structured_result#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_is_mobile"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_validate_helpers_expose_details"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_validate_helpers_return_valid_results"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_every_validator_returns_a_result_for_any_value_and_never_throws"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_validator_extras_accept_any_value"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_validator_string_helpers_survive_awkward_strings"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_namespaced_validation_helpers_accept_any_value"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_valid"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_invalid"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_normalize_forms"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_operators"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_validator_implements_the_contract_and_is_callable_by_class_string#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_strings_over_the_cap_are_rejected_cheaply#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_invalid_utf8_and_nul_bytes_do_not_throw#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_integers_and_integral_floats_are_accepted_as_numbers"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_existing_string_behaviour_is_unchanged"/>
+        <covered by="RtlyKit\Tests\Integration\Laravel\RtlyKitServiceProviderTest::test_rules_accept_valid_values"/>
+        <covered by="RtlyKit\Tests\Integration\Laravel\RtlyKitServiceProviderTest::test_rules_reject_invalid_values"/>
+        <covered by="RtlyKit\Tests\Integration\Laravel\TranslationTest::test_every_rule_has_a_line_in_every_locale"/>
+      </line>
+      <line nr="120">
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_normalize_forms"/>
+      </line>
+      <line nr="123">
+        <covered by="RtlyKit\Tests\Unit\GlobalsTest::test_a_colliding_user_function_is_skipped_reported_and_left_untouched"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_validate_helpers_return_structured_result#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_is_mobile"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_validate_helpers_expose_details"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_validate_helpers_return_valid_results"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_every_validator_returns_a_result_for_any_value_and_never_throws"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_validator_extras_accept_any_value"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_validator_string_helpers_survive_awkward_strings"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_namespaced_validation_helpers_accept_any_value"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_valid"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_invalid"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_normalize_forms"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_operators"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_validator_implements_the_contract_and_is_callable_by_class_string#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_strings_over_the_cap_are_rejected_cheaply#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_invalid_utf8_and_nul_bytes_do_not_throw#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_integers_and_integral_floats_are_accepted_as_numbers"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_existing_string_behaviour_is_unchanged"/>
+        <covered by="RtlyKit\Tests\Integration\Laravel\RtlyKitServiceProviderTest::test_rules_accept_valid_values"/>
+        <covered by="RtlyKit\Tests\Integration\Laravel\RtlyKitServiceProviderTest::test_rules_reject_invalid_values"/>
+        <covered by="RtlyKit\Tests\Integration\Laravel\TranslationTest::test_every_rule_has_a_line_in_every_locale"/>
+      </line>
+      <line nr="124">
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_is_mobile"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_validate_helpers_expose_details"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_validate_helpers_return_valid_results"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_valid"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_normalize_forms"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_integers_and_integral_floats_are_accepted_as_numbers"/>
+      </line>
+      <line nr="127">
+        <covered by="RtlyKit\Tests\Unit\GlobalsTest::test_a_colliding_user_function_is_skipped_reported_and_left_untouched"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_validate_helpers_return_structured_result#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_is_mobile"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_every_validator_returns_a_result_for_any_value_and_never_throws"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_validator_extras_accept_any_value"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_validator_string_helpers_survive_awkward_strings"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_namespaced_validation_helpers_accept_any_value"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_valid"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_invalid"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_normalize_forms"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_operators"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_validator_implements_the_contract_and_is_callable_by_class_string#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_strings_over_the_cap_are_rejected_cheaply#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_invalid_utf8_and_nul_bytes_do_not_throw#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_integers_and_integral_floats_are_accepted_as_numbers"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_existing_string_behaviour_is_unchanged"/>
+        <covered by="RtlyKit\Tests\Integration\Laravel\RtlyKitServiceProviderTest::test_rules_accept_valid_values"/>
+        <covered by="RtlyKit\Tests\Integration\Laravel\RtlyKitServiceProviderTest::test_rules_reject_invalid_values"/>
+        <covered by="RtlyKit\Tests\Integration\Laravel\TranslationTest::test_every_rule_has_a_line_in_every_locale"/>
+      </line>
+      <line nr="128">
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_normalize_forms"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_integers_and_integral_floats_are_accepted_as_numbers"/>
+      </line>
+      <line nr="131">
+        <covered by="RtlyKit\Tests\Unit\GlobalsTest::test_a_colliding_user_function_is_skipped_reported_and_left_untouched"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_validate_helpers_return_structured_result#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_is_mobile"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_every_validator_returns_a_result_for_any_value_and_never_throws"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_validator_extras_accept_any_value"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_validator_string_helpers_survive_awkward_strings"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_namespaced_validation_helpers_accept_any_value"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_valid"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_invalid"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_normalize_forms"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_operators"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_validator_implements_the_contract_and_is_callable_by_class_string#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_strings_over_the_cap_are_rejected_cheaply#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_invalid_utf8_and_nul_bytes_do_not_throw#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_existing_string_behaviour_is_unchanged"/>
+        <covered by="RtlyKit\Tests\Integration\Laravel\RtlyKitServiceProviderTest::test_rules_accept_valid_values"/>
+        <covered by="RtlyKit\Tests\Integration\Laravel\RtlyKitServiceProviderTest::test_rules_reject_invalid_values"/>
+        <covered by="RtlyKit\Tests\Integration\Laravel\TranslationTest::test_every_rule_has_a_line_in_every_locale"/>
+      </line>
+      <line nr="136">
+        <covered by="RtlyKit\Tests\Unit\GlobalsTest::test_a_colliding_user_function_is_skipped_reported_and_left_untouched"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_validate_helpers_return_structured_result#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_is_mobile"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_validate_helpers_expose_details"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_validate_helpers_return_valid_results"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_every_validator_returns_a_result_for_any_value_and_never_throws"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_validator_extras_accept_any_value"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_namespaced_validation_helpers_accept_any_value"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_valid"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_normalize_forms"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_operators"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_validator_implements_the_contract_and_is_callable_by_class_string#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_invalid_utf8_and_nul_bytes_do_not_throw#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_integers_and_integral_floats_are_accepted_as_numbers"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_existing_string_behaviour_is_unchanged"/>
+        <covered by="RtlyKit\Tests\Integration\Laravel\RtlyKitServiceProviderTest::test_rules_accept_valid_values"/>
+      </line>
+      <line nr="137">
+        <covered by="RtlyKit\Tests\Unit\GlobalsTest::test_a_colliding_user_function_is_skipped_reported_and_left_untouched"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_validate_helpers_return_structured_result#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_is_mobile"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_validate_helpers_expose_details"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_validate_helpers_return_valid_results"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_every_validator_returns_a_result_for_any_value_and_never_throws"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_validator_extras_accept_any_value"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_namespaced_validation_helpers_accept_any_value"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_valid"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_normalize_forms"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_operators"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_validator_implements_the_contract_and_is_callable_by_class_string#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_invalid_utf8_and_nul_bytes_do_not_throw#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_integers_and_integral_floats_are_accepted_as_numbers"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_existing_string_behaviour_is_unchanged"/>
+        <covered by="RtlyKit\Tests\Integration\Laravel\RtlyKitServiceProviderTest::test_rules_accept_valid_values"/>
+      </line>
+      <line nr="138">
+        <covered by="RtlyKit\Tests\Unit\GlobalsTest::test_a_colliding_user_function_is_skipped_reported_and_left_untouched"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_validate_helpers_return_structured_result#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_is_mobile"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_validate_helpers_expose_details"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_validate_helpers_return_valid_results"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_every_validator_returns_a_result_for_any_value_and_never_throws"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_validator_extras_accept_any_value"/>
+        <covered by="RtlyKit\Tests\Unit\PublicApiFuzzTest::test_namespaced_validation_helpers_accept_any_value"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_valid"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_normalize_forms"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\MobileTest::test_mobile_operators"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_validator_implements_the_contract_and_is_callable_by_class_string#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_invalid_utf8_and_nul_bytes_do_not_throw#mobile"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_integers_and_integral_floats_are_accepted_as_numbers"/>
+        <covered by="RtlyKit\Tests\Unit\Validation\ValidatorContractTest::test_existing_string_behaviour_is_unchanged"/>
+        <covered by="RtlyKit\Tests\Integration\Laravel\RtlyKitServiceProviderTest::test_rules_accept_valid_values"/>
+      </line>
+    </coverage>
+    <source>
+      <line no="1">
+        <token name="T_OPEN_TAG">&lt;?php</token>
+      </line>
+      <line no="2"/>
+      <line no="3">
+        <token name="T_DECLARE">declare</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">strict_types</token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_LNUMBER">1</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="4"/>
+      <line no="5">
+        <token name="T_NAMESPACE">namespace</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_NAME_QUALIFIED">RtlyKit\Validation</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="6"/>
+      <line no="7">
+        <token name="T_USE">use</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_NAME_QUALIFIED">RtlyKit\Contracts\Validator</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="8">
+        <token name="T_USE">use</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_NAME_QUALIFIED">RtlyKit\Number\Digits</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="9"/>
+      <line no="10">
+        <token name="T_DOC_COMMENT">/**</token>
+      </line>
+      <line no="11">
+        <token name="T_DOC_COMMENT"> * Iranian mobile number validator (national form 09xxxxxxxxx).</token>
+      </line>
+      <line no="12">
+        <token name="T_DOC_COMMENT"> *</token>
+      </line>
+      <line no="13">
+        <token name="T_DOC_COMMENT"> * Accepted input forms: 09121234567, 9121234567, 989121234567, +989121234567,</token>
+      </line>
+      <line no="14">
+        <token name="T_DOC_COMMENT"> * 00989121234567, with Persian/Arabic digits, spaces, dashes or parentheses.</token>
+      </line>
+      <line no="15">
+        <token name="T_DOC_COMMENT"> *</token>
+      </line>
+      <line no="16">
+        <token name="T_DOC_COMMENT"> * Validity only checks the shape: 09 + 9 digits whose third digit is 0-4 or 9</token>
+      </line>
+      <line no="17">
+        <token name="T_DOC_COMMENT"> * (blocks 090x-094x and 099x are allocated to mobile networks). The operator</token>
+      </line>
+      <line no="18">
+        <token name="T_DOC_COMMENT"> * lookup is separate and conservative: it only knows the well-established</token>
+      </line>
+      <line no="19">
+        <token name="T_DOC_COMMENT"> * prefixes below and returns null for anything else &#x2014; the number portability</token>
+      </line>
+      <line no="20">
+        <token name="T_DOC_COMMENT"> * scheme means a prefix never guarantees the current operator anyway.</token>
+      </line>
+      <line no="21">
+        <token name="T_DOC_COMMENT"> *</token>
+      </line>
+      <line no="22">
+        <token name="T_DOC_COMMENT"> * 0990-0994 are listed as Hamrah-e Aval (0994 is its "Anarestan" youth SIM</token>
+      </line>
+      <line no="23">
+        <token name="T_DOC_COMMENT"> * line); two independent public tables agree on this (see</token>
+      </line>
+      <line no="24">
+        <token name="T_DOC_COMMENT"> * resources/data/SOURCES.md). Uncertain / deliberately omitted: 0995x-0999x</token>
+      </line>
+      <line no="25">
+        <token name="T_DOC_COMMENT"> * (other than 0998 and 09991), 0940-0949 and 0931/0932/0934 (Irancell family</token>
+      </line>
+      <line no="26">
+        <token name="T_DOC_COMMENT"> * allocations vary between sources).</token>
+      </line>
+      <line no="27">
+        <token name="T_DOC_COMMENT"> */</token>
+      </line>
+      <line no="28">
+        <token name="T_FINAL">final</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CLASS">class</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">Mobile</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_IMPLEMENTS">implements</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">Validator</token>
+      </line>
+      <line no="29">
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="30">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_DOC_COMMENT">/**</token>
+      </line>
+      <line no="31">
+        <token name="T_DOC_COMMENT">     * Longest-prefix table (digits after the leading 0): [prefix =&gt; operator].</token>
+      </line>
+      <line no="32">
+        <token name="T_DOC_COMMENT">     * Keys are 3-digit blocks, plus the 5-digit Aptel block.</token>
+      </line>
+      <line no="33">
+        <token name="T_DOC_COMMENT">     *</token>
+      </line>
+      <line no="34">
+        <token name="T_DOC_COMMENT">     * @var array&lt;int, string&gt;</token>
+      </line>
+      <line no="35">
+        <token name="T_DOC_COMMENT">     */</token>
+      </line>
+      <line no="36">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PRIVATE">private</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STATIC">static</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_ARRAY">array</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$operators</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_SQUARE">[</token>
+      </line>
+      <line no="37">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_LNUMBER">910</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x647;&#x645;&#x631;&#x627;&#x647; &#x627;&#x648;&#x644;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="38">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_LNUMBER">911</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x647;&#x645;&#x631;&#x627;&#x647; &#x627;&#x648;&#x644;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="39">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_LNUMBER">912</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x647;&#x645;&#x631;&#x627;&#x647; &#x627;&#x648;&#x644;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="40">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_LNUMBER">913</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x647;&#x645;&#x631;&#x627;&#x647; &#x627;&#x648;&#x644;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="41">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_LNUMBER">914</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x647;&#x645;&#x631;&#x627;&#x647; &#x627;&#x648;&#x644;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="42">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_LNUMBER">915</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x647;&#x645;&#x631;&#x627;&#x647; &#x627;&#x648;&#x644;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="43">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_LNUMBER">916</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x647;&#x645;&#x631;&#x627;&#x647; &#x627;&#x648;&#x644;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="44">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_LNUMBER">917</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x647;&#x645;&#x631;&#x627;&#x647; &#x627;&#x648;&#x644;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="45">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_LNUMBER">918</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x647;&#x645;&#x631;&#x627;&#x647; &#x627;&#x648;&#x644;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="46">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_LNUMBER">919</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x647;&#x645;&#x631;&#x627;&#x647; &#x627;&#x648;&#x644;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="47">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_LNUMBER">990</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x647;&#x645;&#x631;&#x627;&#x647; &#x627;&#x648;&#x644;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="48">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_LNUMBER">991</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x647;&#x645;&#x631;&#x627;&#x647; &#x627;&#x648;&#x644;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="49">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_LNUMBER">992</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x647;&#x645;&#x631;&#x627;&#x647; &#x627;&#x648;&#x644;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="50">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_LNUMBER">993</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x647;&#x645;&#x631;&#x627;&#x647; &#x627;&#x648;&#x644;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="51">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_LNUMBER">994</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x647;&#x645;&#x631;&#x627;&#x647; &#x627;&#x648;&#x644;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="52">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_LNUMBER">900</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x627;&#x6CC;&#x631;&#x627;&#x646;&#x633;&#x644;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="53">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_LNUMBER">901</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x627;&#x6CC;&#x631;&#x627;&#x646;&#x633;&#x644;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="54">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_LNUMBER">902</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x627;&#x6CC;&#x631;&#x627;&#x646;&#x633;&#x644;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="55">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_LNUMBER">903</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x627;&#x6CC;&#x631;&#x627;&#x646;&#x633;&#x644;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="56">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_LNUMBER">904</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x627;&#x6CC;&#x631;&#x627;&#x646;&#x633;&#x644;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="57">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_LNUMBER">905</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x627;&#x6CC;&#x631;&#x627;&#x646;&#x633;&#x644;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="58">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_LNUMBER">930</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x627;&#x6CC;&#x631;&#x627;&#x646;&#x633;&#x644;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="59">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_LNUMBER">933</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x627;&#x6CC;&#x631;&#x627;&#x646;&#x633;&#x644;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="60">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_LNUMBER">935</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x627;&#x6CC;&#x631;&#x627;&#x646;&#x633;&#x644;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="61">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_LNUMBER">936</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x627;&#x6CC;&#x631;&#x627;&#x646;&#x633;&#x644;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="62">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_LNUMBER">937</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x627;&#x6CC;&#x631;&#x627;&#x646;&#x633;&#x644;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="63">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_LNUMBER">938</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x627;&#x6CC;&#x631;&#x627;&#x646;&#x633;&#x644;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="64">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_LNUMBER">939</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x627;&#x6CC;&#x631;&#x627;&#x646;&#x633;&#x644;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="65">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_LNUMBER">920</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x631;&#x627;&#x6CC;&#x62A;&#x644;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="66">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_LNUMBER">921</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x631;&#x627;&#x6CC;&#x62A;&#x644;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="67">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_LNUMBER">922</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x631;&#x627;&#x6CC;&#x62A;&#x644;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="68">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_LNUMBER">998</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x634;&#x627;&#x62A;&#x644; &#x645;&#x648;&#x628;&#x627;&#x6CC;&#x644;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="69">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_LNUMBER">99910</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x622;&#x67E;&#x62A;&#x644;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="70">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_CLOSE_SQUARE">]</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="71"/>
+      <line no="72">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STATIC">static</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">isValid</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">mixed</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$value</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">bool</token>
+      </line>
+      <line no="73">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="74">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_RETURN">return</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">self</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_STRING">validate</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_VARIABLE">$value</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_OBJECT_OPERATOR">-&gt;</token>
+        <token name="T_STRING">isValid</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="75">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_CLOSE_CURLY">}</token>
+      </line>
+      <line no="76"/>
+      <line no="77">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_DOC_COMMENT">/**</token>
+      </line>
+      <line no="78">
+        <token name="T_DOC_COMMENT">     * Validate with structured errors. Error codes: invalid_format, invalid_type, input_too_long.</token>
+      </line>
+      <line no="79">
+        <token name="T_DOC_COMMENT">     * Details: normalized, operator (null when unknown).</token>
+      </line>
+      <line no="80">
+        <token name="T_DOC_COMMENT">     * Accepts strings, ints and integral floats; any other type or a string over 4096 bytes yields</token>
+      </line>
+      <line no="81">
+        <token name="T_DOC_COMMENT">     * `invalid_type` / `input_too_long`.</token>
+      </line>
+      <line no="82">
+        <token name="T_DOC_COMMENT">     */</token>
+      </line>
+      <line no="83">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STATIC">static</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">validate</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">mixed</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$value</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">Result</token>
+      </line>
+      <line no="84">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="85">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_VARIABLE">$details</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_SQUARE">[</token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'normalized'</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">''</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'operator'</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">null</token>
+        <token name="T_CLOSE_SQUARE">]</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="86">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_VARIABLE">$input</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">Input</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_STRING">coerce</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_VARIABLE">$value</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$details</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="87"/>
+      <line no="88">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_IF">if</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_VARIABLE">$input</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_INSTANCEOF">instanceof</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">Result</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="89">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_RETURN">return</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$input</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="90">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_CLOSE_CURLY">}</token>
+      </line>
+      <line no="91"/>
+      <line no="92">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_VARIABLE">$mobile</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">self</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_STRING">normalize</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_VARIABLE">$input</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="93">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_VARIABLE">$details</token>
+        <token name="T_OPEN_SQUARE">[</token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'normalized'</token>
+        <token name="T_CLOSE_SQUARE">]</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$mobile</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="94"/>
+      <line no="95">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_IF">if</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">preg_match</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'/^09[0-49]\d{8}$/'</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$mobile</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_IS_NOT_IDENTICAL">!==</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_LNUMBER">1</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="96">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_RETURN">return</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">Result</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_STRING">invalid</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'invalid_format'</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$details</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="97">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_CLOSE_CURLY">}</token>
+      </line>
+      <line no="98"/>
+      <line no="99">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_VARIABLE">$details</token>
+        <token name="T_OPEN_SQUARE">[</token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'operator'</token>
+        <token name="T_CLOSE_SQUARE">]</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">self</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_STRING">lookup</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_VARIABLE">$mobile</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="100"/>
+      <line no="101">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_RETURN">return</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">Result</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_STRING">valid</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_VARIABLE">$details</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="102">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_CLOSE_CURLY">}</token>
+      </line>
+      <line no="103"/>
+      <line no="104">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STATIC">static</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">getOperator</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">mixed</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$value</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_QUESTION_MARK">?</token>
+        <token name="T_STRING">string</token>
+      </line>
+      <line no="105">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="106">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_VARIABLE">$operator</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">self</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_STRING">validate</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_VARIABLE">$value</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_OBJECT_OPERATOR">-&gt;</token>
+        <token name="T_STRING">details</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_OPEN_SQUARE">[</token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'operator'</token>
+        <token name="T_CLOSE_SQUARE">]</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_COALESCE">??</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">null</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="107"/>
+      <line no="108">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_RETURN">return</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">is_string</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_VARIABLE">$operator</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_QUESTION_MARK">?</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$operator</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">null</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="109">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_CLOSE_CURLY">}</token>
+      </line>
+      <line no="110"/>
+      <line no="111">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_DOC_COMMENT">/**</token>
+      </line>
+      <line no="112">
+        <token name="T_DOC_COMMENT">     * Normalize to the national form `09xxxxxxxxx` where possible.</token>
+      </line>
+      <line no="113">
+        <token name="T_DOC_COMMENT">     * Input that cannot be mapped is returned as plain digits.</token>
+      </line>
+      <line no="114">
+        <token name="T_DOC_COMMENT">     */</token>
+      </line>
+      <line no="115">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STATIC">static</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">normalize</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">string</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$mobile</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">string</token>
+      </line>
+      <line no="116">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="117">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_VARIABLE">$digits</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">preg_replace</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'/\D/'</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">''</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">Digits</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_STRING">toEnglish</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_VARIABLE">$mobile</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_COALESCE">??</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">''</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="118"/>
+      <line no="119">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_IF">if</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">str_starts_with</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_VARIABLE">$digits</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'0098'</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_BOOLEAN_AND">&amp;&amp;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">strlen</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_VARIABLE">$digits</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_IS_IDENTICAL">===</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_LNUMBER">14</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="120">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_RETURN">return</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'0'</token>
+        <token name="T_DOT">.</token>
+        <token name="T_STRING">substr</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_VARIABLE">$digits</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_LNUMBER">4</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="121">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_CLOSE_CURLY">}</token>
+      </line>
+      <line no="122"/>
+      <line no="123">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_IF">if</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">str_starts_with</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_VARIABLE">$digits</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'98'</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_BOOLEAN_AND">&amp;&amp;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">strlen</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_VARIABLE">$digits</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_IS_IDENTICAL">===</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_LNUMBER">12</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="124">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_RETURN">return</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'0'</token>
+        <token name="T_DOT">.</token>
+        <token name="T_STRING">substr</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_VARIABLE">$digits</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_LNUMBER">2</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="125">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_CLOSE_CURLY">}</token>
+      </line>
+      <line no="126"/>
+      <line no="127">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_IF">if</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">strlen</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_VARIABLE">$digits</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_IS_IDENTICAL">===</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_LNUMBER">10</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_BOOLEAN_AND">&amp;&amp;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$digits</token>
+        <token name="T_OPEN_SQUARE">[</token>
+        <token name="T_LNUMBER">0</token>
+        <token name="T_CLOSE_SQUARE">]</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_IS_IDENTICAL">===</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'9'</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="128">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_RETURN">return</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'0'</token>
+        <token name="T_DOT">.</token>
+        <token name="T_VARIABLE">$digits</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="129">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_CLOSE_CURLY">}</token>
+      </line>
+      <line no="130"/>
+      <line no="131">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_RETURN">return</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$digits</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="132">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_CLOSE_CURLY">}</token>
+      </line>
+      <line no="133"/>
+      <line no="134">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PRIVATE">private</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STATIC">static</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">lookup</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">string</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$normalized</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_QUESTION_MARK">?</token>
+        <token name="T_STRING">string</token>
+      </line>
+      <line no="135">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="136">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_RETURN">return</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">self</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_VARIABLE">$operators</token>
+        <token name="T_OPEN_SQUARE">[</token>
+        <token name="T_INT_CAST">(int)</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">substr</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_VARIABLE">$normalized</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_LNUMBER">1</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_LNUMBER">5</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_CLOSE_SQUARE">]</token>
+      </line>
+      <line no="137">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_COALESCE">??</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">self</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_VARIABLE">$operators</token>
+        <token name="T_OPEN_SQUARE">[</token>
+        <token name="T_INT_CAST">(int)</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">substr</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_VARIABLE">$normalized</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_LNUMBER">1</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_LNUMBER">3</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_CLOSE_SQUARE">]</token>
+      </line>
+      <line no="138">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_COALESCE">??</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">null</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="139">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_CLOSE_CURLY">}</token>
+      </line>
+      <line no="140">
+        <token name="T_CLOSE_CURLY">}</token>
+      </line>
+      <line no="141"/>
+    </source>
+  </file>
+</phpunit>

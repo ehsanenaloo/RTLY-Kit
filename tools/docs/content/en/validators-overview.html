@@ -1,26 +1,26 @@
 <!--
 title: Validators overview
-description: How the six Iranian validators work: the shared Validator contract, the Result object, stable error keys, input normalization and size limits.
+description: How the six Iranian validators work. The shared Validator contract, the Result object, stable error keys, input cleaning and size limits.
 group: validation
 order: 10
 -->
 <h2 id="six-validators">The six validators</h2>
-<p>RTLY-Kit ships six validators for data that Iranian applications handle every day. They all follow one shape, so once you know one you know them all.</p>
+<p>RTLY-Kit has six validators for data that Iranian apps handle every day. They all work the same way. Once you know one, you know them all.</p>
 <table>
 <thead><tr><th>Class</th><th>Checks</th><th>Page</th></tr></thead>
 <tbody>
 <tr><td><code>NationalCode</code></td><td>10 digits, mod-11 check digit, place-of-issue hint</td><td><a href="national-code.html">National code</a></td></tr>
 <tr><td><code>Sheba</code></td><td><code>IR</code> + 24 digits, ISO 7064 mod-97-10, bank lookup</td><td><a href="sheba-and-bank-card.html">Sheba and bank card</a></td></tr>
 <tr><td><code>BankCard</code></td><td>16 digits, Luhn checksum, bank lookup by BIN</td><td><a href="sheba-and-bank-card.html">Sheba and bank card</a></td></tr>
-<tr><td><code>Mobile</code></td><td>Shape of <code>09xxxxxxxxx</code> in five input forms, operator hint</td><td><a href="mobile-postal-plate.html">Mobile, postal code, plate</a></td></tr>
+<tr><td><code>Mobile</code></td><td>Shape of <code>09xxxxxxxxx</code> in five input forms, operator hint, allocation flag</td><td><a href="mobile-postal-plate.html">Mobile, postal code, plate</a></td></tr>
 <tr><td><code>PostalCode</code></td><td>10 digits, first digit not <code>0</code></td><td><a href="mobile-postal-plate.html">Mobile, postal code, plate</a></td></tr>
-<tr><td><code>VehiclePlate</code></td><td>Passenger-car plate shape, parsed into parts</td><td><a href="mobile-postal-plate.html">Mobile, postal code, plate</a></td></tr>
+<tr><td><code>VehiclePlate</code></td><td>Passenger-car plate shape, split into parts</td><td><a href="mobile-postal-plate.html">Mobile, postal code, plate</a></td></tr>
 </tbody>
 </table>
-<p>All of them live in the <code>RtlyKit\Validation</code> namespace and accept Persian and Arabic digits as typed by users, so you can pass form input straight in without cleaning it first.</p>
+<p>All of them live in the <code>RtlyKit\Validation</code> namespace. They accept Persian and Arabic digits as users type them, so you can pass form input straight in.</p>
 
 <h2 id="two-ways">Two ways to call</h2>
-<p>Every validator offers a plain boolean and a structured result. Use <code>isValid()</code> when you only need yes or no, and <code>validate()</code> when you want to tell the user why a value was rejected.</p>
+<p>Every validator gives you a plain boolean and a structured result. Use <code>isValid()</code> when you only need yes or no. Use <code>validate()</code> when you want to tell the user why a value was rejected.</p>
 <pre><code class="language-php">&lt;?php
 require 'vendor/autoload.php';
 
@@ -33,15 +33,15 @@ var_dump(is_national_code('0499370899'));        // bool(true)
 $result = NationalCode::validate('0499370898');
 var_dump($result-&gt;isValid());                    // bool(false)
 print_r($result-&gt;errors());                      // Array ( [0] =&gt; invalid_checksum )</code></pre>
-<p>The helpers (<code>is_national_code()</code>, <code>validate_sheba()</code>, and so on) are namespaced; import them with <code>use function RtlyKit\is_national_code;</code>. Short global names are opt-in; see <a href="helpers-and-globals.html">Helpers and globals</a>.</p>
+<p>The helpers (<code>is_national_code()</code>, <code>validate_sheba()</code> and the others) are namespaced. Import them with <code>use function RtlyKit\is_national_code;</code>. Short global names are opt-in. See <a href="helpers-and-globals.html">Helpers and globals</a>.</p>
 
 <h2 id="contract">The Validator contract</h2>
-<p>Every validator implements <code>RtlyKit\Contracts\Validator</code>, which has exactly two static methods:</p>
+<p>Every validator implements <code>RtlyKit\Contracts\Validator</code>. It has two static methods:</p>
 <ul>
 <li><code>validate(mixed $value): Result</code></li>
 <li><code>isValid(mixed $value): bool</code>, a shortcut for <code>validate($value)-&gt;isValid()</code></li>
 </ul>
-<p>Validators are stateless, so the methods are static. That makes it easy to pick a validator at runtime through a class-string, for example from a configuration array:</p>
+<p>Validators keep no state, so the methods are static. That lets you pick a validator at run time from a class name, for example from a config array:</p>
 <pre><code class="language-php">use RtlyKit\Contracts\Validator;
 use RtlyKit\Validation\Mobile;
 use RtlyKit\Validation\NationalCode;
@@ -62,7 +62,7 @@ foreach ($rules as $field =&gt; $class) {
 // national_code: ok
 // mobile: invalid_format
 // postal: ok</code></pre>
-<div class="note"><strong>Never throws.</strong> Neither method throws for bad input. Any value, including <code>null</code>, arrays, objects, oversized strings and invalid UTF-8, produces an invalid <code>Result</code> with a stable error key. Exceptions are reserved for programmer errors elsewhere in the library; see <a href="error-handling.html">Error handling</a>.</div>
+<div class="note"><strong>Never throws.</strong> Neither method throws for bad input. Any value, including <code>null</code>, arrays, objects, oversized strings and invalid UTF-8, gives an invalid <code>Result</code> with a stable error key. Exceptions are for programmer errors elsewhere in the library. See <a href="error-handling.html">Error handling</a>.</div>
 
 <h2 id="result">The Result object</h2>
 <p><code>RtlyKit\Validation\Result</code> is an immutable value object with three read methods:</p>
@@ -71,10 +71,10 @@ foreach ($rules as $field =&gt; $class) {
 <tbody>
 <tr><td><code>isValid()</code></td><td><code>bool</code></td></tr>
 <tr><td><code>errors()</code></td><td><code>list&lt;string&gt;</code>: stable error keys, empty when valid</td></tr>
-<tr><td><code>details()</code></td><td><code>array&lt;string, mixed&gt;</code>: facts the validator learned while checking</td></tr>
+<tr><td><code>details()</code></td><td><code>array&lt;string, mixed&gt;</code>: facts the validator found while checking</td></tr>
 </tbody>
 </table>
-<p>The details are present on both valid and invalid results (as far as the validator got before it stopped), so you can display the normalized value or a bank name even next to an error:</p>
+<p>Details are present on valid and invalid results, as far as the validator got before it stopped. So you can show the cleaned value or a bank name even next to an error:</p>
 <pre><code class="language-php">use RtlyKit\Validation\BankCard;
 
 $result = BankCard::validate('6037991234567890');
@@ -90,7 +90,7 @@ echo json_encode($result-&gt;details(), JSON_UNESCAPED_UNICODE);
 <tr><td><code>NationalCode</code></td><td><code>normalized</code>, <code>location</code> (<code>{province, city}</code> or <code>null</code>)</td></tr>
 <tr><td><code>Sheba</code></td><td><code>normalized</code>, <code>bank_code</code>, <code>bank_name</code></td></tr>
 <tr><td><code>BankCard</code></td><td><code>normalized</code>, <code>bin</code>, <code>bank_name</code></td></tr>
-<tr><td><code>Mobile</code></td><td><code>normalized</code>, <code>operator</code></td></tr>
+<tr><td><code>Mobile</code></td><td><code>normalized</code>, <code>operator</code>, <code>allocated</code></td></tr>
 <tr><td><code>PostalCode</code></td><td><code>normalized</code></td></tr>
 <tr><td><code>VehiclePlate</code></td><td><code>normalized</code>, and when the shape matched: <code>two_digit</code>, <code>letter</code>, <code>three_digit</code>, <code>region</code></td></tr>
 </tbody>
@@ -98,28 +98,28 @@ echo json_encode($result-&gt;details(), JSON_UNESCAPED_UNICODE);
 <p>Lookup values (<code>location</code>, <code>bank_name</code>, <code>operator</code>) are <code>null</code> when the table has no entry. A missing entry means "unknown", never "invalid".</p>
 
 <h2 id="error-keys">Error keys</h2>
-<p>Errors are stable, machine-readable keys. They do not change between releases, so you can map them to your own messages or translations. The Laravel integration does exactly that; see <a href="laravel-validation-and-cast.html">Laravel validation and cast</a>.</p>
+<p>Errors are stable keys that a program can read. They do not change between releases, so you can map them to your own messages or translations. The Laravel integration does this. See <a href="laravel-validation-and-cast.html">Laravel validation and cast</a>.</p>
 <table>
 <thead><tr><th>Key</th><th>Meaning</th><th>Used by</th></tr></thead>
 <tbody>
-<tr><td><code>invalid_type</code></td><td>The value is not a string, an int, or an integral finite float</td><td>all</td></tr>
+<tr><td><code>invalid_type</code></td><td>The value is not a string, an int or an integral finite float</td><td>all</td></tr>
 <tr><td><code>input_too_long</code></td><td>A string longer than 4096 bytes</td><td>all</td></tr>
-<tr><td><code>invalid_format</code></td><td>The shape is wrong (character set, digit count, pattern)</td><td>all except <code>PostalCode</code>, which uses it for a leading <code>0</code></td></tr>
+<tr><td><code>invalid_format</code></td><td>The shape is wrong (characters, digit count, pattern)</td><td>all except <code>PostalCode</code>, which uses it for a leading <code>0</code></td></tr>
 <tr><td><code>invalid_length</code></td><td>The digit count is not 10</td><td><code>PostalCode</code></td></tr>
 <tr><td><code>repeated_digits</code></td><td>Every digit is the same (<code>1111111111</code>)</td><td><code>NationalCode</code>, <code>BankCard</code></td></tr>
-<tr><td><code>invalid_checksum</code></td><td>The check digit or check digits do not match</td><td><code>NationalCode</code>, <code>Sheba</code>, <code>BankCard</code></td></tr>
+<tr><td><code>invalid_checksum</code></td><td>The check digit or digits do not match</td><td><code>NationalCode</code>, <code>Sheba</code>, <code>BankCard</code></td></tr>
 <tr><td><code>invalid_region</code></td><td>A numeric part of the plate is all zeros</td><td><code>VehiclePlate</code></td></tr>
 </tbody>
 </table>
-<p>A result carries at most one error today (the first check that failed), but <code>errors()</code> returns a list so that future checks can report several.</p>
+<p>A result carries at most one error today, the first check that failed. <code>errors()</code> returns a list so that later versions can report several.</p>
 
 <h2 id="input-handling">Input handling</h2>
 <p>Before any rule runs, the value goes through one shared gate:</p>
 <ul>
-<li><strong>Strings</strong> up to <strong>4096 bytes</strong> pass. Persian and Arabic digits take two bytes each, so the cap is about 2000 such digits. A longer string yields <code>input_too_long</code>.</li>
+<li><strong>Strings</strong> up to 4096 bytes pass. Persian and Arabic digits take two bytes each, so the cap is about 2000 such digits. A longer string gives <code>input_too_long</code>.</li>
 <li><strong><code>int</code></strong> is converted with <code>(string)</code>.</li>
-<li><strong><code>float</code></strong> must be finite, integral, and below 10<sup>15</sup> in magnitude; it is converted without an exponent. <code>NaN</code>, <code>INF</code>, <code>1.5</code> and huge floats yield <code>invalid_type</code>.</li>
-<li>Everything else, namely <code>null</code>, <code>bool</code>, arrays and objects, yields <code>invalid_type</code>.</li>
+<li><strong><code>float</code></strong> must be finite, whole, and below 10<sup>15</sup> in size. It is converted without an exponent. <code>NaN</code>, <code>INF</code>, <code>1.5</code> and huge floats give <code>invalid_type</code>.</li>
+<li>Everything else (<code>null</code>, <code>bool</code>, arrays, objects) gives <code>invalid_type</code>.</li>
 </ul>
 <pre><code class="language-php">use RtlyKit\Validation\NationalCode;
 use RtlyKit\Validation\PostalCode;
@@ -129,29 +129,29 @@ print_r(NationalCode::validate(1.5)-&gt;errors());                   // [invalid
 print_r(NationalCode::validate(str_repeat('1', 4097))-&gt;errors()); // [input_too_long]
 print_r(NationalCode::validate("\xff\xfe")-&gt;errors());            // [invalid_format]
 var_dump(PostalCode::validate(1234567890)-&gt;isValid());            // bool(true)</code></pre>
-<div class="warn"><strong>Leading zeros and numbers.</strong> Passing a national code or postal code as an integer loses leading zeros: <code>499370899</code> is not <code>0499370899</code>, and the validator can only see the nine digits. Keep identifiers as strings from the form or database column all the way to the validator.</div>
+<div class="note"><strong>Good to know.</strong> A national code or postal code passed as an integer loses its leading zeros. <code>499370899</code> is not <code>0499370899</code>, and the validator only sees nine digits. Keep identifiers as strings from the form or database column all the way to the validator.</div>
 
-<h2 id="normalization">Normalization</h2>
-<p>After the gate, each validator normalizes the string with its own public <code>normalize()</code> method. They share these rules:</p>
+<h2 id="normalization">Cleaning the input</h2>
+<p>After the gate, each validator cleans the string with its own public <code>normalize()</code> method. They share these rules:</p>
 <ul>
 <li>Persian (<code>۰-۹</code>) and Arabic-Indic (<code>٠-٩</code>) digits become English digits, using <code>Digits::toEnglish()</code>.</li>
-<li>Separators users type are removed: spaces, hyphens, and the half-space (ZWNJ). <code>Mobile</code>, <code>BankCard</code> and <code>PostalCode</code> go further and keep only digits.</li>
+<li>Separators that users type are removed: spaces, hyphens and the half-space (ZWNJ). <code>Mobile</code>, <code>BankCard</code> and <code>PostalCode</code> go further and keep only digits.</li>
 <li><code>Sheba</code> also upper-cases the text and adds the <code>IR</code> prefix to a bare 24-digit string.</li>
 </ul>
-<p>The normalized value is always returned in <code>details()['normalized']</code>. Store that, not the raw input, so the same number is never saved in two spellings.</p>
+<p>The cleaned value is always in <code>details()['normalized']</code>. Store that, not the raw input, so the same number is never saved in two spellings.</p>
 
-<h2 id="lookups">Lookup tables and their provenance</h2>
-<p>Four validators attach a lookup: bank by card BIN, bank by Sheba code, place of issue by national-code prefix, and operator by mobile prefix. The lookups are conveniences on top of validation; validity itself never depends on them.</p>
+<h2 id="lookups">Lookup tables and where they come from</h2>
+<p>Four validators attach a lookup: bank by card BIN, bank by Sheba code, place of issue by national-code prefix, and operator by mobile prefix. The lookups are extras on top of validation. Validity never depends on them.</p>
 <ul>
 <li>Bank card BINs: 39 entries. Sheba bank codes: 38 entries. National-code prefixes: 547 entries.</li>
-<li>An entry is included only when at least two independent sources agree. Missing entry means unknown.</li>
-<li>The sources are community datasets and public tables. Some of them share ancestry, so agreement is strong but not fully independent.</li>
+<li>An entry is included only when at least two independent sources agree. A missing entry means unknown.</li>
+<li>The 19 Sheba codes in the Central Bank's published specification all match our table, and every mobile prefix we list lies inside a block that the national numbering plan names for mobile service.</li>
 </ul>
-<div class="known"><strong>Known limitation.</strong> The lookup tables are best-effort data, not an official registry. Banks merge and rename, and operators are portable. Show a lookup result as a hint, and do not base legal, financial or identity decisions on it. Sources, dates and caveats are listed in <a href="accuracy-and-data.html">Accuracy and data</a>.</div>
+<div class="note"><strong>Good to know.</strong> The lookup tables come from public lists. They are not an official registry. Banks merge and rename, and operators are portable. Treat a lookup result as a hint. Do not base a legal, financial or identity decision on it. Sources and dates are in <a href="accuracy-and-data.html">Accuracy and data</a>.</div>
 
 <h2 id="next">Where to go next</h2>
 <ul>
-<li><a href="national-code.html">National code</a>: algorithm, normalization and the place-of-issue hint.</li>
+<li><a href="national-code.html">National code</a>: the algorithm, cleaning and the place-of-issue hint.</li>
 <li><a href="sheba-and-bank-card.html">Sheba and bank card</a>: mod-97 and Luhn, bank lookups.</li>
 <li><a href="mobile-postal-plate.html">Mobile, postal code and vehicle plate</a>.</li>
 <li><a href="limits.html">Limits</a>: every size cap in one place.</li>

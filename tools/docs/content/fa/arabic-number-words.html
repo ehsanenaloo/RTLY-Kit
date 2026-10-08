@@ -1,0 +1,140 @@
+<!--
+title: عدد به حروف عربی
+description: نوشتن عدد با حروف عربی فصیح، با جنس معدود، حالت اعرابی، اعراب‌گذاری و عدد ترتیبی. هر عدد صحیح زیر 10^27.
+group: numbers-text
+order: 25
+-->
+<h2 id="overview">این صفحه چه می‌دهد</h2>
+<p>عدد را با حروف عربی فصیح می‌نویسد. جنس معدود، حالت اعرابی، حرکت‌گذاری و عدد ترتیبی ۱ تا ۹۹ را پشتیبانی می‌کند و تا 10<sup>27</sup> می‌رود. عدد به حروف فارسی در <a href="number-words.html">عدد به حروف</a> است.</p>
+
+<h2 id="quick">شروع سریع</h2>
+<p>برای نوشتن عدد به عربی، زبان <code>'ar'</code> را به <code>NumberToWords::convert()</code> بدهید. بدون گزینه، خروجی عدد ساده است، مثل شمارش یا جواب یک پرسش (مذکر).</p>
+<pre><code class="language-php">&lt;?php
+require 'vendor/autoload.php';
+
+use RtlyKit\Number\NumberToWords;
+
+echo NumberToWords::convert(11, 'ar'), "\n";         // أحد عشر
+echo NumberToWords::convert(21, 'ar'), "\n";         // واحد وعشرون
+echo NumberToWords::convert(1234, 'ar'), "\n";       // ألف ومئتان وأربعة وثلاثون
+echo NumberToWords::convert(3000, 'ar'), "\n";       // ثلاثة آلاف
+echo NumberToWords::convert(2000000, 'ar'), "\n";    // مليونان
+echo NumberToWords::convert(-7, 'ar'), "\n";         // سالب سبعة
+echo \RtlyKit\number_to_words(3, 'ar'), "\n";        // ثلاثة</code></pre>
+<p>تابع کمکی <code>number_to_words()</code> فقط عدد و زبان می‌گیرد. برای گزینه‌ها از <code>NumberToWords::convert()</code> استفاده کنید. ورودی (عدد صحیح، رشته با رقم فارسی و جداکننده، خطاها) مثل فارسی است. جزئیاتش در <a href="number-words.html#accepted-input">عدد به حروف</a> آمده است.</p>
+<p>بازه: هر عدد صحیح کوچک‌تر از 10<sup>27</sup>. عدد بزرگ‌تر خطای <code>number_too_large</code> می‌دهد.</p>
+
+<h2 id="options">گزینه‌ها</h2>
+<p>گزینه‌ها را به‌صورت آرایه یا شیء <code>RtlyKit\Number\ArabicOptions</code> به آرگومان سوم بدهید. کلید ناشناخته یا مقدار نادرست <code>InvalidNumberException</code> می‌دهد.</p>
+<table>
+<thead><tr><th>کلید</th><th>مقدارها</th><th>پیش‌فرض</th><th>معنا</th></tr></thead>
+<tbody>
+<tr><td><code>mode</code></td><td><code>count</code> / <code>noun</code></td><td><code>count</code></td><td>عدد ساده (شمارش، جواب، جدول) یا عددی که معدود درست بعد از آن می‌آید</td></tr>
+<tr><td><code>gender</code></td><td><code>m</code> / <code>f</code></td><td><code>m</code></td><td>جنس <em>مفرد</em> معدود. فقط در حالت <code>noun</code> اثر دارد</td></tr>
+<tr><td><code>case</code></td><td><code>nom</code> / <code>acc</code> / <code>gen</code></td><td><code>nom</code></td><td>حالت اعرابی: مرفوع، منصوب، مجرور</td></tr>
+<tr><td><code>diacritics</code></td><td><code>none</code> / <code>case</code></td><td><code>none</code></td><td>با <code>case</code>، حرکت آخر کلمه‌ها و تنوین نوشته می‌شود</td></tr>
+<tr><td><code>hundreds</code></td><td><code>mi_a</code> / <code>ma_i_a</code></td><td><code>mi_a</code></td><td>مئة یا مائة</td></tr>
+<tr><td><code>joinHundreds</code></td><td><code>true</code> / <code>false</code></td><td><code>true</code></td><td>ثلاثمئة (چسبیده) یا ثلاث مئة (جدا)</td></tr>
+<tr><td><code>negative</code></td><td>یک واژه، ۱ تا ۶۴ بایت</td><td><code>سالب</code></td><td>واژهٔ عدد منفی</td></tr>
+<tr><td><code>billion</code></td><td><code>milyar</code> / <code>bilyon</code></td><td><code>milyar</code></td><td>نام 10<sup>9</sup>: مليار یا بليون</td></tr>
+<tr><td><code>definite</code></td><td><code>true</code> / <code>false</code></td><td><code>true</code></td><td>فقط برای عدد ترتیبی: معرفه یا نکره</td></tr>
+</tbody>
+</table>
+<pre><code class="language-php">use RtlyKit\Number\ArabicOptions;
+
+echo NumberToWords::convert(3, 'ar', ['mode' =&gt; 'noun', 'gender' =&gt; 'f']), "\n";   // ثلاث
+$options = new ArabicOptions(mode: 'noun', gender: 'f');
+echo NumberToWords::convert(3, 'ar', $options), "\n";                              // ثلاث</code></pre>
+<p>گزینه‌ها فقط برای عربی‌اند. اگر همراه <code>'fa'</code> بدهید، خطای <code>invalid_argument</code> می‌گیرید.</p>
+
+<h2 id="noun-mode">معدود و جنس</h2>
+<p>در عربی عدد با معدود هماهنگ می‌شود. <code>mode: 'noun'</code> یعنی معدود درست بعد از عدد می‌آید. <code>gender</code> جنس <em>مفرد</em> معدود است. قاعدهٔ ۳ تا ۱۰ برعکس است: معدود مذکر عدد با تاء می‌گیرد (ثلاثة) و معدود مؤنث بدون تاء (ثلاث). ۱ و ۲ و ۱۱ و ۱۲ با معدود هم‌جنس‌اند.</p>
+<pre><code class="language-php">$m = ['mode' =&gt; 'noun', 'gender' =&gt; 'm'];
+$f = ['mode' =&gt; 'noun', 'gender' =&gt; 'f'];
+
+echo NumberToWords::convert(3, 'ar', $m), ' | ', NumberToWords::convert(3, 'ar', $f), "\n";    // ثلاثة | ثلاث
+echo NumberToWords::convert(13, 'ar', $m), ' | ', NumberToWords::convert(13, 'ar', $f), "\n";  // ثلاثة عشر | ثلاث عشرة
+echo NumberToWords::convert(2, 'ar', $m), ' | ', NumberToWords::convert(2, 'ar', $f), "\n";    // اثنان | اثنتان
+echo NumberToWords::convert(25, 'ar', $m), ' | ', NumberToWords::convert(25, 'ar', $f), "\n";  // خمسة وعشرون | خمس وعشرون
+echo NumberToWords::convert(8, 'ar', $f), "\n";                                              // ثماني</code></pre>
+<p>در حالت <code>noun</code>، آخرین کلمهٔ عبارت به معدود اضافه می‌شود. پس دوگانه‌ها شکل اضافه می‌گیرند:</p>
+<pre><code class="language-php">echo NumberToWords::convert(200, 'ar', ['mode' =&gt; 'noun']), "\n";                        // مئتا
+echo NumberToWords::convert(2000, 'ar', ['mode' =&gt; 'noun']), "\n";                       // ألفا
+echo NumberToWords::convert(2000000, 'ar', ['mode' =&gt; 'noun', 'case' =&gt; 'gen']), "\n";   // مليوني</code></pre>
+<p>در حالت <code>count</code> جنس نادیده گرفته می‌شود و همیشه شکل مذکر می‌آید. بخش‌های بالای ۱۰۰۰ (ضریب صد و ضریب مقیاس) با جنس معدود عوض نمی‌شوند: ۳۰۰۰ برای معدود مؤنث هم «ثلاثة آلاف» است.</p>
+<p>نکته: خود معدود را عدد به حروف نمی‌نویسد. شما کنار عدد می‌گذارید.</p>
+
+<h2 id="case">حالت اعرابی</h2>
+<p>بعضی کلمه‌ها حتی بدون حرکت‌گذاری با حالت عوض می‌شوند: اثنان و اثنين، عشرون و عشرين، مئتان و مئتين، ألفان و ألفين، اثنا عشر و اثني عشر. گزینهٔ <code>case</code> همین حرف‌ها را تعیین می‌کند:</p>
+<pre><code class="language-php">echo NumberToWords::convert(2, 'ar', ['case' =&gt; 'gen']), "\n";     // اثنين
+echo NumberToWords::convert(20, 'ar', ['case' =&gt; 'acc']), "\n";    // عشرين
+echo NumberToWords::convert(200, 'ar', ['case' =&gt; 'gen']), "\n";   // مئتين
+echo NumberToWords::convert(12, 'ar'), "\n";                       // اثنا عشر
+echo NumberToWords::convert(12, 'ar', ['case' =&gt; 'acc']), "\n";    // اثني عشر</code></pre>
+
+<h2 id="diacritics">حرکت‌گذاری</h2>
+<p>با <code>diacritics: 'case'</code> آخر هر کلمهٔ معرب حرکت یا تنوین می‌گیرد. فقط حرکت آخر نوشته می‌شود، نه حرکت وسط کلمه.</p>
+<pre><code class="language-php">echo NumberToWords::convert(1234, 'ar', ['diacritics' =&gt; 'case']), "\n";   // ألفٌ ومئتانِ وأربعةٌ وثلاثونَ
+echo NumberToWords::convert(2025, 'ar', ['diacritics' =&gt; 'case']), "\n";   // ألفانِ وخمسةٌ وعشرونَ
+echo NumberToWords::convert(5, 'ar', ['diacritics' =&gt; 'case']), "\n";      // خمسةٌ
+echo NumberToWords::convert(5, 'ar', ['diacritics' =&gt; 'case', 'mode' =&gt; 'noun']), "\n";   // خمسةُ</code></pre>
+<p>در حالت <code>noun</code> کلمهٔ آخر به معدود اضافه شده و تنوین نمی‌گیرد (خمسةُ). حرکت‌گذاری برای عدد ترتیبی تعریف نشده و خطای <code>invalid_argument</code> می‌دهد.</p>
+
+<h2 id="hundreds">املای صدگان</h2>
+<pre><code class="language-php">echo NumberToWords::convert(300, 'ar'), "\n";                                              // ثلاثمئة
+echo NumberToWords::convert(300, 'ar', ['joinHundreds' =&gt; false]), "\n";                   // ثلاث مئة
+echo NumberToWords::convert(300, 'ar', ['hundreds' =&gt; 'ma_i_a']), "\n";                    // ثلاثمائة
+</code></pre>
+
+<h2 id="scales">مقیاس‌های بزرگ</h2>
+<p>نام مقیاس‌ها به روش مقیاس کوتاه است: ألف (10<sup>3</sup>)، مليون (10<sup>6</sup>)، مليار (10<sup>9</sup>)، تريليون (10<sup>12</sup>)، كوادريليون (10<sup>15</sup>)، كوينتيليون (10<sup>18</sup>)، سكستيليون (10<sup>21</sup>) و سبتيليون (10<sup>24</sup>). برای ۳ تا ۱۰ از جمع استفاده می‌شود (آلاف، ملايين، مليارات، تريليونات و ...) و برای ۲ از مثنی (مليونان).</p>
+<pre><code class="language-php">echo NumberToWords::convert(3000000, 'ar'), "\n";                    // ثلاثة ملايين
+echo NumberToWords::convert(5000000000000, 'ar'), "\n";              // خمسة تريليونات
+echo NumberToWords::convert('1000000000000000000000000', 'ar'), "\n"; // سبتيليون
+echo NumberToWords::convert(102000, 'ar'), "\n";                     // مئة ألف وألفان
+echo NumberToWords::convert(111000, 'ar'), "\n";                     // مئة وأحد عشر ألف
+echo NumberToWords::convert(1000000000, 'ar'), "\n";                 // مليار
+echo NumberToWords::convert(1000000000, 'ar', ['billion' =&gt; 'bilyon']), "\n";   // بليون</code></pre>
+<p>اگر بخشی از عدد به شکل «صدگان به‌اضافهٔ ۱ تا ۱۰» باشد، برای اینکه خوانا بماند جدا نوشته می‌شود: ۱۰۲٬۰۰۰ می‌شود «مئة ألف وألفان». بخش‌های با ۱۱ تا ۹۹ یا بدون باقیمانده همان شکل ساده را دارند.</p>
+
+<h2 id="negative">عدد منفی</h2>
+<p>عدد منفی با «سالب» شروع می‌شود. با گزینهٔ <code>negative</code> می‌توانید واژهٔ دیگری بگذارید (یک واژه، ۱ تا ۶۴ بایت).</p>
+<pre><code class="language-php">echo NumberToWords::convert(-7, 'ar'), "\n";                            // سالب سبعة
+echo NumberToWords::convert(-5, 'ar', ['negative' =&gt; 'ناقص']), "\n";   // ناقص خمسة</code></pre>
+
+<h2 id="ordinals">عدد ترتیبی</h2>
+<p><code>NumberToWords::ordinal($number, 'ar', $options)</code> عدد ترتیبی ۱ تا ۹۹ را می‌نویسد. این‌ها اثر دارند: <code>gender</code> (جنس موصوف)، <code>case</code> و <code>definite</code>. <code>mode</code> نادیده گرفته می‌شود.</p>
+<pre><code class="language-php">echo NumberToWords::ordinal(1), ' | ', NumberToWords::ordinal(1, 'ar', ['gender' =&gt; 'f']), "\n";   // الأول | الأولى
+echo NumberToWords::ordinal(3), ' | ', NumberToWords::ordinal(3, 'ar', ['gender' =&gt; 'f']), "\n";   // الثالث | الثالثة
+echo NumberToWords::ordinal(12), "\n";                                                         // الثاني عشر
+echo NumberToWords::ordinal(21), ' | ', NumberToWords::ordinal(21, 'ar', ['gender' =&gt; 'f']), "\n"; // الحادي والعشرون | الحادية والعشرون
+echo NumberToWords::ordinal(20, 'ar', ['case' =&gt; 'gen']), "\n";                                // العشرين
+echo NumberToWords::ordinal(2, 'ar', ['definite' =&gt; false, 'case' =&gt; 'acc']), "\n";            // ثانيا</code></pre>
+<p>عدد ترتیبی فقط برای زبان <code>ar</code> است. برای ۰، عدد منفی یا عدد بالای ۹۹ خطا می‌گیرید. عدد ترتیبی فارسی را <a href="digits-and-format.html#ordinal"><code>Format::ordinal()</code></a> می‌سازد.</p>
+
+<h2 id="errors">خطاها</h2>
+<table>
+<thead><tr><th>وضعیت</th><th>خطا</th><th>کد</th></tr></thead>
+<tbody>
+<tr><td>زبان پشتیبانی نمی‌شود (در <code>ordinal()</code>، هر زبان غیر از <code>ar</code>)</td><td><code>UnsupportedLocaleException</code></td><td><code>unsupported_locale</code></td></tr>
+<tr><td>کلید یا مقدار گزینه نادرست است، گزینه با <code>fa</code>، یا <code>diacritics</code> در عدد ترتیبی</td><td><code>InvalidNumberException</code></td><td><code>invalid_argument</code></td></tr>
+<tr><td>عدد صحیح نیست، یا <code>NAN</code> و <code>INF</code></td><td><code>InvalidNumberException</code></td><td><code>invalid_number</code> / <code>non_finite_number</code></td></tr>
+<tr><td>رشته بلندتر از ۴۰۹۶ بایت</td><td><code>InvalidNumberException</code></td><td><code>input_too_long</code></td></tr>
+<tr><td><code>convert()</code> از 10<sup>27</sup> به بالا، یا <code>ordinal()</code> از ۹۹ به بالا</td><td><code>InvalidNumberException</code></td><td><code>number_too_large</code></td></tr>
+<tr><td><code>ordinal()</code> با ۰ یا عدد منفی</td><td><code>InvalidNumberException</code></td><td><code>invalid_number</code></td></tr>
+</tbody>
+</table>
+<pre><code class="language-php">try {
+    NumberToWords::convert(5, 'ar', ['gender' =&gt; 'x']);
+} catch (\RtlyKit\Exceptions\InvalidNumberException $e) {
+    echo $e-&gt;getMessage(), ' [', $e-&gt;getErrorCode()-&gt;value, "]\n";
+    // Invalid option "gender": expected one of m, f. [invalid_argument]
+}</code></pre>
+
+<h2 id="sources">منبع‌ها و خوب است بدانید</h2>
+<div class="note"><strong>خوب است بدانید.</strong> شکل‌های عربی از منابع دستور زبان ذکرشده در بخش <a href="#sources">منابع</a> گرفته شده‌اند. چند خروجی هنوز منتظر بازبینی یک عرب‌زبان است، مثلاً جمله‌های بسیار بزرگ، نام مقیاس‌های بالای مليار و جدا کردن گروه‌هایی مثل ۱۰۲٬۰۰۰. اگر متن را در سند رسمی یا حقوقی می‌گذارید، یک عرب‌زبان آن را بخواند.</div>
+<ul>
+<li>نام مقیاس‌های بزرگ‌تر از مليار قرارداد رایج مقیاس کوتاه است. مقیاس بلند ارائه نمی‌شود.</li>
+<li>گزینه‌ها فقط روی <code>convert()</code> و <code>ordinal()</code> کار می‌کنند. تابع کمکی <code>number_to_words()</code> گزینه نمی‌گیرد.</li>
+<li>مقدار پیش‌فرض بدون گزینه برای هر عدد زیر 10<sup>9</sup> همان خروجی نسخه‌های قبلی است.</li>
+</ul>

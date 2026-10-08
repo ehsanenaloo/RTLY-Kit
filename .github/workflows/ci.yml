@@ -12,29 +12,171 @@ concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+# Third-party actions are pinned to full commit SHAs (verified against the
+# official repositories' tags with `git ls-remote`). Bump deliberately.
+#   actions/checkout          3d3c42e5aac5ba805825da76410c181273ba90b1  v7.0.1
+#   shivammathur/setup-php    f3e473d116dcccaddc5834248c87452386958240  2.37.2
+
 jobs:
+  # Full quality gate (static analysis, code style, docs, tests) on every supported PHP.
   test:
+    name: PHP ${{ matrix.php }} on ubuntu-latest
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
-        php: ['8.2', '8.3', '8.4']
+        php: ['8.2', '8.3', '8.4', '8.5']
     steps:
-      # Third-party actions are pinned to full commit SHAs (verified against the
-      # official repositories' tags with `git ls-remote`). Bump deliberately.
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
         with:
           php-version: ${{ matrix.php }}
+          extensions: mbstring
           coverage: none
+          tools: composer:v2
       - run: composer validate --strict --no-check-lock
       - run: composer install --no-interaction --prefer-dist --no-progress
       # Fails the build on any known advisory (dev dependencies included: they run in CI).
       - run: composer audit
       - run: composer phpstan
       - run: composer cs
+        env:
+          # The style rules target PHP 8.2; newer runtimes only print a notice.
+          PHP_CS_FIXER_IGNORE_ENV: '1'
       - run: composer docs:check
       - run: composer test
+
+  # Unit and integration suites on the other operating systems, at the lowest
+  # and highest supported PHP (path separators, line endings, locale, timezone).
+  test-os:
+    name: PHP ${{ matrix.php }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest]
+        php: ['8.2', '8.5']
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mbstring
+          coverage: none
+          tools: composer:v2
+      - run: composer install --no-interaction --prefer-dist --no-progress
+      - run: composer test
+
+  # The oldest dependency set the version constraints allow (dev tools, Carbon, Illuminate).
+  test-lowest:
+    name: PHP 8.2 with lowest dependencies
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
+        with:
+          php-version: '8.2'
+          extensions: mbstring
+          coverage: none
+          tools: composer:v2
+      - run: composer update --no-interaction --prefer-dist --no-progress --prefer-lowest --prefer-stable
+      - run: composer test
+
+  # The Eloquent / validation / translation integration against each Laravel major.
+  test-laravel:
+    name: Laravel ${{ matrix.laravel }} on PHP ${{ matrix.php }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { laravel: '11', php: '8.2' }
+          - { laravel: '12', php: '8.3' }
+          - { laravel: '13', php: '8.5' }
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mbstring
+          coverage: none
+          tools: composer:v2
+      - name: Pin Illuminate to Laravel ${{ matrix.laravel }}
+        shell: bash
+        run: |
+          composer require --dev --no-update --no-interaction \
+            "illuminate/container:^${{ matrix.laravel }}.0" \
+            "illuminate/database:^${{ matrix.laravel }}.0" \
+            "illuminate/support:^${{ matrix.laravel }}.0" \
+            "illuminate/translation:^${{ matrix.laravel }}.0" \
+            "illuminate/validation:^${{ matrix.laravel }}.0"
+          composer update --no-interaction --prefer-dist --no-progress --with-all-dependencies
+      - run: composer show illuminate/support
+      - run: vendor/bin/phpunit -c tools/phpunit.xml.dist --testsuite Integration
+
+  # The package needs only PHP: install without dev dependencies on a PHP build
+  # with no extra extensions (no mbstring) and run a few known answers.
+  test-minimal:
+    name: Minimal PHP 8.2 without extensions
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
+        with:
+          php-version: '8.2'
+          extensions: none, :mbstring
+          coverage: none
+          tools: composer:v2
+      - run: composer install --no-dev --no-interaction --prefer-dist --no-progress
+      - run: php tools/ci/smoke.php
+
+  # Mutation testing: slow, so it runs on pushes to main and on demand, not on pull requests.
+  mutation:
+    name: Mutation testing
+    if: ${{ github.event_name != 'pull_request' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
+        with:
+          php-version: '8.2'
+          extensions: mbstring
+          coverage: pcov
+          tools: composer:v2
+      - run: composer install --no-interaction --prefer-dist --no-progress
+      - run: composer mutation
+
+  # One stable name for branch protection: green only when every job above passed.
+  ci:
+    name: CI result
+    if: ${{ always() }}
+    needs: [test, test-os, test-lowest, test-laravel, test-minimal]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Require every job to have succeeded
+        env:
+          RESULTS: ${{ join(needs.*.result, ' ') }}
+        run: |
+          echo "Job results: $RESULTS"
+          for r in $RESULTS; do
+            [ "$r" = "success" ] || { echo "A required job did not succeed ($r)."; exit 1; }
+          done

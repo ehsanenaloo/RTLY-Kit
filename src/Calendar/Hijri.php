@@ -23,9 +23,11 @@ use RtlyKit\Number\Digits;
  *   The table was generated from the ICU/CLDR "islamic-umalqura" calendar
  *   data and spot-checked against known anchors (1 Ramadan 1446 =
  *   2025-03-01, 1 Muharram 1447 = 2025-06-26, 1 Shawwal 1445 = 2024-04-10).
- *   It has NOT been independently verified month-by-month against the
- *   official Umm al-Qura publication. Outside AH 1300-1500 the tabular
- *   rules are used (the two rule sets may not join seamlessly there).
+ *   Every month start from AH 1318 to AH 1500 was compared with the official
+ *   KACST calendar (ummulqura.org.sa) on 2026-10-08 with no differences. AH
+ *   1300-1317 could not be checked against that source and are NOT verified.
+ *   Outside AH 1300-1500 the tabular rules are used (the two rule sets may
+ *   not join seamlessly there).
  * - Tabular: the arithmetic civil calendar (30-year cycle). Can differ from
  *   Umm al-Qura by 1-2 days.
  *
@@ -57,6 +59,9 @@ final class Hijri implements CalendarDate
 
     /** Smallest supported Hijri year (begins 622-07-19 CE, proleptic Gregorian). */
     public const MIN_YEAR = 1;
+
+    /** Longest accepted format() pattern, in bytes. */
+    public const MAX_FORMAT_LENGTH = 256;
 
     /** Largest supported Hijri year (ends 9999-10-01 CE). */
     public const MAX_YEAR = 9665;
@@ -90,7 +95,8 @@ final class Hijri implements CalendarDate
             $variant,
         );
         if ($this->year < self::MIN_YEAR || $this->year > self::MAX_YEAR) {
-            throw new InvalidDateException(
+            throw InvalidDateException::because(
+                ErrorCode::DateOutOfRange,
                 sprintf('Date out of the supported Hijri range (%d..%d): %d', self::MIN_YEAR, self::MAX_YEAR, $this->year),
             );
         }
@@ -217,19 +223,23 @@ final class Hijri implements CalendarDate
      * no ordinal suffix), W (ISO week of the underlying Gregorian instant),
      * c (`Y-m-d\TH:i:sP` with the Hijri date), r (RFC 2822 of the Gregorian
      * instant) and U e T P p O Z I u v (delegated to the underlying instant).
-     * Prefix a character with a backslash to output it literally.
+     * Prefix a character with a backslash to output it literally (a trailing
+     * backslash is dropped). Patterns longer than {@see self::MAX_FORMAT_LENGTH}
+     * bytes throw {@see InvalidDateException} (ErrorCode::InputTooLong).
      *
      * @param string $locale 'ar' | 'fa' | 'en' (names; unknown falls back to 'en')
      * @param string $digits 'latin' | 'persian' | 'arabic'
      */
     public function format(string $format = 'Y/m/d H:i:s', string $locale = 'ar', string $digits = 'latin'): string
     {
+        self::assertFormatLength($format);
         $out = '';
         $len = strlen($format);
         for ($i = 0; $i < $len; $i++) {
             $c = $format[$i];
-            if ($c === '\\' && $i + 1 < $len) {
-                $out .= $format[++$i];
+            if ($c === '\\') {
+                $i++;
+                $out .= $i < $len ? $format[$i] : '';
                 continue;
             }
             $out .= match ($c) {
@@ -528,6 +538,31 @@ final class Hijri implements CalendarDate
         }
 
         return Jdn::toGregorian(self::tabularToJdn($hy, $hm, $hd));
+    }
+
+    /**
+     * Hijri years [first, last] of the Umm al-Qura data whose month starts were verified:
+     * AH 1318-1500 were compared with the official KACST calendar on 2026-10-08 (0 differences).
+     * AH 1300-1317 come from ICU/CLDR data and could not be confirmed against a KACST source;
+     * {@see self::hasUmmAlQuraData()} still covers them.
+     *
+     * @return array{0: int, 1: int}
+     */
+    public static function ummAlQuraVerifiedRange(): array
+    {
+        return [1318, 1500];
+    }
+
+    /**
+     * True when the year lies in {@see self::ummAlQuraVerifiedRange()} (AH 1318-1500, compared
+     * with the official KACST calendar). False for AH 1300-1317 (ICU/CLDR data, unconfirmed)
+     * and for every year outside the embedded table.
+     */
+    public static function isUmmAlQuraVerified(int $hijriYear): bool
+    {
+        [$first, $last] = self::ummAlQuraVerifiedRange();
+
+        return $hijriYear >= $first && $hijriYear <= $last && self::inUqRange($hijriYear);
     }
 
     private static function inUqRange(int $year): bool

@@ -1,57 +1,57 @@
 <!--
 title: مدیریت خطا
-description: کدام فراخوانی‌ها استثنا پرتاب می‌کنند و کدام هرگز، سلسله‌مراتب استثناها، مقدارهای پایدار ErrorCode و روش امن گرفتن و ثبت خطا.
+description: کدام فراخوانی‌ها خطا پرتاب می‌کنند و کدام نه، سلسله‌مراتب خطاها، مقدارهای پایدار ErrorCode و روش درست گرفتن و ثبت خطا.
 group: reference
 order: 20
 -->
-<h2 id="two-styles">دو سبک شکست</h2>
-<p>هر تابع در RTLY-Kit دقیقاً یکی از دو سبک زیر را دارد، پس همیشه می‌دانید کجا باید محافظت کنید:</p>
+<h2 id="two-styles">دو سبک برای شکست</h2>
+<p>هر تابع RTLY-Kit یکی از این دو سبک را دارد. پس همیشه می‌دانید کجا باید مراقب باشید:</p>
 <ul>
-<li><strong>اعتبارسنج‌ها هرگز استثنا پرتاب نمی‌کنند.</strong> <code>NationalCode</code>، <code>Sheba</code>، <code>BankCard</code>، <code>Mobile</code>، <code>PostalCode</code> و <code>VehiclePlate</code> (و توابع کمکی <code>is_*</code> و <code>validate_*</code>) هر مقداری را می‌پذیرند و با <code>false</code> یا یک <code>Result</code> نامعتبر پاسخ می‌دهند. به <a href="validators-overview.html">مرور اعتبارسنج‌ها</a> نگاه کنید.</li>
-<li><strong>بقیهٔ توابع استثنا پرتاب می‌کنند</strong>؛ یک <code>RtlyKit\Exceptions\RtlyKitException</code> (یا زیرکلاس آن) برای ورودی‌ای که نمی‌پذیرند. برای ورودی بد، هرگز <code>TypeError</code>، <code>ValueError</code> یا استثنای <code>DateMalformed*</code> خود PHP بیرون نمی‌آید؛ اگر دیدید، باگ کتابخانه است و گزارشش کنید.</li>
+<li><strong>اعتبارسنج‌ها هیچ‌وقت خطا پرتاب نمی‌کنند.</strong> <code>NationalCode</code>، <code>Sheba</code>، <code>BankCard</code>، <code>Mobile</code>، <code>PostalCode</code> و <code>VehiclePlate</code> (و توابع کمکی <code>is_*</code> و <code>validate_*</code>) هر مقداری را قبول می‌کنند و با <code>false</code> یا یک <code>Result</code> نامعتبر جواب می‌دهند. <a href="validators-overview.html">مرور اعتبارسنج‌ها</a> را ببینید.</li>
+<li><strong>بقیهٔ توابع خطا پرتاب می‌کنند.</strong> برای ورودی‌ای که نمی‌پذیرند، یک <code>RtlyKit\Exceptions\RtlyKitException</code> (یا زیرکلاسش) می‌گیرید. برای ورودی بد، <code>TypeError</code> و <code>ValueError</code> و <code>DateMalformed*</code> خود PHP بیرون نمی‌آید. اگر دیدید، باگ کتابخانه است. لطفاً گزارش بدهید.</li>
 </ul>
 
-<h2 id="hierarchy">سلسله‌مراتب استثناها</h2>
+<h2 id="hierarchy">سلسله‌مراتب خطاها</h2>
 <pre><code class="language-text">\InvalidArgumentException
  └─ RtlyKit\Exceptions\RtlyKitException        implements RtlyKitThrowable
      ├─ InvalidDateException
      ├─ InvalidNumberException
      ├─ InvalidPrayerConfigException
      └─ UnsupportedLocaleException</code></pre>
-<p>‏<code>RtlyKitThrowable</code> یک رابط نشانگر است که <code>getErrorCode(): ErrorCode</code> و <code>getContext(): array</code> را تعریف می‌کند. با گرفتن آن (یا <code>RtlyKitException</code>) همهٔ کتابخانه را با یک بلوک <code>catch</code> پوشش می‌دهید. چون <code>RtlyKitException</code> از <code>\InvalidArgumentException</code> ارث می‌برد، کدهای قدیمی که <code>catch (\InvalidArgumentException)</code> یا <code>catch (\LogicException)</code> دارند همچنان کار می‌کنند.</p>
+<p>‏<code>RtlyKitThrowable</code> یک اینترفیس نشانه است که <code>getErrorCode(): ErrorCode</code> و <code>getContext(): array</code> را دارد. اگر آن را (یا <code>RtlyKitException</code> را) بگیرید، با یک <code>catch</code> کل کتابخانه را پوشش داده‌اید. چون <code>RtlyKitException</code> از <code>\InvalidArgumentException</code> ارث می‌برد، کدهای قدیمی که <code>catch (\InvalidArgumentException)</code> یا <code>catch (\LogicException)</code> دارند هنوز کار می‌کنند.</p>
 <table>
-<thead><tr><th>استثنا</th><th>موارد پرتاب</th></tr></thead>
+<thead><tr><th>خطا</th><th>چه وقت پرتاب می‌شود</th></tr></thead>
 <tbody>
-<tr><td><code>InvalidDateException</code></td><td>تاریخ غیرممکن، سال بیرون از بازهٔ پشتیبانی‌شده، رشتهٔ خالی یا غیرقابل‌پارس، مقدار نامعقول در <code>add*()</code> / <code>sub*()</code>، timestamp بیرون از بازه، الگوی قالب‌بندی بیش‌ازحد بلند</td></tr>
-<tr><td><code>InvalidNumberException</code></td><td>ورودی غیرعددی یا اعشاری، <code>NaN</code> / <code>INF</code>، ورودی بیش‌ازحد بزرگ، عدد خیلی بزرگ، واژه‌های عددی ناشناخته</td></tr>
-<tr><td><code>InvalidPrayerConfigException</code></td><td>روش محاسبهٔ ناشناخته، شهر ناشناخته، ضریب عصر نامعتبر</td></tr>
+<tr><td><code>InvalidDateException</code></td><td>تاریخ غیرممکن، سال بیرون از بازه، رشتهٔ خالی یا غیرقابل خواندن، مقدار غیرمنطقی در <code>add*()</code> و <code>sub*()</code>، زمان یونیکس بیرون از بازه، الگوی قالب‌بندی خیلی بلند، گزینهٔ نادرست در <code>HolidayCalendar</code></td></tr>
+<tr><td><code>InvalidNumberException</code></td><td>ورودی غیرعددی یا اعشاری، <code>NaN</code> و <code>INF</code>، ورودی یا عدد خیلی بزرگ، واژهٔ عددی ناشناخته، گزینهٔ نادرست برای عدد به حروف عربی</td></tr>
+<tr><td><code>InvalidPrayerConfigException</code></td><td>روش محاسبه یا شهر ناشناخته، ضریب عصر نامعتبر، تنظیم دستی نادرست در <code>withTune()</code></td></tr>
 <tr><td><code>UnsupportedLocaleException</code></td><td>زبانی که تابع پشتیبانی نمی‌کند (مثلاً <code>number_to_words(5, 'de')</code>)</td></tr>
-<tr><td>خود <code>RtlyKitException</code></td><td>سایر آرگومان‌های نامعتبر، مانند جداکنندهٔ نامعتبر یا بلند در <code>Slugify::make()</code> یا نبودِ یک جدول دادهٔ همراه بسته</td></tr>
+<tr><td>خود <code>RtlyKitException</code></td><td>آرگومان‌های نامعتبر دیگر، مثل جداکنندهٔ بد یا متن UTF-8 خراب در <code>Slugify::make()</code> یا نبودن جدول داده</td></tr>
 </tbody>
 </table>
 
 <h2 id="error-codes">کدهای خطا</h2>
-<p>متن پیام استثنا برای انسان است و ممکن است در هر انتشار بازنویسی شود. بخش پایدار، <strong>کد خطا</strong> است: یک enum رشته‌ای به نام <code>ErrorCode</code> که نام caseها و مقدارهایش بخشی از API عمومی است (به <a href="api-stability.html">پایداری API</a> نگاه کنید).</p>
+<p>متن پیام برای آدم‌هاست و ممکن است در هر نسخه عوض شود. بخش پایدار <strong>کد خطا</strong> است: یک enum رشته‌ای به نام <code>ErrorCode</code>. نام caseها و مقدارهایش جزو API عمومی است (<a href="api-stability.html">پایداری API</a>).</p>
 <table>
 <thead><tr><th>Case</th><th>مقدار</th><th>معنا</th></tr></thead>
 <tbody>
-<tr><td><code>InvalidArgument</code></td><td><code>invalid_argument</code></td><td>حالت پیش‌فرضِ آرگومان نامعتبر که کد دقیق‌تری ندارد</td></tr>
-<tr><td><code>InvalidDate</code></td><td><code>invalid_date</code></td><td>تاریخ یا زمان بدشکل، غیرممکن یا غیرقابل‌پارس (ماه ۱۳، ۳۰ اسفند در سال غیرکبیسه، <code>'not a date'</code>، رشتهٔ خالی)</td></tr>
-<tr><td><code>DateOutOfRange</code></td><td><code>date_out_of_range</code></td><td>سال، تاریخ، timestamp یا مقدار <code>add*()</code> / <code>sub*()</code> بیرون از بازهٔ پشتیبانی‌شده (به <a href="limits.html">محدودیت‌ها</a> نگاه کنید)</td></tr>
-<tr><td><code>InvalidNumber</code></td><td><code>invalid_number</code></td><td>مقدار را نمی‌توان به‌عنوان عدد (صحیح) خواند</td></tr>
-<tr><td><code>NumberTooLarge</code></td><td><code>number_too_large</code></td><td>عدد از بزرگی پشتیبانی‌شده بیشتر است</td></tr>
+<tr><td><code>InvalidArgument</code></td><td><code>invalid_argument</code></td><td>آرگومان نامعتبری که کد دقیق‌تری ندارد</td></tr>
+<tr><td><code>InvalidDate</code></td><td><code>invalid_date</code></td><td>تاریخ یا زمان نادرست، غیرممکن یا غیرقابل خواندن (ماه ۱۳، ۳۰ اسفند در سال غیرکبیسه، <code>'not a date'</code>، رشتهٔ خالی)</td></tr>
+<tr><td><code>DateOutOfRange</code></td><td><code>date_out_of_range</code></td><td>سال، تاریخ، زمان یونیکس یا مقدار <code>add*()</code> و <code>sub*()</code> بیرون از بازه (<a href="limits.html">سقف‌ها</a>)</td></tr>
+<tr><td><code>InvalidNumber</code></td><td><code>invalid_number</code></td><td>مقدار را نمی‌شود عدد (صحیح) خواند</td></tr>
+<tr><td><code>NumberTooLarge</code></td><td><code>number_too_large</code></td><td>عدد از بیشترین مقدار پشتیبانی‌شده بزرگ‌تر است</td></tr>
 <tr><td><code>NonFiniteNumber</code></td><td><code>non_finite_number</code></td><td>جایی که عدد متناهی لازم است، <code>NaN</code> یا <code>INF</code> داده شده</td></tr>
-<tr><td><code>InvalidNumberWords</code></td><td><code>invalid_number_words</code></td><td>واژه‌های عددی ناشناخته یا نادرست در <code>NumberToWords::fromWords()</code></td></tr>
-<tr><td><code>InputTooLong</code></td><td><code>input_too_long</code></td><td>ورودی رشته‌ای از سقف مستندشده بلندتر است</td></tr>
-<tr><td><code>InvalidPrayerConfig</code></td><td><code>invalid_prayer_config</code></td><td>شهر، روش محاسبه یا ضریب عصرِ ناشناخته</td></tr>
-<tr><td><code>UnsupportedLocale</code></td><td><code>unsupported_locale</code></td><td>زبانی غیر از زبان‌های پشتیبانی‌شده</td></tr>
-<tr><td><code>DataUnavailable</code></td><td><code>data_unavailable</code></td><td>یک جدول دادهٔ همراه بسته وجود ندارد یا خراب است (مشکل بسته‌بندی، نه خطای کاربر)</td></tr>
+<tr><td><code>InvalidNumberWords</code></td><td><code>invalid_number_words</code></td><td>واژهٔ عددی ناشناخته یا نادرست در <code>NumberToWords::fromWords()</code></td></tr>
+<tr><td><code>InputTooLong</code></td><td><code>input_too_long</code></td><td>ورودی رشته‌ای از سقف مشخص‌شده بلندتر است</td></tr>
+<tr><td><code>InvalidPrayerConfig</code></td><td><code>invalid_prayer_config</code></td><td>شهر، روش محاسبه، ضریب عصر یا تنظیم دستی نادرست</td></tr>
+<tr><td><code>UnsupportedLocale</code></td><td><code>unsupported_locale</code></td><td>زبانی که پشتیبانی نمی‌شود</td></tr>
+<tr><td><code>DataUnavailable</code></td><td><code>data_unavailable</code></td><td>یک جدول داده در بسته نیست یا خراب است (مشکل بسته‌بندی است، نه اشتباه کاربر)</td></tr>
 </tbody>
 </table>
-<div class="note"><strong>یادداشت.</strong> رشته‌هایی که <code>Result::errors()</code> برمی‌گرداند (<code>invalid_format</code>، <code>invalid_checksum</code>، <code>invalid_type</code> و ...) رشتهٔ ساده و مخصوص اعتبارسنج‌ها هستند، نه caseهای <code>ErrorCode</code>. این enum فقط برای استثناهاست.</div>
+<div class="note"><strong>یادآوری.</strong> رشته‌هایی که <code>Result::errors()</code> می‌دهد (<code>invalid_format</code>، <code>invalid_checksum</code>، <code>invalid_type</code> و ...) رشته‌های ساده و مخصوص اعتبارسنج‌ها هستند، نه caseهای <code>ErrorCode</code>. این enum فقط برای خطاهای پرتاب‌شده است.</div>
 
-<h2 id="reading-codes">خواندن کد و زمینه (context)</h2>
-<p>هر استثنای کتابخانه <code>getErrorCode()</code> و <code>getContext()</code> دارد. context آرایه‌ای از واقعیت‌های ماشین‌خوان دربارهٔ شکست است (یک سقف، زبانِ ناپشتیبانی‌شده، نام آرگومان). هرگز رازی در آن نیست و ممکن است خالی باشد. این اسکریپت پنج ورودی بد را به <code>number_to_words()</code> می‌دهد:</p>
+<h2 id="reading-codes">خواندن کد و context</h2>
+<p>هر خطای کتابخانه <code>getErrorCode()</code> و <code>getContext()</code> دارد. context آرایه‌ای از اطلاعات ماشین‌خوان دربارهٔ شکست است (یک سقف، زبان پشتیبانی‌نشده، نام آرگومان). چیز محرمانه‌ای در آن نیست و ممکن است خالی باشد. این اسکریپت پنج ورودی بد را به <code>number_to_words()</code> می‌دهد:</p>
 <pre><code class="language-php">&lt;?php
 require __DIR__.'/vendor/autoload.php';
 
@@ -73,8 +73,8 @@ foreach ([1.5, NAN, 'abc', str_repeat('9', 22), str_repeat('1', 5000)] as $input
 // InvalidNumberException number_too_large {"limit":"10^21 - 1"}
 // InvalidNumberException input_too_long {"limit":4096}</code></pre>
 
-<h2 id="catching">الگوهای گرفتن استثنا</h2>
-<p>بر اساس کد تصمیم بگیرید، نه متن پیام. از <code>match</code> همراه با شاخهٔ <code>default</code> استفاده کنید، چون ممکن است در انتشار فرعی (minor) caseهای تازه‌ای اضافه شود.</p>
+<h2 id="catching">الگوهای گرفتن خطا</h2>
+<p>بر اساس کد تصمیم بگیرید، نه متن پیام. از <code>match</code> با شاخهٔ <code>default</code> استفاده کنید، چون ممکن است در نسخهٔ فرعی caseهای تازه اضافه شود.</p>
 <pre><code class="language-php">&lt;?php
 require __DIR__.'/vendor/autoload.php';
 
@@ -106,14 +106,14 @@ try {
     echo get_class($e), ' ', $e instanceof RtlyKitThrowable ? 'is RtlyKitThrowable' : '', "\n";
     // RtlyKit\Exceptions\InvalidDateException is RtlyKitThrowable
 }</code></pre>
-<p>‏<code>RtlyKitException::because(ErrorCode, string $message, array $context = [], ?Throwable $previous = null)</code> سازندهٔ نام‌دارِ خود کتابخانه برای پرتاب استثنا با کد مشخص است. می‌توانید برای خطاهای خودتان هم از آن استفاده کنید، ولی آنچه شما می‌سازید جزو تعهد کتابخانه نیست.</p>
-<p>هنگام ثبت لاگ، کد و context را بنویسید، نه متن پیام را:</p>
+<p>‏<code>RtlyKitException::because(ErrorCode, string $message, array $context = [], ?Throwable $previous = null)</code> سازندهٔ خود کتابخانه برای ساختن خطا با کد مشخص است. می‌توانید برای خطاهای خودتان هم به کار ببرید، ولی خطاهای ساخته‌شده توسط شما جزو تعهد کتابخانه نیست.</p>
+<p>در لاگ، کد و context را بنویسید، نه متن پیام را:</p>
 <pre><code class="language-php">catch (RtlyKitThrowable $e) {
     error_log($e-&gt;getErrorCode()-&gt;value.' '.json_encode($e-&gt;getContext()));
 }</code></pre>
 
-<h2 id="never-throws">چه چیزی هرگز استثنا پرتاب نمی‌کند</h2>
-<p>اعتبارسنج‌ها هر مقدار PHP را می‌پذیرند. برای ورودی بد، با هر نوع و هر اندازه، استثنا پرتاب نمی‌کنند:</p>
+<h2 id="never-throws">چه چیزی هیچ‌وقت خطا نمی‌دهد</h2>
+<p>اعتبارسنج‌ها هر مقدار PHP را قبول می‌کنند. برای ورودی بد، با هر نوع و هر اندازه، خطا پرتاب نمی‌کنند:</p>
 <pre><code class="language-php">&lt;?php
 require __DIR__.'/vendor/autoload.php';
 
@@ -128,30 +128,30 @@ var_dump(validate_national_code('0013542419')-&gt;isValid());       // bool(true
 <table>
 <thead><tr><th>ورودی اعتبارسنج</th><th>نتیجه</th></tr></thead>
 <tbody>
-<tr><td>رشته تا ۴۰۹۶ بایت</td><td>به‌طور عادی بررسی می‌شود (ارقام فارسی و عربی پذیرفته است)</td></tr>
-<tr><td><code>int</code> و <code>float</code> صحیحِ متناهی</td><td>به رشته تبدیل و سپس بررسی می‌شود (صفرهای ابتدایی در <code>int</code> از قبل از دست رفته‌اند)</td></tr>
-<tr><td><code>null</code>، <code>bool</code>، آرایه، شیء، <code>NaN</code>، <code>INF</code>، <code>float</code> اعشاری</td><td>نامعتبر، با خطای <code>invalid_type</code></td></tr>
-<tr><td>رشته بیش از ۴۰۹۶ بایت</td><td>نامعتبر، با خطای <code>input_too_long</code></td></tr>
-<tr><td>UTF-8 نامعتبر</td><td>نامعتبر (معمولاً <code>invalid_format</code>)</td></tr>
+<tr><td>رشته تا ۴۰۹۶ بایت</td><td>طبق معمول بررسی می‌شود (رقم فارسی و عربی قبول است)</td></tr>
+<tr><td><code>int</code> و <code>float</code> صحیح و متناهی</td><td>به رشته تبدیل و بعد بررسی می‌شود (صفرهای اول <code>int</code> از قبل از بین رفته‌اند)</td></tr>
+<tr><td><code>null</code>، <code>bool</code>، آرایه، شیء، <code>NaN</code>، <code>INF</code>، <code>float</code> اعشاری</td><td>نامعتبر، با <code>invalid_type</code></td></tr>
+<tr><td>رشتهٔ بیشتر از ۴۰۹۶ بایت</td><td>نامعتبر، با <code>input_too_long</code></td></tr>
+<tr><td>UTF-8 خراب</td><td>نامعتبر (معمولاً <code>invalid_format</code>)</td></tr>
 </tbody>
 </table>
-<p>قواعد اعتبارسنجی لاراول و <code>Globals::register()</code> هم از همین اصل پیروی می‌کنند: قواعد یک مقدار بولی برمی‌گردانند و <code>Globals::register()</code> هرگز استثنا پرتاب نمی‌کند (نام‌هایی را که رد کرده برمی‌گرداند).</p>
+<p>قانون‌های اعتبارسنجی Laravel و <code>Globals::register()</code> هم همین اصل را دارند. قانون‌ها یک مقدار بولی می‌دهند و <code>Globals::register()</code> هیچ‌وقت خطا پرتاب نمی‌کند (نام‌های ردشده را برمی‌گرداند).</p>
 
 <h2 id="caps">سقف ورودی‌ها</h2>
-<p>هر فراخوانی که متن نامطمئن می‌گیرد سقف اندازه دارد تا ورودی مخرب هزینهٔ زیادی نداشته باشد. عبور از سقف، <code>input_too_long</code> را پدید می‌آورد، به‌صورت استثنا یا خطای اعتبارسنج. فهرست کامل در <a href="limits.html">محدودیت‌ها</a> آمده است.</p>
+<p>هر جا متن نامطمئن بیاید سقف اندازه دارد، تا ورودی مخرب هزینهٔ زیادی نسازد. عبور از سقف <code>input_too_long</code> می‌دهد، به شکل خطای پرتاب‌شده یا خطای اعتبارسنج. فهرست کامل در <a href="limits.html">سقف‌ها</a> است.</p>
 <table>
-<thead><tr><th>کجا</th><th>سقف</th><th>در صورت عبور</th></tr></thead>
+<thead><tr><th>کجا</th><th>سقف</th><th>اگر ردش کنید</th></tr></thead>
 <tbody>
-<tr><td>اعتبارسنج‌ها</td><td>۴۰۹۶ بایت برای هر رشته</td><td><code>Result</code> نامعتبر با خطای <code>input_too_long</code></td></tr>
-<tr><td>ورودی رشته‌ای <code>NumberToWords::convert()</code> / <code>fromWords()</code> و <code>Format</code></td><td>۴۰۹۶ بایت برای هر رشته</td><td><code>InvalidNumberException</code></td></tr>
-<tr><td><code>Format::withSeparator()</code> / <code>format_number()</code></td><td>۱۰۰۰ نویسه در عدد اعشاری ساده</td><td><code>InvalidNumberException</code></td></tr>
+<tr><td>اعتبارسنج‌ها</td><td>۴۰۹۶ بایت برای هر رشته</td><td><code>Result</code> نامعتبر با <code>input_too_long</code></td></tr>
+<tr><td>ورودی رشته‌ای <code>NumberToWords::convert()</code> و <code>fromWords()</code> و <code>Format</code></td><td>۴۰۹۶ بایت برای هر رشته</td><td><code>InvalidNumberException</code></td></tr>
+<tr><td><code>Format::withSeparator()</code> و <code>format_number()</code></td><td>۱۰۰۰ نویسه در عدد اعشاری ساده</td><td><code>InvalidNumberException</code></td></tr>
 <tr><td>جداکنندهٔ <code>Slugify::make()</code></td><td>۶۴ بایت، UTF-8 معتبر</td><td><code>RtlyKitException</code></td></tr>
-<tr><td>الگوی <code>Jalali::format()</code></td><td>۲۵۶ بایت (<code>Jalali::MAX_FORMAT_LENGTH</code>)</td><td><code>InvalidDateException</code></td></tr>
+<tr><td>الگوی <code>format()</code> (جلالی، هجری، عبری)</td><td>۲۵۶ بایت (<code>MAX_FORMAT_LENGTH</code> در هر کلاس)</td><td><code>InvalidDateException</code></td></tr>
 </tbody>
 </table>
 
 <h2 id="calendar-rule">قاعدهٔ بازهٔ تقویم</h2>
-<p>هر نقطهٔ ورود تقویم (<code>make</code>، <code>create</code>، <code>createFromFormat</code>، timestamp، <code>add*</code> / <code>sub*</code>، توابع کمکی و ماکروهای Carbon) یا تاریخ معتبر برمی‌گرداند یا <code>InvalidDateException</code> پرتاب می‌کند. چیزی سرریز نمی‌شود و نوع دیگری از استثنا به کار نمی‌رود. بازه‌ها: جلالی ‎-620 تا 9377، هجری 1 تا 9665 و عبری 3762 تا 13759، که همه درون سال‌های میلادی 1 تا 9999 هستند. به <a href="limits.html#calendars">محدودیت‌ها</a> نگاه کنید.</p>
+<p>هر راه ورود به تقویم (<code>make</code>، <code>create</code>، <code>createFromFormat</code>، زمان یونیکس، <code>add*</code> و <code>sub*</code>، توابع کمکی و ماکروهای Carbon) یا تاریخ معتبر می‌دهد یا <code>InvalidDateException</code>. چیزی سرریز نمی‌کند و خطای از نوع دیگری هم نمی‌آید. بازه‌ها: جلالی ‎-۶۲۰ تا ۹۳۷۷، هجری ۱ تا ۹۶۶۵ و عبری ۳۷۶۲ تا ۱۳۷۵۹، که همه در سال‌های میلادی ۱ تا ۹۹۹۹ جا می‌شوند. <a href="limits.html#calendars">سقف‌ها</a> را ببینید.</p>
 
 <h2 id="complete-example">یک نمونهٔ کامل</h2>
 <pre><code class="language-php">use function RtlyKit\jdate;

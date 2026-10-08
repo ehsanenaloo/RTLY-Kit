@@ -1,0 +1,139 @@
+<!--
+title: أدوات النصوص
+description: تطبيع النصوص الفارسية والعربية، وإصلاح نصف المسافة، والكشف عن اللغة والاتجاه، وبناء المعرّفات النصية الصالحة للروابط، مع السلوك الدقيق وحالات الحافة لكل أداة.
+group: numbers-text
+order: 30
+-->
+<h2 id="normalizer">Normalizer</h2>
+<p>يجعل الصنف <code>RtlyKit\Text\Normalizer</code> النص الفارسي قابلًا للمقارنة والتخزين. فمدخلات المستخدمين تخلط بين أشكال الحروف العربية والفارسية (لوحة المفاتيح العربية تكتب «ي» و«ك»)، وتتضمن حركات وتطويلًا ومسافات زائدة؛ فتبدو الكلمة نفسها متطابقة على الشاشة لكنها تفشل في مقارنة السلاسل أو في البحث في قاعدة البيانات.</p>
+
+<h3 id="normalize">normalize()</h3>
+<p>تفعل <code>Normalizer::normalize($text, $removeDiacritics = true)</code> ما يلي:</p>
+<ul>
+<li>تتحول الحروف العربية إلى نظيراتها الفارسية: «ك» إلى «ک»، و«ي» «ى» «ے» إلى «ی»، و«ة» «ۀ» إلى «ه»، و«ؤ» إلى «و»، و«إ» «أ» «ٱ» إلى «ا».</li>
+<li>تتحول الأرقام العربية الهندية (<code>٠-٩</code>) إلى أرقام فارسية (<code>۰-۹</code>). أما الأرقام الإنجليزية فتُترك كما هي.</li>
+<li>يُحذف التطويل (tatweel، المحرف U+0640).</li>
+<li>تُحذف الحركات، أي علامات الحركات القصيرة (من U+064B إلى U+065F وU+0670)، إلا إذا مرّرت <code>false</code> وسيطًا ثانيًا.</li>
+<li>تُختزل سلاسل المسافات البيضاء (المسافات والجداول والأسطر الجديدة) إلى مسافة واحدة، وتُقصّ الأطراف.</li>
+</ul>
+<pre><code class="language-php">&lt;?php
+require 'vendor/autoload.php';
+
+use RtlyKit\Text\Normalizer;
+use function RtlyKit\normalize_text;
+
+echo Normalizer::normalize("علي  كتاب  ١٢٣ 456"), "\n";    // علی کتاب ۱۲۳ 456
+echo Normalizer::normalize("كــتاب"), "\n";                 // کتاب
+echo Normalizer::normalize("  سلام \n\t دنیا  "), "\n";     // سلام دنیا
+echo Normalizer::normalize("أحمد إبراهيم مؤمن ة"), "\n";    // احمد ابراهیم مومن ه
+echo Normalizer::normalize("ثَبْت  ١٢٣ 456"), "\n";         // ثبت ۱۲۳ 456
+echo Normalizer::normalize("ثَبْت", false), "\n";           // ثَبْت (تبقى الحركات)
+echo normalize_text('كتاب'), "\n";                          // کتاب</code></pre>
+<div class="note"><strong>ما تتركه كما هو.</strong> الهمزة المنفردة «ء» و«ئ» تُترك عمدًا دون مساس، لأن لهما معنى في الكلمات الفارسية والعربية. ونصف المسافة (ZWNJ) يُحفظ: فتخرج «می‌خواهم» مطابقة بايتًا ببايت. والحروف الإنجليزية لا تتغير.</div>
+<p>تستدعي الدالة المساعدة <code>normalize_text()</code> الدالة <code>Normalizer::normalize()</code> بالقيم الافتراضية.</p>
+
+<h3 id="half-space">fixHalfSpace()</h3>
+<p>نصف المسافة (ZWNJ، U+200C) هو ما يجعل «می‌خواهم» تظهر صحيحة. وكثيرًا ما يترك النسخ واللصق عدة منها متتالية، أو واحدة معلّقة بجوار مسافة أو في نهاية النص. تنظّف <code>fixHalfSpace()</code> ذلك:</p>
+<ul>
+<li>تُحذف الواصلات الناعمة (U+00AD).</li>
+<li>تُختزل سلسلة من محارف ZWNJ إلى واحد.</li>
+<li>يُحذف ZWNJ الواقع مباشرة قبل المسافة البيضاء أو بعدها.</li>
+<li>تُحذف محارف ZWNJ في بداية النص ونهايته تمامًا.</li>
+</ul>
+<pre><code class="language-php">$a = "می\u{200C}\u{200C}\u{200C}خواهم";
+echo mb_strlen($a), ' ', mb_strlen(Normalizer::fixHalfSpace($a)), "\n";   // 10 8
+
+$b = "\u{200C}سلام \u{200C}دنیا\u{200C}";
+echo mb_strlen($b), ' ', mb_strlen(Normalizer::fixHalfSpace($b)), "\n";   // 12 9
+echo Normalizer::fixHalfSpace($b), "\n";                                  // سلام دنیا</code></pre>
+<p>لا تُدرج أنصاف المسافات الناقصة، ولا تختزل المسافات العادية.</p>
+
+<h3 id="clean">clean()</h3>
+<p>الدالة <code>Normalizer::clean()</code> هي النسخة الشاملة للتخزين والبحث: <code>normalize()</code> ثم <code>fixHalfSpace()</code> ثم حذف المحارف الخفية: المسافة ذات العرض الصفري (U+200B) ووصلة العرض الصفري (U+200D) وعلامة ترتيب البايت (U+FEFF). ويبقى ZWNJ المحرف الوحيد ذو العرض الصفري الذي يُحتفظ به.</p>
+<pre><code class="language-php">$c = "كتاب\u{200B}ي  ١٢٣";
+echo Normalizer::clean($c), "\n";   // کتابی ۱۲۳</code></pre>
+<p>أما تطبيق <code>normalize()</code> وحدها على النص نفسه فكان سيترك المسافة ذات العرض الصفري داخل الكلمة، ولهذا وُجدت <code>clean()</code>. استخدمها قبل تخزين النصوص التي يدخلها المستخدمون أو فهرستها.</p>
+
+<h2 id="detector">Detector</h2>
+<p>يجيب <code>RtlyKit\Text\Detector</code> عن أسئلة الكتابة (script) واللغة والاتجاه. كل دوالّه ساكنة (static) ولا تُطلق استثناءً أبدًا.</p>
+
+<h3 id="persian-arabic">isPersian() و isArabic()</h3>
+<p>كلتاهما استدلال تقريبي (heuristic) للنص المكتوب بالخط العربي. تُعرف الفارسية من الحروف الموجودة في الفارسية وحدها (<code>پ چ ژ گ</code>، والشكلان الفارسيان <code>ک</code> و<code>ی</code>، والأرقام الفارسية). وتُعرف العربية من <code>ي ك ى ة</code> والأرقام العربية الهندية. أما الحروف المشتركة بين اللغتين، ومنها «ه» وصور الهمزة، فلا تُحتسب. ويُعدّ النص فارسيًا عندما تكون الحروف الفارسية الخالصة بتكرار لا يقل عن الحروف العربية الخالصة، فحالات التعادل والنصوص التي لا تحوي حروفًا مميِّزة تُعدّ فارسية.</p>
+<pre><code class="language-php">use RtlyKit\Text\Detector;
+
+var_dump(Detector::isPersian('سلام'));        // bool(true)، لا حروف مميِّزة، فارسية افتراضياً
+var_dump(Detector::isPersian('گچپژ'));        // bool(true)
+var_dump(Detector::isArabic('مرحبا بكم'));    // bool(true)
+var_dump(Detector::isArabic('كتاب ي'));       // bool(true)
+var_dump(Detector::isPersian('hello'));       // bool(false)، لا خط عربي إطلاقاً
+var_dump(Detector::isPersian('۱۲۳'));         // bool(true)، أرقام فارسية
+var_dump(Detector::isArabic('٣٤٥'));          // bool(true)، أرقام عربية هندية
+var_dump(Detector::isPersian(''));            // bool(false)</code></pre>
+<div class="note"><strong>من المفيد أن تعرف.</strong> هذه الدوال تستدل على اللغة من تكرار الحروف، وليست محدِّدًا دقيقًا للغة. فالنصوص القصيرة جدًا والأسماء والكلمات العربية المكتوبة داخل نص فارسي قد تكون ملتبسة، والنص الذي يخلط العربية بالفارسية قد يميل إلى أيٍّ منهما. استخدمها لاختيار قيمة افتراضية معقولة، لا لقرار يجب أن يكون صحيحًا دائمًا.</div>
+
+<h3 id="direction">الاتجاه و RTL</h3>
+<ul>
+<li><code>containsRtl($text)</code>: هل يحتوي النص على أي محرف من خط يُكتب من اليمين إلى اليسار (العبرية والعربية وملحقاتها والسريانية والتانا وN'Ko وغيرها، وأشكال العرض العربية) أو علامة RLM.</li>
+<li><code>direction($text)</code>: تُرجع <code>'rtl'</code> أو <code>'ltr'</code> بحسب <strong>أول حرف قوي</strong>، وفق قاعدة Unicode للنص ثنائي الاتجاه. الأرقام وعلامات الترقيم والمسافات محايدة. والنص الذي لا يحوي حروفًا يُرجع <code>'ltr'</code>.</li>
+<li><code>isHebrew($text)</code>: هل يحتوي النص على حروف عبرية.</li>
+</ul>
+<pre><code class="language-php">var_dump(Detector::containsRtl('abc'));           // bool(false)
+echo Detector::direction('سلام hello'), "\n";    // rtl
+echo Detector::direction('Hello مرحبا'), "\n";   // ltr (الحرف الأول لاتيني)
+echo Detector::direction('۱۲۳'), "\n";           // ltr (الأرقام محايدة ولا يوجد حرف)
+var_dump(Detector::isHebrew('שלום'));            // bool(true)</code></pre>
+<p>تغلّف الدالتان المساعدتان <code>contains_rtl()</code> و<code>text_direction()</code> الدالتين <code>containsRtl()</code> و<code>direction()</code>. استخدم <code>direction()</code> للسمة <code>dir</code> في HTML على النصوص التي ينشئها المستخدمون.</p>
+
+<h3 id="rtl-locale">isRtlLocale()</h3>
+<p>تخبرك <code>isRtlLocale($locale)</code> إن كان وسم اللغة المحلية (locale) يُكتب من اليمين إلى اليسار. تقسّم الوسم عند <code>-</code> و<code>_</code> و<code>.</code> و<code>@</code>، وتتجاهل حالة الأحرف والمسافات المحيطة، وتُرجع true عندما تكون اللغة من اللغات التي تُكتب من اليمين إلى اليسار (<code>fa</code> و<code>ar</code> و<code>he</code> و<code>ur</code> و<code>ps</code> و<code>ug</code> و<code>dv</code> و<code>ckb</code> و<code>azb</code> وغيرها) أو عندما يوجد وسم فرعي للخط مثل <code>Arab</code> أو <code>Hebr</code>.</p>
+<pre><code class="language-php">var_dump(Detector::isRtlLocale('fa_IR'));     // bool(true)
+var_dump(Detector::isRtlLocale('ar-SA'));     // bool(true)
+var_dump(Detector::isRtlLocale('ckb-IQ'));    // bool(true)
+var_dump(Detector::isRtlLocale('az-Arab'));   // bool(true)، الوسم الفرعي للخط هو الحاسم
+var_dump(Detector::isRtlLocale('ku'));        // bool(false)، "ku" وحدها ليست في قائمة اللغات RTL
+var_dump(Detector::isRtlLocale('en'));        // bool(false)
+var_dump(Detector::isRtlLocale(''));          // bool(false)</code></pre>
+
+<h2 id="slugify">Slugify</h2>
+<p>تحوّل <code>Slugify::make($text, $separator = '-')</code> العنوان إلى معرّف نصي (slug) ملائم للروابط مع إبقاء الحروف الفارسية والعربية مقروءة. ولا تُجري أي نقحرة (transliteration) أبدًا.</p>
+<ol>
+<li>يُطبَّع النص بـ <code>Normalizer::normalize()</code>.</li>
+<li>تتحول المسافات البيضاء وأنصاف المسافات إلى الفاصل.</li>
+<li>يُحذف كل شيء عدا الحروف (من أي خط) وعلامات الدمج والأرقام (من أي مجموعة) والواصلات والشرطات السفلية. وتختفي علامات الترقيم والرموز التعبيرية.</li>
+<li>تُختزل الواصلات والشرطات السفلية والفواصل المتكررة إلى واحد، وتُقصّ الفواصل من الطرفين.</li>
+<li>تُحوَّل النتيجة إلى أحرف صغيرة بترميز UTF-8.</li>
+</ol>
+<pre><code class="language-php">use RtlyKit\Text\Slugify;
+
+echo Slugify::make('سلام دنیا'), "\n";               // سلام-دنیا
+echo Slugify::make("کتاب\u{200C}خانه ملی"), "\n";    // کتاب-خانه-ملی
+echo Slugify::make('Hello, World!'), "\n";           // hello-world
+echo Slugify::make('  A--B__C  '), "\n";             // a-b_c
+echo Slugify::make('سلام!!! دنیا؟'), "\n";           // سلام-دنیا
+echo Slugify::make('۱۲۳ ابر'), "\n";                 // ۱۲۳-ابر
+echo Slugify::make('كتاب ي'), "\n";                  // کتاب-ی
+echo Slugify::make('سلام 😀 دنیا'), "\n";            // سلام-دنیا
+echo Slugify::make('عکس.jpg'), "\n";                 // عکسjpg
+var_dump(Slugify::make('$%^&amp;'));                    // string(0) ""</code></pre>
+<p>أمران يجب الانتباه إليهما. الأرقام تحتفظ بالمجموعة التي كُتبت بها (<code>۱۲۳</code> تبقى فارسية)، فشغّل <code>Digits::toEnglish()</code> أولًا إن أردت أرقام ASCII في الروابط. والنقطة تُحذف ولا تُعامل فاصلاً، فتلتصق امتدادات الملفات باسمها (<code>عکسjpg</code>)؛ فأنشئ المعرّف النصي للاسم وللامتداد كلٍّ على حدة.</p>
+
+<h3 id="slug-separator">الفاصل</h3>
+<p>مرّر أي سلسلة وسيطًا ثانيًا: <code>'_'</code>، أو سلسلة أطول، أو سلسلة فارغة لضم الكلمات دون أي فاصل.</p>
+<pre><code class="language-php">echo Slugify::make('سلام دنیا', '_'), "\n";        // سلام_دنیا
+echo Slugify::make('سلام دنیا', ''), "\n";         // سلامدنیا
+echo Slugify::make('Hello World', '--'), "\n";     // hello--world</code></pre>
+<p>الفاصل محدود بـ <strong>64 بايت</strong> ويجب أن يكون UTF-8 صالحًا. والنص نفسه يجب أن يكون UTF-8 صالحًا كذلك. الفاصل الأطول من الحد يُثير <code>RtlyKitException</code> بالرمز <code>input_too_long</code>، وأي نص أو فاصل غير صالح يُثيره بالرمز <code>invalid_argument</code> (والسياق <code>argument</code> يقول أيهما):</p>
+<pre><code class="language-php">try {
+    Slugify::make('Hello World', str_repeat('x', 65));
+} catch (\RtlyKit\Exceptions\RtlyKitException $e) {
+    echo $e-&gt;getMessage(), ' [', $e-&gt;getErrorCode()-&gt;value, "]\n";
+    // The slug separator is too long. [input_too_long]
+}
+
+try {
+    Slugify::make("abc\xff");
+} catch (\RtlyKit\Exceptions\RtlyKitException $e) {
+    echo $e-&gt;getMessage(), ' [', $e-&gt;getErrorCode()-&gt;value, "]\n";
+    // The text to slugify must be valid UTF-8. [invalid_argument]
+}</code></pre>
+<div class="note"><strong>المعرّفات الفارغة والتفرّد.</strong> العنوان المكوَّن من علامات ترقيم فقط يُنتج سلسلة فارغة، وقد تُنتج عناوين مختلفة المعرّف النصي نفسه. عالج الحالة الفارغة (مثلًا بالرجوع إلى معرّف رقمي)، واطلب التفرّد في طبقة التخزين لديك.</div>

@@ -1,0 +1,97 @@
+<!--
+title: العطل الرسمية الإيرانية
+description: ابحث عن العطل الرسمية الإيرانية لأي تاريخ جلالي، واعرض سنة كاملة، واعثر على أيام العمل. تتبع النتائج التواريخ الرسمية المنشورة للسنوات 1380 إلى 1405، وتُقدَّر العطل الإسلامية فيما عدا ذلك.
+group: dates-and-times
+order: 10
+-->
+<h2 id="overview">ماذا تفعل</h2>
+<p>تجيب <code>RtlyKit\Holiday\IranHolidays</code> عن أربعة أسئلة بشأن تاريخ جلالي: هل هو عطلة رسمية، وما اسم العطلة، وهل هو يوم عطلة أسبوعية، وما يوم العمل التالي. جميع الدوال ساكنة (static) والفئة <code>final</code>. وتُرجع عناوين العطل بالفارسية كما تظهر في التقويم الرسمي.</p>
+<p>تجمع الفئة نوعين من العطل:</p>
+<ul>
+<li><strong>العطل الشمسية الثابتة</strong> تقع في التاريخ الجلالي نفسه كل سنة (النوروز، و22 بهمن، وغيرهما). وهي دقيقة.</li>
+<li><strong>العطل الإسلامية (القمرية)</strong> تتحرك عبر السنة الجلالية بنحو 11 يومًا كل عام. للسنوات 1380 إلى 1405 تستعمل الفئة التواريخ الرسمية أو المنقولة، وللسنوات الأخرى تحسبها من تقويم أم القرى. التفاصيل في <a href="#limits">الدقة والحدود</a>.</li>
+</ul>
+<p>الدوال الساكنة هنا تعمل على التقويم الافتراضي. وإذا أردت إزاحة أو تصحيحًا أو يومًا خاصًا بك، فاستعمل <a href="holiday-calendar.html">تقويم العطل القابل للتعديل</a>.</p>
+
+<h2 id="check">فحص يوم واحد</h2>
+<p>يقبل كل بحث إما كائن <code>Jalali</code> أو ثلاثة أعداد صحيحة (السنة والشهر واليوم).</p>
+<pre><code class="language-php">use RtlyKit\Calendar\Jalali;
+use RtlyKit\Holiday\IranHolidays;
+use function RtlyKit\is_iran_holiday;
+
+var_dump(IranHolidays::isHoliday(1404, 11, 22));              // bool(true)
+var_dump(IranHolidays::getTitle(1404, 11, 22));               // string(38) "پیروزی انقلاب اسلامی"
+var_dump(IranHolidays::isHoliday(Jalali::create(1404, 1, 5))); // bool(false)
+var_dump(is_iran_holiday(1404, 1, 1));                        // bool(true)  (دالة مساعدة ذات نطاق)</code></pre>
+<p>تُرجع <code>getTitle()</code> أول عنوان أو <code>null</code>. وعندما تتزامن عطلتان في يوم واحد، استعمل <code>getTitles()</code> التي تُرجع قائمة تأتي فيها العطلة الثابتة أولًا والإسلامية ثانيًا:</p>
+<pre><code class="language-php">print_r(IranHolidays::getTitles(Jalali::create(1404, 1, 2)));
+// Array ( [0] =&gt; عید نوروز [1] =&gt; شهادت امام علی )</code></pre>
+<p>في 1404 يوافق ثاني أيام النوروز ذكرى شهادة الإمام علي بحسب التقويم الرسمي، فيظهر العنوانان معًا.</p>
+
+<h2 id="year">عرض سنة كاملة</h2>
+<p>تُرجع ثلاث دوال سنةً كاملة، مفهرسةً بسلاسل <code>Y/m/d</code> بترتيب تصاعدي:</p>
+<ul>
+<li>تُرجع <code>allFixed(int $year)</code> العطل الشمسية الثابتة فقط، بعنوان واحد لكل تاريخ.</li>
+<li>تُرجع <code>all(int $year)</code> العطل الثابتة والإسلامية؛ وتُضم العناوين الواقعة في اليوم نفسه بالفاصل <code> / </code>.</li>
+<li><code>allTitles(int $year)</code> هي الصيغة المنظّمة: كل قيمة فيها من النوع <code>list&lt;string&gt;</code>.</li>
+</ul>
+<pre><code class="language-php">foreach (IranHolidays::allFixed(1404) as $date =&gt; $title) {
+    echo $date, '  ', $title, "\n";
+}
+// 1404/01/01  جشن نوروز
+// 1404/01/02  عید نوروز
+// 1404/01/03  عید نوروز
+// 1404/01/04  عید نوروز
+// 1404/01/12  روز جمهوری اسلامی
+// 1404/01/13  روز طبیعت
+// 1404/03/14  رحلت امام خمینی
+// 1404/03/15  قیام ۱۵ خرداد
+// 1404/11/22  پیروزی انقلاب اسلامی
+// 1404/12/29  ملی شدن صنعت نفت
+
+echo count(IranHolidays::all(1404));    // 26 (عطل ثابتة وإسلامية، مدخل واحد لكل يوم)</code></pre>
+<p>ومن الجزء الإسلامي في 1404 مثلًا: <code>1404/01/11 عید فطر</code> و<code>1404/03/16 عید قربان</code> و<code>1404/03/24 عید غدیر خم</code> و<code>1404/04/14 تاسوعای حسینی</code> و<code>1404/04/15 عاشورای حسینی</code>. وفي بعض الأيام يجتمع عنوانان، مثل <code>1404/01/12</code> الذي تطبع فيه <code>all()</code> العنوان <code>روز جمهوری اسلامی / تعطیل عید فطر</code>.</p>
+
+<h2 id="business">العطلة الأسبوعية وأيام العمل</h2>
+<p>تأخذ ثلاث دوال مساعدة كائن <code>Jalali</code>:</p>
+<ul>
+<li>تكون <code>isWeekend($date)</code> مساوية لـ <code>true</code> يوم <strong>الجمعة</strong> فقط.</li>
+<li>تكون <code>isBusinessDay($date)</code> مساوية لـ <code>true</code> عندما لا يكون اليوم عطلة أسبوعية ولا عطلة رسمية.</li>
+<li>تُرجع <code>nextBusinessDay($date)</code> أول يوم عمل يأتي بعد التاريخ المعطى بشكل صارم.</li>
+</ul>
+<pre><code class="language-php">foreach ([Jalali::create(1404, 11, 20), Jalali::create(1404, 11, 21), Jalali::create(1404, 11, 22)] as $d) {
+    echo $d-&gt;toDateString(),
+        ' weekend=', var_export(IranHolidays::isWeekend($d), true),
+        ' business=', var_export(IranHolidays::isBusinessDay($d), true),
+        ' next=', IranHolidays::nextBusinessDay($d)-&gt;toDateString(), "\n";
+}
+// 1404/11/20 weekend=false business=true next=1404/11/21
+// 1404/11/21 weekend=false business=true next=1404/11/23
+// 1404/11/22 weekend=false business=false next=1404/11/23</code></pre>
+<div class="note"><strong>من المفيد أن تعرف.</strong> يُعدّ يوم الجمعة وحده عطلة أسبوعية. أما الخميس فيوم عمل هنا، ولا تُنمذَج أنصاف أيام الخميس ولا التقاويم الإقليمية ولا حالات الإغلاق الطارئة (مثل الطقس أو الإعلانات الرسمية). إذا كانت مؤسستك تغلق أيام الخميس، فصفِّ ذلك بنفسك بعد استدعاء <code>isBusinessDay()</code>.</div>
+
+<h2 id="errors">الإدخال غير الصالح</h2>
+<p>يُثير الإدخال الخاطئ استثناءً من فئة فرعية من <code>RtlyKitException</code>، ولا يظهر خطأ PHP خام. راجع <a href="error-handling.html">معالجة الأخطاء</a>.</p>
+<pre><code class="language-php">IranHolidays::isHoliday(1404, 13, 1);  // InvalidDateException: Invalid Jalali date: 1404/13/1
+IranHolidays::isHoliday(1404);         // InvalidDateException: Month and day are required when the year is given as int.
+IranHolidays::all(99999);              // InvalidDateException: Jalali year 99999 is outside the supported range -620..9377. [date_out_of_range]</code></pre>
+
+<h2 id="limits">الدقة والحدود</h2>
+<p>تحدد إيران عطلها الدينية برؤية الهلال، ولذلك فإن حسابها من جدول أم القرى قد يخالف المعلن بيوم أو يومين. لهذا السبب تضم المكتبة التواريخ المنشورة، وهذه هي حال السنوات:</p>
+<ul>
+<li><strong>1394 و1396 إلى 1405:</strong> تواريخ رسمية، من مصدرين لكل سنة. لا تظهر في هذه السنوات إلا العناوين الواردة في الجدول الرسمي.</li>
+<li><strong>1380 إلى 1393 و1395:</strong> تواريخ منقولة عن مصدر واحد، دون مراجعة مجموعة العطل نفسها.</li>
+<li><strong>ما سوى ذلك:</strong> تقدير محسوب من جدول أم القرى.</li>
+</ul>
+<p>لمعرفة حال سنة معينة استعمل <code>IranHolidays::sourceOf($year)</code>؛ وهي تُرجع <code>Official</code> أو <code>Reported</code> أو <code>Estimated</code>. تفاصيل الجدول وطريقة التصحيح في <a href="holiday-calendar.html">تقويم العطل القابل للتعديل</a>.</p>
+<pre><code class="language-php">echo IranHolidays::sourceOf(1405)-&gt;name, "\n";   // Official
+echo IranHolidays::sourceOf(1385)-&gt;name, "\n";   // Reported
+echo IranHolidays::sourceOf(1406)-&gt;name, "\n";   // Estimated</code></pre>
+<div class="note"><strong>من المفيد أن تعرف.</strong> إذا اعتمدت على التواريخ التقديرية (السنوات خارج 1380 إلى 1405)، فقد يختلف اليوم المعلن في إيران عن المحسوب بيوم إلى يومين. وفي الرواتب والمواعيد النهائية والتواريخ القانونية، تأكد من الإعلان الرسمي. ويمكنك تصحيح التقدير بنفسك كما في <a href="holiday-calendar.html">تقويم العطل القابل للتعديل</a>.</div>
+<ul>
+<li><strong>النطاق.</strong> لا تُعرض العطل الإسلامية التقديرية إلا داخل جدول أم القرى المضمَّن (السنوات الهجرية من 1300 إلى 1500، أي من 1882-11-12 إلى 2077-11-16). وخارجه تُرجع <code>isHoliday()</code> و<code>getTitles()</code> و<code>all()</code> و<code>allTitles()</code> العطل الشمسية الثابتة فقط، لأن الاستقراء الجدولي لا يصلح للعطل. مثال: <code>IranHolidays::getTitles(Jalali::create(1500, 1, 1))</code> تُرجع <code>["جشن نوروز"]</code> فقط.</li>
+<li><strong>نطاق السنة الجلالية.</strong> تقبل <code>all()</code> و<code>allTitles()</code> و<code>allFixed()</code> السنوات الجلالية من -620 إلى 9377. وإذا كانت السنة خارج هذا النطاق أثارت <code>InvalidDateException</code> برمز الخطأ <code>date_out_of_range</code> وسياق فيه <code>year</code> و<code>min</code> و<code>max</code>. وحيث لا يمكن اشتقاق العطل الإسلامية (قبل بداية التقويم الهجري، أو خارج جدول 1300 إلى 1500 هـ) تُرجع الدوال العطل الجلالية الثابتة فقط دون أي استثناء.</li>
+<li><strong>غير مشمول.</strong> العطل الإضافية الاستثنائية التي تعلنها الحكومة، وقائمة المناسبات التي ليست أيام عطلة. وتستطيع إضافتها بنفسك بـ <code>withHoliday()</code>.</li>
+<li><strong>مصدر البيانات</strong> موصوف في صفحة <a href="accuracy-and-data.html">الدقة والبيانات</a>.</li>
+</ul>
+<p>ذو صلة: <a href="jalali.html">التقويم الجلالي</a> و<a href="hijri.html">التقويم الهجري</a>.</p>

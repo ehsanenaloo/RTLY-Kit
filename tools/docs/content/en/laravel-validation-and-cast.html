@@ -5,7 +5,7 @@ group: laravel
 order: 20
 -->
 <h2 id="rules">Validation rules</h2>
-<p>Once the package is installed (<a href="laravel-setup.html">Laravel setup</a>), seven rules are available in any validator, form request or <code>$request->validate()</code> call. They wrap the validators documented on the validation pages.</p>
+<p>Once the package is installed (<a href="laravel-setup.html">Laravel setup</a>), six rules are available in any validator, form request or <code>$request-&gt;validate()</code> call. They have seven names, because <code>mobile</code> is a short alias of <code>iran_mobile</code>. They wrap the validators described on the validation pages.</p>
 <table>
 <thead><tr><th>Rule</th><th>Accepts</th><th>Details</th></tr></thead>
 <tbody>
@@ -13,54 +13,54 @@ order: 20
 <tr><td><code>sheba</code></td><td>Sheba / IBAN, with or without the <code>IR</code> prefix</td><td><a href="sheba-and-bank-card.html">Sheba and bank card</a></td></tr>
 <tr><td><code>bank_card</code></td><td>16-digit bank card number (Luhn check)</td><td><a href="sheba-and-bank-card.html">Sheba and bank card</a></td></tr>
 <tr><td><code>iran_mobile</code></td><td>Iranian mobile number</td><td><a href="mobile-postal-plate.html">Mobile, postal code, plate</a></td></tr>
-<tr><td><code>mobile</code></td><td>Short alias of <code>iran_mobile</code></td><td>identical behaviour</td></tr>
+<tr><td><code>mobile</code></td><td>Short alias of <code>iran_mobile</code></td><td>same behaviour</td></tr>
 <tr><td><code>postal_code</code></td><td>10-digit Iranian postal code</td><td><a href="mobile-postal-plate.html">Mobile, postal code, plate</a></td></tr>
 <tr><td><code>vehicle_plate</code></td><td>Iranian vehicle plate, for example <code>12ب345-67</code></td><td><a href="mobile-postal-plate.html">Mobile, postal code, plate</a></td></tr>
 </tbody>
 </table>
-<div class="warn"><strong>Name clash.</strong> <code>mobile</code> is a generic word. If another package or your own code registers a rule named <code>mobile</code>, use <code>iran_mobile</code> everywhere to stay unambiguous.</div>
+<div class="note"><strong>Good to know.</strong> <code>mobile</code> is a generic word. If another package or your own code registers a rule named <code>mobile</code>, use <code>iran_mobile</code> everywhere so there is no doubt which rule runs.</div>
 
 <h2 id="usage">Using them</h2>
 <pre><code class="language-php">use Illuminate\Http\Request;
 
 public function store(Request $request)
 {
-    $data = $request->validate([
-        'national_code' => 'required|national_code',
-        'mobile'        => 'required|iran_mobile',
-        'card'          => 'nullable|bank_card',
-        'iban'          => 'nullable|sheba',
-        'postal'        => 'required|postal_code',
-        'plate'         => 'nullable|vehicle_plate',
+    $data = $request-&gt;validate([
+        'national_code' =&gt; 'required|national_code',
+        'mobile'        =&gt; 'required|iran_mobile',
+        'card'          =&gt; 'nullable|bank_card',
+        'iban'          =&gt; 'nullable|sheba',
+        'postal'        =&gt; 'required|postal_code',
+        'plate'         =&gt; 'nullable|vehicle_plate',
     ]);
 }</code></pre>
-<p>Run against bad data with the locale <code>fa</code>, a real validation run produced:</p>
+<p>A real validation run with bad data and the locale <code>fa</code> gave:</p>
 <pre><code class="language-php">// national_code = '1234567890', mobile = '0912', iban = 'IR000000000000000000000000'
 // card, postal and plate hold valid values and pass.
 //
 // national_code: national code کد ملی معتبر نیست.
 // mobile: mobile شماره موبایل معتبر نیست.
 // iban: iban شماره شبا معتبر نیست.</code></pre>
-<p>The English text is "The national code is not a valid Iranian national code." and the Arabic text is also available; see <a href="laravel-setup.html#translations">translations</a> and <a href="laravel-setup.html#override">overriding messages</a>.</p>
+<p>The English text is "The national code is not a valid Iranian national code." and an Arabic text is available too. See <a href="laravel-setup.html#translations">translations</a> and <a href="laravel-setup.html#override">overriding messages</a>.</p>
 
 <h2 id="input">What input the rules accept</h2>
 <ul>
-<li><strong>Strings.</strong> Persian and Arabic digits are accepted: <code>۰۰۱۳۵۴۲۴۱۹</code> passes <code>national_code</code>.</li>
-<li><strong>Integers and floats</strong> are converted to a string first. Be careful with numbers that start with a zero: the JSON number <code>13542419</code> has lost the leading zeros of <code>0013542419</code> and <strong>fails</strong>. Send national codes, mobile numbers and postal codes as strings.</li>
-<li><strong>Arrays, objects and booleans</strong> never reach the validator and simply fail the rule.</li>
+<li><strong>Strings.</strong> Persian and Arabic digits are accepted. <code>۰۰۱۳۵۴۲۴۱۹</code> passes <code>national_code</code>.</li>
+<li><strong>Integers and floats</strong> are converted to a string first. Be careful with numbers that start with zero. The JSON number <code>13542419</code> has lost the leading zeros of <code>0013542419</code> and fails. Send national codes, mobile numbers and postal codes as strings.</li>
+<li><strong>Arrays, objects and booleans</strong> never reach the validator and fail the rule.</li>
 <li><strong>Empty values.</strong> As with Laravel's own rules, an empty string and a missing key are skipped unless the field is <code>required</code>. An explicit <code>null</code> fails unless the field is <code>nullable</code>. Say what you mean with <code>required</code> or <code>nullable</code>.</li>
 </ul>
-<pre><code class="language-php">$f->make(['n' => '۰۰۱۳۵۴۲۴۱۹'], ['n' => 'national_code'])->passes();          // true
-$f->make(['n' => 13542419],      ['n' => 'national_code'])->passes();          // false (leading zeros lost)
-$f->make(['n' => null],          ['n' => 'nullable|national_code'])->passes(); // true
-$f->make(['n' => null],          ['n' => 'national_code'])->passes();          // false
-$f->make(['n' => ''],            ['n' => 'national_code'])->passes();          // true  (skipped)
-$f->make(['n' => ''],            ['n' => 'required|national_code'])->passes(); // false
-$f->make([],                     ['n' => 'national_code'])->passes();          // true  (key missing)</code></pre>
-<p>If you need the reason a value failed (wrong length, bad checksum, wrong type), call the standalone validators, which return a structured <code>Result</code>; see <a href="validators-overview.html">validators overview</a>.</p>
+<pre><code class="language-php">$f-&gt;make(['n' =&gt; '۰۰۱۳۵۴۲۴۱۹'], ['n' =&gt; 'national_code'])-&gt;passes();          // true
+$f-&gt;make(['n' =&gt; 13542419],      ['n' =&gt; 'national_code'])-&gt;passes();          // false (leading zeros lost)
+$f-&gt;make(['n' =&gt; null],          ['n' =&gt; 'nullable|national_code'])-&gt;passes(); // true
+$f-&gt;make(['n' =&gt; null],          ['n' =&gt; 'national_code'])-&gt;passes();          // false
+$f-&gt;make(['n' =&gt; ''],            ['n' =&gt; 'national_code'])-&gt;passes();          // true  (skipped)
+$f-&gt;make(['n' =&gt; ''],            ['n' =&gt; 'required|national_code'])-&gt;passes(); // false
+$f-&gt;make([],                     ['n' =&gt; 'national_code'])-&gt;passes();          // true  (key missing)</code></pre>
+<p>If you need the reason a value failed (wrong length, bad checksum, wrong type), call the standalone validators. They return a structured <code>Result</code>. See <a href="validators-overview.html">Validators overview</a>.</p>
 
 <h2 id="cast">The JalaliCast Eloquent cast</h2>
-<p><code>RtlyKit\Laravel\Casts\JalaliCast</code> keeps the database column in Gregorian (<code>Y-m-d H:i:s</code>), as every tool expects, and exposes the attribute on the model as an immutable <code>RtlyKit\Calendar\Jalali</code> object.</p>
+<p><code>RtlyKit\Laravel\Casts\JalaliCast</code> keeps the database column in Gregorian (<code>Y-m-d H:i:s</code>), as every tool expects. On the model, the attribute is an immutable <code>RtlyKit\Calendar\Jalali</code> object.</p>
 <pre><code class="language-php">use Illuminate\Database\Eloquent\Model;
 use RtlyKit\Laravel\Casts\JalaliCast;
 
@@ -69,18 +69,18 @@ class Post extends Model
     protected $guarded = [];
 
     protected $casts = [
-        'published_at' => JalaliCast::class,
+        'published_at' =&gt; JalaliCast::class,
     ];
 }
 
 $post = new Post();
-$post->published_at = '1404/01/15 10:30';
+$post-&gt;published_at = '1404/01/15 10:30';
 
-echo $post->getAttributes()['published_at'];          // 2025-04-04 10:30:00   (stored value)
-echo $post->published_at->format('Y/m/d H:i');        // 1404/01/15 10:30
-echo get_class($post->published_at);                  // RtlyKit\Calendar\Jalali
-echo $post->published_at->addDays(20)->format('Y/m/d'); // 1404/02/04</code></pre>
-<p>The column type stays <code>datetime</code> or <code>timestamp</code>; no migration change is needed.</p>
+echo $post-&gt;getAttributes()['published_at'];          // 2025-04-04 10:30:00   (stored value)
+echo $post-&gt;published_at-&gt;format('Y/m/d H:i');        // 1404/01/15 10:30
+echo get_class($post-&gt;published_at);                  // RtlyKit\Calendar\Jalali
+echo $post-&gt;published_at-&gt;addDays(20)-&gt;format('Y/m/d'); // 1404/02/04</code></pre>
+<p>The column type stays <code>datetime</code> or <code>timestamp</code>. You need no migration change.</p>
 
 <h3 id="cast-input">Accepted values on assignment</h3>
 <table>
@@ -90,7 +90,7 @@ echo $post->published_at->addDays(20)->format('Y/m/d'); // 1404/02/04</code></pr
 <tr><td>Jalali date only, Persian digits and dashes <code>'۱۴۰۴-۰۱-۱۵'</code></td><td><code>2025-04-04 00:00:00</code></td></tr>
 <tr><td>Gregorian string <code>'2025-04-04 08:00:00'</code></td><td><code>2025-04-04 08:00:00</code></td></tr>
 <tr><td>Unix timestamp (int) <code>1743753600</code></td><td><code>2025-04-04 08:00:00</code> (with a UTC default time zone)</td></tr>
-<tr><td>Any <code>DateTimeInterface</code> (Carbon included)</td><td>the same instant, <code>Y-m-d H:i:s</code></td></tr>
+<tr><td>Any <code>DateTimeInterface</code> (Carbon included)</td><td>the same moment, as <code>Y-m-d H:i:s</code></td></tr>
 <tr><td>A <code>Jalali</code> object</td><td>its Gregorian equivalent</td></tr>
 <tr><td><code>null</code> or <code>''</code></td><td><code>null</code></td></tr>
 </tbody>
@@ -99,32 +99,32 @@ echo $post->published_at->addDays(20)->format('Y/m/d'); // 1404/02/04</code></pr
 
 <h3 id="cast-errors">Errors</h3>
 <p>Bad input throws <code>RtlyKit\Exceptions\InvalidDateException</code> when you assign it, never a raw PHP error:</p>
-<pre><code class="language-php">$post->published_at = '1404/13/01';   // Invalid Jalali date: 1404/13/1
-$post->published_at = '1404/07/31';   // Invalid Jalali date: 1404/7/31   (Mehr has 30 days)
-$post->published_at = 'not a date';   // Unable to parse date: not a date
-$post->published_at = 1.5;            // Cannot cast value for 'published_at' to a date.
-$post->published_at = ['x'];          // Cannot cast value for 'published_at' to a date.</code></pre>
-<p>Validate user input before it reaches the model (see the form-request example below), so a typo produces a form error, not an exception. Reading is lenient for <code>null</code> and the empty string (both give <code>null</code>), but an attribute holding unparseable text in the database throws <code>InvalidDateException</code> when read.</p>
+<pre><code class="language-php">$post-&gt;published_at = '1404/13/01';   // Invalid Jalali date: 1404/13/1
+$post-&gt;published_at = '1404/07/31';   // Invalid Jalali date: 1404/7/31   (Mehr has 30 days)
+$post-&gt;published_at = 'not a date';   // Unable to parse date: not a date
+$post-&gt;published_at = 1.5;            // Cannot cast value for 'published_at' to a date.
+$post-&gt;published_at = ['x'];          // Cannot cast value for 'published_at' to a date.</code></pre>
+<p>Validate user input before it reaches the model (see the form request below), so a typo gives a form error and not an exception. Reading is relaxed for <code>null</code> and the empty string (both give <code>null</code>). An attribute that holds unreadable text in the database throws <code>InvalidDateException</code> when you read it.</p>
 
 <h3 id="cast-json">Serialising a model</h3>
-<p><code>Jalali</code>, <code>Hijri</code> and <code>Hebrew</code> implement <code>JsonSerializable</code>: <code>toJson()</code> on a model with a <code>JalaliCast</code> attribute gives the same text as <code>(string) $date</code>, for example <code>{"published_at":"1404/01/01 10:00:00"}</code>. <code>toArray()</code> keeps the <code>Jalali</code> object; format it yourself if you need another pattern.</p>
+<p><code>Jalali</code>, <code>Hijri</code> and <code>Hebrew</code> implement <code>JsonSerializable</code>. <code>toJson()</code> on a model with a <code>JalaliCast</code> attribute gives the same text as <code>(string) $date</code>, for example <code>{"published_at":"1404/01/01 10:00:00"}</code>. <code>toArray()</code> keeps the <code>Jalali</code> object. Format it yourself if you need another pattern.</p>
 
 <h2 id="request">Form requests</h2>
-<p>There is no built-in rule for a Jalali date field, so validate the shape with Laravel's regex rule or a small custom rule, then let the cast do the conversion:</p>
+<p>There is no built-in rule for a Jalali date field. Check the shape with Laravel's regex rule or a small custom rule, then let the cast do the conversion:</p>
 <pre><code class="language-php">public function rules(): array
 {
     return [
-        'published_at' => ['required', 'regex:/^1[2-5]\d\d[\/-]\d{1,2}[\/-]\d{1,2}$/u'],
+        'published_at' =&gt; ['required', 'regex:/^1[2-5]\d\d[\/-]\d{1,2}[\/-]\d{1,2}$/u'],
     ];
 }</code></pre>
-<p>A well-formed but impossible date such as <code>1404/07/31</code> still reaches the cast and throws there; catch <code>InvalidDateException</code> in a custom rule or in the controller if users type free text.</p>
+<p>A well-formed but impossible date such as <code>1404/07/31</code> still reaches the cast and throws there. Catch <code>InvalidDateException</code> in a custom rule or in the controller if users type free text.</p>
 
 <h2 id="blade">Blade</h2>
-<p>The cast gives you a <code>Jalali</code> object, so Blade needs no helper at all:</p>
-<pre><code class="language-php">{{ $post->published_at?->format('Y/m/d') }}            {{-- 1404/01/15 --}}
-{{ $post->published_at?->format('l j F Y') }}          {{-- جمعه 15 فروردین 1404 --}}
-{{ \RtlyKit\to_persian_digits($post->published_at->format('Y/m/d')) }}  {{-- ۱۴۰۴/۰۱/۱۵ --}}</code></pre>
-<p>For a column that is <em>not</em> cast, such as the standard <code>created_at</code> (a Carbon instance), use the namespaced helper. Namespaced helpers are always loaded, so no registration is needed:</p>
-<pre><code class="language-php">{{ \RtlyKit\jdate($post->created_at)->format('Y/m/d H:i') }}   {{-- 1404/01/15 08:00 --}}</code></pre>
-<p>Import the function at the top of a Blade file with <code>@php use function RtlyKit\jdate; @endphp</code> if you use it often. With the Carbon macros the same is <code>$post->created_at->jformat('Y/m/d')</code>; see <a href="carbon-macros.html">Carbon macros</a>.</p>
-<div class="note"><strong>Note.</strong> A null attribute is not formatted for you: use the nullsafe operator (<code>?-></code>) as shown, otherwise Blade throws on <code>null</code>. For the full list of format letters see the <a href="jalali.html">Jalali page</a>.</div>
+<p>The cast gives you a <code>Jalali</code> object, so Blade needs no helper:</p>
+<pre><code class="language-php">{{ $post-&gt;published_at?-&gt;format('Y/m/d') }}            {{-- 1404/01/15 --}}
+{{ $post-&gt;published_at?-&gt;format('l j F Y') }}          {{-- جمعه 15 فروردین 1404 --}}
+{{ \RtlyKit\to_persian_digits($post-&gt;published_at-&gt;format('Y/m/d')) }}  {{-- ۱۴۰۴/۰۱/۱۵ --}}</code></pre>
+<p>For a column that is not cast, such as the standard <code>created_at</code> (a Carbon instance), use the namespaced helper. Namespaced helpers are always loaded, so you register nothing:</p>
+<pre><code class="language-php">{{ \RtlyKit\jdate($post-&gt;created_at)-&gt;format('Y/m/d H:i') }}   {{-- 1404/01/15 08:00 --}}</code></pre>
+<p>If you use it often, import the function at the top of a Blade file with <code>@php use function RtlyKit\jdate; @endphp</code>. With the Carbon macros the same call is <code>$post-&gt;created_at-&gt;jformat('Y/m/d')</code>. See <a href="carbon-macros.html">Carbon macros</a>.</p>
+<div class="note"><strong>Note.</strong> A null attribute is not formatted for you. Use the nullsafe operator (<code>?-&gt;</code>) as shown, or Blade throws on <code>null</code>. For the full list of format letters, see the <a href="jalali.html">Jalali page</a>.</div>

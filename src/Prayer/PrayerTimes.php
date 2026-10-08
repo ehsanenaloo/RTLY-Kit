@@ -7,6 +7,7 @@ namespace RtlyKit\Prayer;
 use DateTimeImmutable;
 use DateTimeZone;
 use RtlyKit\Calendar\Hijri;
+use RtlyKit\Exceptions\ErrorCode;
 use RtlyKit\Exceptions\InvalidDateException;
 use RtlyKit\Exceptions\InvalidPrayerConfigException;
 
@@ -28,8 +29,12 @@ use RtlyKit\Exceptions\InvalidPrayerConfigException;
  *
  * Accuracy: expect agreement within about a minute of astronomical
  * sunrise/sunset values at low/mid latitudes. At high latitudes an angle may
- * never be reached (e.g. no true night in summer); such times are returned as
- * null instead of a misleading clamped value.
+ * never be reached (e.g. no true night in summer): by default {@see HighLatitudeRule::AngleBased}
+ * then derives Fajr/Isha from a portion of the night (only for a time that is
+ * missing or outside that bound), and {@see HighLatitudeRule::None} returns null
+ * instead. Sunrise, sunset and Maghrib are null only when the sun truly does
+ * not cross the horizon that day; Dhuhr is always defined. Manual per-prayer
+ * corrections: {@see self::withTune()}.
  */
 final class PrayerTimes
 {
@@ -45,6 +50,9 @@ final class PrayerTimes
 
     private const NAMES = ['fajr', 'sunrise', 'dhuhr', 'asr', 'maghrib', 'isha'];
 
+    /** Largest manual tune, in minutes, in either direction. */
+    public const MAX_TUNE_MINUTES = 30;
+
     /** Umm al-Qura Hijri month of Ramadan. */
     private const RAMADAN = 9;
 
@@ -57,6 +65,10 @@ final class PrayerTimes
     private int $asrFactor;
     private DateTimeZone $timezone;
     private float $elevation;
+    private HighLatitudeRule $highLatitudeRule = HighLatitudeRule::AngleBased;
+
+    /** @var array<string, int> manual tune in minutes per prayer name */
+    private array $tune = ['fajr' => 0, 'sunrise' => 0, 'dhuhr' => 0, 'asr' => 0, 'maghrib' => 0, 'isha' => 0];
 
     /** @var array<string, array{fajr: float, isha: float, maghrib?: float, ishaMinutes?: float}> */
     private static array $methods = [
@@ -141,17 +153,122 @@ final class PrayerTimes
     public function getTimes(?DateTimeImmutable $date = null): array
     {
         $date = ($date ?? new DateTimeImmutable('now', $this->timezone))->setTimezone($this->timezone);
+        $at   = $this->instants($date);
 
+        return [
+            'fajr'    => $this->clock($at['fajr']),
+            'sunrise' => $this->clock($at['sunrise']),
+            'dhuhr'   => $this->local($at['dhuhr']),
+            'asr'     => $this->clock($at['asr']),
+            'maghrib' => $this->clock($at['maghrib']),
+            'isha'    => $this->clock($at['isha']),
+        ];
+    }
+
+    /**
+     * What to do when Fajr/Isha (or Maghrib at a Tehran-style angle) cannot be
+     * computed or is implausibly far from sunrise/sunset. Default
+     * {@see HighLatitudeRule::AngleBased}; {@see HighLatitudeRule::None} returns
+     * null for a time whose angle is never reached. Ordinary latitudes are
+     * unaffected: the rule changes only a time that is null or outside its
+     * night-portion bound.
+     */
+    public function withHighLatitudeRule(HighLatitudeRule $rule): self
+    {
+        $copy                   = clone $this;
+        $copy->highLatitudeRule = $rule;
+
+        return $copy;
+    }
+
+    /**
+     * Manual correction in whole minutes added to the final times, e.g.
+     * `['fajr' => 2, 'maghrib' => 3]`. Keys: fajr, sunrise, dhuhr, asr,
+     * maghrib, isha; each value an int from -30 to +30. Names not listed get
+     * 0, so the call replaces any earlier tune; `[]` clears it. A time that
+     * moves across midnight wraps on the clock (23:50 + 20 = 00:10).
+     *
+     * @param array<string, int> $minutes
+     *
+     * @throws InvalidPrayerConfigException on an unknown key, a non-int value or a value out of range
+     */
+    public function withTune(array $minutes): self
+    {
+        $tune = array_fill_keys(self::NAMES, 0);
+
+        foreach ($minutes as $name => $value) {
+            if (! in_array($name, self::NAMES, true)) {
+                throw InvalidPrayerConfigException::because(
+                    ErrorCode::InvalidPrayerConfig,
+                    "Unknown tune key: {$name}. Available: ".implode(', ', self::NAMES),
+                    ['key' => (string) $name],
+                );
+            }
+
+            if (! is_int($value) || abs($value) > self::MAX_TUNE_MINUTES) {
+                throw InvalidPrayerConfigException::because(
+                    ErrorCode::InvalidPrayerConfig,
+                    "Tune for {$name} must be an integer from -".self::MAX_TUNE_MINUTES.' to '.self::MAX_TUNE_MINUTES.' minutes',
+                    ['key' => $name],
+                );
+            }
+
+            $tune[$name] = $value;
+        }
+
+        $copy       = clone $this;
+        $copy->tune = $tune;
+
+        return $copy;
+    }
+
+    /**
+     * Every prayer of the local calendar day of $date as a Unix timestamp
+     * rounded to the nearest minute (null when it cannot be computed).
+     *
+     * @return array{fajr: ?int, sunrise: ?int, dhuhr: int, asr: ?int, maghrib: ?int, isha: ?int}
+     */
+    private function instants(DateTimeImmutable $date): array
+    {
         // Midnight UT of the local calendar date; event times are UT hours after it.
-        $base = (new DateTimeImmutable($date->format('Y-m-d').' 00:00:00', new DateTimeZone('UTC')))->getTimestamp();
-        $jd0  = $base / 86400.0 + 2440587.5;
-        $p    = self::$methods[$this->method];
+        $base = (new DateTimeImmutable($date->format('Y-m-d'), new DateTimeZone('UTC')))->getTimestamp();
+        $h    = $this->eventHours($base / 86400.0 + 2440587.5, $date);
 
+        return [
+            'fajr'    => $this->instant($base, 'fajr', $h['fajr']),
+            'sunrise' => $this->instant($base, 'sunrise', $h['sunrise']),
+            'dhuhr'   => $this->roundedInstant($base, 'dhuhr', $h['dhuhr']),
+            'asr'     => $this->instant($base, 'asr', $h['asr']),
+            'maghrib' => $this->instant($base, 'maghrib', $h['maghrib']),
+            'isha'    => $this->instant($base, 'isha', $h['isha']),
+        ];
+    }
+
+    private function instant(int $base, string $name, ?float $ut): ?int
+    {
+        return $ut === null ? null : $this->roundedInstant($base, $name, $ut);
+    }
+
+    /** Timestamp of $ut hours after $base, plus the manual tune, to the nearest minute. */
+    private function roundedInstant(int $base, string $name, float $ut): int
+    {
+        return (int) (floor(($base + ($ut + $this->tune[$name] / 60) * 3600) / 60 + 0.5) * 60);
+    }
+    /**
+     * UT hours after 0h UT of the local date (Julian Day $jd0) for each prayer.
+     *
+     * @return array{fajr: ?float, sunrise: ?float, dhuhr: float, asr: ?float, maghrib: ?float, isha: ?float}
+     */
+    private function eventHours(float $jd0, DateTimeImmutable $date): array
+    {
+        $p       = self::$methods[$this->method];
         $horizon = -(0.833 + 0.0347 * sqrt($this->elevation));
 
+        $noon    = $this->solarNoon($jd0);
         $sunrise = $this->eventTime($jd0, $horizon, false);
         $sunset  = $this->eventTime($jd0, $horizon, true);
         $maghrib = isset($p['maghrib']) ? $this->eventTime($jd0, -$p['maghrib'], true) : $sunset;
+        $fajr    = $this->eventTime($jd0, -$p['fajr'], false);
 
         if (isset($p['ishaMinutes'])) {
             $minutes = $this->method === self::METHOD_MAKKAH && $this->isRamadan($date)
@@ -162,47 +279,88 @@ final class PrayerTimes
             $isha = $this->eventTime($jd0, -$p['isha'], true);
         }
 
+        if ($this->highLatitudeRule !== HighLatitudeRule::None) {
+            $nextSunrise = $this->eventTime($jd0 + 1.0, $horizon, false);
+            $nextSunrise = $nextSunrise === null ? null : $nextSunrise + 24.0;
+
+            // Without a real horizon crossing the sun is treated as rising and
+            // setting at 06:00 and 18:00 solar time, a 12 hour reference night.
+            $refRise = $sunrise ?? $noon - 6.0;
+            $refSet  = $sunset ?? $noon + 6.0;
+            $night   = ($nextSunrise ?? $refRise + 24.0) - $refSet;
+            $realNight = $sunset !== null && $nextSunrise !== null;
+
+            $rule = $this->highLatitudeRule;
+
+            $portion = $rule->nightFraction($p['fajr']) * $night;
+            if ($fajr === null) {
+                $fajr = $refRise - $portion;
+            } elseif ($realNight && $sunrise !== null && $sunrise - $fajr > $portion) {
+                $fajr = $refRise - $portion;
+            }
+
+            if (! isset($p['ishaMinutes'])) {
+                $portion = $rule->nightFraction($p['isha']) * $night;
+                if ($isha === null) {
+                    $isha = $refSet + $portion;
+                } elseif ($realNight && $sunset !== null && $isha - $sunset > $portion) {
+                    $isha = $refSet + $portion;
+                }
+            }
+
+            // Tehran-style Maghrib at an angle below the horizon; with the plain
+            // sunset (all other methods) there is nothing to adjust.
+            if (isset($p['maghrib']) && $sunset !== null) {
+                $portion = $rule->nightFraction($p['maghrib']) * $night;
+                if ($maghrib === null || ($realNight && $maghrib - $sunset > $portion)) {
+                    $maghrib = $sunset + $portion;
+                }
+            }
+        }
+
         return [
-            'fajr'    => $this->format($base, $this->eventTime($jd0, -$p['fajr'], false)),
-            'sunrise' => $this->format($base, $sunrise),
-            'dhuhr'   => $this->format($base, $this->solarNoon($jd0)) ?? '12:00',
-            'asr'     => $this->format($base, $this->asrTime($jd0)),
-            'maghrib' => $this->format($base, $maghrib),
-            'isha'    => $this->format($base, $isha),
+            'fajr'    => $fajr,
+            'sunrise' => $sunrise,
+            'dhuhr'   => $noon,
+            'asr'     => $this->asrTime($jd0),
+            'maghrib' => $maghrib,
+            'isha'    => $isha,
         ];
     }
 
     /**
      * The next prayer strictly after $from (in the calculator's timezone).
      * After isha it rolls over to tomorrow's fajr; `date` (Y-m-d) tells which
-     * day the returned prayer falls on. Null only if no prayer time can be
-     * computed for today and tomorrow (extreme latitudes).
+     * day the returned prayer falls on, including a prayer that lands after
+     * midnight (high latitudes, tuned times). Yesterday, today and tomorrow
+     * are compared as instants. Null only after the last evening of year 9999.
      *
      * @return array{name: string, time: string, date: string}|null
      */
     public function nextPrayer(?DateTimeImmutable $from = null): ?array
     {
-        $from       = ($from ?? new DateTimeImmutable('now', $this->timezone))->setTimezone($this->timezone);
-        $nowMinutes = (int) $from->format('G') * 60 + (int) $from->format('i');
+        $from    = ($from ?? new DateTimeImmutable('now', $this->timezone))->setTimezone($this->timezone);
+        $nowMinute = intdiv($from->getTimestamp(), 60) * 60;
 
-        $today = $this->getTimes($from);
-        foreach (self::NAMES as $name) {
-            $time = $today[$name];
-            if ($time !== null && $this->minutesOf($time) > $nowMinutes) {
-                return ['name' => $name, 'time' => $time, 'date' => $from->format('Y-m-d')];
+        // Yesterday's Isha (or a tuned time) can fall after midnight, and
+        // tomorrow's Fajr before it, so the three days are compared as instants.
+        $best = null;
+        foreach ([$from->modify('-1 day'), $from, $from->modify('+1 day')] as $day) {
+            foreach ($this->instants($day) as $name => $instant) {
+                if ($instant !== null && $instant > $nowMinute && ($best === null || $instant < $best['at'])) {
+                    $best = ['name' => $name, 'at' => $instant];
+                }
             }
         }
 
-        $tomorrow = $from->modify('+1 day');
-        $times    = $this->getTimes($tomorrow);
-        foreach (self::NAMES as $name) {
-            if ($times[$name] !== null) {
-                return ['name' => $name, 'time' => $times[$name], 'date' => $tomorrow->format('Y-m-d')];
-            }
+        // Only after the last evening of the last supported year (9999-12-31).
+        if ($best === null) {
+            return null;
         }
 
-        // Unreachable in practice: dhuhr always has a value.
-        return null; // @codeCoverageIgnore
+        $date = (new DateTimeImmutable('@'.$best['at']))->setTimezone($this->timezone)->format('Y-m-d');
+
+        return ['name' => $best['name'], 'time' => $this->local($best['at']), 'date' => $date];
     }
 
     /**
@@ -222,13 +380,6 @@ final class PrayerTimes
         // @codeCoverageIgnoreEnd
 
         return $month === self::RAMADAN;
-    }
-
-    private function minutesOf(string $hhmm): int
-    {
-        [$h, $m] = array_map('intval', explode(':', $hhmm));
-
-        return $h * 60 + $m;
     }
 
     /** Solar noon, in UT hours after 0h UT of the date with Julian Day $jd0. */
@@ -357,18 +508,16 @@ final class PrayerTimes
     }
 
     /**
-     * Local HH:MM (nearest minute) of the instant $ut hours after the UT
-     * midnight timestamp $base, using the zone's real UTC offset at that
+     * Local HH:MM of a Unix timestamp, using the zone's real UTC offset at that
      * instant, so it stays correct across DST changes.
      */
-    private function format(int $base, ?float $ut): ?string
+    private function clock(?int $timestamp): ?string
     {
-        if ($ut === null) {
-            return null;
-        }
+        return $timestamp === null ? null : $this->local($timestamp);
+    }
 
-        $ts = (int) (floor(($base + $ut * 3600) / 60 + 0.5) * 60);
-
-        return (new DateTimeImmutable('@'.$ts))->setTimezone($this->timezone)->format('H:i');
+    private function local(int $timestamp): string
+    {
+        return (new DateTimeImmutable('@'.$timestamp))->setTimezone($this->timezone)->format('H:i');
     }
 }

@@ -1,0 +1,115 @@
+<!--
+title: تحويل الأعداد إلى كلمات
+description: كتابة الأعداد الصحيحة بالحروف بالفارسية (حتى 10^21) وبالعربية (حتى 10^27)، وقراءة كلمات الأعداد الفارسية وتحويلها إلى أعداد عبر fromWords().
+group: numbers-text
+order: 20
+-->
+<h2 id="convert">تحويل الأعداد إلى كلمات</h2>
+<p>تكتب <code>NumberToWords::convert()</code> العدد الصحيح بالحروف. اللغة الفارسية (<code>fa</code>) هي الافتراضية، وتغطي كل عدد صحيح دون 10<sup>21</sup>.</p>
+<pre><code class="language-php">&lt;?php
+require 'vendor/autoload.php';
+
+use RtlyKit\Number\NumberToWords;
+use function RtlyKit\number_to_words;
+
+echo NumberToWords::convert(0), "\n";        // صفر
+echo NumberToWords::convert(21), "\n";       // بیست و یک
+echo NumberToWords::convert(115), "\n";      // صد و پانزده
+echo NumberToWords::convert(1001), "\n";     // یک هزار و یک
+echo NumberToWords::convert(12345), "\n";    // دوازده هزار و سیصد و چهل و پنج
+echo NumberToWords::convert(-45), "\n";      // منفی چهل و پنج
+echo number_to_words(2000000000), "\n";      // دو میلیارد
+echo NumberToWords::convert(1234567), "\n";
+// یک میلیون و دویست و سی و چهار هزار و پانصد و شصت و هفت</code></pre>
+<p>تُربط الكلمات بـ « و » (أي «و» العطف) بين كل جزء وآخر، وتتبع كلمةُ المرتبة كلَّ مجموعة: «هزار» (10<sup>3</sup>) و«میلیون» (10<sup>6</sup>) و«میلیارد» (10<sup>9</sup>) و«تریلیون» (10<sup>12</sup>) و«کوادریلیون» (10<sup>15</sup>) و«کوینتیلیون» (10<sup>18</sup>). والمجموعة التي تساوي 1 تحتفظ بـ «یک» (1000 هي «یک هزار»؛ ولقراءة «هزار» المجردة استخدم <code>fromWords()</code> أدناه). وتُتخطى المجموعات الصفرية.</p>
+
+<h3 id="accepted-input">المدخلات المقبولة</h3>
+<p>نوع المعامل هو <code>int|float|string</code>:</p>
+<ul>
+<li><strong>int:</strong> يعمل النطاق الكامل في PHP، بما فيه <code>PHP_INT_MAX</code>: «نه کوینتیلیون و دویست و بیست و سه کوادریلیون ...».</li>
+<li><strong>float:</strong> يجب أن يكون منتهيًا وصحيحًا (بلا كسر). <code>3.0</code> تعطي «سه»؛ و<code>1.5</code> تُطلق استثناءً بدل أن تُبتر بصمت.</li>
+<li><strong>string:</strong> إشارة اختيارية وأرقام من أي مجموعة أرقام. تُزال الفواصل و<code>٬</code> والمسافات، فيعمل عدد منسوخ من نموذج. ويمكن أن تكون السلاسل أطول من int في PHP، حتى 21 رقمًا بعد حذف الأصفار البادئة.</li>
+</ul>
+<pre><code class="language-php">echo NumberToWords::convert('۱۲۳٬۴۵۶'), "\n";        // صد و بیست و سه هزار و چهارصد و پنجاه و شش
+echo NumberToWords::convert('1,000,000'), "\n";      // یک میلیون
+echo NumberToWords::convert('+7'), "\n";             // هفت
+echo NumberToWords::convert('-0'), "\n";             // صفر
+echo NumberToWords::convert('999999999999999999999'), "\n";
+// نهصد و نود و نه کوینتیلیون و نهصد و نود و نه کوادریلیون ... و نهصد و نود و نه</code></pre>
+
+<h3 id="errors">الأخطاء</h3>
+<p>المدخل غير الصالح يُطلق <code>InvalidNumberException</code> (صنف فرعي من <code>RtlyKitException</code>). اقرأ الرمز الثابت بـ <code>getErrorCode()</code>:</p>
+<table>
+<thead><tr><th>المدخل</th><th>رمز الخطأ</th></tr></thead>
+<tbody>
+<tr><td><code>1.5</code>، <code>'12a'</code>، <code>''</code></td><td><code>invalid_number</code></td></tr>
+<tr><td><code>NAN</code>، <code>INF</code></td><td><code>non_finite_number</code></td></tr>
+<tr><td>سلسلة أطول من 4096 بايت</td><td><code>input_too_long</code></td></tr>
+<tr><td><code>1e21</code>، <code>'1000000000000000000000'</code> (22 رقمًا)</td><td><code>number_too_large</code></td></tr>
+</tbody>
+</table>
+<pre><code class="language-php">try {
+    NumberToWords::convert('1000000000000000000000');
+} catch (\RtlyKit\Exceptions\InvalidNumberException $e) {
+    echo $e-&gt;getMessage(), ' [', $e-&gt;getErrorCode()-&gt;value, "]\n";
+    // Number is too large (limit is 10^21 - 1). [number_too_large]
+}</code></pre>
+<p>راجع <a href="error-handling.html">معالجة الأخطاء</a> لمعرفة كيف تلتقط كل استثناءات المكتبة بنوع واحد.</p>
+
+<h2 id="arabic">العربية</h2>
+<p>مرّر <code>'ar'</code> وسيطًا ثانيًا للحصول على العربية الفصحى. تُقرأ اللغة المحلية (locale) من أول حرفين دون تمييز بين الأحرف الكبيرة والصغيرة، فتعمل <code>'ar_SA'</code> و<code>'AR'</code>، وكذلك <code>'fa_IR'</code> للفارسية.</p>
+<pre><code class="language-php">echo NumberToWords::convert(11, 'ar'), "\n";        // أحد عشر
+echo NumberToWords::convert(21, 'ar'), "\n";        // واحد وعشرون
+echo NumberToWords::convert(200, 'ar'), "\n";       // مئتان
+echo NumberToWords::convert(3000, 'ar'), "\n";      // ثلاثة آلاف
+echo NumberToWords::convert(2000000, 'ar'), "\n";   // مليونان
+echo NumberToWords::convert(1002003, 'ar'), "\n";   // مليون وألفان وثلاثة
+echo NumberToWords::convert(-7, 'ar'), "\n";        // سالب سبعة</code></pre>
+<p>تصل العربية إلى كل عدد صحيح دون 10<sup>27</sup>، وتقبل خيارات لجنس المعدود والحالة الإعرابية والحركات واسم المليار، وتكتب الأعداد الترتيبية من 1 إلى 99. التفاصيل مع أمثلة كثيرة في <a href="arabic-number-words.html">الأعداد بالحروف العربية</a>.</p>
+<p>اللغة غير المدعومة تُثير <code>UnsupportedLocaleException</code> بالرمز <code>unsupported_locale</code>:</p>
+<pre><code class="language-php">try {
+    NumberToWords::convert(5, 'en');
+} catch (\RtlyKit\Exceptions\UnsupportedLocaleException $e) {
+    echo $e-&gt;getMessage(), "\n";   // Unsupported locale 'en' (use 'fa' or 'ar').
+}</code></pre>
+
+<h2 id="from-words">من الكلمات إلى العدد</h2>
+<p>الدالة <code>NumberToWords::fromWords()</code> هي عكس التحويل الفارسي للصيغ التي تنتجها <code>convert()</code>. تُرجع <code>int</code> إذا كانت القيمة تتسع في int في PHP، و<code>string</code> من الأرقام فيما عدا ذلك.</p>
+<pre><code class="language-php">var_dump(NumberToWords::fromWords('بیست و سه'));                 // int(23)
+var_dump(NumberToWords::fromWords('منفی چهل و دو'));             // int(-42)
+var_dump(NumberToWords::fromWords('هزار و یک'));                 // int(1001)
+var_dump(NumberToWords::fromWords('دو میلیون و سیصد هزار و پنج')); // int(2300005)
+
+// ذهاب وإياب عبر النطاق كله:
+var_dump(NumberToWords::fromWords(NumberToWords::convert(PHP_INT_MAX)));
+// int(9223372036854775807)
+var_dump(NumberToWords::fromWords(NumberToWords::convert('999999999999999999999')));
+// string(21) "999999999999999999999"</code></pre>
+
+<h3 id="from-words-rules">كيف تُقرأ الكلمات</h3>
+<ul>
+<li>يُطبَّع المدخل أولًا: تتحول صور الحروف العربية إلى فارسية («ك» إلى «ک»، و«ي» إلى «ی»)، ويُعامل ZWNJ مسافةً، وتُتجاهل المسافات الزائدة.</li>
+<li>«منفی» في البداية تجعل النتيجة سالبة؛ و«منفی صفر» هي <code>0</code>.</li>
+<li>كلمة المرتبة دون عدد قبلها تعني واحداً، فـ «هزار» هي 1000.</li>
+<li>يجب أن تكون المراتب تنازلية: «هزار هزار» أو «هزار میلیون» تُطلقان استثناءً.</li>
+<li>لا يجوز أن تتجاوز أي مجموعة 999.</li>
+<li>تُتخطى كلمة «و» أينما ظهرت.</li>
+</ul>
+<pre><code class="language-php">try {
+    NumberToWords::fromWords('یکصد');
+} catch (\RtlyKit\Exceptions\InvalidNumberException $e) {
+    echo $e-&gt;getMessage(), ' [', $e-&gt;getErrorCode()-&gt;value, "]\n";
+    // Unknown number word 'یکصد'. [invalid_number_words]
+}</code></pre>
+<p>تحمل الأخطاء الرمز <code>invalid_number_words</code> (كلمة غير معروفة، أو تسلسل سيئ التكوين، أو مراتب غير مرتبة، أو نص فارغ) أو <code>input_too_long</code> للنص الذي يتجاوز 4096 بايت.</p>
+<div class="note"><strong>من المفيد أن تعرف.</strong> <code>fromWords()</code> دقيقة في القراءة: ترفض «و» الناقصة بين الأجزاء («دو صد» و«بیست یک»)، و«و» في آخر العبارة، والأجزاء غير المرتبة (مئات ثم عشرات ثم آحاد)، وتُثير <code>invalid_number_words</code>. وكل نص تنتجه <code>convert()</code> تقرؤه. وهي تقرأ الفارسية فقط: الكلمات العربية الناتجة عن <code>convert($n, 'ar')</code> والأعداد الترتيبية مثل «سی‌ام» والصيغة المختصرة «یکصد» تُثير استثناءً.</div>
+<pre><code class="language-php">foreach (['دو صد', 'بیست یک', 'بیست و'] as $text) {
+    try {
+        NumberToWords::fromWords($text);
+    } catch (\RtlyKit\Exceptions\InvalidNumberException $e) {
+        echo $e-&gt;getMessage(), ' [', $e-&gt;getErrorCode()-&gt;value, "]\n";
+    }
+}
+// Missing 'و' before 'صد'. [invalid_number_words]
+// Missing 'و' before 'یک'. [invalid_number_words]
+// Number words cannot end with 'و'. [invalid_number_words]</code></pre>

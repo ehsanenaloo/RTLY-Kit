@@ -1,0 +1,130 @@
+<!--
+title: قواعد التحقق وتحويل Eloquent
+description: استخدم قواعد التحقق الإيرانية في نماذج Laravel، وخزّن التواريخ الجلالية في نماذج Eloquent عبر JalaliCast، واعرضها في Blade.
+group: laravel
+order: 20
+-->
+<h2 id="rules">قواعد التحقق</h2>
+<p>بعد تثبيت الحزمة (<a href="laravel-setup.html">إعداد Laravel</a>) تتوفر ست قواعد (بسبعة أسماء، لأن <code>mobile</code> اسم مختصر لـ <code>iran_mobile</code>) في أي مُحقِّق أو طلب نموذج (form request) أو استدعاء <code>$request-&gt;validate()</code>. وهي تغلّف أدوات التحقق الموثقة في صفحات التحقق.</p>
+<table>
+<thead><tr><th>القاعدة</th><th>تقبل</th><th>التفاصيل</th></tr></thead>
+<tbody>
+<tr><td><code>national_code</code></td><td>الرقم الوطني الإيراني</td><td><a href="national-code.html">الرقم الوطني</a></td></tr>
+<tr><td><code>sheba</code></td><td>شبا / IBAN، مع البادئة <code>IR</code> أو بدونها</td><td><a href="sheba-and-bank-card.html">شبا والبطاقة المصرفية</a></td></tr>
+<tr><td><code>bank_card</code></td><td>رقم بطاقة مصرفية من 16 رقماً (فحص Luhn)</td><td><a href="sheba-and-bank-card.html">شبا والبطاقة المصرفية</a></td></tr>
+<tr><td><code>iran_mobile</code></td><td>رقم جوال إيراني</td><td><a href="mobile-postal-plate.html">الجوال والرمز البريدي واللوحة</a></td></tr>
+<tr><td><code>mobile</code></td><td>اسم مختصر بديل لـ <code>iran_mobile</code></td><td>سلوك مطابق</td></tr>
+<tr><td><code>postal_code</code></td><td>رمز بريدي إيراني من 10 أرقام</td><td><a href="mobile-postal-plate.html">الجوال والرمز البريدي واللوحة</a></td></tr>
+<tr><td><code>vehicle_plate</code></td><td>لوحة مركبة إيرانية، مثل <code>12ب345-67</code></td><td><a href="mobile-postal-plate.html">الجوال والرمز البريدي واللوحة</a></td></tr>
+</tbody>
+</table>
+<div class="note"><strong>من المفيد أن تعرف.</strong> الكلمة <code>mobile</code> عامة. فإذا سجّلت حزمة أخرى أو شيفرتك قاعدة باسم <code>mobile</code>، فاستخدم <code>iran_mobile</code> في كل مكان لتجنب الالتباس.</div>
+
+<h2 id="usage">استخدامها</h2>
+<pre><code class="language-php">use Illuminate\Http\Request;
+
+public function store(Request $request)
+{
+    $data = $request-&gt;validate([
+        'national_code' =&gt; 'required|national_code',
+        'mobile'        =&gt; 'required|iran_mobile',
+        'card'          =&gt; 'nullable|bank_card',
+        'iban'          =&gt; 'nullable|sheba',
+        'postal'        =&gt; 'required|postal_code',
+        'plate'         =&gt; 'nullable|vehicle_plate',
+    ]);
+}</code></pre>
+<p>عند التشغيل على بيانات سيئة بلغة <code>fa</code>، أنتج تشغيل تحقق فعلي ما يلي:</p>
+<pre><code class="language-php">// national_code = '1234567890', mobile = '0912', iban = 'IR000000000000000000000000'
+// card وpostal وplate تحمل قيماً صالحة وتجتاز التحقق.
+//
+// national_code: national code کد ملی معتبر نیست.
+// mobile: mobile شماره موبایل معتبر نیست.
+// iban: iban شماره شبا معتبر نیست.</code></pre>
+<p>النص الإنجليزي هو "The national code is not a valid Iranian national code." والنص العربي متوفر أيضاً؛ راجع <a href="laravel-setup.html#translations">الترجمات</a> و<a href="laravel-setup.html#override">تجاوز الرسائل</a>.</p>
+
+<h2 id="input">المدخلات التي تقبلها القواعد</h2>
+<ul>
+<li><strong>السلاسل النصية.</strong> تُقبل الأرقام الفارسية والعربية: <code>۰۰۱۳۵۴۲۴۱۹</code> تجتاز <code>national_code</code>.</li>
+<li><strong>الأعداد الصحيحة والعشرية</strong> تُحوَّل إلى سلسلة نصية أولًا. احذر من الأعداد التي تبدأ بصفر: فالعدد <code>13542419</code> في JSON فقد الأصفار البادئة في <code>0013542419</code> و<strong>يفشل</strong>. أرسل الأرقام الوطنية وأرقام الجوال والرموز البريدية سلاسل نصية.</li>
+<li><strong>المصفوفات والكائنات والقيم المنطقية</strong> لا تصل إلى أداة التحقق أبدًا وتفشل في القاعدة ببساطة.</li>
+<li><strong>القيم الفارغة.</strong> كما في قواعد Laravel نفسها، تُتخطى السلسلة الفارغة والمفتاح المفقود ما لم يكن الحقل <code>required</code>. أما <code>null</code> الصريحة فتفشل ما لم يكن الحقل <code>nullable</code>. عبّر عما تقصده بـ <code>required</code> أو <code>nullable</code>.</li>
+</ul>
+<pre><code class="language-php">$f-&gt;make(['n' =&gt; '۰۰۱۳۵۴۲۴۱۹'], ['n' =&gt; 'national_code'])-&gt;passes();          // true
+$f-&gt;make(['n' =&gt; 13542419],      ['n' =&gt; 'national_code'])-&gt;passes();          // false (فُقدت الأصفار البادئة)
+$f-&gt;make(['n' =&gt; null],          ['n' =&gt; 'nullable|national_code'])-&gt;passes(); // true
+$f-&gt;make(['n' =&gt; null],          ['n' =&gt; 'national_code'])-&gt;passes();          // false
+$f-&gt;make(['n' =&gt; ''],            ['n' =&gt; 'national_code'])-&gt;passes();          // true  (تُتخطى)
+$f-&gt;make(['n' =&gt; ''],            ['n' =&gt; 'required|national_code'])-&gt;passes(); // false
+$f-&gt;make([],                     ['n' =&gt; 'national_code'])-&gt;passes();          // true  (المفتاح مفقود)</code></pre>
+<p>إذا احتجت إلى سبب فشل القيمة (طول خاطئ أو مجموع تحقق سيئ أو نوع خاطئ)، فاستدعِ أدوات التحقق المستقلة التي تُرجع <code>Result</code> منظّمة؛ راجع <a href="validators-overview.html">نظرة عامة على أدوات التحقق</a>.</p>
+
+<h2 id="cast">تحويل Eloquent باسم JalaliCast</h2>
+<p>يُبقي <code>RtlyKit\Laravel\Casts\JalaliCast</code> عمود قاعدة البيانات ميلاديًا (<code>Y-m-d H:i:s</code>) كما تتوقع كل الأدوات، ويُظهر السمة في النموذج كائنًا غير قابل للتغيير من <code>RtlyKit\Calendar\Jalali</code>.</p>
+<pre><code class="language-php">use Illuminate\Database\Eloquent\Model;
+use RtlyKit\Laravel\Casts\JalaliCast;
+
+class Post extends Model
+{
+    protected $guarded = [];
+
+    protected $casts = [
+        'published_at' =&gt; JalaliCast::class,
+    ];
+}
+
+$post = new Post();
+$post-&gt;published_at = '1404/01/15 10:30';
+
+echo $post-&gt;getAttributes()['published_at'];          // 2025-04-04 10:30:00   (القيمة المخزَّنة)
+echo $post-&gt;published_at-&gt;format('Y/m/d H:i');        // 1404/01/15 10:30
+echo get_class($post-&gt;published_at);                  // RtlyKit\Calendar\Jalali
+echo $post-&gt;published_at-&gt;addDays(20)-&gt;format('Y/m/d'); // 1404/02/04</code></pre>
+<p>يبقى نوع العمود <code>datetime</code> أو <code>timestamp</code>؛ ولا حاجة إلى تغيير في الترحيل (migration).</p>
+
+<h3 id="cast-input">القيم المقبولة عند الإسناد</h3>
+<table>
+<thead><tr><th>القيمة المُسنَدة</th><th>المخزَّن (ميلادي)</th></tr></thead>
+<tbody>
+<tr><td>سلسلة جلالية <code>'1404/01/15 10:30'</code></td><td><code>2025-04-04 10:30:00</code></td></tr>
+<tr><td>تاريخ جلالي فقط بأرقام فارسية وشرطات <code>'۱۴۰۴-۰۱-۱۵'</code></td><td><code>2025-04-04 00:00:00</code></td></tr>
+<tr><td>سلسلة ميلادية <code>'2025-04-04 08:00:00'</code></td><td><code>2025-04-04 08:00:00</code></td></tr>
+<tr><td>طابع زمني Unix (int) <code>1743753600</code></td><td><code>2025-04-04 08:00:00</code> (مع منطقة زمنية افتراضية UTC)</td></tr>
+<tr><td>أي <code>DateTimeInterface</code> (بما فيها Carbon)</td><td>اللحظة نفسها، بصيغة <code>Y-m-d H:i:s</code></td></tr>
+<tr><td>كائن <code>Jalali</code></td><td>ما يعادله ميلاديًا</td></tr>
+<tr><td><code>null</code> أو <code>''</code></td><td><code>null</code></td></tr>
+</tbody>
+</table>
+<p>تُقرأ السلسلة جلالية إذا كانت سنتها بين 1200 و1599 وكان الفاصل <code>/</code> أو <code>-</code>، مع وقت اختياري <code>HH:MM</code> أو <code>HH:MM:SS</code> بعد مسافة أو <code>T</code>. وأي سلسلة أخرى تمرّ عبر محلِّل التواريخ العادي على أنها ميلادية.</p>
+
+<h3 id="cast-errors">الأخطاء</h3>
+<p>المدخل السيئ يُطلق <code>RtlyKit\Exceptions\InvalidDateException</code> لحظة إسناده، ولا يظهر خطأ PHP خام أبدًا:</p>
+<pre><code class="language-php">$post-&gt;published_at = '1404/13/01';   // Invalid Jalali date: 1404/13/1
+$post-&gt;published_at = '1404/07/31';   // Invalid Jalali date: 1404/7/31   (شهر مهر 30 يوماً)
+$post-&gt;published_at = 'not a date';   // Unable to parse date: not a date
+$post-&gt;published_at = 1.5;            // Cannot cast value for 'published_at' to a date.
+$post-&gt;published_at = ['x'];          // Cannot cast value for 'published_at' to a date.</code></pre>
+<p>تحقق من مدخلات المستخدم قبل أن تصل إلى النموذج (انظر مثال طلب النموذج أدناه)، كي يؤدي الخطأ الإملائي إلى خطأ في الحقل بدل استثناء. القراءة متساهلة مع <code>null</code> والسلسلة الفارغة (كلتاهما تعطي <code>null</code>)، لكن السمة التي تحمل نصًا غير قابل للتحليل في قاعدة البيانات تُطلق <code>InvalidDateException</code> عند قراءتها.</p>
+
+<h3 id="cast-json">تسلسل النموذج</h3>
+<p>تنفّذ <code>Jalali</code> و<code>Hijri</code> و<code>Hebrew</code> الواجهة <code>JsonSerializable</code>: فاستدعاء <code>toJson()</code> على نموذج فيه سمة <code>JalaliCast</code> يعطي النص نفسه الذي يعطيه <code>(string) $date</code>، مثل <code>{"published_at":"1404/01/01 10:00:00"}</code>. أما <code>toArray()</code> فتُبقي كائن <code>Jalali</code>؛ نسّقه بنفسك إذا احتجت إلى نمط آخر.</p>
+
+<h2 id="request">طلبات النماذج</h2>
+<p>لا توجد قاعدة مضمّنة لحقل تاريخ جلالي، فتحقق من الصيغة بقاعدة regex في Laravel أو بقاعدة مخصصة صغيرة، ثم دع التحويل (cast) يتولى التحويل:</p>
+<pre><code class="language-php">public function rules(): array
+{
+    return [
+        'published_at' =&gt; ['required', 'regex:/^1[2-5]\d\d[\/-]\d{1,2}[\/-]\d{1,2}$/u'],
+    ];
+}</code></pre>
+<p>التاريخ حسن الصياغة لكنه مستحيل مثل <code>1404/07/31</code> يصل إلى التحويل ويُطلق الاستثناء هناك؛ فالتقط <code>InvalidDateException</code> في قاعدة مخصصة أو في المتحكم (controller) إذا كان المستخدمون يكتبون نصًا حرًا.</p>
+
+<h2 id="blade">Blade</h2>
+<p>يمنحك التحويل كائن <code>Jalali</code>، فلا يحتاج Blade إلى أي دالة مساعدة:</p>
+<pre><code class="language-php">{{ $post-&gt;published_at?-&gt;format('Y/m/d') }}            {{-- 1404/01/15 --}}
+{{ $post-&gt;published_at?-&gt;format('l j F Y') }}          {{-- جمعه 15 فروردین 1404 --}}
+{{ \RtlyKit\to_persian_digits($post-&gt;published_at-&gt;format('Y/m/d')) }}  {{-- ۱۴۰۴/۰۱/۱۵ --}}</code></pre>
+<p>أما العمود <em>غير</em> المحوَّل، مثل <code>created_at</code> القياسي (وهو نسخة Carbon)، فاستخدم الدالة المساعدة ضمن فضاء الأسماء. الدوال المساعدة ضمن فضاء الأسماء محمَّلة دائماً، فلا حاجة إلى تسجيل:</p>
+<pre><code class="language-php">{{ \RtlyKit\jdate($post-&gt;created_at)-&gt;format('Y/m/d H:i') }}   {{-- 1404/01/15 08:00 --}}</code></pre>
+<p>استورد الدالة في أعلى ملف Blade بـ <code>@php use function RtlyKit\jdate; @endphp</code> إن كنت تستخدمها كثيرًا. ومع ماكروات Carbon يصبح الأمر <code>$post-&gt;created_at-&gt;jformat('Y/m/d')</code>؛ راجع <a href="carbon-macros.html">ماكروات Carbon</a>.</p>
+<div class="note"><strong>ملاحظة.</strong> السمة الفارغة (null) لا تُنسَّق من تلقاء نفسها: استخدم عامل nullsafe (<code>?-&gt;</code>) كما هو موضح، وإلا أطلق Blade خطأً عند <code>null</code>. وللاطلاع على القائمة الكاملة لحروف التنسيق راجع <a href="jalali.html">صفحة التقويم الجلالي</a>.</div>

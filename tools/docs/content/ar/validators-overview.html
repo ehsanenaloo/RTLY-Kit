@@ -1,0 +1,158 @@
+<!--
+title: نظرة عامة على أدوات التحقق
+description: كيف تعمل أدوات التحقق الإيرانية الست: عقد Validator المشترك، وكائن Result، ومفاتيح الأخطاء الثابتة، وتطبيع المدخلات وحدود الحجم.
+group: validation
+order: 10
+-->
+<h2 id="six-validators">أدوات التحقق الست</h2>
+<p>تضم RTLY-Kit ست أدوات تحقق للبيانات التي تتعامل معها التطبيقات الإيرانية كل يوم. وكلها تتبع شكلًا واحداً، فإذا عرفت واحدة منها عرفت الباقي.</p>
+<table>
+<thead><tr><th>الصنف</th><th>ما يتحقق منه</th><th>الصفحة</th></tr></thead>
+<tbody>
+<tr><td><code>NationalCode</code></td><td>10 أرقام، ورقم تحقق بطريقة mod-11، وتلميح بمكان الإصدار</td><td><a href="national-code.html">الرقم الوطني</a></td></tr>
+<tr><td><code>Sheba</code></td><td><code>IR</code> + 24 رقماً، وفق ISO 7064 mod-97-10، مع البحث عن المصرف</td><td><a href="sheba-and-bank-card.html">شبا والبطاقة المصرفية</a></td></tr>
+<tr><td><code>BankCard</code></td><td>16 رقماً، ومجموع تحقق Luhn، والبحث عن المصرف عبر BIN</td><td><a href="sheba-and-bank-card.html">شبا والبطاقة المصرفية</a></td></tr>
+<tr><td><code>Mobile</code></td><td>صيغة <code>09xxxxxxxxx</code> في خمسة أشكال للإدخال، وتلميح بالمشغّل</td><td><a href="mobile-postal-plate.html">الجوال والرمز البريدي واللوحة</a></td></tr>
+<tr><td><code>PostalCode</code></td><td>10 أرقام، والرقم الأول ليس <code>0</code></td><td><a href="mobile-postal-plate.html">الجوال والرمز البريدي واللوحة</a></td></tr>
+<tr><td><code>VehiclePlate</code></td><td>صيغة لوحة السيارة الخاصة، مع تحليلها إلى أجزائها</td><td><a href="mobile-postal-plate.html">الجوال والرمز البريدي واللوحة</a></td></tr>
+</tbody>
+</table>
+<p>تقع جميعها في فضاء الأسماء <code>RtlyKit\Validation</code>، وتقبل الأرقام الفارسية والعربية كما يكتبها المستخدمون، فيمكنك تمرير مدخلات النماذج إليها مباشرة دون تنظيفها أولًا.</p>
+
+<h2 id="two-ways">طريقتان للاستدعاء</h2>
+<p>تقدّم كل أداة تحقق قيمة منطقية بسيطة ونتيجة منظّمة. استخدم <code>isValid()</code> حين تحتاج إلى «نعم» أو «لا» فقط، واستخدم <code>validate()</code> حين تريد إخبار المستخدم بسبب رفض القيمة.</p>
+<pre><code class="language-php">&lt;?php
+require 'vendor/autoload.php';
+
+use RtlyKit\Validation\NationalCode;
+use function RtlyKit\is_national_code;
+
+var_dump(NationalCode::isValid('۰۴۹۹۳۷۰۸۹۹'));   // bool(true)
+var_dump(is_national_code('0499370899'));        // bool(true)
+
+$result = NationalCode::validate('0499370898');
+var_dump($result-&gt;isValid());                    // bool(false)
+print_r($result-&gt;errors());                      // Array ( [0] =&gt; invalid_checksum )</code></pre>
+<p>الدوال المساعدة (<code>is_national_code()</code> و<code>validate_sheba()</code> وغيرها) تقع ضمن فضاء أسماء؛ استورِدها بـ <code>use function RtlyKit\is_national_code;</code>. أما الأسماء العامة القصيرة فهي اختيارية؛ راجع <a href="helpers-and-globals.html">الدوال المساعدة والأسماء العامة</a>.</p>
+
+<h2 id="contract">عقد Validator</h2>
+<p>تنفّذ كل أداة تحقق الواجهة <code>RtlyKit\Contracts\Validator</code>، وفيها دالتان ساكنتان (static) فقط:</p>
+<ul>
+<li><code>validate(mixed $value): Result</code></li>
+<li><code>isValid(mixed $value): bool</code>، وهي اختصار لـ <code>validate($value)-&gt;isValid()</code></li>
+</ul>
+<p>أدوات التحقق عديمة الحالة، ولذلك كانت الدوال ساكنة. وهذا يسهّل اختيار أداة التحقق وقت التشغيل عبر اسم الصنف كسلسلة نصية (class-string)، مثلًا من مصفوفة إعدادات:</p>
+<pre><code class="language-php">use RtlyKit\Contracts\Validator;
+use RtlyKit\Validation\Mobile;
+use RtlyKit\Validation\NationalCode;
+use RtlyKit\Validation\PostalCode;
+
+/** @var array&lt;string, class-string&lt;Validator&gt;&gt; $rules */
+$rules = [
+    'national_code' =&gt; NationalCode::class,
+    'mobile'        =&gt; Mobile::class,
+    'postal'        =&gt; PostalCode::class,
+];
+$input = ['national_code' =&gt; '0499370899', 'mobile' =&gt; '0912', 'postal' =&gt; '1234567890'];
+
+foreach ($rules as $field =&gt; $class) {
+    $result = $class::validate($input[$field]);
+    echo $field, ': ', $result-&gt;isValid() ? 'ok' : implode(',', $result-&gt;errors()), "\n";
+}
+// national_code: ok
+// mobile: invalid_format
+// postal: ok</code></pre>
+<div class="note"><strong>لا تُطلق استثناءً أبدًا.</strong> لا تُطلق أي من الدالتين استثناءً بسبب مدخل سيئ. فأي قيمة، بما فيها <code>null</code> والمصفوفات والكائنات والسلاسل الطويلة جدًا وUTF-8 غير الصالح، تُنتج <code>Result</code> غير صالحة بمفتاح خطأ ثابت. أما الاستثناءات فهي مخصصة لأخطاء المبرمج في أجزاء أخرى من المكتبة؛ راجع <a href="error-handling.html">معالجة الأخطاء</a>.</div>
+
+<h2 id="result">كائن Result</h2>
+<p>الصنف <code>RtlyKit\Validation\Result</code> كائن قيمة غير قابل للتغيير، وله ثلاث دوال قراءة:</p>
+<table>
+<thead><tr><th>الدالة</th><th>ما تُرجعه</th></tr></thead>
+<tbody>
+<tr><td><code>isValid()</code></td><td><code>bool</code></td></tr>
+<tr><td><code>errors()</code></td><td><code>list&lt;string&gt;</code>: مفاتيح أخطاء ثابتة، وتكون فارغة إذا كانت القيمة صالحة</td></tr>
+<tr><td><code>details()</code></td><td><code>array&lt;string, mixed&gt;</code>: معلومات عرفتها أداة التحقق أثناء الفحص</td></tr>
+</tbody>
+</table>
+<p>التفاصيل موجودة في النتائج الصالحة وغير الصالحة (بقدر ما وصلت إليه أداة التحقق قبل أن تتوقف)، فيمكنك عرض القيمة المطبَّعة أو اسم المصرف حتى بجوار خطأ:</p>
+<pre><code class="language-php">use RtlyKit\Validation\BankCard;
+
+$result = BankCard::validate('6037991234567890');
+var_dump($result-&gt;isValid());   // bool(false)
+print_r($result-&gt;errors());     // Array ( [0] =&gt; invalid_checksum )
+echo json_encode($result-&gt;details(), JSON_UNESCAPED_UNICODE);
+// {"normalized":"6037991234567890","bin":"603799","bank_name":"بانک ملی ایران"}</code></pre>
+
+<h3 id="detail-keys">مفاتيح التفاصيل لكل أداة تحقق</h3>
+<table>
+<thead><tr><th>أداة التحقق</th><th>مفاتيح التفاصيل</th></tr></thead>
+<tbody>
+<tr><td><code>NationalCode</code></td><td><code>normalized</code>، <code>location</code> (<code>{province, city}</code> أو <code>null</code>)</td></tr>
+<tr><td><code>Sheba</code></td><td><code>normalized</code>، <code>bank_code</code>، <code>bank_name</code></td></tr>
+<tr><td><code>BankCard</code></td><td><code>normalized</code>، <code>bin</code>، <code>bank_name</code></td></tr>
+<tr><td><code>Mobile</code></td><td><code>normalized</code>، <code>operator</code>، <code>allocated</code> (قيمة <code>bool</code>: هل تقع بادئة الرقم في خطة الترقيم المنشورة للهاتف المحمول)</td></tr>
+<tr><td><code>PostalCode</code></td><td><code>normalized</code></td></tr>
+<tr><td><code>VehiclePlate</code></td><td><code>normalized</code>، وعند مطابقة الصيغة: <code>two_digit</code>، <code>letter</code>، <code>three_digit</code>، <code>region</code></td></tr>
+</tbody>
+</table>
+<p>قيم البحث (<code>location</code> و<code>bank_name</code> و<code>operator</code>) تكون <code>null</code> إذا لم يكن في الجدول مدخل مطابق. وغياب المدخل يعني «غير معروف» ولا يعني «غير صالح» أبدًا.</p>
+
+<h2 id="error-keys">مفاتيح الأخطاء</h2>
+<p>الأخطاء مفاتيح ثابتة مقروءة آليًا. لا تتغير بين الإصدارات، فيمكنك ربطها برسائلك أو ترجماتك الخاصة. وهذا ما يفعله تكامل Laravel بالضبط؛ راجع <a href="laravel-validation-and-cast.html">قواعد التحقق والتحويل في Laravel</a>.</p>
+<table>
+<thead><tr><th>المفتاح</th><th>المعنى</th><th>يستخدمه</th></tr></thead>
+<tbody>
+<tr><td><code>invalid_type</code></td><td>القيمة ليست سلسلة نصية ولا عددًا صحيحًا ولا عددًا عشريًا صحيحًا منتهيًا</td><td>الجميع</td></tr>
+<tr><td><code>input_too_long</code></td><td>سلسلة نصية أطول من 4096 بايت</td><td>الجميع</td></tr>
+<tr><td><code>invalid_format</code></td><td>الصيغة خاطئة (مجموعة المحارف أو عدد الأرقام أو النمط)</td><td>الجميع عدا <code>PostalCode</code>، التي تستخدمه عند وجود <code>0</code> في البداية</td></tr>
+<tr><td><code>invalid_length</code></td><td>عدد الأرقام ليس 10</td><td><code>PostalCode</code></td></tr>
+<tr><td><code>repeated_digits</code></td><td>جميع الأرقام متماثلة (<code>1111111111</code>)</td><td><code>NationalCode</code>، <code>BankCard</code></td></tr>
+<tr><td><code>invalid_checksum</code></td><td>رقم التحقق أو أرقام التحقق لا تطابق</td><td><code>NationalCode</code>، <code>Sheba</code>، <code>BankCard</code></td></tr>
+<tr><td><code>invalid_region</code></td><td>جزء رقمي من اللوحة كله أصفار</td><td><code>VehiclePlate</code></td></tr>
+</tbody>
+</table>
+<p>تحمل النتيجة اليوم خطأً واحدًا على الأكثر (أول فحص فشل)، لكن <code>errors()</code> تُرجع قائمة كي تتمكن فحوصات مستقبلية من الإبلاغ عن عدة أخطاء.</p>
+
+<h2 id="input-handling">معالجة المدخلات</h2>
+<p>قبل تشغيل أي قاعدة، تمرّ القيمة عبر بوابة مشتركة واحدة:</p>
+<ul>
+<li><strong>السلاسل النصية</strong> حتى <strong>4096 بايت</strong> تمرّ. يشغل الرقم الفارسي أو العربي بايتين، فالحد الأقصى نحو 2000 رقم من هذا النوع. والسلسلة الأطول تُنتج <code>input_too_long</code>.</li>
+<li><strong><code>int</code></strong> يُحوَّل بـ <code>(string)</code>.</li>
+<li><strong><code>float</code></strong> يجب أن يكون منتهيًا وصحيحًا (بلا كسر) وقيمته المطلقة أقل من 10<sup>15</sup>؛ ويُحوَّل دون أُسّ. القيم <code>NaN</code> و<code>INF</code> و<code>1.5</code> والأعداد العشرية الضخمة تُنتج <code>invalid_type</code>.</li>
+<li>كل ما عدا ذلك، أي <code>null</code> و<code>bool</code> والمصفوفات والكائنات، يُنتج <code>invalid_type</code>.</li>
+</ul>
+<pre><code class="language-php">use RtlyKit\Validation\NationalCode;
+use RtlyKit\Validation\PostalCode;
+
+print_r(NationalCode::validate(null)-&gt;errors());                  // [invalid_type]
+print_r(NationalCode::validate(1.5)-&gt;errors());                   // [invalid_type]
+print_r(NationalCode::validate(str_repeat('1', 4097))-&gt;errors()); // [input_too_long]
+print_r(NationalCode::validate("\xff\xfe")-&gt;errors());            // [invalid_format]
+var_dump(PostalCode::validate(1234567890)-&gt;isValid());            // bool(true)</code></pre>
+<div class="note"><strong>الأصفار البادئة.</strong> إذا مرّرت الرقم الوطني أو الرمز البريدي على أنه عدد صحيح فستضيع الأصفار البادئة: <code>499370899</code> ليس <code>0499370899</code>، وأداة التحقق لا ترى إلا تسعة أرقام. أبقِ هذه المعرّفات سلاسل نصية من النموذج أو من عمود قاعدة البيانات حتى تصل إلى أداة التحقق.</div>
+
+<h2 id="normalization">التطبيع</h2>
+<p>بعد البوابة، تطبّع كل أداة تحقق السلسلة بدالتها العامة <code>normalize()</code>. وتشترك في هذه القواعد:</p>
+<ul>
+<li>الأرقام الفارسية (<code>۰-۹</code>) والعربية الهندية (<code>٠-٩</code>) تتحول إلى أرقام إنجليزية باستخدام <code>Digits::toEnglish()</code>.</li>
+<li>تُحذف الفواصل التي يكتبها المستخدمون: المسافات والواصلات والنصف مسافة (ZWNJ). أما <code>Mobile</code> و<code>BankCard</code> و<code>PostalCode</code> فتذهب أبعد وتُبقي الأرقام فقط.</li>
+<li>تحوّل <code>Sheba</code> النص أيضًا إلى أحرف كبيرة وتضيف البادئة <code>IR</code> إلى سلسلة مجردة من 24 رقمًا.</li>
+</ul>
+<p>تُرجَع القيمة المطبَّعة دائمًا في <code>details()['normalized']</code>. خزّنها هي لا المدخل الخام، كي لا يُحفظ الرقم نفسه بصيغتين.</p>
+
+<h2 id="lookups">جداول البحث ومصادرها</h2>
+<p>تُرفق أربع أدوات تحقق معلومة بحث: المصرف من BIN البطاقة، والمصرف من رمز شبا، ومكان الإصدار من بادئة الرقم الوطني، والمشغّل من بادئة الجوال. هذه البيانات مجرد إضافة مريحة فوق التحقق؛ أما الصلاحية نفسها فلا تعتمد عليها أبدًا.</p>
+<ul>
+<li>BIN البطاقات المصرفية: 39 مدخلًا. رموز المصارف في شبا: 38 مدخلًا. بادئات الرقم الوطني: 547 مدخلًا.</li>
+<li>رموز المصارف الـ 19 الواردة في مواصفة IBAN المنشورة لدى البنك المركزي الإيراني تطابق جدول المكتبة. أما بقية الجداول فتتفق مع عدة صفحات عامة، لأن قائمة رسمية لم تتوفر.</li>
+<li>المدخل غير الموجود في الجدول يعني «غير معروف»، ولا يعني «غير صالح».</li>
+</ul>
+<div class="note"><strong>من المفيد أن تعرف.</strong> نتيجة البحث تلميح مفيد وليست سجلًا رسميًا. المصارف تندمج وتغيّر أسماءها، ويمكن نقل رقم الجوال بين المشغّلين. لذلك اعرض النتيجة على أنها معلومة إرشادية، ولا تبنِ عليها قرارًا قانونيًا أو ماليًا. تجد المصادر والتواريخ في <a href="accuracy-and-data.html">الدقة والبيانات</a>.</div>
+
+<h2 id="next">إلى أين تذهب بعد ذلك</h2>
+<ul>
+<li><a href="national-code.html">الرقم الوطني</a>: الخوارزمية والتطبيع وتلميح مكان الإصدار.</li>
+<li><a href="sheba-and-bank-card.html">شبا والبطاقة المصرفية</a>: mod-97 وLuhn والبحث عن المصارف.</li>
+<li><a href="mobile-postal-plate.html">الجوال والرمز البريدي ولوحة المركبة</a>.</li>
+<li><a href="limits.html">الحدود</a>: كل حدود الحجم في مكان واحد.</li>
+</ul>

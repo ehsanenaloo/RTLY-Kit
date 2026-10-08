@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="ar" dir="rtl" data-i18n="{&quot;dark&quot;:&quot;الوضع الداكن&quot;,&quot;light&quot;:&quot;الوضع الفاتح&quot;,&quot;to_dark&quot;:&quot;التبديل إلى السمة الداكنة&quot;,&quot;to_light&quot;:&quot;التبديل إلى السمة الفاتحة&quot;,&quot;copy&quot;:&quot;نسخ&quot;,&quot;copied&quot;:&quot;تم النسخ&quot;,&quot;copy_failed&quot;:&quot;تم التحديد؛ انسخ يدويًا&quot;,&quot;copy_label&quot;:&quot;نسخ مثال الشيفرة أعلاه&quot;,&quot;no_results&quot;:&quot;لا يوجد دليل مطابق. جرّب كلمة أقصر.&quot;,&quot;loading&quot;:&quot;ما زال فهرس البحث قيد التحميل. حاول مرة أخرى بعد قليل.&quot;,&quot;results&quot;:&quot;نتائج البحث&quot;,&quot;status&quot;:&quot;يُعرض %d من %d دليلًا&quot;,&quot;suggest&quot;:&quot;النسخة العربية&quot;,&quot;search_label&quot;:&quot;البحث في الدليل&quot;,&quot;search_placeholder&quot;:&quot;البحث في الدليل&quot;}" data-search-index="search-index.js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>تحويل الأعداد إلى كلمات | RTLY-Kit دليل المستخدم</title>
+<meta name="description" content="كتابة الأعداد الصحيحة بالحروف بالفارسية (حتى 10^21) وبالعربية (حتى 10^27)، وقراءة كلمات الأعداد الفارسية وتحويلها إلى أعداد عبر fromWords().">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="تحويل الأعداد إلى كلمات | RTLY-Kit دليل المستخدم">
+<meta property="og:description" content="كتابة الأعداد الصحيحة بالحروف بالفارسية (حتى 10^21) وبالعربية (حتى 10^27)، وقراءة كلمات الأعداد الفارسية وتحويلها إلى أعداد عبر fromWords().">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ar_AR">
+<meta property="og:locale:alternate" content="fa_IR">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:url" content="https://ehsanenaloo.github.io/RTLY-Kit/ar/number-words.html">
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+<link rel="canonical" href="https://ehsanenaloo.github.io/RTLY-Kit/ar/number-words.html">
+<link rel="alternate" hreflang="ar" href="https://ehsanenaloo.github.io/RTLY-Kit/ar/number-words.html">
+<link rel="alternate" hreflang="fa" href="https://ehsanenaloo.github.io/RTLY-Kit/fa/number-words.html">
+<link rel="alternate" hreflang="en" href="https://ehsanenaloo.github.io/RTLY-Kit/en/number-words.html">
+<link rel="alternate" hreflang="x-default" href="https://ehsanenaloo.github.io/RTLY-Kit/">
+<link rel="stylesheet" href="../styles.css">
+<script>try{var t=localStorage.getItem("rtly-docs-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<script defer src="../app.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">انتقل إلى المحتوى</a><header class="site-header"><div class="shell header-inner"><a class="brand" href="index.html"><img src="../assets/logo.svg" width="34" height="34" alt=""><span><span class="name">RTLY-Kit</span><small>دليل المستخدم</small></span></a><nav class="top-nav" aria-label="التنقل الرئيسي"><a href="index.html">نظرة عامة</a><a href="quick-start.html">بدء سريع</a><a href="all.html">كل الأدلة</a><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">جيت هب &#8599;</a></nav><div class="header-tools"><span data-search-host></span><button type="button" class="icon-button" data-theme-toggle hidden>Theme</button><div class="lang-switch" role="group" aria-label="اللغة"><a class="icon-button" href="../fa/number-words.html" hreflang="fa" lang="fa">فارسی</a><a class="icon-button" href="../en/number-words.html" hreflang="en" lang="en">English</a><span class="icon-button is-current" lang="ar" aria-current="true">العربية</span></div></div></div></header>
+<main id="main">
+<div class="shell page-intro"><nav class="breadcrumbs" aria-label="مسار الصفحة"><ol><li><a href="index.html">الرئيسية</a></li><li><a href="all.html#group-numbers-text">الأرقام والنصوص</a></li><li aria-current="page">تحويل الأعداد إلى كلمات</li></ol></nav><h1>تحويل الأعداد إلى كلمات</h1><p class="lead">كتابة الأعداد الصحيحة بالحروف بالفارسية (حتى 10^21) وبالعربية (حتى 10^27)، وقراءة كلمات الأعداد الفارسية وتحويلها إلى أعداد عبر fromWords().</p></div>
+<div class="shell doc-layout has-toc">
+<aside class="sidebar"><details open><summary>تصفح الأدلة</summary><nav aria-label="الأدلة"><a href="all.html">كل الأدلة</a><p>البدء</p><a href="quick-start.html">البدء السريع</a><a href="installation.html">التثبيت</a><p>التقاويم</p><a href="jalali.html">التقويم الجلالي</a><a href="hijri.html">التقويم الهجري</a><a href="hebrew.html">التقويم العبري</a><a href="convert-and-compare.html">التحويل والمقارنة بين التواريخ</a><a href="carbon-macros.html">ماكروات Carbon</a><p>التحقق من الصحة</p><a href="validators-overview.html">نظرة عامة على أدوات التحقق</a><a href="national-code.html">الرقم الوطني</a><a href="sheba-and-bank-card.html">شبا والبطاقة المصرفية</a><a href="mobile-postal-plate.html">الجوال والرمز البريدي ولوحة المركبة</a><p>الأرقام والنصوص</p><a href="digits-and-format.html">الأرقام وتنسيق الأعداد</a><a href="number-words.html" aria-current="page">تحويل الأعداد إلى كلمات</a><a href="arabic-number-words.html">الأعداد بالحروف العربية</a><a href="text-tools.html">أدوات النصوص</a><p>العطل وأوقات الصلاة</p><a href="holidays.html">العطل الرسمية الإيرانية</a><a href="holiday-calendar.html">تقويم العطل القابل للتعديل</a><a href="prayer-times.html">أوقات الصلاة</a><p>لارافيل</p><a href="laravel-setup.html">إعداد Laravel</a><a href="laravel-validation-and-cast.html">قواعد التحقق وتحويل Eloquent</a><p>المرجع</p><a href="helpers-and-globals.html">الدوال المساعدة والدوال العامة</a><a href="error-handling.html">معالجة الأخطاء</a><a href="api-stability.html">استقرار واجهة API</a><a href="accuracy-and-data.html">الدقة والبيانات</a><a href="benchmarks.html">قياس الأداء</a><a href="limits.html">الحدود</a><a href="troubleshooting-faq.html">استكشاف الأخطاء والأسئلة الشائعة</a><a href="upgrade.html">دليل الترقية</a><a href="verifying-releases.html">التحقق من الإصدارات</a></nav></details></aside>
+<article class="prose">
+<details class="toc-inline"><summary>في هذه الصفحة</summary><ol><li><a href="#convert">تحويل الأعداد إلى كلمات</a><ol><li><a href="#accepted-input">المدخلات المقبولة</a></li><li><a href="#errors">الأخطاء</a></li></ol></li><li><a href="#arabic">العربية</a></li><li><a href="#from-words">من الكلمات إلى العدد</a><ol><li><a href="#from-words-rules">كيف تُقرأ الكلمات</a></li></ol></li></ol></details>
+<h2 id="convert">تحويل الأعداد إلى كلمات<a class="anchor" href="#convert" aria-label="رابط إلى هذا القسم">#</a></h2>
+<p>تكتب <code>NumberToWords::convert()</code> العدد الصحيح بالحروف. اللغة الفارسية (<code>fa</code>) هي الافتراضية، وتغطي كل عدد صحيح دون 10<sup>21</sup>.</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">&lt;?php
+require</span> <span class="tok-s">'vendor/autoload.php'</span>;
+
+<span class="tok-k">use</span> RtlyKit\Number\NumberToWords;
+<span class="tok-k">use</span> <span class="tok-k">function</span> RtlyKit\number_to_words;
+
+<span class="tok-k">echo</span> NumberToWords::convert(<span class="tok-n">0</span>), <span class="tok-s">"\n"</span>;        <span class="tok-c">// صفر</span>
+<span class="tok-k">echo</span> NumberToWords::convert(<span class="tok-n">21</span>), <span class="tok-s">"\n"</span>;       <span class="tok-c">// بیست و یک</span>
+<span class="tok-k">echo</span> NumberToWords::convert(<span class="tok-n">115</span>), <span class="tok-s">"\n"</span>;      <span class="tok-c">// صد و پانزده</span>
+<span class="tok-k">echo</span> NumberToWords::convert(<span class="tok-n">1001</span>), <span class="tok-s">"\n"</span>;     <span class="tok-c">// یک هزار و یک</span>
+<span class="tok-k">echo</span> NumberToWords::convert(<span class="tok-n">12345</span>), <span class="tok-s">"\n"</span>;    <span class="tok-c">// دوازده هزار و سیصد و چهل و پنج</span>
+<span class="tok-k">echo</span> NumberToWords::convert(-<span class="tok-n">45</span>), <span class="tok-s">"\n"</span>;      <span class="tok-c">// منفی چهل و پنج</span>
+<span class="tok-k">echo</span> number_to_words(<span class="tok-n">2000000000</span>), <span class="tok-s">"\n"</span>;      <span class="tok-c">// دو میلیارد</span>
+<span class="tok-k">echo</span> NumberToWords::convert(<span class="tok-n">1234567</span>), <span class="tok-s">"\n"</span>;
+<span class="tok-c">// یک میلیون و دویست و سی و چهار هزار و پانصد و شصت و هفت</span></code></pre>
+<p>تُربط الكلمات بـ « و » (أي «و» العطف) بين كل جزء وآخر، وتتبع كلمةُ المرتبة كلَّ مجموعة: «هزار» (10<sup>3</sup>) و«میلیون» (10<sup>6</sup>) و«میلیارد» (10<sup>9</sup>) و«تریلیون» (10<sup>12</sup>) و«کوادریلیون» (10<sup>15</sup>) و«کوینتیلیون» (10<sup>18</sup>). والمجموعة التي تساوي 1 تحتفظ بـ «یک» (1000 هي «یک هزار»؛ ولقراءة «هزار» المجردة استخدم <code>fromWords()</code> أدناه). وتُتخطى المجموعات الصفرية.</p>
+
+<h3 id="accepted-input">المدخلات المقبولة<a class="anchor" href="#accepted-input" aria-label="رابط إلى هذا القسم">#</a></h3>
+<p>نوع المعامل هو <code>int|float|string</code>:</p>
+<ul>
+<li><strong>int:</strong> يعمل النطاق الكامل في PHP، بما فيه <code>PHP_INT_MAX</code>: «نه کوینتیلیون و دویست و بیست و سه کوادریلیون ...».</li>
+<li><strong>float:</strong> يجب أن يكون منتهيًا وصحيحًا (بلا كسر). <code>3.0</code> تعطي «سه»؛ و<code>1.5</code> تُطلق استثناءً بدل أن تُبتر بصمت.</li>
+<li><strong>string:</strong> إشارة اختيارية وأرقام من أي مجموعة أرقام. تُزال الفواصل و<code>٬</code> والمسافات، فيعمل عدد منسوخ من نموذج. ويمكن أن تكون السلاسل أطول من int في PHP، حتى 21 رقمًا بعد حذف الأصفار البادئة.</li>
+</ul>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">echo</span> NumberToWords::convert(<span class="tok-s">'۱۲۳٬۴۵۶'</span>), <span class="tok-s">"\n"</span>;        <span class="tok-c">// صد و بیست و سه هزار و چهارصد و پنجاه و شش</span>
+<span class="tok-k">echo</span> NumberToWords::convert(<span class="tok-s">'1,000,000'</span>), <span class="tok-s">"\n"</span>;      <span class="tok-c">// یک میلیون</span>
+<span class="tok-k">echo</span> NumberToWords::convert(<span class="tok-s">'+7'</span>), <span class="tok-s">"\n"</span>;             <span class="tok-c">// هفت</span>
+<span class="tok-k">echo</span> NumberToWords::convert(<span class="tok-s">'-0'</span>), <span class="tok-s">"\n"</span>;             <span class="tok-c">// صفر</span>
+<span class="tok-k">echo</span> NumberToWords::convert(<span class="tok-s">'999999999999999999999'</span>), <span class="tok-s">"\n"</span>;
+<span class="tok-c">// نهصد و نود و نه کوینتیلیون و نهصد و نود و نه کوادریلیون ... و نهصد و نود و نه</span></code></pre>
+
+<h3 id="errors">الأخطاء<a class="anchor" href="#errors" aria-label="رابط إلى هذا القسم">#</a></h3>
+<p>المدخل غير الصالح يُطلق <code>InvalidNumberException</code> (صنف فرعي من <code>RtlyKitException</code>). اقرأ الرمز الثابت بـ <code>getErrorCode()</code>:</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="جدول"><table>
+<thead><tr><th scope="col">المدخل</th><th scope="col">رمز الخطأ</th></tr></thead>
+<tbody>
+<tr><td><code>1.5</code>، <code>'12a'</code>، <code>''</code></td><td><code>invalid_number</code></td></tr>
+<tr><td><code>NAN</code>، <code>INF</code></td><td><code>non_finite_number</code></td></tr>
+<tr><td>سلسلة أطول من 4096 بايت</td><td><code>input_too_long</code></td></tr>
+<tr><td><code>1e21</code>، <code>'1000000000000000000000'</code> (22 رقمًا)</td><td><code>number_too_large</code></td></tr>
+</tbody>
+</table></div>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">try</span> {
+    NumberToWords::convert(<span class="tok-s">'1000000000000000000000'</span>);
+} <span class="tok-k">catch</span> (\RtlyKit\Exceptions\InvalidNumberException <span class="tok-v">$e</span>) {
+    <span class="tok-k">echo</span> <span class="tok-v">$e</span>-&gt;getMessage(), <span class="tok-s">' ['</span>, <span class="tok-v">$e</span>-&gt;getErrorCode()-&gt;value, <span class="tok-s">"]\n"</span>;
+    <span class="tok-c">// Number is too large (limit is 10^21 - 1). [number_too_large]</span>
+}</code></pre>
+<p>راجع <a href="error-handling.html">معالجة الأخطاء</a> لمعرفة كيف تلتقط كل استثناءات المكتبة بنوع واحد.</p>
+
+<h2 id="arabic">العربية<a class="anchor" href="#arabic" aria-label="رابط إلى هذا القسم">#</a></h2>
+<p>مرّر <code>'ar'</code> وسيطًا ثانيًا للحصول على العربية الفصحى. تُقرأ اللغة المحلية (locale) من أول حرفين دون تمييز بين الأحرف الكبيرة والصغيرة، فتعمل <code>'ar_SA'</code> و<code>'AR'</code>، وكذلك <code>'fa_IR'</code> للفارسية.</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">echo</span> NumberToWords::convert(<span class="tok-n">11</span>, <span class="tok-s">'ar'</span>), <span class="tok-s">"\n"</span>;        <span class="tok-c">// أحد عشر</span>
+<span class="tok-k">echo</span> NumberToWords::convert(<span class="tok-n">21</span>, <span class="tok-s">'ar'</span>), <span class="tok-s">"\n"</span>;        <span class="tok-c">// واحد وعشرون</span>
+<span class="tok-k">echo</span> NumberToWords::convert(<span class="tok-n">200</span>, <span class="tok-s">'ar'</span>), <span class="tok-s">"\n"</span>;       <span class="tok-c">// مئتان</span>
+<span class="tok-k">echo</span> NumberToWords::convert(<span class="tok-n">3000</span>, <span class="tok-s">'ar'</span>), <span class="tok-s">"\n"</span>;      <span class="tok-c">// ثلاثة آلاف</span>
+<span class="tok-k">echo</span> NumberToWords::convert(<span class="tok-n">2000000</span>, <span class="tok-s">'ar'</span>), <span class="tok-s">"\n"</span>;   <span class="tok-c">// مليونان</span>
+<span class="tok-k">echo</span> NumberToWords::convert(<span class="tok-n">1002003</span>, <span class="tok-s">'ar'</span>), <span class="tok-s">"\n"</span>;   <span class="tok-c">// مليون وألفان وثلاثة</span>
+<span class="tok-k">echo</span> NumberToWords::convert(-<span class="tok-n">7</span>, <span class="tok-s">'ar'</span>), <span class="tok-s">"\n"</span>;        <span class="tok-c">// سالب سبعة</span></code></pre>
+<p>تصل العربية إلى كل عدد صحيح دون 10<sup>27</sup>، وتقبل خيارات لجنس المعدود والحالة الإعرابية والحركات واسم المليار، وتكتب الأعداد الترتيبية من 1 إلى 99. التفاصيل مع أمثلة كثيرة في <a href="arabic-number-words.html">الأعداد بالحروف العربية</a>.</p>
+<p>اللغة غير المدعومة تُثير <code>UnsupportedLocaleException</code> بالرمز <code>unsupported_locale</code>:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">try</span> {
+    NumberToWords::convert(<span class="tok-n">5</span>, <span class="tok-s">'en'</span>);
+} <span class="tok-k">catch</span> (\RtlyKit\Exceptions\UnsupportedLocaleException <span class="tok-v">$e</span>) {
+    <span class="tok-k">echo</span> <span class="tok-v">$e</span>-&gt;getMessage(), <span class="tok-s">"\n"</span>;   <span class="tok-c">// Unsupported locale 'en' (use 'fa' or 'ar').</span>
+}</code></pre>
+
+<h2 id="from-words">من الكلمات إلى العدد<a class="anchor" href="#from-words" aria-label="رابط إلى هذا القسم">#</a></h2>
+<p>الدالة <code>NumberToWords::fromWords()</code> هي عكس التحويل الفارسي للصيغ التي تنتجها <code>convert()</code>. تُرجع <code>int</code> إذا كانت القيمة تتسع في int في PHP، و<code>string</code> من الأرقام فيما عدا ذلك.</p>
+<pre tabindex="0"><code class="language-php">var_dump(NumberToWords::fromWords(<span class="tok-s">'بیست و سه'</span>));                 <span class="tok-c">// int(23)</span>
+var_dump(NumberToWords::fromWords(<span class="tok-s">'منفی چهل و دو'</span>));             <span class="tok-c">// int(-42)</span>
+var_dump(NumberToWords::fromWords(<span class="tok-s">'هزار و یک'</span>));                 <span class="tok-c">// int(1001)</span>
+var_dump(NumberToWords::fromWords(<span class="tok-s">'دو میلیون و سیصد هزار و پنج'</span>)); <span class="tok-c">// int(2300005)</span>
+
+<span class="tok-c">// ذهاب وإياب عبر النطاق كله:</span>
+var_dump(NumberToWords::fromWords(NumberToWords::convert(PHP_INT_MAX)));
+<span class="tok-c">// int(9223372036854775807)</span>
+var_dump(NumberToWords::fromWords(NumberToWords::convert(<span class="tok-s">'999999999999999999999'</span>)));
+<span class="tok-c">// string(21) "999999999999999999999"</span></code></pre>
+
+<h3 id="from-words-rules">كيف تُقرأ الكلمات<a class="anchor" href="#from-words-rules" aria-label="رابط إلى هذا القسم">#</a></h3>
+<ul>
+<li>يُطبَّع المدخل أولًا: تتحول صور الحروف العربية إلى فارسية («ك» إلى «ک»، و«ي» إلى «ی»)، ويُعامل ZWNJ مسافةً، وتُتجاهل المسافات الزائدة.</li>
+<li>«منفی» في البداية تجعل النتيجة سالبة؛ و«منفی صفر» هي <code>0</code>.</li>
+<li>كلمة المرتبة دون عدد قبلها تعني واحداً، فـ «هزار» هي 1000.</li>
+<li>يجب أن تكون المراتب تنازلية: «هزار هزار» أو «هزار میلیون» تُطلقان استثناءً.</li>
+<li>لا يجوز أن تتجاوز أي مجموعة 999.</li>
+<li>تُتخطى كلمة «و» أينما ظهرت.</li>
+</ul>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">try</span> {
+    NumberToWords::fromWords(<span class="tok-s">'یکصد'</span>);
+} <span class="tok-k">catch</span> (\RtlyKit\Exceptions\InvalidNumberException <span class="tok-v">$e</span>) {
+    <span class="tok-k">echo</span> <span class="tok-v">$e</span>-&gt;getMessage(), <span class="tok-s">' ['</span>, <span class="tok-v">$e</span>-&gt;getErrorCode()-&gt;value, <span class="tok-s">"]\n"</span>;
+    <span class="tok-c">// Unknown number word 'یکصد'. [invalid_number_words]</span>
+}</code></pre>
+<p>تحمل الأخطاء الرمز <code>invalid_number_words</code> (كلمة غير معروفة، أو تسلسل سيئ التكوين، أو مراتب غير مرتبة، أو نص فارغ) أو <code>input_too_long</code> للنص الذي يتجاوز 4096 بايت.</p>
+<div class="callout note" role="note"><strong>من المفيد أن تعرف.</strong> <code>fromWords()</code> دقيقة في القراءة: ترفض «و» الناقصة بين الأجزاء («دو صد» و«بیست یک»)، و«و» في آخر العبارة، والأجزاء غير المرتبة (مئات ثم عشرات ثم آحاد)، وتُثير <code>invalid_number_words</code>. وكل نص تنتجه <code>convert()</code> تقرؤه. وهي تقرأ الفارسية فقط: الكلمات العربية الناتجة عن <code>convert($n, 'ar')</code> والأعداد الترتيبية مثل «سی‌ام» والصيغة المختصرة «یکصد» تُثير استثناءً.</div>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">foreach</span> ([<span class="tok-s">'دو صد'</span>, <span class="tok-s">'بیست یک'</span>, <span class="tok-s">'بیست و'</span>] <span class="tok-k">as</span> <span class="tok-v">$text</span>) {
+    <span class="tok-k">try</span> {
+        NumberToWords::fromWords(<span class="tok-v">$text</span>);
+    } <span class="tok-k">catch</span> (\RtlyKit\Exceptions\InvalidNumberException <span class="tok-v">$e</span>) {
+        <span class="tok-k">echo</span> <span class="tok-v">$e</span>-&gt;getMessage(), <span class="tok-s">' ['</span>, <span class="tok-v">$e</span>-&gt;getErrorCode()-&gt;value, <span class="tok-s">"]\n"</span>;
+    }
+}
+<span class="tok-c">// Missing 'و' before 'صد'. [invalid_number_words]</span>
+<span class="tok-c">// Missing 'و' before 'یک'. [invalid_number_words]</span>
+<span class="tok-c">// Number words cannot end with 'و'. [invalid_number_words]</span></code></pre>
+<nav class="reading-footer" aria-label="الصفحة السابقة والتالية"><a class="prev" rel="prev" href="digits-and-format.html"><small>السابق</small>الأرقام وتنسيق الأعداد</a><a class="next" rel="next" href="arabic-number-words.html"><small>التالي</small>الأعداد بالحروف العربية</a></nav>
+</article>
+<nav class="toc" aria-label="في هذه الصفحة"><p>في هذه الصفحة</p><ol><li><a href="#convert">تحويل الأعداد إلى كلمات</a><ol><li><a href="#accepted-input">المدخلات المقبولة</a></li><li><a href="#errors">الأخطاء</a></li></ol></li><li><a href="#arabic">العربية</a></li><li><a href="#from-words">من الكلمات إلى العدد</a><ol><li><a href="#from-words-rules">كيف تُقرأ الكلمات</a></li></ol></li></ol></nav>
+</div>
+</main>
+<footer class="footer"><div class="shell footer-inner"><p>دليل مستخدم RTLY-Kit · الترخيص: MIT</p><div><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">المستودع على جيت هب &#8599;</a><a href="https://github.com/ehsanenaloo/RTLY-Kit/issues" rel="noopener noreferrer">الإبلاغ عن مشكلة &#8599;</a></div></div></footer>
+</body>
+</html>

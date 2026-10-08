@@ -1,28 +1,29 @@
 <!--
 title: تقویم هجری
-description: کلاس تغییرناپذیر Hijri با جدول ماه‌های ام‌القری و گونهٔ حسابی Tabular: ساخت، پارس و قالب‌بندی تاریخ به عربی، فارسی یا انگلیسی، جابه‌جایی، مقایسه و اختلاف.
+description: کلاس تغییرناپذیر Hijri با جدول ماه‌های ام‌القری و گونهٔ حسابی Tabular. ساخت و خواندن تاریخ، قالب‌بندی به عربی و فارسی و انگلیسی، جابه‌جایی، مقایسه و اختلاف.
 group: calendars
 order: 20
 -->
 <h2 id="overview">این کلاس چه می‌کند</h2>
-<p>کلاس <code>RtlyKit\Calendar\Hijri</code> یک مقدار تاریخ‌وزمان تغییرناپذیر در تقویم هجری قمری است. مثل دو کلاس دیگر، یک لحظهٔ <code>DateTimeImmutable</code> را در خود دارد و قرارداد مشترک <code>CalendarDate</code> را پیاده می‌کند (<a href="convert-and-compare.html">تبدیل و مقایسهٔ تاریخ‌ها</a>). ویژگی خاص هجری <strong>گونه</strong> (variant) است: قاعده‌ای که طول هر ماه را تعیین می‌کند. هر نمونه گونهٔ خودش را دارد و هر متد تغییردهنده آن را حفظ می‌کند.</p>
-<p>همهٔ مثال‌ها این ابتدای فایل را فرض می‌کنند (<a href="installation.html">نصب</a>):</p>
+<p>کلاس <code>RtlyKit\Calendar\Hijri</code> یک تاریخ و زمان در تقویم هجری قمری است و تغییر نمی‌کند. مثل دو کلاس دیگر، یک <code>DateTimeImmutable</code> زیرش است و قرارداد مشترک <code>CalendarDate</code> را دارد (<a href="convert-and-compare.html">تبدیل و مقایسهٔ تاریخ‌ها</a>). چیزی که هجری را متفاوت می‌کند <strong>گونه</strong> (variant) است، یعنی قاعده‌ای که طول ماه‌ها را می‌گوید. هر شیء گونهٔ خودش را دارد و هر متدی که تاریخ را عوض کند آن را نگه می‌دارد.</p>
+<p>مثال‌ها با این چند خط شروع می‌شوند (<a href="installation.html">نصب</a>):</p>
 <pre><code class="language-php">&lt;?php
 require 'vendor/autoload.php';
 
 use RtlyKit\Calendar\Hijri;
 use RtlyKit\Calendar\HijriVariant;
+use RtlyKit\Calendar\Jalali;
 use RtlyKit\Exceptions\InvalidDateException;
-use function RtlyKit\hdate;   // تابع کمکی فضای‌نام‌دار؛ همان Hijri::make()
+use function RtlyKit\hdate;   // تابع کمکی فضای‌نام‌دار، همان Hijri::make()
 
 $utc = new DateTimeZone('UTC');</code></pre>
 
 <h2 id="variants">گونه‌ها: ام‌القری و Tabular</h2>
 <table>
-<thead><tr><th>گونه</th><th>طول ماه‌ها چگونه تعیین می‌شود</th></tr></thead>
+<thead><tr><th>گونه</th><th>طول ماه‌ها از کجا می‌آید</th></tr></thead>
 <tbody>
-<tr><td><code>HijriVariant::UmmAlQura</code> (پیش‌فرض)</td><td>جدول طول ماه‌های توکار برای سال‌های 1300 تا 1500 هجری قمری (از 1882-11-12 تا 2077-11-16). بیرون از آن، قواعد Tabular جایگزین می‌شوند.</td></tr>
-<tr><td><code>HijriVariant::Tabular</code></td><td>تقویم مدنی حسابی: چرخهٔ ۳۰ ساله با ۱۱ سال کبیسه. برای هر سال قطعی است ولی ممکن است یک یا دو روز با ام‌القری فرق کند.</td></tr>
+<tr><td><code>HijriVariant::UmmAlQura</code> (پیش‌فرض)</td><td>جدول طول ماه‌ها که داخل بسته است و سال‌های ۱۳۰۰ تا ۱۵۰۰ هجری قمری را می‌پوشاند (از 1882-11-12 تا 2077-11-16). بیرون از آن، قاعدهٔ Tabular جای آن را می‌گیرد.</td></tr>
+<tr><td><code>HijriVariant::Tabular</code></td><td>تقویم مدنی حسابی: چرخهٔ ۳۰ ساله با ۱۱ سال کبیسه. برای هر سال جواب قطعی می‌دهد، ولی ممکن است یک یا دو روز با ام‌القری فرق داشته باشد.</td></tr>
 </tbody>
 </table>
 <pre><code class="language-php">$uq  = Hijri::create(1446, 10, 1, 0, 0, 0, $utc);                       // ام‌القری
@@ -31,23 +32,28 @@ $tab = Hijri::create(1446, 10, 1, 0, 0, 0, $utc, HijriVariant::Tabular);
 echo $uq-&gt;toGregorian()-&gt;format('Y-m-d');   // 2025-03-30
 echo $tab-&gt;toGregorian()-&gt;format('Y-m-d');  // 2025-03-31
 echo $uq-&gt;getVariant()-&gt;name;               // UmmAlQura</code></pre>
-<p>دو نقطهٔ مرجع دیگر: اول رمضان 1446 برابر 2025-03-01 و اول محرم 1447 برابر 2025-06-26 است (ام‌القری).</p>
-<div class="known"><strong>محدودیت شناخته‌شده.</strong> جدول ام‌القری (1300 تا 1500 هجری قمری) از دادهٔ تقویم <code>islamic-umalqura</code> در ICU/CLDR تولید و با چند تاریخ شناخته‌شده سنجیده شده است؛ ولی ماه‌به‌ماه با انتشار رسمی KACST <em>راستی‌آزمایی نشده</em> است. هیچ‌یک از دو گونه تقویم‌های رؤیت هلال (مثلاً در ایران و مراکش) را بازتولید نمی‌کند و ممکن است یک روز اختلاف داشته باشد. مرز روز نیمه‌شبِ مدنی است، نه غروب. نتیجه را برای تاریخ‌های مناسکی که مرجع رسمی اعلام می‌کند به کار نبرید.</div>
+<p>دو نقطهٔ مرجع دیگر در ام‌القری: اول رمضان ۱۴۴۶ برابر 2025-03-01 و اول محرم ۱۴۴۷ برابر 2025-06-26 است.</p>
+<p>جدول ام‌القری از داده‌های تقویم <code>islamic-umalqura</code> در ICU/CLDR ساخته شده است. آغاز ماه‌ها را برای سال‌های ۱۳۱۸ تا ۱۵۰۰ هجری قمری با تقویم رسمی KACST مقایسه کرده‌ایم (در 2026-10-08، ۲۱۹۶ ماه، بدون هیچ اختلاف).</p>
+<div class="note"><strong>خوب است بدانید.</strong> سایت رسمی KACST سال‌های ۱۳۰۰ تا ۱۳۱۷ را ندارد. برای این سال‌ها از داده‌ی ICU/CLDR استفاده می‌شود. هیچ‌کدام از دو گونه رؤیت هلال را (مثل ایران یا مراکش) بازتولید نمی‌کند و ممکن است یک روز با اعلام رسمی فرق داشته باشد. مرز روز هم نیمه‌شب مدنی است، نه غروب. برای تاریخ‌های مناسکی که مرجع رسمی اعلام می‌کند، به اعلام همان مرجع تکیه کنید.</div>
 <h3 id="table-coverage">پوشش جدول</h3>
-<p>بیرون از 1300 تا 1500، <code>create()</code> و <code>make()</code> خطا <strong>نمی‌دهند</strong>؛ با قواعد Tabular برون‌یابی می‌کنند و ممکن است دو مجموعه‌قاعده در مرز بی‌درز به هم نرسند. با <code>Hijri::hasUmmAlQuraData($year)</code> و <code>$date-&gt;usesUmmAlQuraTable()</code> بفهمید کدام قاعده به کار رفته است.</p>
+<p>بیرون از ۱۳۰۰ تا ۱۵۰۰، <code>create()</code> و <code>make()</code> خطا <strong>نمی‌دهند</strong>. آن‌ها با قاعدهٔ Tabular ادامه می‌دهند. با <code>Hijri::hasUmmAlQuraData($year)</code> و <code>$date-&gt;usesUmmAlQuraTable()</code> می‌فهمید کدام قاعده به کار رفته. بازهٔ سال‌هایی که با تقویم رسمی KACST مقایسه شده‌اند را هم با <code>Hijri::ummAlQuraVerifiedRange()</code> و <code>Hijri::isUmmAlQuraVerified($year)</code> می‌گیرید.</p>
 <pre><code class="language-php">echo Hijri::hasUmmAlQuraData(1299) ? 1 : 0;   // 0
 echo Hijri::hasUmmAlQuraData(1300) ? 1 : 0;   // 1
 echo Hijri::hasUmmAlQuraData(1500) ? 1 : 0;   // 1
 echo Hijri::hasUmmAlQuraData(1501) ? 1 : 0;   // 0
 
+echo json_encode(Hijri::ummAlQuraVerifiedRange());              // [1318,1500]
+var_dump(Hijri::isUmmAlQuraVerified(1446));                     // bool(true)
+var_dump(Hijri::isUmmAlQuraVerified(1310));                     // bool(false)
+
 $o = Hijri::create(1600, 1, 1, 0, 0, 0, $utc);
 echo $o-&gt;toGregorian()-&gt;format('Y-m-d');     // 2173-12-06
-var_dump($o-&gt;usesUmmAlQuraTable());            // bool(false)  (برون‌یابی Tabular)
+var_dump($o-&gt;usesUmmAlQuraTable());            // bool(false)  (ادامه با قاعدهٔ Tabular)
 var_dump(Hijri::create(1446, 9, 1, 0, 0, 0, $utc)-&gt;usesUmmAlQuraTable()); // bool(true)</code></pre>
 
 <h2 id="make">ساخت تاریخ</h2>
 <h3 id="create"><code>create()</code></h3>
-<p>متد <code>Hijri::create($year, $month, $day, $hour = 0, $minute = 0, $second = 0, $timezone = null, $variant = HijriVariant::UmmAlQura)</code> تاریخ را با طول واقعی ماه در گونهٔ انتخابی اعتبارسنجی می‌کند.</p>
+<p>متد <code>Hijri::create($year, $month, $day, $hour = 0, $minute = 0, $second = 0, $timezone = null, $variant = HijriVariant::UmmAlQura)</code> طول واقعی ماه را در گونهٔ انتخاب‌شده چک می‌کند.</p>
 <pre><code class="language-php">$h = Hijri::create(1446, 9, 1, 0, 0, 0, $utc);
 
 echo $h;                                  // 1446/09/01 00:00:00
@@ -55,28 +61,27 @@ echo $h-&gt;toGregorian()-&gt;format('Y-m-d');  // 2025-03-01
 var_dump($h-&gt;usesUmmAlQuraTable());       // bool(true)</code></pre>
 
 <h3 id="make-values"><code>make()</code> و تابع کمکی</h3>
-<p>متد <code>Hijri::make($time = null, $timezone = null, $variant = HijriVariant::UmmAlQura)</code> این ورودی‌ها را می‌پذیرد: <code>DateTimeInterface</code>، هر <code>CalendarDate</code>، زمان یونیکس (<code>int</code>)، رشته یا <code>null</code> (اکنون). تابع کمکی <code>hdate($time, $timezone)</code> آن را با گونهٔ پیش‌فرض صدا می‌زند. <code>Hijri::now()</code> و <code>Hijri::today()</code> آرگومان‌های <code>($timezone, $variant)</code> می‌گیرند.</p>
+<p>متد <code>Hijri::make($time = null, $timezone = null, $variant = HijriVariant::UmmAlQura)</code> این ورودی‌ها را قبول می‌کند: <code>DateTimeInterface</code>، هر <code>CalendarDate</code>، زمان یونیکس (<code>int</code>)، رشته یا <code>null</code> (همین الان). تابع <code>hdate($time, $timezone)</code> آن را با گونهٔ پیش‌فرض صدا می‌زند. <code>Hijri::now()</code> و <code>Hijri::today()</code> آرگومان‌های <code>($timezone, $variant)</code> دارند.</p>
 <pre><code class="language-php">echo Hijri::make('2025-03-01', $utc);                     // 1446/09/01 00:00:00
 echo hdate('2025-03-01')-&gt;format('j F Y', 'en');          // 1 Ramadan 1446
 echo Hijri::make(Jalali::create(1404, 1, 1, 0, 0, 0, $utc)); // 1446/09/21 00:00:00
 echo Hijri::make('2025-03-31', $utc)-&gt;format('Y/m/d');    // 1446/10/02
 echo Hijri::make('2025-03-31', $utc, HijriVariant::Tabular)-&gt;format('Y/m/d'); // 1446/10/01</code></pre>
-<p>(خط جلالی به <code>use RtlyKit\Calendar\Jalali;</code> نیاز دارد.)</p>
-<h3 id="string-rules">معنای رشته</h3>
+<h3 id="string-rules">رشته چطور خوانده می‌شود</h3>
 <ol>
-<li>ارقام فارسی و عربی به انگلیسی تبدیل و رشته تریم می‌شود؛ رشتهٔ خالی <code>InvalidDateException</code> پرتاب می‌کند.</li>
-<li>رشته‌ای به شکل <code>Y/m/d</code> یا <code>Y-m-d</code> (سال ۳ یا ۴ رقمی، اختیاری <code>H:i[:s]</code>) با سال <strong>کمتر از 1700</strong> تاریخ هجری در گونهٔ انتخابی خوانده می‌شود.</li>
-<li>هر چیز دیگر، از جمله سال‌های 1700 به بعد، میلادی یا متن آزاد پارس می‌شود.</li>
+<li>رقم‌های فارسی و عربی به انگلیسی تبدیل می‌شوند و فاصله‌های دو سر رشته حذف می‌شود. رشتهٔ خالی <code>InvalidDateException</code> می‌دهد.</li>
+<li>رشته‌ای با شکل <code>Y/m/d</code> یا <code>Y-m-d</code> (سال ۳ یا ۴ رقم، با <code>H:i[:s]</code> اختیاری) که سالش <strong>کمتر از ۱۷۰۰</strong> باشد، تاریخ هجری در گونهٔ انتخاب‌شده است.</li>
+<li>هر چیز دیگر، از جمله سال‌های ۱۷۰۰ به بعد، میلادی یا متن آزاد خوانده می‌شود.</li>
 </ol>
 <pre><code class="language-php">echo Hijri::make('1446/09/01', $utc);   // 1446/09/01 00:00:00   (هجری)
 echo Hijri::make('1700/01/01', $utc);   // 1111/07/10 00:00:00   (میلادیِ 1700-01-01)
 
 try { Hijri::make('1446/02/31'); }
 catch (InvalidDateException $e) { echo $e-&gt;getMessage(); }  // Invalid Hijri date: 1446/2/31</code></pre>
-<div class="warn"><strong>گونهٔ آرگومان هجری.</strong> <code>Hijri::make($hijriInstance)</code> همان نمونه را بدون تغییر برمی‌گرداند و آرگومان <code>$variant</code> را نادیده می‌گیرد. برای بیان یک تاریخ در گونهٔ دیگر از لحظه عبور کنید: <code>Hijri::make($h-&gt;toGregorian(), null, HijriVariant::Tabular)</code>.</div>
+<div class="note"><strong>گونه هنگام ساخت از شیء هجری.</strong> <code>Hijri::make($hijriInstance)</code> همان شیء را بدون تغییر برمی‌گرداند و <code>$variant</code> را نادیده می‌گیرد. اگر همان تاریخ را در گونهٔ دیگر می‌خواهید، از لحظه بسازید: <code>Hijri::make($h-&gt;toGregorian(), null, HijriVariant::Tabular)</code>.</div>
 
-<h2 id="range">بازهٔ پشتیبانی‌شده و خطاها</h2>
-<p>سال‌های هجری از <code>Hijri::MIN_YEAR</code> = <strong>1</strong> تا <code>Hijri::MAX_YEAR</code> = <strong>9665</strong> پشتیبانی می‌شوند: اولین روز 1/1/1 (0622-07-19) و آخرین روز آخرِ ماه 12 سال 9665 (9999-10-01)، یعنی سال‌های میلادی 622 تا 9999. هر چیز بیرون از این بازه از <code>create()</code>، <code>make()</code>، زمان یونیکس، <code>add*()</code>/<code>sub*()</code> و مبدل‌ها <code>InvalidDateException</code> پرتاب می‌کند؛ هرگز <code>TypeError</code> یا <code>ValueError</code>.</p>
+<h2 id="range">بازهٔ سال و خطاها</h2>
+<p>سال هجری از <code>Hijri::MIN_YEAR</code> = <strong>1</strong> تا <code>Hijri::MAX_YEAR</code> = <strong>9665</strong> پشتیبانی می‌شود. اولین روز 1/1/1 (برابر 0622-07-19) و آخرین روز، آخر ماه ۱۲ سال ۹۶۶۵ (برابر 9999-10-01) است. هر چیز بیرون از این بازه، چه از <code>create()</code> و <code>make()</code> و زمان یونیکس و <code>add*()</code> و <code>sub*()</code> و چه از تبدیل‌ها، فقط <code>InvalidDateException</code> می‌دهد. <code>TypeError</code> یا <code>ValueError</code> بیرون نمی‌آید.</p>
 <pre><code class="language-php">foreach ([[0, 1, 1], [9666, 1, 1], [1446, 1, 31], [1446, 13, 1]] as [$y, $m, $d]) {
     try { Hijri::create($y, $m, $d); }
     catch (InvalidDateException $e) { echo $e-&gt;getMessage(), "\n"; }
@@ -95,15 +100,15 @@ catch (InvalidDateException $e) { echo $e-&gt;getMessage(); }
 // Hijri year out of the supported range: 9666</code></pre>
 
 <h2 id="getters">خواندن مقدارها</h2>
-<p>گیرنده‌ها همان‌هایی هستند که قرارداد تعریف می‌کند: <code>getYear()</code>، <code>getMonth()</code>، <code>getDay()</code>، <code>getHour()</code>، <code>getMinute()</code>، <code>getSecond()</code>، <code>getTimestamp()</code>، <code>getTimezone()</code>، <code>toGregorian()</code>، <code>toDateString()</code> (<code>Y/m/d</code>) و <code>toDateTimeString()</code>. هجری دو متد دیگر هم دارد: <code>getVariant()</code> و <code>usesUmmAlQuraTable()</code>.</p>
+<p>گیرنده‌ها همان‌هایی هستند که قرارداد مشترک می‌گوید: <code>getYear()</code>، <code>getMonth()</code>، <code>getDay()</code>، <code>getHour()</code>، <code>getMinute()</code>، <code>getSecond()</code>، <code>getTimestamp()</code>، <code>getTimezone()</code>، <code>toGregorian()</code>، <code>toDateString()</code> (به شکل <code>Y/m/d</code>) و <code>toDateTimeString()</code>. هجری دو متد دیگر هم دارد: <code>getVariant()</code> و <code>usesUmmAlQuraTable()</code>.</p>
 <h3 id="weekdays">شمارهٔ روز هفته</h3>
-<p><code>getDayOfWeek()</code> و توکن <code>w</code> <strong>یکشنبه‌محور</strong> هستند: 0 = یکشنبه تا 6 = شنبه (مثل PHP). جلالی شنبه‌محور است. توکن <code>N</code> شمارهٔ ISO است: 1 = دوشنبه تا 7 = یکشنبه.</p>
+<p><code>getDayOfWeek()</code> و توکن <code>w</code> از <strong>یکشنبه</strong> شروع می‌کنند: ۰ = یکشنبه تا ۶ = شنبه (مثل PHP). در جلالی شمارش از شنبه شروع می‌شود. توکن <code>N</code> شمارهٔ ISO است: ۱ = دوشنبه تا ۷ = یکشنبه.</p>
 <pre><code class="language-php">$h = Hijri::create(1446, 9, 1, 0, 0, 0, $utc);   // روز شنبه
 echo $h-&gt;getDayOfWeek();                         // 6
 foreach (range(0, 6) as $i) { echo $h-&gt;addDays($i)-&gt;getDayOfWeek(); }  // 6012345</code></pre>
 
 <h2 id="format">قالب‌بندی</h2>
-<p><code>format($pattern = 'Y/m/d H:i:s', $locale = 'ar', $digits = 'latin')</code>. مقدار <code>$locale</code> یکی از <code>ar</code>، <code>fa</code> یا <code>en</code> است (مقدار ناشناخته به <code>en</code> برمی‌گردد) و نام ماه، نام روز و نشانگر قبل/بعد از ظهر را تعیین می‌کند. <code>$digits</code> یکی از <code>latin</code>، <code>persian</code> یا <code>arabic</code> است. بک‌اسلش نویسهٔ بعدی را بدون تفسیر می‌نویسد. توجه: زبان پیش‌فرض عربی است.</p>
+<p><code>format($pattern = 'Y/m/d H:i:s', $locale = 'ar', $digits = 'latin')</code>. مقدار <code>$locale</code> یکی از <code>ar</code>، <code>fa</code> یا <code>en</code> است (مقدار ناشناخته مثل <code>en</code> رفتار می‌کند). این مقدار نام ماه و روز و نشانگر قبل و بعد از ظهر را تعیین می‌کند. <code>$digits</code> یکی از <code>latin</code>، <code>persian</code> یا <code>arabic</code> است. بک‌اسلش نویسهٔ بعدی را همان‌طور که هست می‌نویسد (بک‌اسلشِ آخر الگو نادیده گرفته می‌شود). الگوی بلندتر از <code>Hijri::MAX_FORMAT_LENGTH</code> (۲۵۶ بایت) <code>InvalidDateException</code> با کد <code>input_too_long</code> می‌دهد. زبان پیش‌فرض عربی است.</p>
 <pre><code class="language-php">echo $h-&gt;format('l j F Y');                 // السبت 1 رمضان 1446
 echo $h-&gt;format('l j F Y', 'fa');           // شنبه 1 رمضان 1446
 echo $h-&gt;format('l j F Y', 'en');           // Saturday 1 Ramadan 1446
@@ -117,50 +122,52 @@ echo $pm-&gt;format('g:i A', 'en');            // 3:00 PM</code></pre>
 <table>
 <thead><tr><th>توکن</th><th>معنی</th></tr></thead>
 <tbody>
-<tr><td><code>Y</code> <code>y</code> <code>m</code> <code>n</code> <code>d</code> <code>j</code></td><td>سال (۴ و ۲ رقمی)، ماه و روز با صفر ابتدایی و بدون آن</td></tr>
-<tr><td><code>H</code> <code>G</code> <code>h</code> <code>g</code> <code>i</code> <code>s</code></td><td>ساعت 24 و 12 ساعته، دقیقه، ثانیه</td></tr>
-<tr><td><code>F</code> <code>M</code></td><td>نام ماه در زبان انتخابی</td></tr>
-<tr><td><code>l</code></td><td>نام روز هفته در زبان انتخابی</td></tr>
-<tr><td><code>w</code> <code>N</code></td><td>شمارهٔ روز هفته، یکشنبه = 0؛ شمارهٔ ISO با دوشنبه = 1</td></tr>
-<tr><td><code>z</code> <code>t</code> <code>L</code></td><td>شمارهٔ روز در سال از صفر؛ تعداد روزهای ماه؛ 1 برای سال کبیسه (355 روز)</td></tr>
-<tr><td><code>a</code> <code>A</code></td><td>قبل/بعد از ظهر، وابسته به زبان (<code>ص/م</code>، <code>ق.ظ/ب.ظ</code>، <code>am/pm</code>)</td></tr>
-<tr><td><code>S</code> <code>W</code></td><td>همیشه تهی؛ هفتهٔ ISO لحظهٔ میلادی</td></tr>
-<tr><td><code>c</code> <code>r</code></td><td><code>Y-m-d\TH:i:sP</code> با تاریخ هجری؛ RFC 2822 لحظهٔ میلادی</td></tr>
-<tr><td><code>U e T P p O Z I u v</code></td><td>به لحظهٔ زیرین واگذار می‌شوند</td></tr>
+<tr><td><code>Y</code> <code>y</code> <code>m</code> <code>n</code> <code>d</code> <code>j</code></td><td>سال (۴ و ۲ رقمی)، ماه و روز، با صفر ابتدایی و بدون آن</td></tr>
+<tr><td><code>H</code> <code>G</code> <code>h</code> <code>g</code> <code>i</code> <code>s</code></td><td>ساعت ۲۴ و ۱۲ ساعته، دقیقه، ثانیه</td></tr>
+<tr><td><code>F</code> <code>M</code></td><td>نام ماه به زبان انتخاب‌شده</td></tr>
+<tr><td><code>l</code></td><td>نام روز هفته به زبان انتخاب‌شده</td></tr>
+<tr><td><code>w</code> <code>N</code></td><td>شمارهٔ روز هفته با یکشنبه = ۰. و شمارهٔ ISO با دوشنبه = ۱</td></tr>
+<tr><td><code>z</code> <code>t</code> <code>L</code></td><td>شمارهٔ روز در سال از صفر. تعداد روزهای ماه. و ۱ برای سال کبیسه (۳۵۵ روز)</td></tr>
+<tr><td><code>a</code> <code>A</code></td><td>قبل و بعد از ظهر، بسته به زبان (<code>ص/م</code>، <code>ق.ظ/ب.ظ</code>، <code>am/pm</code>)</td></tr>
+<tr><td><code>S</code> <code>W</code></td><td>همیشه خالی. و هفتهٔ ISO لحظهٔ میلادی</td></tr>
+<tr><td><code>c</code> <code>r</code></td><td><code>Y-m-d\TH:i:sP</code> با تاریخ هجری. و RFC 2822 لحظهٔ میلادی</td></tr>
+<tr><td><code>U e T P p O Z I u v</code></td><td>از لحظهٔ زیرین گرفته می‌شوند</td></tr>
 </tbody>
 </table>
-<p>متد استاتیک <code>Hijri::monthName($month, $locale = 'ar')</code> نام ماه را برمی‌گرداند و برای ماهِ بیرون از 1 تا 12 <code>InvalidDateException</code> پرتاب می‌کند:</p>
+<p>متد استاتیک <code>Hijri::monthName($month, $locale = 'ar')</code> نام ماه را می‌دهد. برای ماه بیرون از ۱ تا ۱۲ <code>InvalidDateException</code> می‌دهد:</p>
 <pre><code class="language-php">echo Hijri::monthName(9), ' | ', Hijri::monthName(9, 'fa'), ' | ', Hijri::monthName(9, 'en');
 // رمضان | رمضان | Ramadan
 // Hijri::monthName(13) throws: Invalid Hijri month: 13</code></pre>
 
 <h2 id="modify">جابه‌جایی و برش</h2>
-<p>مجموعه متدها همان <a href="jalali.html#modify">جلالی</a> است: <code>addDays/Hours/Minutes/Seconds</code>، <code>addMonths</code>، <code>addYears</code>، شکل‌های <code>sub*</code> و <code>startOf/endOf</code> برای روز، ماه و سال. ماه‌ها، ماه هجریِ گونهٔ همان نمونه‌اند و روز به طول ماهِ مقصد کاهش می‌یابد (clamp).</p>
-<pre><code class="language-php">echo Hijri::create(1446, 4, 30, 0, 0, 0, $utc)-&gt;addMonths(1);  // 1446/05/29 00:00:00  (کاهش روز)
+<p>متدها همان‌هایی هستند که در <a href="jalali.html#modify">جلالی</a> دیدید: <code>addDays/Hours/Minutes/Seconds</code>، <code>addMonths</code>، <code>addYears</code>، نسخه‌های <code>sub*</code> و <code>startOf/endOf</code> برای روز و ماه و سال. ماه، ماه هجریِ همان گونه است. اگر ماه مقصد کوتاه‌تر باشد، روز کم می‌شود تا در ماه جا شود.</p>
+<pre><code class="language-php">echo Hijri::create(1446, 4, 30, 0, 0, 0, $utc)-&gt;addMonths(1);  // 1446/05/29 00:00:00  (روز کم شد)
 echo $h-&gt;addYears(1);                                          // 1447/09/01 00:00:00
 echo $h-&gt;subMonths(9);                                         // 1445/12/01 00:00:00
 echo $h-&gt;addDays(29);                                          // 1446/10/01 00:00:00
 echo $h-&gt;endOfMonth();                                         // 1446/09/29 23:59:59
 echo $h-&gt;endOfYear();                                          // 1446/12/29 23:59:59
 echo $h-&gt;startOfYear();                                        // 1446/01/01 00:00:00
-echo $tab-&gt;addMonths(1)-&gt;getVariant()-&gt;name;                  // Tabular  (گونه حفظ می‌شود)</code></pre>
-<p>جابه‌جایی به بیرون از سال 1 یا 9665، یا با مقدار نامعقول، <code>InvalidDateException</code> پرتاب می‌کند.</p>
+echo $tab-&gt;addMonths(1)-&gt;getVariant()-&gt;name;                  // Tabular  (گونه می‌ماند)</code></pre>
+<p>رفتن به بیرون از سال ۱ یا ۹۶۶۵، یا جابه‌جایی با مقدار غیرمنطقی، <code>InvalidDateException</code> می‌دهد.</p>
 
-<h2 id="compare-diff">مقایسه و اندازه‌گیری</h2>
-<p>مقایسه (<code>eq ne gt gte lt lte equals isBefore isAfter between isPast isFuture isToday</code>) روی لحظه‌ها انجام می‌شود و هر تقویمی را می‌پذیرد. <code>diffInDays()</code> روز کامل می‌شمارد؛ <code>diffInMonths()</code> و <code>diffInYears()</code> ماه و سال کامل <em>هجری</em> را در گونهٔ همین نمونه می‌شمارند (تاریخ دیگر ابتدا در همان گونه بیان می‌شود). پرچم <code>$absolute</code> مثل جلالی عمل می‌کند.</p>
+<h2 id="compare-diff">مقایسه و اختلاف</h2>
+<p>مقایسه‌ها (<code>eq ne gt gte lt lte equals isBefore isAfter between isPast isFuture isToday</code>) روی لحظه‌ها انجام می‌شوند و هر تقویمی را قبول می‌کنند. <code>diffInDays()</code> روز کامل می‌شمارد. <code>diffInMonths()</code> و <code>diffInYears()</code> ماه و سال کامل <em>هجری</em> را می‌شمارند، در گونهٔ همین شیء (تاریخ دیگر اول به همان گونه برده می‌شود). پارامتر <code>$absolute</code> مثل جلالی کار می‌کند.</p>
 <pre><code class="language-php">echo Hijri::create(1446, 1, 1, 0, 0, 0, $utc)-&gt;diffInMonths(Hijri::create(1447, 3, 1, 0, 0, 0, $utc)); // 14
 echo Hijri::create(1440, 1, 1, 0, 0, 0, $utc)-&gt;diffInYears(Hijri::create(1446, 1, 1, 0, 0, 0, $utc));  // 6
 echo $h-&gt;diffInDays(Hijri::create(1446, 10, 1, 0, 0, 0, $utc));                                        // 29</code></pre>
 
-<h2 id="static">محاسبات تقویمی</h2>
+<h2 id="static">محاسبه‌های تقویمی</h2>
 <table>
 <thead><tr><th>متد</th><th>خروجی</th></tr></thead>
 <tbody>
-<tr><td><code>Hijri::isValid($y, $m, $d, $variant)</code></td><td><code>bool</code>؛ برای مقدارهای بیرون از بازه false</td></tr>
-<tr><td><code>Hijri::daysInMonth($y, $m, $variant)</code></td><td>29 یا 30؛ برای ماه بیرون از 1 تا 12 <code>InvalidDateException</code></td></tr>
-<tr><td><code>Hijri::daysInYear($y, $variant)</code></td><td>مجموع طول ۱۲ ماه (در عمل 354 یا 355)</td></tr>
-<tr><td><code>Hijri::isLeapYear($y, $variant)</code></td><td>true وقتی سال 355 روز دارد</td></tr>
-<tr><td><code>Hijri::hasUmmAlQuraData($y)</code></td><td>true برای 1300 تا 1500 هجری قمری</td></tr>
+<tr><td><code>Hijri::isValid($y, $m, $d, $variant)</code></td><td><code>bool</code>. برای مقدار بیرون از بازه <code>false</code></td></tr>
+<tr><td><code>Hijri::daysInMonth($y, $m, $variant)</code></td><td>۲۹ یا ۳۰. برای ماه بیرون از ۱ تا ۱۲ <code>InvalidDateException</code></td></tr>
+<tr><td><code>Hijri::daysInYear($y, $variant)</code></td><td>جمع طول ۱۲ ماه (در عمل ۳۵۴ یا ۳۵۵)</td></tr>
+<tr><td><code>Hijri::isLeapYear($y, $variant)</code></td><td><code>true</code> وقتی سال ۳۵۵ روز دارد</td></tr>
+<tr><td><code>Hijri::hasUmmAlQuraData($y)</code></td><td><code>true</code> برای ۱۳۰۰ تا ۱۵۰۰ هجری قمری</td></tr>
+<tr><td><code>Hijri::ummAlQuraVerifiedRange()</code></td><td><code>[1318, 1500]</code>، سال‌هایی که با تقویم رسمی KACST مقایسه شده‌اند</td></tr>
+<tr><td><code>Hijri::isUmmAlQuraVerified($y)</code></td><td><code>true</code> برای سالی که در این بازه باشد</td></tr>
 <tr><td><code>Hijri::gregorianToHijri($gy, $gm, $gd, $variant)</code></td><td><code>[سال, ماه, روز]</code></td></tr>
 <tr><td><code>Hijri::hijriToGregorian($hy, $hm, $hd, $variant)</code></td><td><code>[سال, ماه, روز]</code></td></tr>
 </tbody>
@@ -174,7 +181,7 @@ echo json_encode(Hijri::hijriToGregorian(1446, 9, 1));           // [2025,3,1]</
 
 <h2 id="notes">نکته‌های کاربردی</h2>
 <ul>
-<li>گونه را یک بار برای کل برنامه انتخاب کنید و همه‌جا همان را بدهید؛ مگر می‌خواهید اختلاف‌های روزانهٔ دو گونه را ببینید، آن‌ها را در یک مقایسه مخلوط نکنید.</li>
-<li>برای تاریخ‌های 1300 تا 1500 هجری قمری، جدول ام‌القری مرجع این کتابخانه است؛ بیرون از آن نتیجه برون‌یابی حسابی است.</li>
-<li>تبدیل از و به تقویم‌های دیگر در <a href="convert-and-compare.html">تبدیل و مقایسهٔ تاریخ‌ها</a> و متدهای Carbon (<code>toHijri()</code>، <code>createFromHijri()</code>) در <a href="carbon-macros.html">ماکروهای Carbon</a> آمده است.</li>
+<li>گونه را یک بار برای کل برنامه انتخاب کنید و همه‌جا همان را بدهید. دو گونه را در یک مقایسه قاطی نکنید، مگر برای دیدن اختلاف‌های یک‌روزه.</li>
+<li>برای سال‌های ۱۳۰۰ تا ۱۵۰۰ هجری قمری مرجع کتابخانه جدول ام‌القری است. بیرون از آن، نتیجه با قاعدهٔ حسابی ادامه پیدا می‌کند.</li>
+<li>تبدیل به تقویم‌های دیگر در <a href="convert-and-compare.html">تبدیل و مقایسهٔ تاریخ‌ها</a> آمده است. متدهای Carbon (<code>toHijri()</code> و <code>createFromHijri()</code>) در <a href="carbon-macros.html">ماکروهای Carbon</a> هستند.</li>
 </ul>

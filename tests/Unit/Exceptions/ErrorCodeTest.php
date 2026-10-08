@@ -113,7 +113,7 @@ final class ErrorCodeTest extends TestCase
             [fn () => NumberToWords::convert(1.5), ErrorCode::InvalidNumber, []],
             [fn () => NumberToWords::convert('abc'), ErrorCode::InvalidNumber, []],
             [fn () => NumberToWords::convert(str_repeat('9', 30)), ErrorCode::NumberTooLarge, ['limit' => '10^21 - 1']],
-            [fn () => NumberToWords::convert(1_000_000_000, 'ar'), ErrorCode::NumberTooLarge, ['limit' => '10^9']],
+            [fn () => NumberToWords::convert('1' . str_repeat('0', 27), 'ar'), ErrorCode::NumberTooLarge, ['limit' => '10^27 - 1']],
             [fn () => NumberToWords::convert(1, 'xx'), ErrorCode::UnsupportedLocale, ['locale' => 'xx']],
             [fn () => Format::withSeparator(INF), ErrorCode::NonFiniteNumber, []],
             [fn () => Format::withSeparator(str_repeat('9', 4097)), ErrorCode::InputTooLong, ['limit' => 4096]],

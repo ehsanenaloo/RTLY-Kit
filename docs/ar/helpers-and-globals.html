@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="ar" dir="rtl" data-i18n="{&quot;dark&quot;:&quot;الوضع الداكن&quot;,&quot;light&quot;:&quot;الوضع الفاتح&quot;,&quot;to_dark&quot;:&quot;التبديل إلى السمة الداكنة&quot;,&quot;to_light&quot;:&quot;التبديل إلى السمة الفاتحة&quot;,&quot;copy&quot;:&quot;نسخ&quot;,&quot;copied&quot;:&quot;تم النسخ&quot;,&quot;copy_failed&quot;:&quot;تم التحديد؛ انسخ يدويًا&quot;,&quot;copy_label&quot;:&quot;نسخ مثال الشيفرة أعلاه&quot;,&quot;no_results&quot;:&quot;لا يوجد دليل مطابق. جرّب كلمة أقصر.&quot;,&quot;loading&quot;:&quot;ما زال فهرس البحث قيد التحميل. حاول مرة أخرى بعد قليل.&quot;,&quot;results&quot;:&quot;نتائج البحث&quot;,&quot;status&quot;:&quot;يُعرض %d من %d دليلًا&quot;,&quot;suggest&quot;:&quot;النسخة العربية&quot;,&quot;search_label&quot;:&quot;البحث في الدليل&quot;,&quot;search_placeholder&quot;:&quot;البحث في الدليل&quot;}" data-search-index="search-index.js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>الدوال المساعدة والدوال العامة | RTLY-Kit دليل المستخدم</title>
+<meta name="description" content="الدوال المساعدة السبع والعشرون ضمن فضاء الأسماء، وطريقة استيرادها، والتفعيل الاختياري Globals::register() الذي يضيف أسماء عامة قصيرة دون أن يستبدل أسماءك.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="الدوال المساعدة والدوال العامة | RTLY-Kit دليل المستخدم">
+<meta property="og:description" content="الدوال المساعدة السبع والعشرون ضمن فضاء الأسماء، وطريقة استيرادها، والتفعيل الاختياري Globals::register() الذي يضيف أسماء عامة قصيرة دون أن يستبدل أسماءك.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ar_AR">
+<meta property="og:locale:alternate" content="fa_IR">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:url" content="https://ehsanenaloo.github.io/RTLY-Kit/ar/helpers-and-globals.html">
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+<link rel="canonical" href="https://ehsanenaloo.github.io/RTLY-Kit/ar/helpers-and-globals.html">
+<link rel="alternate" hreflang="ar" href="https://ehsanenaloo.github.io/RTLY-Kit/ar/helpers-and-globals.html">
+<link rel="alternate" hreflang="fa" href="https://ehsanenaloo.github.io/RTLY-Kit/fa/helpers-and-globals.html">
+<link rel="alternate" hreflang="en" href="https://ehsanenaloo.github.io/RTLY-Kit/en/helpers-and-globals.html">
+<link rel="alternate" hreflang="x-default" href="https://ehsanenaloo.github.io/RTLY-Kit/">
+<link rel="stylesheet" href="../styles.css">
+<script>try{var t=localStorage.getItem("rtly-docs-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<script defer src="../app.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">انتقل إلى المحتوى</a><header class="site-header"><div class="shell header-inner"><a class="brand" href="index.html"><img src="../assets/logo.svg" width="34" height="34" alt=""><span><span class="name">RTLY-Kit</span><small>دليل المستخدم</small></span></a><nav class="top-nav" aria-label="التنقل الرئيسي"><a href="index.html">نظرة عامة</a><a href="quick-start.html">بدء سريع</a><a href="all.html">كل الأدلة</a><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">جيت هب &#8599;</a></nav><div class="header-tools"><span data-search-host></span><button type="button" class="icon-button" data-theme-toggle hidden>Theme</button><div class="lang-switch" role="group" aria-label="اللغة"><a class="icon-button" href="../fa/helpers-and-globals.html" hreflang="fa" lang="fa">فارسی</a><a class="icon-button" href="../en/helpers-and-globals.html" hreflang="en" lang="en">English</a><span class="icon-button is-current" lang="ar" aria-current="true">العربية</span></div></div></div></header>
+<main id="main">
+<div class="shell page-intro"><nav class="breadcrumbs" aria-label="مسار الصفحة"><ol><li><a href="index.html">الرئيسية</a></li><li><a href="all.html#group-reference">المرجع</a></li><li aria-current="page">الدوال المساعدة والدوال العامة</li></ol></nav><h1>الدوال المساعدة والدوال العامة</h1><p class="lead">الدوال المساعدة السبع والعشرون ضمن فضاء الأسماء، وطريقة استيرادها، والتفعيل الاختياري Globals::register() الذي يضيف أسماء عامة قصيرة دون أن يستبدل أسماءك.</p></div>
+<div class="shell doc-layout has-toc">
+<aside class="sidebar"><details open><summary>تصفح الأدلة</summary><nav aria-label="الأدلة"><a href="all.html">كل الأدلة</a><p>البدء</p><a href="quick-start.html">البدء السريع</a><a href="installation.html">التثبيت</a><p>التقاويم</p><a href="jalali.html">التقويم الجلالي</a><a href="hijri.html">التقويم الهجري</a><a href="hebrew.html">التقويم العبري</a><a href="convert-and-compare.html">التحويل والمقارنة بين التواريخ</a><a href="carbon-macros.html">ماكروات Carbon</a><p>التحقق من الصحة</p><a href="validators-overview.html">نظرة عامة على أدوات التحقق</a><a href="national-code.html">الرقم الوطني</a><a href="sheba-and-bank-card.html">شبا والبطاقة المصرفية</a><a href="mobile-postal-plate.html">الجوال والرمز البريدي ولوحة المركبة</a><p>الأرقام والنصوص</p><a href="digits-and-format.html">الأرقام وتنسيق الأعداد</a><a href="number-words.html">تحويل الأعداد إلى كلمات</a><a href="arabic-number-words.html">الأعداد بالحروف العربية</a><a href="text-tools.html">أدوات النصوص</a><p>العطل وأوقات الصلاة</p><a href="holidays.html">العطل الرسمية الإيرانية</a><a href="holiday-calendar.html">تقويم العطل القابل للتعديل</a><a href="prayer-times.html">أوقات الصلاة</a><p>لارافيل</p><a href="laravel-setup.html">إعداد Laravel</a><a href="laravel-validation-and-cast.html">قواعد التحقق وتحويل Eloquent</a><p>المرجع</p><a href="helpers-and-globals.html" aria-current="page">الدوال المساعدة والدوال العامة</a><a href="error-handling.html">معالجة الأخطاء</a><a href="api-stability.html">استقرار واجهة API</a><a href="accuracy-and-data.html">الدقة والبيانات</a><a href="benchmarks.html">قياس الأداء</a><a href="limits.html">الحدود</a><a href="troubleshooting-faq.html">استكشاف الأخطاء والأسئلة الشائعة</a><a href="upgrade.html">دليل الترقية</a><a href="verifying-releases.html">التحقق من الإصدارات</a></nav></details></aside>
+<article class="prose">
+<details class="toc-inline"><summary>في هذه الصفحة</summary><ol><li><a href="#why">لماذا توجد الدوال المساعدة داخل فضاء أسماء</a></li><li><a href="#import">استخدام الدوال المساعدة</a></li><li><a href="#reference">جميع الدوال المساعدة</a><ol><li><a href="#reference-calendar">التقاويم</a></li><li><a href="#reference-digits">الأرقام والأعداد</a></li><li><a href="#reference-text">النصوص</a></li><li><a href="#reference-bool">التحقق من الصحة: نعم/لا</a></li><li><a href="#reference-result">التحقق من الصحة: نتيجة منظَّمة</a></li><li><a href="#reference-dates">العطل وأوقات الصلاة</a></li></ol></li><li><a href="#globals">الأسماء العامة الاختيارية: Globals::register()</a><ol><li><a href="#collision">مثال على التعارض</a></li></ol></li><li><a href="#choosing">أي أسلوب أختار؟</a></li></ol></details>
+<h2 id="why">لماذا توجد الدوال المساعدة داخل فضاء أسماء<a class="anchor" href="#why" aria-label="رابط إلى هذا القسم">#</a></h2>
+<p>أسماء مثل <code>is_mobile()</code> أو <code>ordinal()</code> أو <code>to_english()</code> قصيرة وعامة. ولا توجد في PHP طريقة «لاستبدال» دالة عامة: إذا أعلنت حزمتان (أو تطبيقك وإحدى الحزم) عن الاسم العام نفسه، فإن الإعلان الثاني خطأ فادح. لذلك قد تعطّل المكتبة التي تعرّف دوالَّ عامة دون شرط تطبيقًا كان يعمل قبل تثبيتها.</p>
+<p>يتجنب RTLY-Kit هذه المشكلة بحكم التصميم:</p>
+<ul>
+<li>الدوال المساعدة السبع والعشرون كلها معرّفة في فضاء الأسماء <code>RtlyKit</code>. يحمّلها Composer تلقائياً، ولا يمكن أن تتعارض مع أي شيء.</li>
+<li>الأسماء العامة القصيرة <strong>اختيارية</strong> عبر <code>\RtlyKit\Globals::register()</code>، التي لا تعرّف إلا الأسماء التي ما زالت حرة.</li>
+<li>مزوّد الخدمة في Laravel لا يسجّل دوالَّ عامة هو الآخر. راجع <a href="laravel-setup.html#provider">إعداد Laravel</a>.</li>
+</ul>
+
+<h2 id="import">استخدام الدوال المساعدة<a class="anchor" href="#import" aria-label="رابط إلى هذا القسم">#</a></h2>
+<p>استورد ما تحتاجه بـ <code>use function</code> ثم استدعِه باسمه القصير. أو استدعِه بالاسم الكامل:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">use</span> <span class="tok-k">function</span> RtlyKit\jdate;
+<span class="tok-k">use</span> <span class="tok-k">function</span> RtlyKit\is_national_code;
+
+<span class="tok-k">echo</span> jdate(<span class="tok-s">'2025-03-21'</span>)-&gt;format(<span class="tok-s">'Y/m/d'</span>);       <span class="tok-c">// 1404/01/01</span>
+var_dump(is_national_code(<span class="tok-s">'0013542419'</span>));         <span class="tok-c">// bool(true)</span>
+<span class="tok-k">echo</span> \RtlyKit\to_persian_digits(<span class="tok-n">1404</span>);            <span class="tok-c">// ۱۴۰۴</span>
+
+<span class="tok-c">// عدة دوال دفعة واحدة (use المجمّع في PHP):</span>
+<span class="tok-k">use</span> <span class="tok-k">function</span> RtlyKit\{hdate, hebrew_date, number_to_words};
+<span class="tok-k">echo</span> hdate(<span class="tok-s">'2025-03-21'</span>)-&gt;format(<span class="tok-s">'Y/m/d'</span>);       <span class="tok-c">// 1446/09/21</span>
+<span class="tok-k">echo</span> hebrew_date(<span class="tok-s">'2025-03-21'</span>)-&gt;format(<span class="tok-s">'Y/m/d'</span>); <span class="tok-c">// 5785/06/21</span>
+<span class="tok-k">echo</span> number_to_words(<span class="tok-n">1404</span>);                       <span class="tok-c">// یک هزار و چهارصد و چهار</span></code></pre>
+<p>الدوال المساعدة أغلفة رقيقة: كل منها يستدعي الصنف المقابل، فيمكنك دائمًا استخدام الصنف مباشرة عندما تحتاج إلى تحكم أكبر (مثل <code>Jalali::create()</code> مع منطقة زمنية).</p>
+
+<h2 id="reference">جميع الدوال المساعدة<a class="anchor" href="#reference" aria-label="رابط إلى هذا القسم">#</a></h2>
+<p>أنواع المعاملات وأنواع الإرجاع هي نفسها الموجودة في الشيفرة المصدرية تمامًا. المدخلات من النوع <code>mixed</code> لا ترمي استثناءً أبدًا: المدخل غير الصالح يعطي ببساطة <code>false</code> أو <code>Result</code> غير صالح.</p>
+
+<h3 id="reference-calendar">التقاويم<a class="anchor" href="#reference-calendar" aria-label="رابط إلى هذا القسم">#</a></h3>
+<div class="table-wrap" tabindex="0" role="region" aria-label="جدول"><table>
+<thead><tr><th scope="col">الدالة</th><th scope="col">التوقيع</th><th scope="col">تفوّض إلى</th></tr></thead>
+<tbody>
+<tr><td><code>jdate</code></td><td><code>jdate(DateTimeInterface|string|int|null $time = null, ?DateTimeZone $timezone = null): Jalali</code></td><td><code>Jalali::make()</code>، راجع <a href="jalali.html">التقويم الجلالي</a></td></tr>
+<tr><td><code>hdate</code></td><td><code>hdate(DateTimeInterface|string|int|null $time = null, ?DateTimeZone $timezone = null): Hijri</code></td><td><code>Hijri::make()</code>، راجع <a href="hijri.html">التقويم الهجري</a></td></tr>
+<tr><td><code>hebrew_date</code></td><td><code>hebrew_date(DateTimeInterface|string|int|null $time = null, ?DateTimeZone $timezone = null): Hebrew</code></td><td><code>Hebrew::make()</code>، راجع <a href="hebrew.html">التقويم العبري</a></td></tr>
+</tbody>
+</table></div>
+
+<h3 id="reference-digits">الأرقام والأعداد<a class="anchor" href="#reference-digits" aria-label="رابط إلى هذا القسم">#</a></h3>
+<div class="table-wrap" tabindex="0" role="region" aria-label="جدول"><table>
+<thead><tr><th scope="col">الدالة</th><th scope="col">التوقيع</th><th scope="col">مثال</th></tr></thead>
+<tbody>
+<tr><td><code>to_persian_digits</code></td><td><code>(string|int|float $value): string</code></td><td><code>to_persian_digits(1404)</code> تعطي <code>۱۴۰۴</code></td></tr>
+<tr><td><code>to_english_digits</code></td><td><code>(string $value): string</code></td><td><code>to_english_digits('۱۴۰۴')</code> تعطي <code>1404</code></td></tr>
+<tr><td><code>to_persian</code></td><td><code>(string|int|float $value): string</code></td><td>اسم مختصر بديل لـ <code>to_persian_digits</code>؛ <code>to_persian('12.5')</code> تعطي <code>۱۲.۵</code></td></tr>
+<tr><td><code>to_english</code></td><td><code>(string $value): string</code></td><td>اسم مختصر بديل لـ <code>to_english_digits</code>؛ <code>to_english('٣٤')</code> تعطي <code>34</code></td></tr>
+<tr><td><code>number_to_words</code></td><td><code>(int|float|string $number, string $locale = 'fa'): string</code></td><td><code>number_to_words(25, 'ar')</code> تعطي <code>خمسة وعشرون</code></td></tr>
+<tr><td><code>format_number</code></td><td><code>(int|float|string $number): string</code></td><td><code>format_number(1234567)</code> تعطي <code>۱٬۲۳۴٬۵۶۷</code></td></tr>
+<tr><td><code>ordinal</code></td><td><code>(int|float $number): string</code></td><td><code>ordinal(3)</code> تعطي <code>سوم</code></td></tr>
+</tbody>
+</table></div>
+<p>انظر <a href="digits-and-format.html">الأرقام والتنسيق</a> و<a href="number-words.html">الأعداد بالكلمات</a> و<a href="arabic-number-words.html">الأعداد بالحروف العربية</a>. الدالة <code>number_to_words()</code> لا تأخذ خيارات؛ وللجنس والحالة الإعرابية والحركات استدعِ <code>NumberToWords::convert()</code> مع <code>ArabicOptions</code>.</p>
+
+<h3 id="reference-text">النصوص<a class="anchor" href="#reference-text" aria-label="رابط إلى هذا القسم">#</a></h3>
+<div class="table-wrap" tabindex="0" role="region" aria-label="جدول"><table>
+<thead><tr><th scope="col">الدالة</th><th scope="col">التوقيع</th><th scope="col">مثال</th></tr></thead>
+<tbody>
+<tr><td><code>normalize_text</code></td><td><code>(string $text): string</code></td><td><code>normalize_text('كتاب ي')</code> تعطي <code>کتاب ی</code> (الكاف والياء العربيتان تصبحان فارسيتين)</td></tr>
+<tr><td><code>contains_rtl</code></td><td><code>(string $text): bool</code></td><td><code>contains_rtl('abc سلام')</code> تعطي <code>true</code></td></tr>
+<tr><td><code>text_direction</code></td><td><code>(string $text): string</code></td><td><code>text_direction('سلام')</code> تعطي <code>rtl</code>، و<code>text_direction('hello')</code> تعطي <code>ltr</code></td></tr>
+</tbody>
+</table></div>
+<p>راجع <a href="text-tools.html">أدوات النصوص</a>.</p>
+
+<h3 id="reference-bool">التحقق من الصحة: نعم/لا<a class="anchor" href="#reference-bool" aria-label="رابط إلى هذا القسم">#</a></h3>
+<p>كل منها يُرجع <code>bool</code> ويقبل <code>mixed</code>.</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="جدول"><table>
+<thead><tr><th scope="col">الدالة</th><th scope="col">التوقيع</th><th scope="col">مثال</th></tr></thead>
+<tbody>
+<tr><td><code>is_national_code</code></td><td><code>(mixed $value): bool</code></td><td><code>is_national_code('0013542419')</code> تعطي <code>true</code></td></tr>
+<tr><td><code>is_sheba</code></td><td><code>(mixed $value): bool</code></td><td><code>is_sheba('IR062960000000100324200001')</code> تعطي <code>true</code></td></tr>
+<tr><td><code>is_bank_card</code></td><td><code>(mixed $value): bool</code></td><td><code>is_bank_card('6037997535328737')</code> تعطي <code>true</code></td></tr>
+<tr><td><code>is_mobile</code></td><td><code>(mixed $value): bool</code></td><td><code>is_mobile('09123456789')</code> تعطي <code>true</code></td></tr>
+<tr><td><code>is_postal_code</code></td><td><code>(mixed $value): bool</code></td><td><code>is_postal_code('1676543210')</code> تعطي <code>true</code></td></tr>
+<tr><td><code>is_vehicle_plate</code></td><td><code>(mixed $value): bool</code></td><td><code>is_vehicle_plate('12ب345-67')</code> تعطي <code>true</code></td></tr>
+</tbody>
+</table></div>
+
+<h3 id="reference-result">التحقق من الصحة: نتيجة منظَّمة<a class="anchor" href="#reference-result" aria-label="رابط إلى هذا القسم">#</a></h3>
+<p>كل منها يُرجع <code>RtlyKit\Validation\Result</code> بالدوال <code>valid()</code> و<code>invalid()</code> و<code>isValid()</code> و<code>errors()</code> و<code>details()</code>. راجع <a href="validators-overview.html">نظرة عامة على أدوات التحقق</a>.</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="جدول"><table>
+<thead><tr><th scope="col">الدالة</th><th scope="col">التوقيع</th></tr></thead>
+<tbody>
+<tr><td><code>validate_national_code</code></td><td><code>(mixed $value): Result</code></td></tr>
+<tr><td><code>validate_sheba</code></td><td><code>(mixed $value): Result</code></td></tr>
+<tr><td><code>validate_bank_card</code></td><td><code>(mixed $value): Result</code></td></tr>
+<tr><td><code>validate_mobile</code></td><td><code>(mixed $value): Result</code></td></tr>
+<tr><td><code>validate_postal_code</code></td><td><code>(mixed $value): Result</code></td></tr>
+<tr><td><code>validate_vehicle_plate</code></td><td><code>(mixed $value): Result</code></td></tr>
+</tbody>
+</table></div>
+<pre tabindex="0"><code class="language-php"><span class="tok-v">$r</span> = \RtlyKit\validate_national_code(<span class="tok-s">'1234567890'</span>);
+var_dump(<span class="tok-v">$r</span>-&gt;isValid());   <span class="tok-c">// bool(false)</span></code></pre>
+
+<h3 id="reference-dates">العطل وأوقات الصلاة<a class="anchor" href="#reference-dates" aria-label="رابط إلى هذا القسم">#</a></h3>
+<div class="table-wrap" tabindex="0" role="region" aria-label="جدول"><table>
+<thead><tr><th scope="col">الدالة</th><th scope="col">التوقيع</th><th scope="col">ملاحظات</th></tr></thead>
+<tbody>
+<tr><td><code>is_iran_holiday</code></td><td><code>(Jalali|int $year, ?int $month = null, ?int $day = null): bool</code></td><td>تغلّف <code>IranHolidays::isHoliday()</code> فتستعمل تقويم العطل الافتراضي؛ <code>is_iran_holiday(1404, 11, 22)</code> تعطي <code>true</code>. انظر <a href="holidays.html">العطل</a> و<a href="holiday-calendar.html">تقويم العطل القابل للتعديل</a>.</td></tr>
+<tr><td><code>prayer_times</code></td><td><code>(string $city = 'tehran', string $method = 'Tehran'): array</code></td><td>أوقات اليوم بحسب المنطقة الزمنية للمدينة، بالشكل <code>{"fajr", "sunrise", "dhuhr", "asr", "maghrib", "isha"}</code>. المدينة أو الطريقة المجهولة ترمي <code>InvalidPrayerConfigException</code>. راجع <a href="prayer-times.html">أوقات الصلاة</a>.</td></tr>
+</tbody>
+</table></div>
+<p>المجموع إذن 3 + 7 + 3 + 6 + 6 + 2 = 27 دالة مساعدة، وهي القائمة نفسها التي تحملها <code>Globals::NAMES</code>.</p>
+
+<h2 id="globals">الأسماء العامة الاختيارية: Globals::register()<a class="anchor" href="#globals" aria-label="رابط إلى هذا القسم">#</a></h2>
+<p>إذا كنت تفضّل الأسماء العامة القصيرة (مثلًا في قاعدة شيفرة قديمة أو محرك قوالب أو سكربت)، فاستدعِ هذا مرة واحدة أثناء الإقلاع:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-v">$skipped</span> = \RtlyKit\Globals::register();</code></pre>
+<p>الضمانات التي تقدمها:</p>
+<ul>
+<li><strong>لا تُعرَّف إلا الأسماء الحرة.</strong> لا يُعرَّف الاسم إلا إذا لم توجد دالة بهذا الاسم. ولا تُستبدل دالة موجودة أبدًا.</li>
+<li><strong>تُبلغ عمّا تخطّته.</strong> القيمة المرجعة <code>list&lt;string&gt;</code> بالأسماء التي <em>لم</em> تُعرَّف لأن دالة أخرى تستخدمها. القائمة الفارغة تعني أن كل شيء سُجّل.</li>
+<li><strong>لا ترمي استثناءً أبدًا</strong> ولا تسبب خطأ إعادة إعلان، مهما كان الوضع.</li>
+<li><strong>إعادة الاستدعاء آمنة (idempotent).</strong> استدعِها كما تشاء. الاسم الذي هو تعريف RTLY-Kit السابق نفسه لا يُعدّ متخطًّى، فيعطي الاستدعاء الثاني القائمة نفسها التي أعطاها الأول.</li>
+<li><strong>الدوال ضمن فضاء الأسماء تعمل دائمًا</strong>، سواء تُخطّي اسم عام أم لا.</li>
+<li><code>\RtlyKit\Globals::NAMES</code> ثابت يسرد الأسماء السبعة والعشرين كلها.</li>
+</ul>
+
+<h3 id="collision">مثال على التعارض<a class="anchor" href="#collision" aria-label="رابط إلى هذا القسم">#</a></h3>
+<p>لدى التطبيق دالته الخاصة <code>is_mobile()</code> (فحص user-agent). الحزمة لا تعطّلها ولا تستبدلها، وتخبرك بذلك:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">require</span> <span class="tok-s">'vendor/autoload.php'</span>;
+
+<span class="tok-c">// التطبيق يملك أصلاً دالة عامة بالاسم نفسه.</span>
+<span class="tok-k">function</span> is_mobile(string <span class="tok-v">$ua</span>): bool { <span class="tok-k">return</span> str_contains(<span class="tok-v">$ua</span>, <span class="tok-s">'Mobi'</span>); }
+
+<span class="tok-v">$skipped</span> = \RtlyKit\Globals::register();
+var_dump(<span class="tok-v">$skipped</span>);
+<span class="tok-c">// array(1) { [0]=&gt; string(9) "is_mobile" }</span>
+
+var_dump(is_mobile(<span class="tok-s">'Mozilla/5.0 (iPhone) Mobile'</span>));   <span class="tok-c">// bool(true)   دالة التطبيق نفسه</span>
+var_dump(\RtlyKit\is_mobile(<span class="tok-s">'09123456789'</span>));           <span class="tok-c">// bool(true)   فحص رقم الجوال الإيراني، متاح دائماً</span>
+<span class="tok-k">echo</span> jdate(<span class="tok-s">'2025-03-21'</span>)-&gt;format(<span class="tok-s">'Y/m/d'</span>), <span class="tok-s">"\n"</span>;       <span class="tok-c">// 1404/01/01   اسم حر: سُجّل كدالة عامة</span>
+var_dump(\RtlyKit\Globals::register());                <span class="tok-c">// آمنة عند التكرار: القائمة نفسها، array(1) { [0]=&gt; string(9) "is_mobile" }</span></code></pre>
+<p>السياسة المعقولة هي تسجيل القائمة في السجل ثم المتابعة:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-v">$skipped</span> = \RtlyKit\Globals::register();
+<span class="tok-k">if</span> (<span class="tok-v">$skipped</span> !== []) {
+    error_log(<span class="tok-s">'RTLY-Kit globals skipped: '</span> . implode(<span class="tok-s">', '</span>, <span class="tok-v">$skipped</span>));
+}</code></pre>
+<div class="callout note" role="note"><strong>ملاحظة.</strong> إعلانات الدوال في المستوى الأعلى من ملف PHP تُرفَع إلى أعلى الملف (hoisting)، فالدالة العامة المعلنة بعد الاستدعاء في الملف نفسه تُحسب مع ذلك «معرّفة مسبقًا». إذا كان اسم ما مهمًا لك، فاعلنه قبل استدعاء <code>register()</code>، أو اكتفِ بالدالة ضمن فضاء الأسماء.</div>
+
+<h2 id="choosing">أي أسلوب أختار؟<a class="anchor" href="#choosing" aria-label="رابط إلى هذا القسم">#</a></h2>
+<ul>
+<li><strong>المكتبات والتطبيقات الجديدة:</strong> الاستيراد من فضاء الأسماء (<code>use function RtlyKit\jdate;</code>). فهو صريح وسهل البحث ولا يسبب تعارضًا.</li>
+<li><strong>الشيفرة القديمة والسكربتات والقوالب:</strong> استدعِ <code>Globals::register()</code> مرة واحدة وأبقِ على الأسلوب القصير القديم.</li>
+<li><strong>Laravel:</strong> كلاهما مناسب؛ فمزوّد الخدمة لا يضيف دوالَّ عامة، فاستدعِ <code>Globals::register()</code> في <code>AppServiceProvider::register()</code> إن أردتها، أو استورد الدوال ضمن فضاء الأسماء في Blade وفي الأصناف.</li>
+</ul>
+<nav class="reading-footer" aria-label="الصفحة السابقة والتالية"><a class="prev" rel="prev" href="laravel-validation-and-cast.html"><small>السابق</small>قواعد التحقق وتحويل Eloquent</a><a class="next" rel="next" href="error-handling.html"><small>التالي</small>معالجة الأخطاء</a></nav>
+</article>
+<nav class="toc" aria-label="في هذه الصفحة"><p>في هذه الصفحة</p><ol><li><a href="#why">لماذا توجد الدوال المساعدة داخل فضاء أسماء</a></li><li><a href="#import">استخدام الدوال المساعدة</a></li><li><a href="#reference">جميع الدوال المساعدة</a><ol><li><a href="#reference-calendar">التقاويم</a></li><li><a href="#reference-digits">الأرقام والأعداد</a></li><li><a href="#reference-text">النصوص</a></li><li><a href="#reference-bool">التحقق من الصحة: نعم/لا</a></li><li><a href="#reference-result">التحقق من الصحة: نتيجة منظَّمة</a></li><li><a href="#reference-dates">العطل وأوقات الصلاة</a></li></ol></li><li><a href="#globals">الأسماء العامة الاختيارية: Globals::register()</a><ol><li><a href="#collision">مثال على التعارض</a></li></ol></li><li><a href="#choosing">أي أسلوب أختار؟</a></li></ol></nav>
+</div>
+</main>
+<footer class="footer"><div class="shell footer-inner"><p>دليل مستخدم RTLY-Kit · الترخيص: MIT</p><div><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">المستودع على جيت هب &#8599;</a><a href="https://github.com/ehsanenaloo/RTLY-Kit/issues" rel="noopener noreferrer">الإبلاغ عن مشكلة &#8599;</a></div></div></footer>
+</body>
+</html>

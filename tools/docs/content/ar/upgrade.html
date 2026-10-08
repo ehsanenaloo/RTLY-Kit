@@ -1,0 +1,165 @@
+<!--
+title: دليل الترقية
+description: التغييرات الجذرية قبل الإصدار 1.0 مع الخطوات الدقيقة للانتقال، إضافةً إلى أبرز ما في سجل التغييرات للسلسلة 0.x.
+group: reference
+order: 80
+-->
+<p>قبل الإصدار 1.0.0 قد يتضمن أي إصدار فرعي (minor) تغييرات جذرية. كل تغيير منها مذكور هنا مع خطوات الانتقال. والسياسة موضحة في <a href="api-stability.html#versioning">استقرار واجهة البرمجة</a>. وتبدأ هذه الصفحة بأحدث إصدار. ويغطي القسم الأخير النسخ التجريبية الأولى، أي ما قبل 0.1.0.</p>
+
+<h2 id="to-0-2-0">من 0.1.x إلى 0.2.0</h2>
+<p>لا تحتاج معظم التطبيقات إلى أي تغيير. راجع البنود التالية؛ فالبنود 8 و9 و10 تغيّر ما تُرجعه المكتبة لبعض المُدخلات.</p>
+<ol>
+<li><strong>لم يعد <code>ext-mbstring</code> مطلوبًا.</strong> كان <code>composer.json</code> يشترط الامتداد؛ والآن يكفي PHP. لا يلزم فعل شيء. وإذا أضفت <code>ext-mbstring</code> إلى <code>composer.json</code> الخاص بك من أجل هذه الحزمة وحدها فيمكنك حذفه.</li>
+<li><strong>تنسيق الأعداد العشرية.</strong> تطبع <code>Format::withSeparator()</code> و<code>format_number()</code> الآن العدد العشري (float) بأقصر نص عشري يعيد القراءة إلى العدد نفسه وبحد أقصى 15 رقمًا معنوياً، فيختفي ضجيج التمثيل الثنائي. النصوص لم تتغير وتبقى دقيقة: مرّر نصًا عندما تحتاج أرقامًا أكثر.</li>
+</ol>
+<table>
+<thead><tr><th>الاستدعاء</th><th>قبل</th><th>بعد</th></tr></thead>
+<tbody>
+<tr><td><code>withSeparator(-1234567.891)</code></td><td><code>-۱٬۲۳۴٬۵۶۷٫۸۹۱۰۰۰۰۰۰۰۶۱۴۶۷</code></td><td><code>-۱٬۲۳۴٬۵۶۷٫۸۹۱</code></td></tr>
+<tr><td><code>withSeparator(0.1 + 0.2)</code></td><td><code>۰٫۳</code></td><td><code>۰٫۳</code> (دون تغيير)</td></tr>
+<tr><td><code>withSeparator(-0.0)</code></td><td><code>۰</code></td><td><code>۰</code></td></tr>
+</tbody>
+</table>
+<p>إذا كنت تنسّق ناتج حساب عشري فقرّبه أولًا (<code>round($x, 2)</code>) أو مرّر نصًا.</p>
+<ol start="3">
+<li><strong>صارت <code>NumberToWords::fromWords()</code> صارمة.</strong> كانت تجمع الكلمات بأي ترتيب.</li>
+</ol>
+<table>
+<thead><tr><th>المُدخل</th><th>قبل</th><th>بعد</th></tr></thead>
+<tbody>
+<tr><td><code>دو صد</code></td><td><code>102</code></td><td><code>InvalidNumberException</code> (<code>invalid_number_words</code>)</td></tr>
+<tr><td><code>بیست یک</code></td><td><code>21</code></td><td><code>InvalidNumberException</code></td></tr>
+<tr><td><code>صد و بیست و</code></td><td><code>120</code></td><td><code>InvalidNumberException</code></td></tr>
+<tr><td><code>پنج و بیست</code></td><td><code>25</code></td><td><code>InvalidNumberException</code></td></tr>
+<tr><td><code>سی و پنج</code></td><td><code>35</code></td><td><code>35</code></td></tr>
+</tbody>
+</table>
+<p>ضع <code>و</code> بين الأجزاء والتزم الترتيب: المئات ثم العشرات ثم الآحاد. وكل ما تُرجعه <code>convert()</code> ما زال يُقرأ.</p>
+<ol start="4">
+<li><strong><code>Slugify::make()</code></strong> ترمي <code>RtlyKitException</code> (<code>invalid_argument</code>، <code>argument</code> = <code>text</code>) إذا لم يكن النص UTF-8 صالحًا. كان الفاصل وحده يُفحص من قبل. التقط <code>RtlyKitThrowable</code> أو نظّف المُدخل أولًا.</li>
+<li><strong><code>Hijri::format()</code> و<code>Hebrew::format()</code></strong> ترفضان نمطًا أطول من 256 بايتًا برمي <code>InvalidDateException</code> (<code>input_too_long</code>، <code>argument</code> = <code>format</code>، <code>limit</code> = 256). وكانت <code>Jalali::format()</code> تفعل ذلك أصلًا. والحد في <code>Hijri::MAX_FORMAT_LENGTH</code> و<code>Hebrew::MAX_FORMAT_LENGTH</code>.</li>
+<li><strong>الشرطة المائلة العكسية في آخر نمط التنسيق</strong> تُحذف في التقاويم الثلاثة: <code>format('Y\')</code> تُرجع السنة فقط.</li>
+<li><strong><code>IranHolidays::all()</code> و<code>allTitles()</code> و<code>allFixed()</code></strong> تعمل لكل سنة جلالية من -620 إلى 9377. كانت السنوات قبل بداية التقويم الهجري وآخر يوم من 9377 تُثير <code>invalid_date</code>. وحيث لا يمكن اشتقاق العطل الإسلامية تُرجع الدوال العطل الثابتة فقط. أما السنة خارج هذا النطاق فتُثير <code>InvalidDateException</code> (<code>date_out_of_range</code>، والسياق <code>year</code> و<code>min</code> و<code>max</code>).</li>
+<li><strong>رسائل الخطأ</strong> التي تكرر مُدخلك تقتطعه إلى 40 حرفًا وتبقى UTF-8 صالحة دائمًا. وإذا كنت تطابق نص الرسالة فطابق <code>getErrorCode()</code> بدلًا منه.</li>
+<li><strong>التواريخ الرسمية للعطل في 1380 إلى 1405.</strong> في هذه السنوات الجلالية صارت الدوال الساكنة (<code>IranHolidays</code> و<code>is_iran_holiday()</code>) تُرجع التواريخ المنشورة بدل تقدير أم القرى. والسنوات الأخرى لم تتغير.</li>
+</ol>
+<table>
+<thead><tr><th>اليوم</th><th>قبل (تقدير)</th><th>بعد (رسمي)</th></tr></thead>
+<tbody>
+<tr><td>1404/01/10</td><td>عید فطر</td><td>لا عطلة</td></tr>
+<tr><td>1404/01/11</td><td>تعطیل عید فطر</td><td>عید فطر</td></tr>
+<tr><td>1404/01/01</td><td>جشن نوروز + شهادت امام علی</td><td>جشن نوروز</td></tr>
+<tr><td>1404/12/29</td><td>ملی شدن صنعت نفت + عید فطر</td><td>ملی شدن صنعت نفت</td></tr>
+<tr><td>1405/01/01</td><td>جشن نوروز + تعطیل عید فطر</td><td>جشن نوروز + عید فطر</td></tr>
+</tbody>
+</table>
+<p>في السنوات الرسمية لا تظهر إلا العناوين الواردة في الجدول الرسمي. والسنوات 1380 إلى 1393 و1395 <em>منقولة</em>: تواريخها من مصدر واحد، وقد تكون قائمة الأيام ناقصة. وللحصول على السلوك القديم في كل السنوات استعمل <code>HolidayCalendar::default()-&gt;withOfficialData(false)</code>. ولمعرفة مصدر سنة استعمل <code>IranHolidays::sourceOf($year)</code>. المزيد في <a href="holiday-calendar.html">تقويم العطل القابل للتعديل</a>.</p>
+<ol start="9">
+<li><strong>أوقات الصلاة في خطوط العرض العالية.</strong> صار لـ <code>PrayerTimes</code> قاعدة جديدة <code>HighLatitudeRule</code> والافتراضي <code>AngleBased</code>. تعمل حيث يكون وقت الفجر أو العشاء مفقودًا، أو أبعد عن الشروق أو الغروب مما تسمح به القاعدة. جنوب نحو 44 درجة شمالًا لا يتغير شيء. وشمال نحو 44 إلى 46 درجة، قرب انقلاب يونيو، تختلف بعض القيم. والوقت الذي كان <code>null</code> صار له قيمة.</li>
+</ol>
+<table>
+<thead><tr><th>المكان واليوم (MWL)</th><th>قبل (مثل <code>None</code>)</th><th>بعد (الافتراضي)</th></tr></thead>
+<tbody>
+<tr><td>ستوكهولم، 2026-06-21</td><td>الفجر <code>null</code>، العشاء <code>null</code></td><td>الفجر <code>01:54</code>، العشاء <code>23:40</code></td></tr>
+<tr><td>ميونخ، 2026-06-21</td><td>الفجر <code>01:50</code>، العشاء <code>00:12</code></td><td>الفجر <code>02:51</code>، العشاء <code>23:32</code></td></tr>
+</tbody>
+</table>
+<p>للحصول على الناتج القديم استدعِ <code>$prayer-&gt;withHighLatitudeRule(HighLatitudeRule::None)</code>. وصارت <code>nextPrayer()</code> تجد أيضًا الصلاة التي تقع بعد منتصف الليل. انظر <a href="prayer-times.html#high-latitude">خطوط العرض العالية</a>.</p>
+<ol start="10">
+<li><strong>التحقق من أرقام الجوال.</strong> فحص الشكل هو نفسه، فلا يتغير صلاح أي مُدخل. وهناك أمران جديدان: لكل نتيجة مفتاح تفاصيل <code>allocated</code> وتُرجعه <code>Mobile::isAllocated()</code> قيمةً <code>bool</code>؛ وجدول المشغّلين يتبع خطة الترقيم أدق: ضُيّق مفتاح شاتل موبايل <code>998</code> إلى <code>09981</code> و<code>09982</code>، وتوسّع مفتاح آپتل من <code>99910</code> إلى <code>9991</code>، وأُضيفت <code>0923</code> و<code>0931</code> و<code>0932</code> و<code>0934</code>.</li>
+</ol>
+<table>
+<thead><tr><th>الرقم</th><th>المشغّل قبل</th><th>المشغّل بعد</th></tr></thead>
+<tbody>
+<tr><td><code>09981234567</code></td><td>شاتل موبایل</td><td>شاتل موبایل</td></tr>
+<tr><td><code>09983112345</code></td><td>شاتل موبایل</td><td><code>null</code> (مخصَّص، وصاحبه غير مؤكد)</td></tr>
+<tr><td><code>09231234567</code></td><td><code>null</code></td><td>رایتل</td></tr>
+<tr><td><code>09321234567</code></td><td><code>null</code></td><td>تالیا</td></tr>
+</tbody>
+</table>
+<p>إذا كنت تقارن مصفوفة <code>details()</code> كلها، فتوقع المفتاح الإضافي <code>allocated</code>.</p>
+<ol start="11">
+<li><strong>الأعداد العربية بالحروف.</strong> تعطي <code>convert($n, 'ar')</code> بلا خيارات النص نفسه كما قبل لكل عدد دون 10<sup>9</sup>. وتقبل الآن أعدادًا حتى 10<sup>27</sup>، بعد أن كانت تُثير <code>number_too_large</code>. الخيارات الجديدة والأعداد الترتيبية في صفحة <a href="arabic-number-words.html">الأعداد بالحروف العربية</a>.</li>
+<li><strong>المنصات.</strong> يُدعم PHP من 8.2 إلى 8.5 وLaravel 11 و12 و13 وCarbon 3. انظر <a href="api-stability.html#platforms">استقرار واجهة البرمجة</a>.</li>
+</ol>
+
+<h2 id="helpers">من النسخ التجريبية الأولى (قبل 0.1.0): الدوال المساعدة ضمن فضاء الأسماء</h2>
+
+<h3 id="no-globals">1. لم تعد الدوال المساعدة العامة معرَّفة افتراضيًا</h3>
+<div class="note"><strong>تغيير جذري.</strong> كانت النسخ التجريبية السابقة تعرّف <code>jdate()</code> و<code>to_persian()</code> و<code>is_national_code()</code> وسائر الدوال المساعدة كدوال عامة بمجرد أن يحمّل Composer الحزمة. وكان هذا قد يتعارض مع شيفرتك أو مع حزمة أخرى، فأُزيل. الدوال المساعدة الآن في فضاء الأسماء <code>RtlyKit</code> ولا يُعرَّف شيء على المستوى العام.</div>
+<p>الدوال المساعدة السبع والعشرون: <code>jdate</code>، <code>hdate</code>، <code>hebrew_date</code>، <code>to_persian_digits</code>، <code>to_english_digits</code>، <code>to_persian</code>، <code>to_english</code>، <code>is_national_code</code>، <code>is_sheba</code>، <code>is_bank_card</code>، <code>is_mobile</code>، <code>is_postal_code</code>، <code>is_vehicle_plate</code>، <code>validate_national_code</code>، <code>validate_sheba</code>، <code>validate_bank_card</code>، <code>validate_mobile</code>، <code>validate_postal_code</code>، <code>validate_vehicle_plate</code>، <code>number_to_words</code>، <code>normalize_text</code>، <code>contains_rtl</code>، <code>text_direction</code>، <code>is_iran_holiday</code>، <code>prayer_times</code>، <code>format_number</code>، و<code>ordinal</code>.</p>
+<p><strong>الخيار أ: استورِد ما تستخدمه (موصى به).</strong></p>
+<pre><code class="language-php">use function RtlyKit\jdate;
+use function RtlyKit\is_national_code;
+
+echo jdate('2026-03-21')-&gt;format('Y/m/d');   // 1405/01/01</code></pre>
+<p>أو استدعِ الاسم المؤهَّل بالكامل: <code>\RtlyKit\jdate('2026-03-21')</code>.</p>
+<p><strong>الخيار ب: استعد الأسماء العامة القصيرة القديمة.</strong> استدعِ <code>Globals::register()</code> مرة واحدة، مثلًا في ملف التهيئة (bootstrap):</p>
+<pre><code class="language-php">\RtlyKit\Globals::register();
+
+echo jdate('2026-03-21')-&gt;format('Y/m/d');   // 1405/01/01، يعمل كما كان</code></pre>
+<p>لا تعرّف <code>register()</code> إلا الأسماء الحرة بعد. ولا تستبدل أي دالة موجودة، ولا تُطلق استثناءً. وتُرجع قائمة الأسماء التي تخطّتها لأن شيئًا آخر يستخدمها، ويمكن استدعاؤها أكثر من مرة بأمان:</p>
+<pre><code class="language-php">$skipped = \RtlyKit\Globals::register();
+if ($skipped !== []) {
+    error_log('RTLY-Kit globals skipped: '.implode(', ', $skipped));   // استخدم \RtlyKit\name() لهذه الأسماء
+}</code></pre>
+<p>ولا يسجّل مزوّد خدمة Laravel (Service Provider) الأسماء العامة أيضًا. في Blade اكتب <code>{{ \RtlyKit\jdate($post-&gt;created_at)-&gt;format('j F Y') }}</code>، أو استدعِ <code>Globals::register()</code> من <code>AppServiceProvider::register()</code>. المزيد في <a href="helpers-and-globals.html">الدوال المساعدة والأسماء العامة</a>.</p>
+
+<h3 id="other-changes">2. تغييرات أخرى يجدر الانتباه إليها</h3>
+<table>
+<thead><tr><th>التغيير</th><th>ما عليك فعله</th></tr></thead>
+<tbody>
+<tr><td><strong>أدوات التحقق تقبل أي قيمة.</strong> تنفّذ الست كلها <code>RtlyKit\Contracts\Validator</code> (<code>validate(mixed): Result</code> و<code>isValid(mixed): bool</code>). المدخل غير النصي (null أو المصفوفات أو الكائنات) يُرجع <code>Result</code> غير صالحة بالخطأ <code>invalid_type</code>؛ والمدخل الذي يتجاوز 4096 بايت يُرجع <code>input_too_long</code>. ولا تُطلق استثناءً بسبب مدخل سيئ.</td><td>أزل كتل <code>try</code> الدفاعية وفحوص الأنواع حول أدوات التحقق. راجع <a href="validators-overview.html">نظرة عامة على أدوات التحقق</a>.</td></tr>
+<tr><td><strong>الاستثناءات تحمل رموزًا.</strong> الدالتان <code>getErrorCode()</code> (تعداد <code>ErrorCode</code>) و<code>getContext()</code> موجودتان في كل استثناء من استثناءات المكتبة.</td><td>لا شيء يلزم تغييره. فضّل المطابقة على الرمز بدل نص الرسالة. راجع <a href="error-handling.html">معالجة الأخطاء</a>.</td></tr>
+<tr><td><strong><code>Slugify::make()</code> تُطلق استثناءً</strong> هو <code>RtlyKitException</code> (<code>input_too_long</code> أو <code>invalid_argument</code>) عندما يكون الفاصل UTF-8 غير صالح أو أطول من 64 بايت.</td><td>يهمّك هذا فقط إذا مرّرت فاصلًا يتحكم فيه المستخدم. التقط <code>RtlyKitThrowable</code>.</td></tr>
+<tr><td><strong>التقويمات تشترك في عقد.</strong> <code>Jalali</code> و<code>Hijri</code> و<code>Hebrew</code> تنفّذ <code>RtlyKit\Contracts\CalendarDate</code>. المقارنات و<code>diffIn*()</code> تقبل <code>CalendarDate</code> أو أي <code>DateTimeInterface</code>، و<code>make()</code> تقبل <code>CalendarDate</code>، والدوال <code>equals()</code> و<code>isBefore()</code> و<code>isAfter()</code> أسماء بديلة جديدة.</td><td>الاستدعاءات الحالية تظل تعمل. راجع <a href="convert-and-compare.html">التحويل والمقارنة</a>.</td></tr>
+<tr><td><strong>نُقلت بيانات المرجع</strong> إلى <code>resources/data/*.php</code>.</td><td>إذا كنت تقرأ أصناف الجداول القديمة مباشرة (ولم تكن يومًا جزءًا من الواجهة العامة)، فانتقل إلى أصناف عامة مثل <code>Hijri</code> أو <code>Sheba::getBankName()</code> أو <code>NationalCode::getLocation()</code>.</td></tr>
+<tr><td><strong>تغيّر العشاء في مكة خلال رمضان.</strong> تُرجع <code>PrayerTimes::METHOD_MAKKAH</code> الآن العشاء بعد المغرب بـ 120 دقيقة في رمضان (ممارسة أم القرى) وبـ 90 دقيقة في غيره. وكانت النسخة السابقة تستخدم 90 دائمًا.</td><td>يتأخر عشاء رمضان 30 دقيقة. وهذا إصلاح خطأ؛ حدّث أي قيم متوقعة مخزَّنة. انظر المثال أدناه.</td></tr>
+</tbody>
+</table>
+<p>فحص للسلوك الجديد لطريقة مكة (2026-03-01 في رمضان، و2026-03-21 ليس كذلك):</p>
+<pre><code class="language-php">use RtlyKit\Prayer\PrayerTimes;
+
+$mecca = PrayerTimes::forCity('mecca', PrayerTimes::METHOD_MAKKAH);
+foreach (['2026-03-01', '2026-03-21'] as $d) {
+    $t = $mecca-&gt;getTimes(new DateTimeImmutable($d));
+    echo $d, ' maghrib ', $t['maghrib'], ' isha ', $t['isha'], "\n";
+}
+// 2026-03-01 maghrib 18:25 isha 20:25
+// 2026-03-21 maghrib 18:32 isha 20:02</code></pre>
+
+<h2 id="changelog-highlights">أبرز ما في سجل التغييرات للسلسلة 0.x</h2>
+<p>هذه هي النقاط التي تهم المستخدم من سجل التغييرات، مجمّعة؛ والقائمة الكاملة في <code>CHANGELOG.md</code> بالمستودع.</p>
+
+<h3 id="highlights-breaking">سلوك تغيّر</h3>
+<ul>
+<li><strong>مدخلات التقويم خارج النطاق تُطلق استثناءً.</strong> السنوات والطوابع الزمنية (timestamps) وقيم <code>add*()</code> / <code>sub*()</code> الضخمة خارج النطاقات المدعومة تُطلق <code>InvalidDateException</code> بدل <code>TypeError</code> أو تاريخ ملتفّ. النطاقات: الجلالي من -620 إلى 9377، والهجري من 1 إلى 9665، والعبري من 3762 إلى 13759 (<a href="limits.html#calendars">الحدود</a>).</li>
+<li><strong>قواعد السلاسل في <code>make()</code> أصبحت محددة.</strong> السنة الأقل من 1700 (العبري: 3000 فأكثر) تُقرأ بتقويم الصنف نفسه، وكل ما عداها يُقرأ ميلادياً؛ والسلاسل الفارغة تُطلق استثناءً؛ و<code>null</code> تعني الآن. لذلك تُقرأ سلسلة ISO ميلادية سنتها أقل من 1700 على أنها جلالية أو هجرية: مرّر <code>DateTimeImmutable</code> لمثل هذه التواريخ (<a href="troubleshooting-faq.html#string-year">الأسئلة الشائعة</a>).</li>
+<li><strong>العطلات.</strong> تواريخ رسمية للسنوات الجلالية 1380 إلى 1405 (انظر أعلاه). وفي السنوات الأخرى لا تُبلَّغ العطل الإسلامية إلا للسنوات 1300 إلى 1500 هـ، والسنة خارج النطاق الجلالي تُثير <code>InvalidDateException</code>.</li>
+<li><strong>مدخلات الأعداد.</strong> تقبل <code>NumberToWords::convert()</code> و<code>Format::ordinal()</code> الأعداد العشرية الصحيحة (<code>3.0</code>) وتُطلقان <code>InvalidNumberException</code> للأعداد العشرية الكسرية و<code>NaN</code> و<code>INF</code>.</li>
+<li><strong>حدود المدخلات</strong> (تشديد أمني): السلاسل الأطول من 4096 بايت ترفضها <code>NumberToWords</code> و<code>Format</code>، وترفض <code>Format::withSeparator()</code> الأعداد الأطول من 1000 نويسة. وتُطلق <code>InvalidNumberException</code> (<code>input_too_long</code>).</li>
+<li><strong>قُلّصت جداول البيانات إلى المدخلات المؤكَّدة.</strong> تغطي <code>NationalCode::getLocation()</code> 547 بادئة وتُرجع <code>null</code> لما عداها؛ وتحتفظ جداول BIN المصرفية (39) ورموز شبا (38) والمشغّلين بالمدخلات التي أكدها مصدران فقط. وقد يصبح اسم كان يُرجَع سابقًا <code>null</code> الآن. وترفض <code>BankCard</code> الأرقام المكوّنة من رقم واحد مكرر.</li>
+<li><strong>أُعيدت كتابة نواة أوقات الصلاة</strong> وفق المعادلات الفلكية القياسية؛ وكان الفرق عن التنفيذ السابق في أحداث المساء دقيقتين على الأكثر (متوسطه نصف دقيقة أو أقل) عبر شبكة المقارنة. ويُطبَّق التوقيت الصيفي (DST) لكل حدث على حدة، ووسيط المُنشئ <code>$elevation</code> جديد.</li>
+<li><strong>العطل الإسلامية</strong> في السنوات التقديرية تُشتق من التقويم الهجري وقد تختلف عن الإعلان الرسمي بيوم إلى يومين.</li>
+</ul>
+
+<h3 id="highlights-added">ما أُضيف</h3>
+<ul>
+<li>تقويم عبري بـ PHP خالصة (<code>Hebrew</code>) دون حاجة إلى <code>ext-calendar</code>؛ وإعادة كتابة التقويم الهجري حول جدول أم القرى للسنوات 1300 إلى 1500 هـ، مع بديل احتياطي <code>HijriVariant::Tabular</code>.</li>
+<li>تحقق منظّم: <code>Result</code> (<code>isValid()</code> و<code>errors()</code> و<code>details()</code>) ودوال <code>validate_*()</code> المساعدة برموز أخطاء ثابتة.</li>
+<li><code>NumberToWords::fromWords()</code>، وأعداد حتى 21 رقماً، والأعداد السالبة، والأعداد العربية بالحروف (<code>number_to_words($n, 'ar')</code>).</li>
+<li><code>Normalizer::fixHalfSpace()</code> / <code>clean()</code>، و<code>Detector::isRtlLocale()</code> / <code>isHebrew()</code>، و<code>IranHolidays::getTitles()</code> / <code>isBusinessDay()</code> / <code>nextBusinessDay()</code>، و<code>PrayerTimes::nextPrayer()</code>.</li>
+<li>Laravel: الواجهة (Facade) <code>Jalali</code> والمصنع الذي تحلّه الحاوية، والاكتشاف التلقائي، وقواعد التحقق الست برسائل fa / en / ar، و<code>JalaliCast</code>.</li>
+<li>ماكروات Carbon: <code>toJalali</code> و<code>jformat</code> و<code>createFromJalali</code> و<code>toHijri</code> و<code>toHebrew</code> و<code>createFromHijri</code> و<code>createFromHebrew</code>.</li>
+<li>تسلسل الاستثناءات تحت <code>RtlyKitThrowable</code>، وتعداد <code>ErrorCode</code>، و<code>Globals::register()</code>، وعقدا <code>CalendarDate</code> و<code>Validator</code>.</li>
+</ul>
+
+<h3 id="highlights-fixed">ما أُصلح</h3>
+<ul>
+<li>العشاء بطريقة مكة في رمضان (موصوف أعلاه).</li>
+<li><code>Format::ordinal()</code> للعددين 30 و23؛ و<code>Format::withSeparator()</code> تقبل الأرقام الفارسية والعربية دون تقريب؛ و<code>Mobile</code> تطبّع الصيغ <code>0098</code> و<code>98</code> و<code>9xxxxxxxxx</code> المجردة؛ و<code>Sheba</code> تقبل الصيغة المجردة من 24 رقمًا.</li>
+<li>معالجة المنطقة الزمنية لأوقات الصلاة حول التوقيت الصيفي، ومعالجة الخطأ عند طريقة أو معامل عصر غير معروف.</li>
+<li>التصريح المكرر للدالة المساعدة <code>hdate()</code>.</li>
+</ul>
+
+<div class="note"><strong>ملاحظة.</strong> ثبّت نطاقًا فرعيًا (مثل <code>~0.1.0</code>) ما دامت المكتبة دون 1.0.0، واقرأ هذه الصفحة قبل كل ترقية فرعية، وشغّل اختباراتك الخاصة على مخرجات التواريخ وأوقات الصلاة التي تخزّنها.</div>

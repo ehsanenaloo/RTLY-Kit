@@ -35,9 +35,11 @@ return [
 
         'digits-and-format' => ['numbers-text', 10],
         'number-words' => ['numbers-text', 20],
+        'arabic-number-words' => ['numbers-text', 25],
         'text-tools' => ['numbers-text', 30],
 
         'holidays' => ['dates-and-times', 10],
+        'holiday-calendar' => ['dates-and-times', 15],
         'prayer-times' => ['dates-and-times', 20],
 
         'laravel-setup' => ['laravel', 10],
@@ -51,5 +53,6 @@ return [
         'limits' => ['reference', 60],
         'troubleshooting-faq' => ['reference', 70],
         'upgrade' => ['reference', 80],
+        'verifying-releases' => ['reference', 90],
     ],
 ];

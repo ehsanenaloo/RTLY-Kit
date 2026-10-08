@@ -1,7 +1,7 @@
 "use strict";
 /*
  * Progressive enhancement only. Every page is complete without this file:
- * it adds theme switching, site search (Persian-aware), card filtering,
+ * it adds theme switching, site search (Persian and Arabic aware), card filtering,
  * copy buttons, a highlighted table of contents and a language hint on the
  * language chooser page.
  */
@@ -58,7 +58,8 @@
       .replace(/[ىيیئ]/g, "ی")           /* alef maksura / Arabic ya / hamza-ya -> Persian ya */
       .replace(/[كک]/g, "ک")                       /* Arabic kaf -> Persian kaf */
       .replace(/[ۀةہ]/g, "ه")                 /* heh variants -> heh */
-      .replace(/[أإٱ]/g, "ا")                 /* hamza-alef variants -> alef */
+      .replace(/[أإٱآ]/g, "ا")           /* hamza/madda alef variants -> alef */
+      .replace(/ؤ/g, "و")                               /* hamza on waw -> waw */
       .replace(/‌|‍|‏|‎/g, " ")                /* ZWNJ / ZWJ / marks -> space */
       .replace(/[۰-۹]/g, function (c) { return String(c.charCodeAt(0) - 0x06F0); })
       .replace(/[٠-٩]/g, function (c) { return String(c.charCodeAt(0) - 0x0660); })
@@ -267,7 +268,7 @@
     var wanted = null;
     for (var i = 0; i < langs.length && !wanted; i++) {
       var code = String(langs[i]).toLowerCase().slice(0, 2);
-      if (code === "fa" || code === "en") wanted = code;
+      if (code === "fa" || code === "en" || code === "ar") wanted = code;
     }
     if (wanted) {
       cards.forEach(function (card) {

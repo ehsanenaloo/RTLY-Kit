@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * Documentation site generator.
+ * Documentation site generator (languages: fa, en, ar).
  *
  *   php tools/docs/build.php [options]
  *
@@ -24,7 +24,7 @@ declare(strict_types=1);
  * Exit codes: 0 success, 1 validation errors / missing pages / stale output, 2 usage error.
  */
 
-const DOCS_LANGS = ['fa', 'en'];
+const DOCS_LANGS = ['fa', 'en', 'ar'];
 const DOCS_HEADER_KEYS = ['title', 'description', 'group', 'order'];
 const DOCS_RESERVED_SLUGS = ['index', 'all', 'search-index', 'llms'];
 const DOCS_ALLOWED_TAGS = [
@@ -458,10 +458,22 @@ function countFacts(string $root, array &$errors): array
 /**
  * @param array<string,mixed> $P page context
  */
-function pageHead(array $P, string $title, string $description, string $altHref, string $altLang): string
+function pageHead(array $P, string $title, string $description, ?string $slug, string $file): string
 {
     $S = $P['S'];
     $lang = $P['lang'];
+    $siteUrl = $P['site']['url'];
+    $canonical = $siteUrl . $lang . '/' . $file;
+    $alternates = '<link rel="canonical" href="' . e($canonical) . "\">\n"
+        . '<link rel="alternate" hreflang="' . $lang . '" href="' . e($canonical) . "\">\n";
+    $localeAlt = '';
+    foreach (altLinks($P, $slug, $file) as $l => $alt) {
+        if ($alt['exact']) {
+            $alternates .= '<link rel="alternate" hreflang="' . $l . '" href="' . e($siteUrl . $l . '/' . $alt['file']) . "\">\n";
+            $localeAlt .= '<meta property="og:locale:alternate" content="' . $P['langs'][$l]['locale'] . "\">\n";
+        }
+    }
+    $alternates .= '<link rel="alternate" hreflang="x-default" href="' . e($siteUrl) . "\">\n";
     $dir = $P['langs'][$lang]['dir'];
     $i18n = e((string) json_encode($S['js'] + ['search_label' => $S['search_label'], 'search_placeholder' => $S['search_placeholder']], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
     $fullTitle = $title . ' | ' . $P['site']['name'] . ' ' . $S['doc_title'];
@@ -476,15 +488,41 @@ function pageHead(array $P, string $title, string $description, string $altHref,
         . '<meta property="og:description" content="' . e($description) . "\">\n"
         . "<meta property=\"og:type\" content=\"website\">\n"
         . '<meta property="og:locale" content="' . $P['langs'][$lang]['locale'] . "\">\n"
+        . $localeAlt
+        . '<meta property="og:url" content="' . e($canonical) . "\">\n"
         . "<link rel=\"icon\" type=\"image/svg+xml\" href=\"../assets/favicon.svg\">\n"
-        . '<link rel="alternate" hreflang="' . $altLang . '" href="' . e($altHref) . "\">\n"
+        . $alternates
         . "<link rel=\"stylesheet\" href=\"../styles.css\">\n"
         . "<script>try{var t=localStorage.getItem(\"rtly-docs-theme\");if(t===\"light\"||t===\"dark\")document.documentElement.setAttribute(\"data-theme\",t)}catch(e){}</script>\n"
         . "<script defer src=\"../app.js\"></script>\n"
         . "</head>\n<body>\n";
 }
 
-function pageHeader(array $P, string $current, string $altHref): string
+/**
+ * The counterpart of the current page in every other language that has pages.
+ * `exact` is false when the page is missing there and the link falls back to that language's home.
+ *
+ * @return array<string,array{file:string,exact:bool}>
+ */
+function altLinks(array $P, ?string $slug, string $file): array
+{
+    $links = [];
+    foreach (array_keys($P['langs']) as $l) {
+        if ($l === $P['lang'] || !in_array($l, $P['present'], true)) {
+            continue;
+        }
+        if ($slug !== null && isset($P['allPages'][$l][$slug])) {
+            $links[$l] = ['file' => $slug . '.html', 'exact' => true];
+        } elseif ($slug === null && in_array($file, ['index.html', 'all.html'], true)) {
+            $links[$l] = ['file' => $file, 'exact' => true];
+        } else {
+            $links[$l] = ['file' => 'index.html', 'exact' => false];
+        }
+    }
+    return $links;
+}
+
+function pageHeader(array $P, string $current, ?string $slug, string $file): string
 {
     $S = $P['S'];
     $nav = $S['nav'];
@@ -501,9 +539,17 @@ function pageHeader(array $P, string $current, string $altHref): string
         $h .= '<a href="' . $href . '"' . ($current === $key ? ' aria-current="page"' : '') . '>' . e($label) . '</a>';
     }
     $h .= '<a href="' . e($P['site']['repo']) . '" rel="noopener noreferrer">' . e($nav['github']) . ' &#8599;</a></nav>';
-    $other = $P['lang'] === 'fa' ? 'en' : 'fa';
     $h .= '<div class="header-tools"><span data-search-host></span><button type="button" class="icon-button" data-theme-toggle hidden>Theme</button>';
-    $h .= '<a class="icon-button" href="' . e($altHref) . '" hreflang="' . $other . '" lang="' . $other . '" aria-label="' . e($S['lang_switch_label']) . '">' . e($S['lang_switch']) . '</a></div>';
+    $h .= '<div class="lang-switch" role="group" aria-label="' . e($S['lang_switch_label']) . '">';
+    $alts = altLinks($P, $slug, $file);
+    foreach ($P['langs'] as $l => $info) {
+        if ($l === $P['lang']) {
+            $h .= '<span class="icon-button is-current" lang="' . $l . '" aria-current="true">' . e($info['name']) . '</span>';
+        } elseif (isset($alts[$l])) {
+            $h .= '<a class="icon-button" href="../' . $l . '/' . $alts[$l]['file'] . '" hreflang="' . $l . '" lang="' . $l . '">' . e($info['name']) . '</a>';
+        }
+    }
+    $h .= '</div></div>';
     $h .= "</div></header>\n";
     return $h;
 }
@@ -570,26 +616,12 @@ function cardHtml(array $pg, array $S, string $tag, bool $filterItem): string
         . e($pg['description']) . '</p><span class="card-link" aria-hidden="true">' . e($S['home']['open']) . ' &rarr;</span></article>';
 }
 
-function altHrefFor(array $P, ?string $slug, string $file): string
-{
-    $other = $P['lang'] === 'fa' ? 'en' : 'fa';
-    if ($slug !== null && isset($P['allPages'][$other][$slug])) {
-        return '../' . $other . '/' . $slug . '.html';
-    }
-    if ($file === 'all.html') {
-        return '../' . $other . '/all.html';
-    }
-    return '../' . $other . '/index.html';
-}
-
 function renderGuide(array $P, array $pg): string
 {
     $S = $P['S'];
     $file = $pg['slug'] . '.html';
-    $alt = altHrefFor($P, $pg['slug'], $file);
-    $other = $P['lang'] === 'fa' ? 'en' : 'fa';
-    $out = pageHead($P, $pg['title'], $pg['description'], $alt, $other);
-    $out .= pageHeader($P, $pg['slug'], $alt);
+    $out = pageHead($P, $pg['title'], $pg['description'], $pg['slug'], $file);
+    $out .= pageHeader($P, $pg['slug'], $pg['slug'], $file);
     $out .= "<main id=\"main\">\n";
     $out .= '<div class="shell page-intro"><nav class="breadcrumbs" aria-label="' . e($S['page']['breadcrumb']) . '"><ol>'
         . '<li><a href="index.html">' . e($S['page']['home']) . '</a></li>'
@@ -624,10 +656,8 @@ function renderGuide(array $P, array $pg): string
 function renderAll(array $P): string
 {
     $S = $P['S'];
-    $alt = altHrefFor($P, null, 'all.html');
-    $other = $P['lang'] === 'fa' ? 'en' : 'fa';
-    $out = pageHead($P, $S['all']['title'], $S['all']['description'], $alt, $other);
-    $out .= pageHeader($P, 'all', $alt);
+    $out = pageHead($P, $S['all']['title'], $S['all']['description'], null, 'all.html');
+    $out .= pageHeader($P, 'all', null, 'all.html');
     $out .= "<main id=\"main\">\n";
     $out .= '<div class="shell page-intro"><nav class="breadcrumbs" aria-label="' . e($S['page']['breadcrumb']) . '"><ol>'
         . '<li><a href="index.html">' . e($S['page']['home']) . '</a></li><li aria-current="page">' . e($S['all']['title']) . '</li></ol></nav>'
@@ -658,11 +688,9 @@ function renderHome(array $P, array $facts): string
     $S = $P['S'];
     $H = $S['home'];
     $lang = $P['lang'];
-    $alt = altHrefFor($P, null, 'index.html');
-    $other = $lang === 'fa' ? 'en' : 'fa';
-    $out = pageHead($P, $H['meta_title'], $H['lead'], $alt, $other);
+    $out = pageHead($P, $H['meta_title'], $H['lead'], null, 'index.html');
     $out = str_replace('<title>' . e($H['meta_title'] . ' | ' . $P['site']['name'] . ' ' . $S['doc_title']) . '</title>', '<title>' . e($H['meta_title']) . '</title>', $out);
-    $out .= pageHeader($P, 'overview', $alt);
+    $out .= pageHeader($P, 'overview', null, 'index.html');
     $out .= "<main id=\"main\">\n";
 
     $start = isset($P['pages']['quick-start']) ? 'quick-start.html' : (($first = array_key_first($P['pages'])) !== null ? $first . '.html' : 'all.html');
@@ -728,17 +756,20 @@ function renderRoot(array $strings, array $langsPresent): string
         . "<meta name=\"color-scheme\" content=\"light dark\">\n"
         . '<meta property="og:title" content="' . e($R['title']) . "\">\n"
         . '<meta property="og:description" content="' . e($R['description']) . "\">\n"
-        . "<link rel=\"icon\" type=\"image/svg+xml\" href=\"assets/favicon.svg\">\n";
+        . '<meta property="og:url" content="' . e($site['url']) . "\">\n"
+        . "<link rel=\"icon\" type=\"image/svg+xml\" href=\"assets/favicon.svg\">\n"
+        . '<link rel="canonical" href="' . e($site['url']) . "\">\n";
     foreach ($langsPresent as $l) {
-        $h .= '<link rel="alternate" hreflang="' . $l . '" href="' . $l . "/index.html\">\n";
+        $h .= '<link rel="alternate" hreflang="' . $l . '" href="' . e($site['url'] . $l . '/index.html') . "\">\n";
     }
+    $h .= '<link rel="alternate" hreflang="x-default" href="' . e($site['url']) . "\">\n";
     $h .= "<link rel=\"stylesheet\" href=\"styles.css\">\n"
         . "<script>try{var t=localStorage.getItem(\"rtly-docs-theme\");if(t===\"light\"||t===\"dark\")document.documentElement.setAttribute(\"data-theme\",t)}catch(e){}</script>\n"
         . "<script defer src=\"app.js\"></script>\n</head>\n<body>\n"
         . "<main id=\"main\" class=\"chooser\"><div class=\"shell\">\n"
         . '<div class="brand-row"><img src="assets/logo.svg" width="52" height="52" alt=""><span class="eyebrow">' . e($site['package']) . "</span></div>\n"
         . '<h1>' . e($site['name']) . '</h1>'
-        . '<p class="lead" lang="en">' . e($R['heading']) . '</p><p class="lead" lang="fa" dir="rtl">' . e($R['heading_fa']) . "</p>\n"
+        . '<p class="lead" lang="en">' . e($R['heading']) . '</p><p class="lead" lang="fa" dir="rtl">' . e($R['heading_fa']) . '</p><p class="lead" lang="ar" dir="rtl">' . e($R['heading_ar']) . "</p>\n"
         . '<div class="lang-cards">';
     foreach ($langsPresent as $l) {
         $c = $R['cards'][$l];
@@ -771,6 +802,40 @@ function searchIndex(array $P): string
     }
     return "/* Generated by tools/docs/build.php. Do not edit. */\nwindow.RTLY_DOCS = "
         . json_encode($entries, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR) . ";\n";
+}
+
+/**
+ * sitemap.xml with absolute URLs and xhtml:link alternates between the languages.
+ *
+ * @param array<string,array<string,array<string,mixed>>> $pagesByLang
+ * @param list<string> $present
+ */
+function sitemapXml(string $siteUrl, array $pagesByLang, array $present): string
+{
+    // Each entry: [file, slug|null]; the file name is the same in every language.
+    $groups = [['index.html', null], ['all.html', null]];
+    $slugs = [];
+    foreach ($present as $l) {
+        foreach (array_keys($pagesByLang[$l]) as $slug) {
+            $slugs[$slug] = true;
+        }
+    }
+    foreach (array_keys($slugs) as $slug) {
+        $groups[] = [$slug . '.html', $slug];
+    }
+    $x = '<?xml version="1.0" encoding="UTF-8"?>' . "\n" . '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">' . "\n";
+    $x .= '  <url><loc>' . e($siteUrl) . "</loc></url>\n";
+    foreach ($groups as [$file, $slug]) {
+        $have = array_values(array_filter($present, static fn (string $l): bool => $slug === null || isset($pagesByLang[$l][$slug])));
+        foreach ($have as $l) {
+            $x .= '  <url><loc>' . e($siteUrl . $l . '/' . $file) . '</loc>';
+            foreach ($have as $m) {
+                $x .= '<xhtml:link rel="alternate" hreflang="' . $m . '" href="' . e($siteUrl . $m . '/' . $file) . '"/>';
+            }
+            $x .= "</url>\n";
+        }
+    }
+    return $x . "</urlset>\n";
 }
 
 function llmsTxt(array $P, string $prefix): string
@@ -975,13 +1040,15 @@ function main(array $argv): int
             }
         }
     }
-    foreach ($pagesByLang['fa'] as $slug => $pg) {
-        if (isset($pagesByLang['en'][$slug])) {
-            $a = array_keys($pg['ids']);
-            $b = array_keys($pagesByLang['en'][$slug]['ids']);
-            $diff = array_merge(array_diff($a, $b), array_diff($b, $a));
-            if ($diff) {
-                $warnings[] = "$slug: heading/element ids differ between fa and en: " . implode(', ', array_unique($diff));
+    foreach (['fa', 'ar'] as $other) {
+        foreach ($pagesByLang[$other] as $slug => $pg) {
+            if (isset($pagesByLang['en'][$slug])) {
+                $a = array_keys($pg['ids']);
+                $b = array_keys($pagesByLang['en'][$slug]['ids']);
+                $diff = array_merge(array_diff($a, $b), array_diff($b, $a));
+                if ($diff) {
+                    $warnings[] = "$slug: heading/element ids differ between $other and en: " . implode(', ', array_unique($diff));
+                }
             }
         }
     }
@@ -1049,6 +1116,7 @@ function main(array $argv): int
             'langs' => $strings['langs'],
             'pages' => $pagesByLang[$lang],
             'allPages' => $allPages,
+            'present' => $present,
             'groupOrder' => $groupOrder,
             'homeSample' => $homeSample,
         ];
@@ -1059,8 +1127,10 @@ function main(array $argv): int
         }
         $files["$lang/search-index.js"] = searchIndex($P);
     }
-    // llms.txt: English at the root, Persian next to the Persian pages.
-    foreach (['en' => ['llms.txt', 'en/'], 'fa' => ['fa/llms.txt', '']] as $lang => [$path, $prefix]) {
+    $files['sitemap.xml'] = sitemapXml($strings['site']['url'], $pagesByLang, $present);
+    $files['robots.txt'] = "User-agent: *\nAllow: /\n\nSitemap: " . $strings['site']['url'] . "sitemap.xml\n";
+    // llms.txt: English at the root, Persian and Arabic next to their own pages.
+    foreach (['en' => ['llms.txt', 'en/'], 'fa' => ['fa/llms.txt', ''], 'ar' => ['ar/llms.txt', '']] as $lang => [$path, $prefix]) {
         if (!in_array($lang, $present, true)) {
             continue;
         }

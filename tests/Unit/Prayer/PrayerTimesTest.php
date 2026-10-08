@@ -8,6 +8,7 @@ use DateTimeImmutable;
 use DateTimeZone;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use RtlyKit\Prayer\HighLatitudeRule;
 use RtlyKit\Prayer\PrayerTimes;
 
 final class PrayerTimesTest extends TestCase
@@ -31,7 +32,8 @@ final class PrayerTimesTest extends TestCase
     public function test_prayer_times_at_the_pole_only_yield_dhuhr(): void
     {
         $utc = new DateTimeZone('UTC');
-        $pt = new PrayerTimes(90.0, 0.0, PrayerTimes::METHOD_MWL, PrayerTimes::ASR_STANDARD, $utc);
+        $pt = (new PrayerTimes(90.0, 0.0, PrayerTimes::METHOD_MWL, PrayerTimes::ASR_STANDARD, $utc))
+            ->withHighLatitudeRule(HighLatitudeRule::None);
         $t = $pt->getTimes(new DateTimeImmutable('2024-06-21 10:00', $utc));
 
         $this->assertMatchesRegularExpression('/^\d\d:\d\d$/', $t['dhuhr']);
@@ -45,7 +47,8 @@ final class PrayerTimesTest extends TestCase
     public function test_next_prayer_at_the_pole_rolls_over_to_tomorrows_dhuhr(): void
     {
         $utc = new DateTimeZone('UTC');
-        $pt = new PrayerTimes(90.0, 0.0, PrayerTimes::METHOD_MWL, PrayerTimes::ASR_STANDARD, $utc);
+        $pt = (new PrayerTimes(90.0, 0.0, PrayerTimes::METHOD_MWL, PrayerTimes::ASR_STANDARD, $utc))
+            ->withHighLatitudeRule(HighLatitudeRule::None);
 
         $next = $pt->nextPrayer(new DateTimeImmutable('2024-06-21 23:30', $utc));
 
@@ -201,7 +204,8 @@ final class PrayerTimesTest extends TestCase
     public function test_high_latitude_returns_null_instead_of_clamping(): void
     {
         // Tromso midsummer: midnight sun, so no sunrise/sunset/twilight angles are reached
-        $calc  = new PrayerTimes(69.6492, 18.9553, PrayerTimes::METHOD_MWL, 1, new DateTimeZone('UTC'));
+        $calc  = (new PrayerTimes(69.6492, 18.9553, PrayerTimes::METHOD_MWL, 1, new DateTimeZone('UTC')))
+            ->withHighLatitudeRule(HighLatitudeRule::None);
         $times = $calc->getTimes(new DateTimeImmutable('2024-06-21 12:00', new DateTimeZone('UTC')));
 
         $this->assertNull($times['fajr']);

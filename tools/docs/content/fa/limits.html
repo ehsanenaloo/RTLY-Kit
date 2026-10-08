@@ -1,15 +1,15 @@
 <!--
-title: محدودیت‌ها
-description: همهٔ محدودیت‌های سخت در یک صفحه: بازهٔ سال‌های پشتیبانی‌شده، سقف اندازهٔ ورودی، بازهٔ اعداد به حروف، بازهٔ ام‌القری و دیگر مرزهای عددی کتابخانه.
+title: سقف‌ها
+description: همهٔ سقف‌ها در یک صفحه. بازهٔ سال تقویم‌ها، سقف اندازهٔ ورودی، بازهٔ عدد به حروف، بازهٔ ام‌القری، بازهٔ تنظیم‌ها و مرزهای عددی دیگر کتابخانه.
 group: reference
 order: 60
 -->
-<p>محدودیت‌های زیر عمدی‌اند. هر فراخوانی را ارزان و قابل‌پیش‌بینی نگه می‌دارند و نمی‌گذارند ورودی نامطمئن به تاریخ سرریزشده یا محاسبهٔ گران تبدیل شود. عبور از هر کدام همیشه یک <code>RtlyKitException</code> مستند پرتاب می‌کند (به <a href="error-handling.html">مدیریت خطا</a> نگاه کنید) یا، برای اعتبارسنج‌ها، یک <code>Result</code> نامعتبر می‌دهد.</p>
+<p>این سقف‌ها عمدی هستند. هر فراخوانی را ارزان و قابل‌پیش‌بینی نگه می‌دارند و نمی‌گذارند ورودی نامطمئن به تاریخ سرریزشده یا محاسبهٔ سنگین تبدیل شود. از هر سقف که رد شوید، یک <code>RtlyKitException</code> مستند می‌گیرید (<a href="error-handling.html">مدیریت خطا</a>). در اعتبارسنج‌ها یک <code>Result</code> نامعتبر می‌گیرید.</p>
 
 <h2 id="calendars">بازهٔ سال تقویم‌ها</h2>
-<p>هر تاریخ پشتیبانی‌شده در هر تقویم به یک سال میلادی بین ۱ و ۹۹۹۹ نگاشت می‌شود؛ پس هر مقداری که کلاس‌ها تولید می‌کنند در یک <code>DateTimeImmutable</code> بدون سرریز جا می‌گیرد. بازه‌ها همان ثابت‌های عمومی <code>MIN_YEAR</code> و <code>MAX_YEAR</code> هستند:</p>
+<p>هر تاریخ پشتیبانی‌شده در هر تقویم به یک سال میلادی بین ۱ و ۹۹۹۹ می‌رسد. پس هر مقداری که کلاس‌ها بسازند در یک <code>DateTimeImmutable</code> جا می‌شود و سرریز نمی‌کند. بازه‌ها همان ثابت‌های عمومی <code>MIN_YEAR</code> و <code>MAX_YEAR</code> هستند:</p>
 <table>
-<thead><tr><th>تقویم</th><th><code>MIN_YEAR</code></th><th><code>MAX_YEAR</code></th><th>تاریخ میلادیِ ۱/۱ این سال‌ها</th></tr></thead>
+<thead><tr><th>تقویم</th><th><code>MIN_YEAR</code></th><th><code>MAX_YEAR</code></th><th>تاریخ میلادیِ اول سال این دو سال</th></tr></thead>
 <tbody>
 <tr><td><code>Jalali</code></td><td>‎-620</td><td>9377</td><td>0001-03-21 .. 9998-03-20</td></tr>
 <tr><td><code>Hijri</code></td><td>1</td><td>9665</td><td>0622-07-19 .. 9998-10-12</td></tr>
@@ -34,78 +34,90 @@ foreach ([Jalali::class, Hijri::class, Hebrew::class] as $class) {
 // Jalali   -620..9377   0001-03-21 .. 9998-03-20
 // Hijri       1..9665   0622-07-19 .. 9998-10-12
 // Hebrew   3762..13759  0001-09-06 .. 9998-10-15</code></pre>
-<p>همهٔ نقاط ورود از بازه پیروی می‌کنند: <code>make</code>، <code>create</code>، <code>createFromFormat</code>، timestampهای یونیکس، <code>add*()</code> / <code>sub*()</code> (حتی با مقدارهای بسیار بزرگ)، توابع کمکی و ماکروهای Carbon. مقدار بیرون از بازه <code>InvalidDateException</code> پرتاب می‌کند؛ هیچ‌چیز تاریخ سرریزشده برنمی‌گرداند و <code>TypeError</code> یا <code>ValueError</code> بیرون نمی‌آید.</p>
+<p>همهٔ راه‌های ورود از این بازه پیروی می‌کنند: <code>make</code>، <code>create</code>، <code>createFromFormat</code>، زمان یونیکس، <code>add*()</code> و <code>sub*()</code> (حتی با مقدار خیلی بزرگ)، توابع کمکی و ماکروهای Carbon. مقدار بیرون از بازه <code>InvalidDateException</code> می‌دهد. هیچ چیز تاریخ سرریزشده نمی‌دهد و <code>TypeError</code> یا <code>ValueError</code> بیرون نمی‌آید.</p>
 
-<h3 id="deltas">مقدارهای افزودن و timestamp</h3>
+<h3 id="deltas">مقدار افزودن و زمان یونیکس</h3>
 <ul>
-<li>مقدار <code>addDays()</code> / <code>subDays()</code> (و ساعت، دقیقه، ثانیه) که از بازهٔ کل تقویم پشتیبانی‌شده بزرگ‌تر باشد (حدود ۳٫۷ میلیون روز، یا همان بازه بر حسب ساعت، دقیقه یا ثانیه) از همان ابتدا با <code>InvalidDateException</code> رد می‌شود؛ مقدار کوچک‌تری که تاریخ را بیرون از سال‌های پشتیبانی‌شده ببرد هم رد می‌شود.</li>
-<li>timestamp یونیکس باید در سال‌های میلادی ۱ تا ۹۹۹۹ باشد (با کمی تلورانس برای منطقهٔ زمانی)؛ دورتر از آن رد می‌شود.</li>
-<li>‏<code>Hebrew::addMonths()</code> و <code>addYears()</code> هر قدر مقدار بزرگ باشد در زمان ثابت اجرا می‌شوند.</li>
+<li>مقدار <code>addDays()</code> و <code>subDays()</code> (و ساعت، دقیقه، ثانیه) اگر از کل بازهٔ تقویم بزرگ‌تر باشد (حدود ۳٫۷ میلیون روز، یا همین بازه برحسب ساعت و دقیقه و ثانیه) از همان اول با <code>InvalidDateException</code> رد می‌شود. مقدار کوچک‌تری که تاریخ را از سال‌های پشتیبانی‌شده بیرون ببرد هم رد می‌شود.</li>
+<li>زمان یونیکس باید در سال‌های میلادی ۱ تا ۹۹۹۹ باشد (با کمی جا برای منطقهٔ زمانی). دورتر از آن رد می‌شود.</li>
+<li><code>Hebrew::addMonths()</code> و <code>addYears()</code> هر قدر مقدار بزرگ باشد، زمان یکسانی می‌برند.</li>
 </ul>
 
-<h3 id="string-years">آستانهٔ سال در رشته‌ها</h3>
-<p>رشته‌ای مانند <code>1405/01/01</code> یا <code>1405-01-01</code> که به <code>make()</code> یا یک تابع کمکی داده شود، اگر سال کمتر از آستانه باشد تاریخِ خودِ همان تقویم خوانده می‌شود، وگرنه رشتهٔ میلادی:</p>
+<h3 id="string-years">آستانهٔ سال در رشته</h3>
+<p>رشته‌ای مثل <code>1405/01/01</code> یا <code>1405-01-01</code> که به <code>make()</code> یا یک تابع کمکی بدهید، اگر سالش از آستانه کمتر باشد تاریخ خود همان تقویم خوانده می‌شود. وگرنه رشتهٔ میلادی است:</p>
 <table>
-<thead><tr><th>کلاس</th><th>سال تقویم خودش</th><th>در غیر این صورت</th></tr></thead>
+<thead><tr><th>کلاس</th><th>سال خود تقویم</th><th>در غیر این صورت</th></tr></thead>
 <tbody>
 <tr><td><code>Jalali</code> / <code>jdate()</code></td><td>کمتر از 1700</td><td>میلادی</td></tr>
 <tr><td><code>Hijri</code> / <code>hdate()</code></td><td>کمتر از 1700</td><td>میلادی</td></tr>
 <tr><td><code>Hebrew</code> / <code>hebrew_date()</code></td><td>3000 یا بیشتر</td><td>میلادی</td></tr>
 </tbody>
 </table>
-<p>برای دادن تاریخ میلادیِ واقعی زیر آستانه (مثلاً سال ۹۹۹) از <code>DateTimeImmutable</code> استفاده کنید که هیچ‌گاه بازتفسیر نمی‌شود. به <a href="troubleshooting-faq.html#string-year">پرسش‌های متداول</a> نگاه کنید.</p>
+<p>برای دادن تاریخ میلادی واقعی زیر آستانه (مثلاً سال ۹۹۹) از <code>DateTimeImmutable</code> استفاده کنید. آن هیچ‌وقت دوباره تفسیر نمی‌شود. <a href="troubleshooting-faq.html#string-year">پرسش‌های متداول</a> را ببینید.</p>
 
 <h3 id="umm-al-qura">بازهٔ ام‌القری</h3>
 <ul>
-<li>جدول ماه‌های ام‌القری داخل بسته سال‌های ۱۳۰۰ تا ۱۵۰۰ هجری قمری (از 1882-11-12 تا 2077-11-16) را پوشش می‌دهد. بیرون از آن، و همیشه برای <code>HijriVariant::Tabular</code>، <code>Hijri</code> از قواعد حسابی استفاده می‌کند که ممکن است یک یا دو روز با رؤیت فرق کند. <code>Hijri::hasUmmAlQuraData($year)</code> می‌گوید یک سال پوشش داده شده یا نه.</li>
-<li>‏<code>IranHolidays</code> مناسبت‌های اسلامی را فقط در همین بازه گزارش می‌کند. بیرون از آن فقط تعطیلات ثابت جلالی برمی‌گردد.</li>
+<li>جدول ماه‌های ام‌القری داخل بسته سال‌های ۱۳۰۰ تا ۱۵۰۰ هجری قمری را پوشش می‌دهد (از 1882-11-12 تا 2077-11-16). بیرون از آن، و برای <code>HijriVariant::Tabular</code> همیشه، <code>Hijri</code> قاعدهٔ حسابی به کار می‌برد که ممکن است یکی دو روز با رؤیت فرق کند. <code>Hijri::hasUmmAlQuraData($year)</code> می‌گوید یک سال پوشش دارد یا نه. سال‌های ۱۳۱۸ تا ۱۵۰۰ با تقویم رسمی KACST مقایسه شده‌اند (<code>Hijri::ummAlQuraVerifiedRange()</code>).</li>
+<li><code>IranHolidays</code> برای سال‌های جلالی ۱۳۸۰ تا ۱۴۰۵ تاریخ‌های رسمی یا گزارش‌شده را به کار می‌برد. برای بقیهٔ سال‌ها، تعطیلات اسلامی را فقط داخل بازهٔ ام‌القری می‌دهد. بیرون از آن و برای سال‌های قبل از مبدأ هجری فقط تعطیلات ثابت جلالی می‌آید، بدون خطا. <code>all()</code> و <code>allTitles()</code> و <code>allFixed()</code> برای هر سال جلالی از ‎-620 تا 9377 کار می‌کنند.</li>
 </ul>
 
 <h2 id="input-caps">سقف اندازهٔ ورودی</h2>
 <table>
-<thead><tr><th>کجا</th><th>سقف</th><th>در صورت عبور</th></tr></thead>
+<thead><tr><th>کجا</th><th>سقف</th><th>اگر رد شود</th></tr></thead>
 <tbody>
-<tr><td>اعتبارسنج‌ها (<code>NationalCode</code>، <code>Sheba</code>، <code>BankCard</code>، <code>Mobile</code>، <code>PostalCode</code>، <code>VehiclePlate</code>)</td><td>۴۰۹۶ بایت برای هر رشته</td><td><code>Result</code> نامعتبر، خطای <code>input_too_long</code></td></tr>
-<tr><td><code>NumberToWords::convert()</code> و <code>fromWords()</code> (ورودی رشته‌ای)</td><td>۴۰۹۶ بایت</td><td>‏<code>InvalidNumberException</code> با <code>input_too_long</code></td></tr>
-<tr><td>ورودی رشته‌ای <code>Format</code> (‏<code>withSeparator()</code>)</td><td>۴۰۹۶ بایت</td><td>‏<code>InvalidNumberException</code> با <code>input_too_long</code></td></tr>
-<tr><td><code>Format::withSeparator()</code> / <code>format_number()</code></td><td>۱۰۰۰ نویسه در عدد اعشاری ساده (ارقام صحیح و اعشار روی هم)</td><td>‏<code>InvalidNumberException</code> با <code>input_too_long</code></td></tr>
-<tr><td>جداکنندهٔ <code>Slugify::make()</code></td><td>۶۴ بایت، UTF-8 معتبر</td><td>‏<code>RtlyKitException</code> (‏<code>input_too_long</code> / <code>invalid_argument</code>)</td></tr>
-<tr><td>الگوی <code>Jalali::format()</code></td><td>۲۵۶ بایت (<code>Jalali::MAX_FORMAT_LENGTH</code>)</td><td><code>InvalidDateException</code></td></tr>
+<tr><td>اعتبارسنج‌ها (<code>NationalCode</code>، <code>Sheba</code>، <code>BankCard</code>، <code>Mobile</code>، <code>PostalCode</code>، <code>VehiclePlate</code>)</td><td>۴۰۹۶ بایت برای هر رشته</td><td><code>Result</code> نامعتبر با <code>input_too_long</code></td></tr>
+<tr><td><code>NumberToWords::convert()</code> و <code>fromWords()</code> (ورودی رشته‌ای)</td><td>۴۰۹۶ بایت</td><td><code>InvalidNumberException</code> با <code>input_too_long</code></td></tr>
+<tr><td>ورودی رشته‌ای <code>Format</code> (<code>withSeparator()</code>)</td><td>۴۰۹۶ بایت</td><td><code>InvalidNumberException</code> با <code>input_too_long</code></td></tr>
+<tr><td><code>Format::withSeparator()</code> و <code>format_number()</code></td><td>۱۰۰۰ نویسه در عدد اعشاری ساده (رقم‌های صحیح و کسر با هم)</td><td><code>InvalidNumberException</code> با <code>input_too_long</code></td></tr>
+<tr><td>جداکنندهٔ <code>Slugify::make()</code></td><td>۶۴ بایت، UTF-8 معتبر</td><td><code>RtlyKitException</code> (<code>input_too_long</code> یا <code>invalid_argument</code>)</td></tr>
+<tr><td>الگوی <code>format()</code> (جلالی، هجری، عبری)</td><td>۲۵۶ بایت (<code>MAX_FORMAT_LENGTH</code> در هر کلاس)</td><td><code>InvalidDateException</code></td></tr>
 </tbody>
 </table>
-<p>این سقف‌ها بخشی از تعهد کتابخانه‌اند (به <a href="api-stability.html">پایداری API</a> نگاه کنید).</p>
+<p>این سقف‌ها جزو تعهد کتابخانه‌اند (<a href="api-stability.html">پایداری API</a>).</p>
 
-<h2 id="numbers">بازهٔ اعداد</h2>
+<h2 id="numbers">بازهٔ عددها</h2>
 <table>
-<thead><tr><th>تابع</th><th>بازه</th><th>فراتر از آن</th></tr></thead>
+<thead><tr><th>تابع</th><th>بازه</th><th>بیشتر از آن</th></tr></thead>
 <tbody>
-<tr><td><code>number_to_words($n)</code> (فارسی، پیش‌فرض)</td><td>عدد صحیح تا ۲۱ رقم (کمتر از 10^21) و منفی‌ها</td><td>‏<code>InvalidNumberException</code> با <code>number_too_large</code></td></tr>
-<tr><td><code>number_to_words($n, 'ar')</code></td><td>از ۰ تا 999,999,999 و منفی‌ها، فقط شکل شمارشِ مذکر</td><td>‏<code>InvalidNumberException</code> با <code>number_too_large</code></td></tr>
+<tr><td><code>number_to_words($n)</code> (فارسی، پیش‌فرض)</td><td>عدد صحیح تا ۲۱ رقم (کمتر از 10^21) و منفی‌ها</td><td><code>InvalidNumberException</code> با <code>number_too_large</code></td></tr>
+<tr><td><code>number_to_words($n, 'ar')</code> و <code>NumberToWords::convert($n, 'ar', $options)</code></td><td>عدد صحیح کمتر از 10^27 و منفی‌ها</td><td><code>InvalidNumberException</code> با <code>number_too_large</code></td></tr>
+<tr><td><code>NumberToWords::ordinal($n, 'ar')</code></td><td>۱ تا ۹۹</td><td><code>InvalidNumberException</code> (برای ۰ و کمتر <code>invalid_number</code>، بالای ۹۹ <code>number_too_large</code>)</td></tr>
 <tr><td><code>number_to_words($n, 'de')</code> یا هر زبان دیگر</td><td>فقط <code>fa</code> و <code>ar</code></td><td><code>UnsupportedLocaleException</code></td></tr>
-<tr><td><code>NumberToWords::convert()</code>، <code>Format::ordinal()</code></td><td>اعداد صحیح؛ <code>float</code>های صحیح مانند <code>3.0</code> پذیرفته است</td><td>‏<code>InvalidNumberException</code> برای <code>1.5</code>، <code>NaN</code>، <code>INF</code></td></tr>
-<tr><td><code>Format::ordinal()</code></td><td>اعداد صحیحِ نامنفی</td><td><code>InvalidNumberException</code></td></tr>
+<tr><td><code>NumberToWords::convert()</code> و <code>Format::ordinal()</code></td><td>عدد صحیح. <code>float</code>ِ صحیح مثل <code>3.0</code> قبول است</td><td><code>InvalidNumberException</code> برای <code>1.5</code> و <code>NaN</code> و <code>INF</code></td></tr>
+<tr><td><code>Format::ordinal()</code></td><td>عدد صحیح نامنفی</td><td><code>InvalidNumberException</code></td></tr>
 </tbody>
 </table>
 <pre><code class="language-php">use function RtlyKit\number_to_words;
 
 echo number_to_words(999999999, 'ar'), "\n";
 // تسعمئة وتسعة وتسعون مليون وتسعمئة وتسعة وتسعون ألف وتسعمئة وتسعة وتسعون
-// number_to_words(1000000000, 'ar') استثنای InvalidNumberException پرتاب می‌کند (number_too_large، limit برابر "10^9")
-// number_to_words(str_repeat('9', 22)) استثنای InvalidNumberException پرتاب می‌کند (number_too_large، limit برابر "10^21 - 1")</code></pre>
+// number_to_words(str_repeat('9', 27), 'ar') خطای InvalidNumberException می‌دهد (number_too_large، limit برابر "10^27 - 1")
+// number_to_words(str_repeat('9', 22)) خطای InvalidNumberException می‌دهد (number_too_large، limit برابر "10^21 - 1")</code></pre>
 
-<h2 id="data">محدودیت پوشش داده</h2>
+<h2 id="settings">بازهٔ تنظیم‌ها</h2>
+<table>
+<thead><tr><th>تنظیم</th><th>بازه</th><th>بیشتر از آن</th></tr></thead>
+<tbody>
+<tr><td><code>HolidayCalendar::withIslamicOffset()</code></td><td>‎-۳ تا ۳ روز</td><td><code>InvalidDateException</code></td></tr>
+<tr><td><code>HolidayCalendar::withHijriMonthStart()</code></td><td>حداکثر ۳ روز با شروع محاسبه‌شده فاصله. ۲۹ یا ۳۰ روز با شروع ماه کناری که خودتان داده‌اید</td><td><code>InvalidDateException</code></td></tr>
+<tr><td><code>PrayerTimes::withTune()</code></td><td>‎-۳۰ تا ۳۰ دقیقه، عدد صحیح، برای <code>fajr</code> و <code>sunrise</code> و <code>dhuhr</code> و <code>asr</code> و <code>maghrib</code> و <code>isha</code></td><td><code>InvalidPrayerConfigException</code></td></tr>
+</tbody>
+</table>
+
+<h2 id="data">پوشش داده</h2>
 <table>
 <thead><tr><th>داده</th><th>پوشش</th></tr></thead>
 <tbody>
-<tr><td>BINهای کارت بانکی</td><td>۳۹ BIN؛ بقیه از <code>getBankName()</code> مقدار <code>null</code> می‌گیرند</td></tr>
-<tr><td>کد بانک‌های شبا</td><td>۳۸ کد؛ بقیه <code>null</code></td></tr>
-<tr><td>محل صدور کد ملی</td><td>۵۴۷ پیش‌شماره؛ بقیه <code>null</code></td></tr>
-<tr><td>شهرهای اوقات شرعی (<code>PrayerTimes::forCity()</code>)</td><td>۱۴ شهر: tehran، mashhad، isfahan، shiraz، tabriz، qom، mecca، medina، riyadh، istanbul، cairo، dubai، baghdad، jakarta. برای جای دیگر از <code>new PrayerTimes($lat, $lng, ...)</code> استفاده کنید.</td></tr>
-<tr><td>روش‌های اوقات شرعی</td><td>Tehran، MWL، ISNA، Egypt، Makkah، Karachi؛ ضریب عصر ۱ (معمولی) یا ۲ (حنفی)</td></tr>
-<tr><td>اوقات شرعی در عرض‌های بالا</td><td>زمانی که خورشید در آن روز نمی‌تواند پدید آورد <code>null</code> است، نه خطا</td></tr>
+<tr><td>BIN کارت بانکی</td><td>۳۹ BIN. بقیه از <code>getBankName()</code> مقدار <code>null</code> می‌گیرند</td></tr>
+<tr><td>کد بانک شبا</td><td>۳۸ کد. بقیه <code>null</code></td></tr>
+<tr><td>محل صدور کد ملی</td><td>۵۴۷ پیش‌شماره. بقیه <code>null</code></td></tr>
+<tr><td>تاریخ‌های رسمی تعطیلات</td><td>سال‌های جلالی ۱۳۹۴ و ۱۳۹۶ تا ۱۴۰۵ (رسمی)، ۱۳۸۰ تا ۱۳۹۳ و ۱۳۹۵ (گزارش‌شده). بقیهٔ سال‌ها تخمینی است</td></tr>
+<tr><td>شهرهای اوقات شرعی (<code>PrayerTimes::forCity()</code>)</td><td>۱۴ شهر: tehran، mashhad، isfahan، shiraz، tabriz، qom، mecca، medina، riyadh، istanbul، cairo، dubai، baghdad، jakarta. برای جای دیگر از <code>new PrayerTimes($lat, $lng, ...)</code> استفاده کنید</td></tr>
+<tr><td>روش‌های اوقات شرعی</td><td>Tehran، MWL، ISNA، Egypt، Makkah، Karachi. ضریب عصر ۱ (معمولی) یا ۲ (حنفی)</td></tr>
+<tr><td>اوقات شرعی در عرض‌های بالا</td><td>قاعدهٔ پیش‌فرض وقتی را که خورشید نمی‌سازد پر می‌کند. با <code>HighLatitudeRule::None</code> آن وقت <code>null</code> است، نه خطا</td></tr>
 </tbody>
 </table>
-<p>مبنای این جدول‌ها را در <a href="accuracy-and-data.html">دقت و داده‌ها</a> ببینید.</p>
+<p>این جدول‌ها بر چه پایه‌ای هستند: <a href="accuracy-and-data.html">دقت و داده</a>.</p>
 
-<h2 id="platform">محدودیت پلتفرم</h2>
-<p>‏PHP نسخهٔ 8.2 تا 8.4 با <code>ext-mbstring</code>؛ لاراول 11 و 12؛ Carbon 3. به <a href="api-stability.html#platforms">پایداری API</a> نگاه کنید.</p>
+<h2 id="platform">پلتفرم</h2>
+<p>PHP نسخهٔ ۸٫۲ تا ۸٫۵ بدون هیچ افزونهٔ اضافه، Laravel 11 و 12 و 13، و Carbon 3. <a href="api-stability.html#platforms">پایداری API</a> را ببینید.</p>

@@ -1,0 +1,6 @@
+# Every change needs review from the maintainer; sensitive areas are listed
+# explicitly so they stay protected if ownership is ever split.
+*                       @ehsanenaloo
+/resources/data/**      @ehsanenaloo
+/src/Calendar/**        @ehsanenaloo
+/.github/**             @ehsanenaloo

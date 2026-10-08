@@ -24,7 +24,7 @@ final class FormatTest extends TestCase
     public function test_with_separator_digit_cap(): void
     {
         $ok = str_repeat('1', 1000);
-        self::assertSame(1000 + 333, mb_strlen(Format::withSeparator($ok)));
+        self::assertSame(1000 + 333, preg_match_all('/./u', Format::withSeparator($ok)));
 
         $this->expectException(InvalidNumberException::class);
         Format::withSeparator(str_repeat('1', 1001));

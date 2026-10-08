@@ -1,0 +1,162 @@
+<!--
+title: تقویم تعطیلات
+description: با HolidayCalendar تعطیلات را با رؤیت هلال و تقویم سازمان خودتان تطبیق بدهید. جابه‌جایی روز، شروع ماه قمری، افزودن و حذف تعطیلی، و دیدن منبع هر تاریخ.
+group: dates-and-times
+order: 15
+-->
+<h2 id="overview">چرا این کلاس هست</h2>
+<p>در ایران تاریخ مناسبت‌های مذهبی را رؤیت هلال تعیین می‌کند. جدول ام‌القری یک تخمین می‌دهد که ۰ تا ۲ روز با اعلام رسمی فرق دارد. برای همین کتابخانه تاریخ‌های رسمی سال‌های ۱۳۹۴ و ۱۳۹۶ تا ۱۴۰۵ را دارد (برای هر سال دو منبع). برای ۱۳۸۰ تا ۱۳۹۳ و ۱۳۹۵ فقط تاریخ‌ها را داریم و بقیهٔ سال‌ها تخمین است.</p>
+<p>کلاس <code>RtlyKit\Holiday\HolidayCalendar</code> به شما اجازه می‌دهد خودتان هم دخالت کنید. وقتی هلال دیده شد، تاریخ واقعی را بدهید. اگر سازمانتان روز خاصی را تعطیل کرده، اضافه‌اش کنید. هر تغییر یک تقویم تازه می‌سازد و چیزی سراسری عوض نمی‌شود. کلاس ساده <code>IranHolidays</code> که در <a href="holidays.html">تعطیلات</a> دیدید، از همین کلاس با تنظیمات پیش‌فرض استفاده می‌کند.</p>
+
+<h2 id="sources">تاریخ‌ها از کجا می‌آیند</h2>
+<p>برای سال‌های جلالی ۱۳۹۴ و ۱۳۹۶ تا ۱۴۰۵ تاریخ‌های رسمی داریم، با دو منبع برای هر سال. برای ۱۳۸۰ تا ۱۳۹۳ و ۱۳۹۵ فقط تاریخ‌ها را از یک منبع گزارش‌شده داریم. بقیهٔ سال‌ها تخمین از جدول ام‌القری است. منبع‌ها در <a href="accuracy-and-data.html">دقت و داده</a> آمده‌اند.</p>
+<p>یک تقویم از پیش‌فرض‌ها بسازید و بپرسید هر سال از کجا آمده است:</p>
+<pre><code class="language-php">&lt;?php
+require 'vendor/autoload.php';
+
+use RtlyKit\Holiday\HolidayCalendar;
+use RtlyKit\Holiday\IranHolidays;
+
+$cal = HolidayCalendar::default();
+
+echo $cal-&gt;sourceOf(1405)-&gt;name, "\n";   // Official
+echo $cal-&gt;sourceOf(1395)-&gt;name, "\n";   // Reported
+echo $cal-&gt;sourceOf(1406)-&gt;name, "\n";   // Estimated
+
+echo implode(' | ', $cal-&gt;getTitles(1405, 1, 1)), "\n";   // جشن نوروز | عید فطر</code></pre>
+<p>مقدار <code>sourceOf()</code> یکی از این سه است:</p>
+<table>
+<thead><tr><th>مقدار</th><th>معنا</th></tr></thead>
+<tbody>
+<tr><td><code>HolidaySource::Official</code></td><td>تاریخ‌های رسمی، با دو منبع (۱۳۹۴ و ۱۳۹۶ تا ۱۴۰۵)</td></tr>
+<tr><td><code>HolidaySource::Reported</code></td><td>فقط تاریخ‌ها، از یک منبع (۱۳۸۰ تا ۱۳۹۳ و ۱۳۹۵). فهرست مناسبت‌ها در این سال‌ها کامل نیست</td></tr>
+<tr><td><code>HolidaySource::Estimated</code></td><td>تخمین از جدول ام‌القری</td></tr>
+</tbody>
+</table>
+<p>کلاس <code>IranHolidays</code> هم همین را دارد: <code>IranHolidays::calendar()</code> تقویم پیش‌فرض را می‌دهد و <code>IranHolidays::sourceOf($year)</code> منبع آن سال را.</p>
+
+<h2 id="tutorial">آموزش کوتاه</h2>
+<p>چهار کار رایج، یکی‌یکی. همه با <code>$cal = HolidayCalendar::default();</code> شروع می‌شوند.</p>
+
+<h3 id="step-offset">۱. جابه‌جایی همهٔ تعطیلات اسلامی</h3>
+<p>اگر می‌بینید تخمین، چند ماه پشت‌سرهم یک روز زودتر است، <code>withIslamicOffset()</code> همهٔ تعطیلات اسلامیِ تخمینی را جابه‌جا می‌کند. عدد بین ‎-۳ و ۳ است. فقط روی سال‌های تخمینی اثر دارد. سال‌های رسمی و تعطیلات ثابت دست نمی‌خورند.</p>
+<pre><code class="language-php">$later = $cal-&gt;withIslamicOffset(1);
+
+echo implode(' | ', $cal-&gt;getTitles(1406, 12, 7)), "\n";     // عید فطر
+echo implode(' | ', $later-&gt;getTitles(1406, 12, 7)), "\n";   // (خالی)
+echo implode(' | ', $later-&gt;getTitles(1406, 12, 8)), "\n";   // عید فطر
+
+echo implode(' | ', $later-&gt;getTitles(1405, 1, 1)), "\n";   // جشن نوروز | عید فطر  (سال رسمی تغییر نمی‌کند)</code></pre>
+
+<h3 id="step-month-start">۲. شروع واقعی یک ماه قمری</h3>
+<p>وقتی هلال دیده شد و روز اول ماه معلوم شد، همان را بدهید. <code>withHijriMonthStart($hijriYear, $hijriMonth, $firstDay)</code> روز اول ماه را به میلادی می‌گیرد (رشته، با رقم فارسی هم قبول است، یا هر <code>DateTimeInterface</code>). همهٔ تعطیلات اسلامی آن ماه از همین روز حساب می‌شوند، حتی در سال‌های رسمی. این تغییر از جدول رسمی و از جابه‌جایی کلی قوی‌تر است.</p>
+<pre><code class="language-php">// اول شوال ۱۴۴۹ طبق تخمین 2028-02-26 است. هلال یک روز دیرتر دیده شد.
+$fixed = $cal-&gt;withHijriMonthStart(1449, 10, '2028-02-27');
+
+echo implode(' | ', $fixed-&gt;getTitles(1406, 12, 7)), "\n";   // (خالی)
+echo implode(' | ', $fixed-&gt;getTitles(1406, 12, 8)), "\n";   // عید فطر
+echo implode(' | ', $fixed-&gt;getTitles(1406, 12, 9)), "\n";   // تعطیل عید فطر</code></pre>
+<p>چند قاعده برای تاریخی که می‌دهید:</p>
+<ul>
+<li>حداکثر ۳ روز با تاریخ محاسبه‌شده فاصله داشته باشد.</li>
+<li>اگر شروع ماه قبل یا بعد را هم داده‌اید، فاصله‌اش با آن ۲۹ یا ۳۰ روز باشد.</li>
+<li>تعطیلی امام رضا (آخر صفر) از شروع ربیع‌الاول همان سال حساب می‌شود، اگر داده باشید. وگرنه از شروع صفر و طول صفر در جدول.</li>
+</ul>
+<p>تاریخی که این قاعده‌ها را نداشته باشد <code>InvalidDateException</code> می‌دهد.</p>
+
+<h3 id="step-add-remove">۳. افزودن و حذف تعطیلی</h3>
+<p><code>withHoliday($date, $title)</code> یک تعطیلی به آن روز اضافه می‌کند. <code>$date</code> یک شیء <code>Jalali</code> است یا رشتهٔ جلالی مثل <code>'1406/02/03'</code> (رقم فارسی هم قبول است). <code>withoutHoliday($date)</code> همهٔ تعطیلی‌های آن روز را برمی‌دارد. اگر عنوان هم بدهید، فقط همان عنوان حذف می‌شود.</p>
+<pre><code class="language-php">$company = $cal
+    -&gt;withHoliday('1406/02/03', 'روز شرکت')
+    -&gt;withoutHoliday('1406/01/13');   // روز طبیعت را برمی‌داریم
+
+echo implode(' | ', $company-&gt;getTitles(1406, 2, 3)), "\n";     // روز شرکت
+var_dump($company-&gt;isHoliday(1406, 1, 13));                     // bool(false)
+
+$onlyNowruz = $cal-&gt;withoutHoliday('1405/01/01', 'عید فطر');
+echo implode(' | ', $onlyNowruz-&gt;getTitles(1405, 1, 1)), "\n";  // جشن نوروز</code></pre>
+<p>متن عنوان نباید خالی باشد، نباید نویسهٔ کنترلی داشته باشد و حداکثر ۲۰۰ نویسه است.</p>
+
+<h3 id="step-origin">۴. دیدن منبع هر تعطیلی</h3>
+<p><code>statusOf()</code> برای هر عنوان نشان می‌دهد از کجا آمده است. جواب فهرستی از <code>HolidayEntry</code> است و هر کدام <code>title</code> و <code>origin</code> دارد. <code>origin</code> یکی از <code>HolidayOrigin::Fixed</code>، <code>Official</code>، <code>Reported</code>، <code>Estimated</code> یا <code>User</code> است.</p>
+<pre><code class="language-php">foreach ($cal-&gt;statusOf(1405, 1, 1) as $entry) {
+    echo $entry-&gt;title, ' ', $entry-&gt;origin-&gt;name, "\n";
+}
+// جشن نوروز Fixed
+// عید فطر Official
+
+foreach ($fixed-&gt;statusOf(1406, 12, 8) as $entry) {
+    echo $entry-&gt;title, ' ', $entry-&gt;origin-&gt;name, "\n";
+}
+// عید فطر User</code></pre>
+<p>با این می‌توانید در رابط کاربری کنار تاریخ‌های تخمینی یک توضیح بگذارید.</p>
+
+<h2 id="options">جدول گزینه‌ها</h2>
+<p>این‌ها همان گزینه‌هایی هستند که <code>HolidayCalendar::fromArray()</code> و فایل تنظیمات Laravel (کلید <code>holidays</code>) می‌پذیرند. کلید ناشناخته یا مقدار نادرست <code>InvalidDateException</code> می‌دهد.</p>
+<table>
+<thead><tr><th>گزینه</th><th>متد معادل</th><th>مقدار</th><th>پیش‌فرض</th></tr></thead>
+<tbody>
+<tr><td><code>islamic_offset</code></td><td><code>withIslamicOffset()</code></td><td>عدد صحیح ‎-۳ تا ۳. فقط سال‌های تخمینی</td><td><code>0</code></td></tr>
+<tr><td><code>hijri_month_starts</code></td><td><code>withHijriMonthStart()</code></td><td>نقشه از <code>'1449-10'</code> به تاریخ میلادی روز اول ماه</td><td><code>[]</code></td></tr>
+<tr><td><code>extra</code></td><td><code>withHoliday()</code></td><td>نقشه از تاریخ جلالی به عنوان یا فهرست عنوان‌ها</td><td><code>[]</code></td></tr>
+<tr><td><code>removed</code></td><td><code>withoutHoliday()</code></td><td>تاریخ (همهٔ آن روز) یا نقشه از تاریخ به عنوان یا فهرست عنوان‌ها</td><td><code>[]</code></td></tr>
+<tr><td><code>use_official_data</code></td><td><code>withOfficialData()</code></td><td><code>true</code> یا <code>false</code></td><td><code>true</code></td></tr>
+</tbody>
+</table>
+<pre><code class="language-php">$custom = HolidayCalendar::fromArray([
+    'islamic_offset'     =&gt; 1,
+    'hijri_month_starts' =&gt; ['1449-10' =&gt; '2028-02-27'],
+    'extra'              =&gt; ['1406/02/03' =&gt; 'روز شرکت'],
+    'removed'            =&gt; ['1406/01/13'],
+]);
+
+echo implode(' | ', $custom-&gt;getTitles(1406, 2, 3)), "\n";   // روز شرکت
+var_dump($custom-&gt;isHoliday(1406, 1, 13));                   // bool(false)</code></pre>
+
+<h2 id="precedence">کدام تاریخ برنده است</h2>
+<p>برای هر روز، این ترتیب اجرا می‌شود:</p>
+<ol>
+<li><strong>تغییرهای شما:</strong> <code>withHoliday</code>، <code>withoutHoliday</code> و <code>withHijriMonthStart</code>.</li>
+<li><strong>جدول رسمی</strong> برای سال‌هایی که دارد.</li>
+<li><strong>تخمین</strong> از جدول ام‌القری، با <code>withIslamicOffset</code> جابه‌جا می‌شود.</li>
+</ol>
+<p>تعطیلات ثابت شمسی (نوروز، ۲۲ بهمن و ...) دقیق‌اند و هیچ جابه‌جایی یا شروع ماهی آن‌ها را عوض نمی‌کند. فقط خودتان با <code>withoutHoliday</code> می‌توانید حذفشان کنید.</p>
+
+<h2 id="laravel">در Laravel</h2>
+<p>فایل تنظیمات را منتشر کنید:</p>
+<pre><code class="language-bash">php artisan vendor:publish --tag=rtly-kit-config</code></pre>
+<p>فایل <code>config/rtly-kit.php</code> ساخته می‌شود و گزینه‌ها زیر کلید <code>holidays</code> هستند:</p>
+<pre><code class="language-php">// config/rtly-kit.php
+return [
+    'holidays' =&gt; [
+        'islamic_offset'     =&gt; 0,
+        'hijri_month_starts' =&gt; [],     // '1449-10' =&gt; '2028-02-27'
+        'extra'              =&gt; [],     // '1406/02/03' =&gt; 'روز شرکت'
+        'removed'            =&gt; [],     // '1406/01/13'
+        'use_official_data'  =&gt; true,
+    ],
+];</code></pre>
+<p>service provider یک <code>HolidayCalendar</code> از این تنظیمات می‌سازد و در container می‌گذارد. کلید جاافتاده مقدار پیش‌فرضش را می‌گیرد. اگر تنظیمات نادرست باشد، خطا موقع اولین استفاده از تقویم پیش می‌آید.</p>
+<pre><code class="language-php">use RtlyKit\Holiday\HolidayCalendar;
+
+$calendar = app(HolidayCalendar::class);
+$calendar-&gt;isHoliday(1406, 2, 3);</code></pre>
+<div class="note"><strong>خوب است بدانید.</strong> تابع <code>is_iran_holiday()</code> و متدهای استاتیک <code>IranHolidays</code> همیشه تقویم پیش‌فرض را می‌خوانند، نه تقویمی را که از تنظیمات Laravel ساخته شده. اگر می‌خواهید تنظیمات شما اعمال شود، تقویم را از container بگیرید.</div>
+
+<h2 id="changes">چه چیزی نسبت به نسخه‌های قبل عوض شد</h2>
+<p>در سال‌های ۱۳۸۰ تا ۱۴۰۵ نتیجه‌ها حالا از تاریخ‌های رسمی یا گزارش‌شده می‌آیند. مثلاً عید فطر ۱۴۴۷ روی ۱۴۰۵/۰۱/۰۱ است. بیرون از این سال‌ها خروجی همان است که قبلاً بود.</p>
+<p>برای برگشتن به رفتار قبلی، <code>withOfficialData(false)</code> جدول رسمی را کنار می‌گذارد و همهٔ سال‌ها را تخمین می‌زند. رفتار نسخه‌های قبل از این امکان همین بود.</p>
+<pre><code class="language-php">$estimate = $cal-&gt;withOfficialData(false);
+
+echo $estimate-&gt;sourceOf(1405)-&gt;name, "\n";                               // Estimated
+echo implode(' | ', $estimate-&gt;getTitles(1404, 12, 29)), "\n";           // ملی شدن صنعت نفت | عید فطر
+echo implode(' | ', $cal-&gt;getTitles(1404, 12, 29)), "\n";                // ملی شدن صنعت نفت</code></pre>
+
+<h2 id="limits">نکته‌ها و محدودیت‌ها</h2>
+<ul>
+<li>جابه‌جایی یکنواخت (<code>withIslamicOffset</code>) برای ماه‌به‌ماه تفاوت رؤیت هلال کافی نیست. این فقط یک تأخیر ثابت را درست می‌کند. برای تاریخ دقیق یک ماه، <code>withHijriMonthStart</code> را بزنید.</li>
+<li>برای سال ۱۴۰۶ هنوز تاریخ رسمی منتشر نشده است (تا 2026-10-08). هر وقت منتشر شود به داده اضافه می‌شود و کد شما تغییر نمی‌کند.</li>
+<li>در سال‌های <code>Reported</code> (۱۳۸۰ تا ۱۳۹۳ و ۱۳۹۵) فقط تاریخ‌ها از یک منبع است و بعضی مناسبت‌ها در فهرست نیستند، مثلاً تعطیلی امام رضا. اگر لازم دارید، با <code>sourceOf()</code> بفهمید و خودتان با <code>withHoliday()</code> اضافه کنید.</li>
+<li>تعطیلی‌های موردی که دولت اعلام می‌کند (مثل آلودگی هوا) جزو داده نیست. با <code>withHoliday()</code> اضافه‌اش کنید.</li>
+</ul>
+<p>مرتبط: <a href="holidays.html">تعطیلات</a>، <a href="laravel-setup.html">راه‌اندازی Laravel</a> و <a href="accuracy-and-data.html">دقت و داده</a>.</p>

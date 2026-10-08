@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="ar" dir="rtl" data-i18n="{&quot;dark&quot;:&quot;الوضع الداكن&quot;,&quot;light&quot;:&quot;الوضع الفاتح&quot;,&quot;to_dark&quot;:&quot;التبديل إلى السمة الداكنة&quot;,&quot;to_light&quot;:&quot;التبديل إلى السمة الفاتحة&quot;,&quot;copy&quot;:&quot;نسخ&quot;,&quot;copied&quot;:&quot;تم النسخ&quot;,&quot;copy_failed&quot;:&quot;تم التحديد؛ انسخ يدويًا&quot;,&quot;copy_label&quot;:&quot;نسخ مثال الشيفرة أعلاه&quot;,&quot;no_results&quot;:&quot;لا يوجد دليل مطابق. جرّب كلمة أقصر.&quot;,&quot;loading&quot;:&quot;ما زال فهرس البحث قيد التحميل. حاول مرة أخرى بعد قليل.&quot;,&quot;results&quot;:&quot;نتائج البحث&quot;,&quot;status&quot;:&quot;يُعرض %d من %d دليلًا&quot;,&quot;suggest&quot;:&quot;النسخة العربية&quot;,&quot;search_label&quot;:&quot;البحث في الدليل&quot;,&quot;search_placeholder&quot;:&quot;البحث في الدليل&quot;}" data-search-index="search-index.js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>أدوات النصوص | RTLY-Kit دليل المستخدم</title>
+<meta name="description" content="تطبيع النصوص الفارسية والعربية، وإصلاح نصف المسافة، والكشف عن اللغة والاتجاه، وبناء المعرّفات النصية الصالحة للروابط، مع السلوك الدقيق وحالات الحافة لكل أداة.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="أدوات النصوص | RTLY-Kit دليل المستخدم">
+<meta property="og:description" content="تطبيع النصوص الفارسية والعربية، وإصلاح نصف المسافة، والكشف عن اللغة والاتجاه، وبناء المعرّفات النصية الصالحة للروابط، مع السلوك الدقيق وحالات الحافة لكل أداة.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ar_AR">
+<meta property="og:locale:alternate" content="fa_IR">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:url" content="https://ehsanenaloo.github.io/RTLY-Kit/ar/text-tools.html">
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+<link rel="canonical" href="https://ehsanenaloo.github.io/RTLY-Kit/ar/text-tools.html">
+<link rel="alternate" hreflang="ar" href="https://ehsanenaloo.github.io/RTLY-Kit/ar/text-tools.html">
+<link rel="alternate" hreflang="fa" href="https://ehsanenaloo.github.io/RTLY-Kit/fa/text-tools.html">
+<link rel="alternate" hreflang="en" href="https://ehsanenaloo.github.io/RTLY-Kit/en/text-tools.html">
+<link rel="alternate" hreflang="x-default" href="https://ehsanenaloo.github.io/RTLY-Kit/">
+<link rel="stylesheet" href="../styles.css">
+<script>try{var t=localStorage.getItem("rtly-docs-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<script defer src="../app.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">انتقل إلى المحتوى</a><header class="site-header"><div class="shell header-inner"><a class="brand" href="index.html"><img src="../assets/logo.svg" width="34" height="34" alt=""><span><span class="name">RTLY-Kit</span><small>دليل المستخدم</small></span></a><nav class="top-nav" aria-label="التنقل الرئيسي"><a href="index.html">نظرة عامة</a><a href="quick-start.html">بدء سريع</a><a href="all.html">كل الأدلة</a><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">جيت هب &#8599;</a></nav><div class="header-tools"><span data-search-host></span><button type="button" class="icon-button" data-theme-toggle hidden>Theme</button><div class="lang-switch" role="group" aria-label="اللغة"><a class="icon-button" href="../fa/text-tools.html" hreflang="fa" lang="fa">فارسی</a><a class="icon-button" href="../en/text-tools.html" hreflang="en" lang="en">English</a><span class="icon-button is-current" lang="ar" aria-current="true">العربية</span></div></div></div></header>
+<main id="main">
+<div class="shell page-intro"><nav class="breadcrumbs" aria-label="مسار الصفحة"><ol><li><a href="index.html">الرئيسية</a></li><li><a href="all.html#group-numbers-text">الأرقام والنصوص</a></li><li aria-current="page">أدوات النصوص</li></ol></nav><h1>أدوات النصوص</h1><p class="lead">تطبيع النصوص الفارسية والعربية، وإصلاح نصف المسافة، والكشف عن اللغة والاتجاه، وبناء المعرّفات النصية الصالحة للروابط، مع السلوك الدقيق وحالات الحافة لكل أداة.</p></div>
+<div class="shell doc-layout has-toc">
+<aside class="sidebar"><details open><summary>تصفح الأدلة</summary><nav aria-label="الأدلة"><a href="all.html">كل الأدلة</a><p>البدء</p><a href="quick-start.html">البدء السريع</a><a href="installation.html">التثبيت</a><p>التقاويم</p><a href="jalali.html">التقويم الجلالي</a><a href="hijri.html">التقويم الهجري</a><a href="hebrew.html">التقويم العبري</a><a href="convert-and-compare.html">التحويل والمقارنة بين التواريخ</a><a href="carbon-macros.html">ماكروات Carbon</a><p>التحقق من الصحة</p><a href="validators-overview.html">نظرة عامة على أدوات التحقق</a><a href="national-code.html">الرقم الوطني</a><a href="sheba-and-bank-card.html">شبا والبطاقة المصرفية</a><a href="mobile-postal-plate.html">الجوال والرمز البريدي ولوحة المركبة</a><p>الأرقام والنصوص</p><a href="digits-and-format.html">الأرقام وتنسيق الأعداد</a><a href="number-words.html">تحويل الأعداد إلى كلمات</a><a href="arabic-number-words.html">الأعداد بالحروف العربية</a><a href="text-tools.html" aria-current="page">أدوات النصوص</a><p>العطل وأوقات الصلاة</p><a href="holidays.html">العطل الرسمية الإيرانية</a><a href="holiday-calendar.html">تقويم العطل القابل للتعديل</a><a href="prayer-times.html">أوقات الصلاة</a><p>لارافيل</p><a href="laravel-setup.html">إعداد Laravel</a><a href="laravel-validation-and-cast.html">قواعد التحقق وتحويل Eloquent</a><p>المرجع</p><a href="helpers-and-globals.html">الدوال المساعدة والدوال العامة</a><a href="error-handling.html">معالجة الأخطاء</a><a href="api-stability.html">استقرار واجهة API</a><a href="accuracy-and-data.html">الدقة والبيانات</a><a href="benchmarks.html">قياس الأداء</a><a href="limits.html">الحدود</a><a href="troubleshooting-faq.html">استكشاف الأخطاء والأسئلة الشائعة</a><a href="upgrade.html">دليل الترقية</a><a href="verifying-releases.html">التحقق من الإصدارات</a></nav></details></aside>
+<article class="prose">
+<details class="toc-inline"><summary>في هذه الصفحة</summary><ol><li><a href="#normalizer">Normalizer</a><ol><li><a href="#normalize">normalize()</a></li><li><a href="#half-space">fixHalfSpace()</a></li><li><a href="#clean">clean()</a></li></ol></li><li><a href="#detector">Detector</a><ol><li><a href="#persian-arabic">isPersian() و isArabic()</a></li><li><a href="#direction">الاتجاه و RTL</a></li><li><a href="#rtl-locale">isRtlLocale()</a></li></ol></li><li><a href="#slugify">Slugify</a><ol><li><a href="#slug-separator">الفاصل</a></li></ol></li></ol></details>
+<h2 id="normalizer">Normalizer<a class="anchor" href="#normalizer" aria-label="رابط إلى هذا القسم">#</a></h2>
+<p>يجعل الصنف <code>RtlyKit\Text\Normalizer</code> النص الفارسي قابلًا للمقارنة والتخزين. فمدخلات المستخدمين تخلط بين أشكال الحروف العربية والفارسية (لوحة المفاتيح العربية تكتب «ي» و«ك»)، وتتضمن حركات وتطويلًا ومسافات زائدة؛ فتبدو الكلمة نفسها متطابقة على الشاشة لكنها تفشل في مقارنة السلاسل أو في البحث في قاعدة البيانات.</p>
+
+<h3 id="normalize">normalize()<a class="anchor" href="#normalize" aria-label="رابط إلى هذا القسم">#</a></h3>
+<p>تفعل <code>Normalizer::normalize($text, $removeDiacritics = true)</code> ما يلي:</p>
+<ul>
+<li>تتحول الحروف العربية إلى نظيراتها الفارسية: «ك» إلى «ک»، و«ي» «ى» «ے» إلى «ی»، و«ة» «ۀ» إلى «ه»، و«ؤ» إلى «و»، و«إ» «أ» «ٱ» إلى «ا».</li>
+<li>تتحول الأرقام العربية الهندية (<code>٠-٩</code>) إلى أرقام فارسية (<code>۰-۹</code>). أما الأرقام الإنجليزية فتُترك كما هي.</li>
+<li>يُحذف التطويل (tatweel، المحرف U+0640).</li>
+<li>تُحذف الحركات، أي علامات الحركات القصيرة (من U+064B إلى U+065F وU+0670)، إلا إذا مرّرت <code>false</code> وسيطًا ثانيًا.</li>
+<li>تُختزل سلاسل المسافات البيضاء (المسافات والجداول والأسطر الجديدة) إلى مسافة واحدة، وتُقصّ الأطراف.</li>
+</ul>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">&lt;?php
+require</span> <span class="tok-s">'vendor/autoload.php'</span>;
+
+<span class="tok-k">use</span> RtlyKit\Text\Normalizer;
+<span class="tok-k">use</span> <span class="tok-k">function</span> RtlyKit\normalize_text;
+
+<span class="tok-k">echo</span> Normalizer::normalize(<span class="tok-s">"علي  كتاب  ١٢٣ 456"</span>), <span class="tok-s">"\n"</span>;    <span class="tok-c">// علی کتاب ۱۲۳ 456</span>
+<span class="tok-k">echo</span> Normalizer::normalize(<span class="tok-s">"كــتاب"</span>), <span class="tok-s">"\n"</span>;                 <span class="tok-c">// کتاب</span>
+<span class="tok-k">echo</span> Normalizer::normalize(<span class="tok-s">"  سلام \n\t دنیا  "</span>), <span class="tok-s">"\n"</span>;     <span class="tok-c">// سلام دنیا</span>
+<span class="tok-k">echo</span> Normalizer::normalize(<span class="tok-s">"أحمد إبراهيم مؤمن ة"</span>), <span class="tok-s">"\n"</span>;    <span class="tok-c">// احمد ابراهیم مومن ه</span>
+<span class="tok-k">echo</span> Normalizer::normalize(<span class="tok-s">"ثَبْت  ١٢٣ 456"</span>), <span class="tok-s">"\n"</span>;         <span class="tok-c">// ثبت ۱۲۳ 456</span>
+<span class="tok-k">echo</span> Normalizer::normalize(<span class="tok-s">"ثَبْت"</span>, <span class="tok-k">false</span>), <span class="tok-s">"\n"</span>;           <span class="tok-c">// ثَبْت (تبقى الحركات)</span>
+<span class="tok-k">echo</span> normalize_text(<span class="tok-s">'كتاب'</span>), <span class="tok-s">"\n"</span>;                          <span class="tok-c">// کتاب</span></code></pre>
+<div class="callout note" role="note"><strong>ما تتركه كما هو.</strong> الهمزة المنفردة «ء» و«ئ» تُترك عمدًا دون مساس، لأن لهما معنى في الكلمات الفارسية والعربية. ونصف المسافة (ZWNJ) يُحفظ: فتخرج «می‌خواهم» مطابقة بايتًا ببايت. والحروف الإنجليزية لا تتغير.</div>
+<p>تستدعي الدالة المساعدة <code>normalize_text()</code> الدالة <code>Normalizer::normalize()</code> بالقيم الافتراضية.</p>
+
+<h3 id="half-space">fixHalfSpace()<a class="anchor" href="#half-space" aria-label="رابط إلى هذا القسم">#</a></h3>
+<p>نصف المسافة (ZWNJ، U+200C) هو ما يجعل «می‌خواهم» تظهر صحيحة. وكثيرًا ما يترك النسخ واللصق عدة منها متتالية، أو واحدة معلّقة بجوار مسافة أو في نهاية النص. تنظّف <code>fixHalfSpace()</code> ذلك:</p>
+<ul>
+<li>تُحذف الواصلات الناعمة (U+00AD).</li>
+<li>تُختزل سلسلة من محارف ZWNJ إلى واحد.</li>
+<li>يُحذف ZWNJ الواقع مباشرة قبل المسافة البيضاء أو بعدها.</li>
+<li>تُحذف محارف ZWNJ في بداية النص ونهايته تمامًا.</li>
+</ul>
+<pre tabindex="0"><code class="language-php"><span class="tok-v">$a</span> = <span class="tok-s">"می\u{200C}\u{200C}\u{200C}خواهم"</span>;
+<span class="tok-k">echo</span> mb_strlen(<span class="tok-v">$a</span>), <span class="tok-s">' '</span>, mb_strlen(Normalizer::fixHalfSpace(<span class="tok-v">$a</span>)), <span class="tok-s">"\n"</span>;   <span class="tok-c">// 10 8</span>
+
+<span class="tok-v">$b</span> = <span class="tok-s">"\u{200C}سلام \u{200C}دنیا\u{200C}"</span>;
+<span class="tok-k">echo</span> mb_strlen(<span class="tok-v">$b</span>), <span class="tok-s">' '</span>, mb_strlen(Normalizer::fixHalfSpace(<span class="tok-v">$b</span>)), <span class="tok-s">"\n"</span>;   <span class="tok-c">// 12 9</span>
+<span class="tok-k">echo</span> Normalizer::fixHalfSpace(<span class="tok-v">$b</span>), <span class="tok-s">"\n"</span>;                                  <span class="tok-c">// سلام دنیا</span></code></pre>
+<p>لا تُدرج أنصاف المسافات الناقصة، ولا تختزل المسافات العادية.</p>
+
+<h3 id="clean">clean()<a class="anchor" href="#clean" aria-label="رابط إلى هذا القسم">#</a></h3>
+<p>الدالة <code>Normalizer::clean()</code> هي النسخة الشاملة للتخزين والبحث: <code>normalize()</code> ثم <code>fixHalfSpace()</code> ثم حذف المحارف الخفية: المسافة ذات العرض الصفري (U+200B) ووصلة العرض الصفري (U+200D) وعلامة ترتيب البايت (U+FEFF). ويبقى ZWNJ المحرف الوحيد ذو العرض الصفري الذي يُحتفظ به.</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-v">$c</span> = <span class="tok-s">"كتاب\u{200B}ي  ١٢٣"</span>;
+<span class="tok-k">echo</span> Normalizer::clean(<span class="tok-v">$c</span>), <span class="tok-s">"\n"</span>;   <span class="tok-c">// کتابی ۱۲۳</span></code></pre>
+<p>أما تطبيق <code>normalize()</code> وحدها على النص نفسه فكان سيترك المسافة ذات العرض الصفري داخل الكلمة، ولهذا وُجدت <code>clean()</code>. استخدمها قبل تخزين النصوص التي يدخلها المستخدمون أو فهرستها.</p>
+
+<h2 id="detector">Detector<a class="anchor" href="#detector" aria-label="رابط إلى هذا القسم">#</a></h2>
+<p>يجيب <code>RtlyKit\Text\Detector</code> عن أسئلة الكتابة (script) واللغة والاتجاه. كل دوالّه ساكنة (static) ولا تُطلق استثناءً أبدًا.</p>
+
+<h3 id="persian-arabic">isPersian() و isArabic()<a class="anchor" href="#persian-arabic" aria-label="رابط إلى هذا القسم">#</a></h3>
+<p>كلتاهما استدلال تقريبي (heuristic) للنص المكتوب بالخط العربي. تُعرف الفارسية من الحروف الموجودة في الفارسية وحدها (<code>پ چ ژ گ</code>، والشكلان الفارسيان <code>ک</code> و<code>ی</code>، والأرقام الفارسية). وتُعرف العربية من <code>ي ك ى ة</code> والأرقام العربية الهندية. أما الحروف المشتركة بين اللغتين، ومنها «ه» وصور الهمزة، فلا تُحتسب. ويُعدّ النص فارسيًا عندما تكون الحروف الفارسية الخالصة بتكرار لا يقل عن الحروف العربية الخالصة، فحالات التعادل والنصوص التي لا تحوي حروفًا مميِّزة تُعدّ فارسية.</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">use</span> RtlyKit\Text\Detector;
+
+var_dump(Detector::isPersian(<span class="tok-s">'سلام'</span>));        <span class="tok-c">// bool(true)، لا حروف مميِّزة، فارسية افتراضياً</span>
+var_dump(Detector::isPersian(<span class="tok-s">'گچپژ'</span>));        <span class="tok-c">// bool(true)</span>
+var_dump(Detector::isArabic(<span class="tok-s">'مرحبا بكم'</span>));    <span class="tok-c">// bool(true)</span>
+var_dump(Detector::isArabic(<span class="tok-s">'كتاب ي'</span>));       <span class="tok-c">// bool(true)</span>
+var_dump(Detector::isPersian(<span class="tok-s">'hello'</span>));       <span class="tok-c">// bool(false)، لا خط عربي إطلاقاً</span>
+var_dump(Detector::isPersian(<span class="tok-s">'۱۲۳'</span>));         <span class="tok-c">// bool(true)، أرقام فارسية</span>
+var_dump(Detector::isArabic(<span class="tok-s">'٣٤٥'</span>));          <span class="tok-c">// bool(true)، أرقام عربية هندية</span>
+var_dump(Detector::isPersian(<span class="tok-s">''</span>));            <span class="tok-c">// bool(false)</span></code></pre>
+<div class="callout note" role="note"><strong>من المفيد أن تعرف.</strong> هذه الدوال تستدل على اللغة من تكرار الحروف، وليست محدِّدًا دقيقًا للغة. فالنصوص القصيرة جدًا والأسماء والكلمات العربية المكتوبة داخل نص فارسي قد تكون ملتبسة، والنص الذي يخلط العربية بالفارسية قد يميل إلى أيٍّ منهما. استخدمها لاختيار قيمة افتراضية معقولة، لا لقرار يجب أن يكون صحيحًا دائمًا.</div>
+
+<h3 id="direction">الاتجاه و RTL<a class="anchor" href="#direction" aria-label="رابط إلى هذا القسم">#</a></h3>
+<ul>
+<li><code>containsRtl($text)</code>: هل يحتوي النص على أي محرف من خط يُكتب من اليمين إلى اليسار (العبرية والعربية وملحقاتها والسريانية والتانا وN'Ko وغيرها، وأشكال العرض العربية) أو علامة RLM.</li>
+<li><code>direction($text)</code>: تُرجع <code>'rtl'</code> أو <code>'ltr'</code> بحسب <strong>أول حرف قوي</strong>، وفق قاعدة Unicode للنص ثنائي الاتجاه. الأرقام وعلامات الترقيم والمسافات محايدة. والنص الذي لا يحوي حروفًا يُرجع <code>'ltr'</code>.</li>
+<li><code>isHebrew($text)</code>: هل يحتوي النص على حروف عبرية.</li>
+</ul>
+<pre tabindex="0"><code class="language-php">var_dump(Detector::containsRtl(<span class="tok-s">'abc'</span>));           <span class="tok-c">// bool(false)</span>
+<span class="tok-k">echo</span> Detector::direction(<span class="tok-s">'سلام hello'</span>), <span class="tok-s">"\n"</span>;    <span class="tok-c">// rtl</span>
+<span class="tok-k">echo</span> Detector::direction(<span class="tok-s">'Hello مرحبا'</span>), <span class="tok-s">"\n"</span>;   <span class="tok-c">// ltr (الحرف الأول لاتيني)</span>
+<span class="tok-k">echo</span> Detector::direction(<span class="tok-s">'۱۲۳'</span>), <span class="tok-s">"\n"</span>;           <span class="tok-c">// ltr (الأرقام محايدة ولا يوجد حرف)</span>
+var_dump(Detector::isHebrew(<span class="tok-s">'שלום'</span>));            <span class="tok-c">// bool(true)</span></code></pre>
+<p>تغلّف الدالتان المساعدتان <code>contains_rtl()</code> و<code>text_direction()</code> الدالتين <code>containsRtl()</code> و<code>direction()</code>. استخدم <code>direction()</code> للسمة <code>dir</code> في HTML على النصوص التي ينشئها المستخدمون.</p>
+
+<h3 id="rtl-locale">isRtlLocale()<a class="anchor" href="#rtl-locale" aria-label="رابط إلى هذا القسم">#</a></h3>
+<p>تخبرك <code>isRtlLocale($locale)</code> إن كان وسم اللغة المحلية (locale) يُكتب من اليمين إلى اليسار. تقسّم الوسم عند <code>-</code> و<code>_</code> و<code>.</code> و<code>@</code>، وتتجاهل حالة الأحرف والمسافات المحيطة، وتُرجع true عندما تكون اللغة من اللغات التي تُكتب من اليمين إلى اليسار (<code>fa</code> و<code>ar</code> و<code>he</code> و<code>ur</code> و<code>ps</code> و<code>ug</code> و<code>dv</code> و<code>ckb</code> و<code>azb</code> وغيرها) أو عندما يوجد وسم فرعي للخط مثل <code>Arab</code> أو <code>Hebr</code>.</p>
+<pre tabindex="0"><code class="language-php">var_dump(Detector::isRtlLocale(<span class="tok-s">'fa_IR'</span>));     <span class="tok-c">// bool(true)</span>
+var_dump(Detector::isRtlLocale(<span class="tok-s">'ar-SA'</span>));     <span class="tok-c">// bool(true)</span>
+var_dump(Detector::isRtlLocale(<span class="tok-s">'ckb-IQ'</span>));    <span class="tok-c">// bool(true)</span>
+var_dump(Detector::isRtlLocale(<span class="tok-s">'az-Arab'</span>));   <span class="tok-c">// bool(true)، الوسم الفرعي للخط هو الحاسم</span>
+var_dump(Detector::isRtlLocale(<span class="tok-s">'ku'</span>));        <span class="tok-c">// bool(false)، "ku" وحدها ليست في قائمة اللغات RTL</span>
+var_dump(Detector::isRtlLocale(<span class="tok-s">'en'</span>));        <span class="tok-c">// bool(false)</span>
+var_dump(Detector::isRtlLocale(<span class="tok-s">''</span>));          <span class="tok-c">// bool(false)</span></code></pre>
+
+<h2 id="slugify">Slugify<a class="anchor" href="#slugify" aria-label="رابط إلى هذا القسم">#</a></h2>
+<p>تحوّل <code>Slugify::make($text, $separator = '-')</code> العنوان إلى معرّف نصي (slug) ملائم للروابط مع إبقاء الحروف الفارسية والعربية مقروءة. ولا تُجري أي نقحرة (transliteration) أبدًا.</p>
+<ol>
+<li>يُطبَّع النص بـ <code>Normalizer::normalize()</code>.</li>
+<li>تتحول المسافات البيضاء وأنصاف المسافات إلى الفاصل.</li>
+<li>يُحذف كل شيء عدا الحروف (من أي خط) وعلامات الدمج والأرقام (من أي مجموعة) والواصلات والشرطات السفلية. وتختفي علامات الترقيم والرموز التعبيرية.</li>
+<li>تُختزل الواصلات والشرطات السفلية والفواصل المتكررة إلى واحد، وتُقصّ الفواصل من الطرفين.</li>
+<li>تُحوَّل النتيجة إلى أحرف صغيرة بترميز UTF-8.</li>
+</ol>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">use</span> RtlyKit\Text\Slugify;
+
+<span class="tok-k">echo</span> Slugify::make(<span class="tok-s">'سلام دنیا'</span>), <span class="tok-s">"\n"</span>;               <span class="tok-c">// سلام-دنیا</span>
+<span class="tok-k">echo</span> Slugify::make(<span class="tok-s">"کتاب\u{200C}خانه ملی"</span>), <span class="tok-s">"\n"</span>;    <span class="tok-c">// کتاب-خانه-ملی</span>
+<span class="tok-k">echo</span> Slugify::make(<span class="tok-s">'Hello, World!'</span>), <span class="tok-s">"\n"</span>;           <span class="tok-c">// hello-world</span>
+<span class="tok-k">echo</span> Slugify::make(<span class="tok-s">'  A--B__C  '</span>), <span class="tok-s">"\n"</span>;             <span class="tok-c">// a-b_c</span>
+<span class="tok-k">echo</span> Slugify::make(<span class="tok-s">'سلام!!! دنیا؟'</span>), <span class="tok-s">"\n"</span>;           <span class="tok-c">// سلام-دنیا</span>
+<span class="tok-k">echo</span> Slugify::make(<span class="tok-s">'۱۲۳ ابر'</span>), <span class="tok-s">"\n"</span>;                 <span class="tok-c">// ۱۲۳-ابر</span>
+<span class="tok-k">echo</span> Slugify::make(<span class="tok-s">'كتاب ي'</span>), <span class="tok-s">"\n"</span>;                  <span class="tok-c">// کتاب-ی</span>
+<span class="tok-k">echo</span> Slugify::make(<span class="tok-s">'سلام 😀 دنیا'</span>), <span class="tok-s">"\n"</span>;            <span class="tok-c">// سلام-دنیا</span>
+<span class="tok-k">echo</span> Slugify::make(<span class="tok-s">'عکس.jpg'</span>), <span class="tok-s">"\n"</span>;                 <span class="tok-c">// عکسjpg</span>
+var_dump(Slugify::make(<span class="tok-s">'$%^&amp;'</span>));                    <span class="tok-c">// string(0) ""</span></code></pre>
+<p>أمران يجب الانتباه إليهما. الأرقام تحتفظ بالمجموعة التي كُتبت بها (<code>۱۲۳</code> تبقى فارسية)، فشغّل <code>Digits::toEnglish()</code> أولًا إن أردت أرقام ASCII في الروابط. والنقطة تُحذف ولا تُعامل فاصلاً، فتلتصق امتدادات الملفات باسمها (<code>عکسjpg</code>)؛ فأنشئ المعرّف النصي للاسم وللامتداد كلٍّ على حدة.</p>
+
+<h3 id="slug-separator">الفاصل<a class="anchor" href="#slug-separator" aria-label="رابط إلى هذا القسم">#</a></h3>
+<p>مرّر أي سلسلة وسيطًا ثانيًا: <code>'_'</code>، أو سلسلة أطول، أو سلسلة فارغة لضم الكلمات دون أي فاصل.</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">echo</span> Slugify::make(<span class="tok-s">'سلام دنیا'</span>, <span class="tok-s">'_'</span>), <span class="tok-s">"\n"</span>;        <span class="tok-c">// سلام_دنیا</span>
+<span class="tok-k">echo</span> Slugify::make(<span class="tok-s">'سلام دنیا'</span>, <span class="tok-s">''</span>), <span class="tok-s">"\n"</span>;         <span class="tok-c">// سلامدنیا</span>
+<span class="tok-k">echo</span> Slugify::make(<span class="tok-s">'Hello World'</span>, <span class="tok-s">'--'</span>), <span class="tok-s">"\n"</span>;     <span class="tok-c">// hello--world</span></code></pre>
+<p>الفاصل محدود بـ <strong>64 بايت</strong> ويجب أن يكون UTF-8 صالحًا. والنص نفسه يجب أن يكون UTF-8 صالحًا كذلك. الفاصل الأطول من الحد يُثير <code>RtlyKitException</code> بالرمز <code>input_too_long</code>، وأي نص أو فاصل غير صالح يُثيره بالرمز <code>invalid_argument</code> (والسياق <code>argument</code> يقول أيهما):</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">try</span> {
+    Slugify::make(<span class="tok-s">'Hello World'</span>, str_repeat(<span class="tok-s">'x'</span>, <span class="tok-n">65</span>));
+} <span class="tok-k">catch</span> (\RtlyKit\Exceptions\RtlyKitException <span class="tok-v">$e</span>) {
+    <span class="tok-k">echo</span> <span class="tok-v">$e</span>-&gt;getMessage(), <span class="tok-s">' ['</span>, <span class="tok-v">$e</span>-&gt;getErrorCode()-&gt;value, <span class="tok-s">"]\n"</span>;
+    <span class="tok-c">// The slug separator is too long. [input_too_long]</span>
+}
+
+<span class="tok-k">try</span> {
+    Slugify::make(<span class="tok-s">"abc\xff"</span>);
+} <span class="tok-k">catch</span> (\RtlyKit\Exceptions\RtlyKitException <span class="tok-v">$e</span>) {
+    <span class="tok-k">echo</span> <span class="tok-v">$e</span>-&gt;getMessage(), <span class="tok-s">' ['</span>, <span class="tok-v">$e</span>-&gt;getErrorCode()-&gt;value, <span class="tok-s">"]\n"</span>;
+    <span class="tok-c">// The text to slugify must be valid UTF-8. [invalid_argument]</span>
+}</code></pre>
+<div class="callout note" role="note"><strong>المعرّفات الفارغة والتفرّد.</strong> العنوان المكوَّن من علامات ترقيم فقط يُنتج سلسلة فارغة، وقد تُنتج عناوين مختلفة المعرّف النصي نفسه. عالج الحالة الفارغة (مثلًا بالرجوع إلى معرّف رقمي)، واطلب التفرّد في طبقة التخزين لديك.</div>
+<nav class="reading-footer" aria-label="الصفحة السابقة والتالية"><a class="prev" rel="prev" href="arabic-number-words.html"><small>السابق</small>الأعداد بالحروف العربية</a><a class="next" rel="next" href="holidays.html"><small>التالي</small>العطل الرسمية الإيرانية</a></nav>
+</article>
+<nav class="toc" aria-label="في هذه الصفحة"><p>في هذه الصفحة</p><ol><li><a href="#normalizer">Normalizer</a><ol><li><a href="#normalize">normalize()</a></li><li><a href="#half-space">fixHalfSpace()</a></li><li><a href="#clean">clean()</a></li></ol></li><li><a href="#detector">Detector</a><ol><li><a href="#persian-arabic">isPersian() و isArabic()</a></li><li><a href="#direction">الاتجاه و RTL</a></li><li><a href="#rtl-locale">isRtlLocale()</a></li></ol></li><li><a href="#slugify">Slugify</a><ol><li><a href="#slug-separator">الفاصل</a></li></ol></li></ol></nav>
+</div>
+</main>
+<footer class="footer"><div class="shell footer-inner"><p>دليل مستخدم RTLY-Kit · الترخيص: MIT</p><div><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">المستودع على جيت هب &#8599;</a><a href="https://github.com/ehsanenaloo/RTLY-Kit/issues" rel="noopener noreferrer">الإبلاغ عن مشكلة &#8599;</a></div></div></footer>
+</body>
+</html>

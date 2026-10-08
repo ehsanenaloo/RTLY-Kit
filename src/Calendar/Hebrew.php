@@ -53,6 +53,9 @@ final class Hebrew implements CalendarDate
     /** Smallest supported Hebrew year (1 Tishrei 3762 = 0001-09-06 CE). */
     public const MIN_YEAR = 3762;
 
+    /** Longest accepted format() pattern, in bytes. */
+    public const MAX_FORMAT_LENGTH = 256;
+
     /** Largest supported Hebrew year (ends 9999-11-03 CE). */
     public const MAX_YEAR = 13759;
 
@@ -88,7 +91,8 @@ final class Hebrew implements CalendarDate
             (int) $gregorian->format('j'),
         );
         if ($this->year < self::MIN_YEAR || $this->year > self::MAX_YEAR) {
-            throw new InvalidDateException(
+            throw InvalidDateException::because(
+                ErrorCode::DateOutOfRange,
                 sprintf('Date out of the supported Hebrew range (%d..%d): %d', self::MIN_YEAR, self::MAX_YEAR, $this->year),
             );
         }
@@ -197,18 +201,22 @@ final class Hebrew implements CalendarDate
      * empty), W (ISO week of the underlying Gregorian instant), c
      * (`Y-m-d\TH:i:sP` with the Hebrew date), r (RFC 2822 of the Gregorian
      * instant) and U e T P p O Z I u v (delegated to the underlying instant).
-     * Prefix a character with a backslash to output it literally.
+     * Prefix a character with a backslash to output it literally (a trailing
+     * backslash is dropped). Patterns longer than {@see self::MAX_FORMAT_LENGTH}
+     * bytes throw {@see InvalidDateException} (ErrorCode::InputTooLong).
      *
      * @param string $locale 'en' | 'he' | 'fa' (names; unknown falls back to 'en')
      */
     public function format(string $format = 'Y/m/d H:i:s', string $locale = 'en'): string
     {
+        self::assertFormatLength($format);
         $out = '';
         $len = strlen($format);
         for ($i = 0; $i < $len; $i++) {
             $c = $format[$i];
-            if ($c === '\\' && $i + 1 < $len) {
-                $out .= $format[++$i];
+            if ($c === '\\') {
+                $i++;
+                $out .= $i < $len ? $format[$i] : '';
                 continue;
             }
             $out .= match ($c) {
@@ -488,7 +496,7 @@ final class Hebrew implements CalendarDate
         // Unreachable: Gregorian year 1 (the minimum) is already after the Hebrew epoch.
         // @codeCoverageIgnoreStart
         if ($jdn < self::EPOCH_JDN) {
-            throw new InvalidDateException("Date precedes the Hebrew calendar epoch: {$gy}-{$gm}-{$gd}");
+            throw InvalidDateException::because(ErrorCode::DateOutOfRange, "Date precedes the Hebrew calendar epoch: {$gy}-{$gm}-{$gd}");
         }
         // @codeCoverageIgnoreEnd
 

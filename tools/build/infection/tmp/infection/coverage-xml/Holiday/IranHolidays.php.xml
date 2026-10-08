@@ -1,0 +1,2524 @@
+<?xml version="1.0"?>
+<phpunit xmlns="https://schema.phpunit.de/coverage/1.0">
+  <file name="IranHolidays.php" path="/Holiday">
+    <totals>
+      <lines total="247" comments="56" code="191" executable="50" executed="50" percent="100.00"/>
+      <methods count="11" tested="11" percent="100.00"/>
+      <functions count="0" tested="0" percent="0"/>
+      <classes count="1" tested="1" percent="100.00"/>
+      <traits count="0" tested="0" percent="0"/>
+    </totals>
+    <class name="RtlyKit\Holiday\IranHolidays" start="31" executable="50" executed="50" crap="27">
+      <namespace name="RtlyKit\Holiday"/>
+      <method name="isHoliday" signature="isHoliday(\RtlyKit\Calendar\Jalali|int $year, ?int $month, ?int $day): bool" start="100" end="103" crap="1" executable="1" executed="1" coverage="100"/>
+      <method name="getTitle" signature="getTitle(\RtlyKit\Calendar\Jalali|int $year, ?int $month, ?int $day): ?string" start="105" end="108" crap="1" executable="1" executed="1" coverage="100"/>
+      <method name="getTitles" signature="getTitles(\RtlyKit\Calendar\Jalali|int $year, ?int $month, ?int $day): array" start="115" end="139" crap="6" executable="13" executed="13" coverage="100"/>
+      <method name="islamicTitles" signature="islamicTitles(RtlyKit\Calendar\Hijri $hijri): array" start="144" end="160" crap="4" executable="8" executed="8" coverage="100"/>
+      <method name="allFixed" signature="allFixed(int $year): array" start="166" end="178" crap="3" executable="6" executed="6" coverage="100"/>
+      <method name="all" signature="all(int $year): array" start="186" end="189" crap="1" executable="1" executed="1" coverage="100"/>
+      <method name="allTitles" signature="allTitles(int $year): array" start="196" end="211" crap="3" executable="8" executed="8" coverage="100"/>
+      <method name="assertYear" signature="assertYear(int $year): void" start="216" end="225" crap="3" executable="6" executed="6" coverage="100"/>
+      <method name="isWeekend" signature="isWeekend(RtlyKit\Calendar\Jalali $date): bool" start="227" end="230" crap="1" executable="1" executed="1" coverage="100"/>
+      <method name="isBusinessDay" signature="isBusinessDay(RtlyKit\Calendar\Jalali $date): bool" start="232" end="235" crap="2" executable="1" executed="1" coverage="100"/>
+      <method name="nextBusinessDay" signature="nextBusinessDay(RtlyKit\Calendar\Jalali $date): RtlyKit\Calendar\Jalali" start="237" end="245" crap="2" executable="4" executed="4" coverage="100"/>
+    </class>
+    <coverage>
+      <line nr="102">
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays isHoliday max"/>
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays isHoliday min"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_is_iran_holiday_with_ints_and_jalali"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_islamic_holidays_only_inside_the_umm_al_qura_table"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_next_business_day_skips_holidays_and_weekends"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_fixed_holidays_known_dates"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_every_title_is_a_holiday_and_consistent"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_business_days"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_iran_holidays"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_business_day"/>
+      </line>
+      <line nr="107">
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays isHoliday max"/>
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays isHoliday min"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_is_iran_holiday_with_ints_and_jalali"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_islamic_holidays_only_inside_the_umm_al_qura_table"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_next_business_day_skips_holidays_and_weekends"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_fixed_holidays_known_dates"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_get_title_accepts_jalali_and_ints_identically"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_get_title_with_missing_month_or_day_throws_clear_exception"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_invalid_date_throws"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_get_titles_for_plain_day_is_empty"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_every_title_is_a_holiday_and_consistent"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_fixed_holidays_do_not_hide_islamic_ones"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_business_days"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_iran_holidays"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_business_day"/>
+      </line>
+      <line nr="117">
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays isHoliday max"/>
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays isHoliday min"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_is_iran_holiday_with_ints_and_jalali"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysRangeTest::test_boundary_years_work"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_islamic_holidays_only_inside_the_umm_al_qura_table"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_next_business_day_skips_holidays_and_weekends"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_fixed_holidays_known_dates"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_get_title_accepts_jalali_and_ints_identically"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_get_title_with_missing_month_or_day_throws_clear_exception"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_invalid_date_throws"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_get_titles_for_plain_day_is_empty"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_every_title_is_a_holiday_and_consistent"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_fixed_holidays_do_not_hide_islamic_ones"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_imam_reza_is_on_last_day_of_safar"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_imam_sadiq_on_25_shawwal"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_business_days"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_iran_holidays"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_business_day"/>
+      </line>
+      <line nr="118">
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_is_iran_holiday_with_ints_and_jalali"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysRangeTest::test_boundary_years_work"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_islamic_holidays_only_inside_the_umm_al_qura_table"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_next_business_day_skips_holidays_and_weekends"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_get_title_accepts_jalali_and_ints_identically"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_every_title_is_a_holiday_and_consistent"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_fixed_holidays_do_not_hide_islamic_ones"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_imam_reza_is_on_last_day_of_safar"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_imam_sadiq_on_25_shawwal"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_business_days"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_iran_holidays"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_business_day"/>
+      </line>
+      <line nr="120">
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays isHoliday max"/>
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays isHoliday min"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_is_iran_holiday_with_ints_and_jalali"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_islamic_holidays_only_inside_the_umm_al_qura_table"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_fixed_holidays_known_dates"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_get_title_accepts_jalali_and_ints_identically"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_get_title_with_missing_month_or_day_throws_clear_exception"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_invalid_date_throws"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_get_titles_for_plain_day_is_empty"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_every_title_is_a_holiday_and_consistent"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_fixed_holidays_do_not_hide_islamic_ones"/>
+      </line>
+      <line nr="121">
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_get_title_with_missing_month_or_day_throws_clear_exception"/>
+      </line>
+      <line nr="123">
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays isHoliday max"/>
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays isHoliday min"/>
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_is_iran_holiday_with_ints_and_jalali"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_islamic_holidays_only_inside_the_umm_al_qura_table"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_fixed_holidays_known_dates"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_get_title_accepts_jalali_and_ints_identically"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_invalid_date_throws"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_get_titles_for_plain_day_is_empty"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_every_title_is_a_holiday_and_consistent"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_fixed_holidays_do_not_hide_islamic_ones"/>
+      </line>
+      <line nr="126">
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_is_iran_holiday_with_ints_and_jalali"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysRangeTest::test_boundary_years_work"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_islamic_holidays_only_inside_the_umm_al_qura_table"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_next_business_day_skips_holidays_and_weekends"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_fixed_holidays_known_dates"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_get_title_accepts_jalali_and_ints_identically"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_get_titles_for_plain_day_is_empty"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_every_title_is_a_holiday_and_consistent"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_fixed_holidays_do_not_hide_islamic_ones"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_imam_reza_is_on_last_day_of_safar"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_imam_sadiq_on_25_shawwal"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_business_days"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_iran_holidays"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_business_day"/>
+      </line>
+      <line nr="128">
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_is_iran_holiday_with_ints_and_jalali"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysRangeTest::test_boundary_years_work"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_islamic_holidays_only_inside_the_umm_al_qura_table"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_next_business_day_skips_holidays_and_weekends"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_fixed_holidays_known_dates"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_get_title_accepts_jalali_and_ints_identically"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_get_titles_for_plain_day_is_empty"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_every_title_is_a_holiday_and_consistent"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_fixed_holidays_do_not_hide_islamic_ones"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_imam_reza_is_on_last_day_of_safar"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_imam_sadiq_on_25_shawwal"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_business_days"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_iran_holidays"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_business_day"/>
+      </line>
+      <line nr="129">
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_is_iran_holiday_with_ints_and_jalali"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysRangeTest::test_boundary_years_work"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_islamic_holidays_only_inside_the_umm_al_qura_table"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_next_business_day_skips_holidays_and_weekends"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_fixed_holidays_known_dates"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_get_title_accepts_jalali_and_ints_identically"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_get_titles_for_plain_day_is_empty"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_every_title_is_a_holiday_and_consistent"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_fixed_holidays_do_not_hide_islamic_ones"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_imam_reza_is_on_last_day_of_safar"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_imam_sadiq_on_25_shawwal"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_business_days"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_iran_holidays"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_business_day"/>
+      </line>
+      <line nr="130">
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_is_iran_holiday_with_ints_and_jalali"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysRangeTest::test_boundary_years_work"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_islamic_holidays_only_inside_the_umm_al_qura_table"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_next_business_day_skips_holidays_and_weekends"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_fixed_holidays_known_dates"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_get_title_accepts_jalali_and_ints_identically"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_every_title_is_a_holiday_and_consistent"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_fixed_holidays_do_not_hide_islamic_ones"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_imam_reza_is_on_last_day_of_safar"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_imam_sadiq_on_25_shawwal"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_business_days"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_iran_holidays"/>
+      </line>
+      <line nr="133">
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_is_iran_holiday_with_ints_and_jalali"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysRangeTest::test_boundary_years_work"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_islamic_holidays_only_inside_the_umm_al_qura_table"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_next_business_day_skips_holidays_and_weekends"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_fixed_holidays_known_dates"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_get_title_accepts_jalali_and_ints_identically"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_get_titles_for_plain_day_is_empty"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_every_title_is_a_holiday_and_consistent"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_fixed_holidays_do_not_hide_islamic_ones"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_imam_reza_is_on_last_day_of_safar"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_imam_sadiq_on_25_shawwal"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_business_days"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_iran_holidays"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_business_day"/>
+      </line>
+      <line nr="134">
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_is_iran_holiday_with_ints_and_jalali"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysRangeTest::test_boundary_years_work"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_islamic_holidays_only_inside_the_umm_al_qura_table"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_next_business_day_skips_holidays_and_weekends"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_fixed_holidays_known_dates"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_get_title_accepts_jalali_and_ints_identically"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_get_titles_for_plain_day_is_empty"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_every_title_is_a_holiday_and_consistent"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_fixed_holidays_do_not_hide_islamic_ones"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_imam_reza_is_on_last_day_of_safar"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_imam_sadiq_on_25_shawwal"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_business_days"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_iran_holidays"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_business_day"/>
+      </line>
+      <line nr="135">
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_islamic_holidays_only_inside_the_umm_al_qura_table"/>
+      </line>
+      <line nr="138">
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_is_iran_holiday_with_ints_and_jalali"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysRangeTest::test_boundary_years_work"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_islamic_holidays_only_inside_the_umm_al_qura_table"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_next_business_day_skips_holidays_and_weekends"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_fixed_holidays_known_dates"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_get_title_accepts_jalali_and_ints_identically"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_get_titles_for_plain_day_is_empty"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_every_title_is_a_holiday_and_consistent"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_fixed_holidays_do_not_hide_islamic_ones"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_imam_reza_is_on_last_day_of_safar"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_imam_sadiq_on_25_shawwal"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_business_days"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_iran_holidays"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_business_day"/>
+      </line>
+      <line nr="146">
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_is_iran_holiday_with_ints_and_jalali"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysRangeTest::test_boundary_years_work"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_islamic_holidays_only_inside_the_umm_al_qura_table"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_next_business_day_skips_holidays_and_weekends"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_fixed_holidays_known_dates"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_get_title_accepts_jalali_and_ints_identically"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_get_titles_for_plain_day_is_empty"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_every_title_is_a_holiday_and_consistent"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_fixed_holidays_do_not_hide_islamic_ones"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_imam_reza_is_on_last_day_of_safar"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_imam_sadiq_on_25_shawwal"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_business_days"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_iran_holidays"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_business_day"/>
+      </line>
+      <line nr="147">
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_is_iran_holiday_with_ints_and_jalali"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysRangeTest::test_boundary_years_work"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_islamic_holidays_only_inside_the_umm_al_qura_table"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_next_business_day_skips_holidays_and_weekends"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_fixed_holidays_known_dates"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_get_title_accepts_jalali_and_ints_identically"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_get_titles_for_plain_day_is_empty"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_every_title_is_a_holiday_and_consistent"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_fixed_holidays_do_not_hide_islamic_ones"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_imam_reza_is_on_last_day_of_safar"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_imam_sadiq_on_25_shawwal"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_business_days"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_iran_holidays"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_business_day"/>
+      </line>
+      <line nr="149">
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_is_iran_holiday_with_ints_and_jalali"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysRangeTest::test_boundary_years_work"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_islamic_holidays_only_inside_the_umm_al_qura_table"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_next_business_day_skips_holidays_and_weekends"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_fixed_holidays_known_dates"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_get_title_accepts_jalali_and_ints_identically"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_get_titles_for_plain_day_is_empty"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_every_title_is_a_holiday_and_consistent"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_fixed_holidays_do_not_hide_islamic_ones"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_imam_reza_is_on_last_day_of_safar"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_imam_sadiq_on_25_shawwal"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_business_days"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_iran_holidays"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_business_day"/>
+      </line>
+      <line nr="150">
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_is_iran_holiday_with_ints_and_jalali"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysRangeTest::test_boundary_years_work"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_islamic_holidays_only_inside_the_umm_al_qura_table"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_next_business_day_skips_holidays_and_weekends"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_fixed_holidays_known_dates"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_get_title_accepts_jalali_and_ints_identically"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_get_titles_for_plain_day_is_empty"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_every_title_is_a_holiday_and_consistent"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_fixed_holidays_do_not_hide_islamic_ones"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_imam_reza_is_on_last_day_of_safar"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_imam_sadiq_on_25_shawwal"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_business_days"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_iran_holidays"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_business_day"/>
+      </line>
+      <line nr="151">
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysRangeTest::test_boundary_years_work"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_islamic_holidays_only_inside_the_umm_al_qura_table"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_next_business_day_skips_holidays_and_weekends"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_fixed_holidays_known_dates"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_every_title_is_a_holiday_and_consistent"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_fixed_holidays_do_not_hide_islamic_ones"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_imam_reza_is_on_last_day_of_safar"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_imam_sadiq_on_25_shawwal"/>
+      </line>
+      <line nr="155">
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_is_iran_holiday_with_ints_and_jalali"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysRangeTest::test_boundary_years_work"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_islamic_holidays_only_inside_the_umm_al_qura_table"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_next_business_day_skips_holidays_and_weekends"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_fixed_holidays_known_dates"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_get_title_accepts_jalali_and_ints_identically"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_get_titles_for_plain_day_is_empty"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_every_title_is_a_holiday_and_consistent"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_fixed_holidays_do_not_hide_islamic_ones"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_imam_reza_is_on_last_day_of_safar"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_imam_sadiq_on_25_shawwal"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_business_days"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_iran_holidays"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_business_day"/>
+      </line>
+      <line nr="156">
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysRangeTest::test_boundary_years_work"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_islamic_holidays_only_inside_the_umm_al_qura_table"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_every_title_is_a_holiday_and_consistent"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_fixed_holidays_do_not_hide_islamic_ones"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_imam_reza_is_on_last_day_of_safar"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_imam_sadiq_on_25_shawwal"/>
+      </line>
+      <line nr="159">
+        <covered by="RtlyKit\Tests\Unit\HelpersTest::test_is_iran_holiday_with_ints_and_jalali"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysRangeTest::test_boundary_years_work"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_islamic_holidays_only_inside_the_umm_al_qura_table"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_next_business_day_skips_holidays_and_weekends"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_fixed_holidays_known_dates"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_get_title_accepts_jalali_and_ints_identically"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_get_titles_for_plain_day_is_empty"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_every_title_is_a_holiday_and_consistent"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_fixed_holidays_do_not_hide_islamic_ones"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_imam_reza_is_on_last_day_of_safar"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_imam_sadiq_on_25_shawwal"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_business_days"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_iran_holidays"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_business_day"/>
+      </line>
+      <line nr="168">
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays allFixed max"/>
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays allFixed min"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysRangeTest::test_out_of_range_years_throw_a_clear_error_with_context"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysRangeTest::test_boundary_years_work"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_islamic_holidays_only_inside_the_umm_al_qura_table"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_all_fixed_year_keys"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_iran_holidays"/>
+      </line>
+      <line nr="170">
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysRangeTest::test_boundary_years_work"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_islamic_holidays_only_inside_the_umm_al_qura_table"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_all_fixed_year_keys"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_iran_holidays"/>
+      </line>
+      <line nr="171">
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysRangeTest::test_boundary_years_work"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_islamic_holidays_only_inside_the_umm_al_qura_table"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_all_fixed_year_keys"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_iran_holidays"/>
+      </line>
+      <line nr="172">
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysRangeTest::test_boundary_years_work"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_islamic_holidays_only_inside_the_umm_al_qura_table"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_all_fixed_year_keys"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_iran_holidays"/>
+      </line>
+      <line nr="173">
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysRangeTest::test_boundary_years_work"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_islamic_holidays_only_inside_the_umm_al_qura_table"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_all_fixed_year_keys"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_iran_holidays"/>
+      </line>
+      <line nr="177">
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysRangeTest::test_boundary_years_work"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_islamic_holidays_only_inside_the_umm_al_qura_table"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_all_fixed_year_keys"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_iran_holidays"/>
+      </line>
+      <line nr="188">
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays all max"/>
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays all min"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysRangeTest::test_out_of_range_years_throw_a_clear_error_with_context"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysRangeTest::test_boundary_years_work"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_iran_holidays_bad_year_throws_invalid_date"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_islamic_holidays_only_inside_the_umm_al_qura_table"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_every_title_is_a_holiday_and_consistent"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_fixed_holidays_do_not_hide_islamic_ones"/>
+      </line>
+      <line nr="198">
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays all max"/>
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays allTitles max"/>
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays all min"/>
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays allTitles min"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysRangeTest::test_out_of_range_years_throw_a_clear_error_with_context"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysRangeTest::test_boundary_years_work"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_iran_holidays_bad_year_throws_invalid_date"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_islamic_holidays_only_inside_the_umm_al_qura_table"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_every_title_is_a_holiday_and_consistent"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_fixed_holidays_do_not_hide_islamic_ones"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_imam_reza_is_on_last_day_of_safar"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_imam_sadiq_on_25_shawwal"/>
+      </line>
+      <line nr="200">
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysRangeTest::test_boundary_years_work"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_islamic_holidays_only_inside_the_umm_al_qura_table"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_every_title_is_a_holiday_and_consistent"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_fixed_holidays_do_not_hide_islamic_ones"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_imam_reza_is_on_last_day_of_safar"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_imam_sadiq_on_25_shawwal"/>
+      </line>
+      <line nr="201">
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysRangeTest::test_boundary_years_work"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_islamic_holidays_only_inside_the_umm_al_qura_table"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_every_title_is_a_holiday_and_consistent"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_fixed_holidays_do_not_hide_islamic_ones"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_imam_reza_is_on_last_day_of_safar"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_imam_sadiq_on_25_shawwal"/>
+      </line>
+      <line nr="203">
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysRangeTest::test_boundary_years_work"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_islamic_holidays_only_inside_the_umm_al_qura_table"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_every_title_is_a_holiday_and_consistent"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_fixed_holidays_do_not_hide_islamic_ones"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_imam_reza_is_on_last_day_of_safar"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_imam_sadiq_on_25_shawwal"/>
+      </line>
+      <line nr="204">
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysRangeTest::test_boundary_years_work"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_islamic_holidays_only_inside_the_umm_al_qura_table"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_every_title_is_a_holiday_and_consistent"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_fixed_holidays_do_not_hide_islamic_ones"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_imam_reza_is_on_last_day_of_safar"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_imam_sadiq_on_25_shawwal"/>
+      </line>
+      <line nr="205">
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysRangeTest::test_boundary_years_work"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_islamic_holidays_only_inside_the_umm_al_qura_table"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_every_title_is_a_holiday_and_consistent"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_fixed_holidays_do_not_hide_islamic_ones"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_imam_reza_is_on_last_day_of_safar"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_imam_sadiq_on_25_shawwal"/>
+      </line>
+      <line nr="206">
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysRangeTest::test_boundary_years_work"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_islamic_holidays_only_inside_the_umm_al_qura_table"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_every_title_is_a_holiday_and_consistent"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_fixed_holidays_do_not_hide_islamic_ones"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_imam_reza_is_on_last_day_of_safar"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_imam_sadiq_on_25_shawwal"/>
+      </line>
+      <line nr="210">
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysRangeTest::test_boundary_years_work"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_islamic_holidays_only_inside_the_umm_al_qura_table"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_every_title_is_a_holiday_and_consistent"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_fixed_holidays_do_not_hide_islamic_ones"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_imam_reza_is_on_last_day_of_safar"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_imam_sadiq_on_25_shawwal"/>
+      </line>
+      <line nr="218">
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays all max"/>
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays allTitles max"/>
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays allFixed max"/>
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays all min"/>
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays allTitles min"/>
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays allFixed min"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysRangeTest::test_out_of_range_years_throw_a_clear_error_with_context"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysRangeTest::test_boundary_years_work"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_iran_holidays_bad_year_throws_invalid_date"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_islamic_holidays_only_inside_the_umm_al_qura_table"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_every_title_is_a_holiday_and_consistent"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_fixed_holidays_do_not_hide_islamic_ones"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_imam_reza_is_on_last_day_of_safar"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_imam_sadiq_on_25_shawwal"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_all_fixed_year_keys"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_iran_holidays"/>
+      </line>
+      <line nr="219">
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays all max"/>
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays allTitles max"/>
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays allFixed max"/>
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays all min"/>
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays allTitles min"/>
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays allFixed min"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysRangeTest::test_out_of_range_years_throw_a_clear_error_with_context"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_iran_holidays_bad_year_throws_invalid_date"/>
+      </line>
+      <line nr="220">
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays all max"/>
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays allTitles max"/>
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays allFixed max"/>
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays all min"/>
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays allTitles min"/>
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays allFixed min"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysRangeTest::test_out_of_range_years_throw_a_clear_error_with_context"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_iran_holidays_bad_year_throws_invalid_date"/>
+      </line>
+      <line nr="221">
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays all max"/>
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays allTitles max"/>
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays allFixed max"/>
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays all min"/>
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays allTitles min"/>
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays allFixed min"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysRangeTest::test_out_of_range_years_throw_a_clear_error_with_context"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_iran_holidays_bad_year_throws_invalid_date"/>
+      </line>
+      <line nr="222">
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays all max"/>
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays allTitles max"/>
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays allFixed max"/>
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays all min"/>
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays allTitles min"/>
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays allFixed min"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysRangeTest::test_out_of_range_years_throw_a_clear_error_with_context"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_iran_holidays_bad_year_throws_invalid_date"/>
+      </line>
+      <line nr="229">
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_next_business_day_skips_holidays_and_weekends"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_business_days"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_business_day"/>
+      </line>
+      <line nr="234">
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_next_business_day_skips_holidays_and_weekends"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_business_days"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_business_day"/>
+      </line>
+      <line nr="239">
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_next_business_day_skips_holidays_and_weekends"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_business_day"/>
+      </line>
+      <line nr="240">
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_next_business_day_skips_holidays_and_weekends"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_business_day"/>
+      </line>
+      <line nr="241">
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_next_business_day_skips_holidays_and_weekends"/>
+      </line>
+      <line nr="244">
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_next_business_day_skips_holidays_and_weekends"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_business_day"/>
+      </line>
+      <line nr="223">
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays all max"/>
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays allTitles max"/>
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays allFixed max"/>
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays all min"/>
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays allTitles min"/>
+        <covered by="RtlyKit\Tests\Unit\Calendar\CalendarLimitsTest::test_entry_points_only_throw_rtlykit_exceptions#IranHolidays allFixed min"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysRangeTest::test_out_of_range_years_throw_a_clear_error_with_context"/>
+        <covered by="RtlyKit\Tests\Unit\Holiday\IranHolidaysTest::test_iran_holidays_bad_year_throws_invalid_date"/>
+      </line>
+    </coverage>
+    <source>
+      <line no="1">
+        <token name="T_OPEN_TAG">&lt;?php</token>
+      </line>
+      <line no="2"/>
+      <line no="3">
+        <token name="T_DECLARE">declare</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">strict_types</token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_LNUMBER">1</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="4"/>
+      <line no="5">
+        <token name="T_NAMESPACE">namespace</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_NAME_QUALIFIED">RtlyKit\Holiday</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="6"/>
+      <line no="7">
+        <token name="T_USE">use</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_NAME_QUALIFIED">RtlyKit\Calendar\Hijri</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="8">
+        <token name="T_USE">use</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_NAME_QUALIFIED">RtlyKit\Calendar\Jalali</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="9">
+        <token name="T_USE">use</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_NAME_QUALIFIED">RtlyKit\Exceptions\ErrorCode</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="10">
+        <token name="T_USE">use</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_NAME_QUALIFIED">RtlyKit\Exceptions\InvalidDateException</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="11"/>
+      <line no="12">
+        <token name="T_DOC_COMMENT">/**</token>
+      </line>
+      <line no="13">
+        <token name="T_DOC_COMMENT"> * Official Iranian public holidays.</token>
+      </line>
+      <line no="14">
+        <token name="T_DOC_COMMENT"> *</token>
+      </line>
+      <line no="15">
+        <token name="T_DOC_COMMENT"> * - Fixed Solar (Jalali) holidays</token>
+      </line>
+      <line no="16">
+        <token name="T_DOC_COMMENT"> * - Variable Islamic holidays derived from Hijri calendar</token>
+      </line>
+      <line no="17">
+        <token name="T_DOC_COMMENT"> *</token>
+      </line>
+      <line no="18">
+        <token name="T_DOC_COMMENT"> * Accuracy: Islamic dates follow Umm al-Qura (Hijri default); Iran officially uses moon sighting, so these can differ by 1-2 days.</token>
+      </line>
+      <line no="19">
+        <token name="T_DOC_COMMENT"> * Iran's official calendar is moon-sighting based, so Islamic holidays here can</token>
+      </line>
+      <line no="20">
+        <token name="T_DOC_COMMENT"> * be off by 1-2 days relative to the official announcement. Treat them as</token>
+      </line>
+      <line no="21">
+        <token name="T_DOC_COMMENT"> * estimates; fixed Jalali holidays are exact.</token>
+      </line>
+      <line no="22">
+        <token name="T_DOC_COMMENT"> *</token>
+      </line>
+      <line no="23">
+        <token name="T_DOC_COMMENT"> * Range: Islamic holidays are only reported for dates inside the embedded</token>
+      </line>
+      <line no="24">
+        <token name="T_DOC_COMMENT"> * Umm al-Qura table (Hijri AH 1300-1500, 1882-11-12 .. 2077-11-16 CE; see</token>
+      </line>
+      <line no="25">
+        <token name="T_DOC_COMMENT"> * {@see Hijri::hasUmmAlQuraData()}). Outside it (where Hijri would fall back to</token>
+      </line>
+      <line no="26">
+        <token name="T_DOC_COMMENT"> * tabular extrapolation, which is not reliable for holidays) isHoliday(),</token>
+      </line>
+      <line no="27">
+        <token name="T_DOC_COMMENT"> * getTitles(), all() and allTitles() return the fixed Jalali holidays only.</token>
+      </line>
+      <line no="28">
+        <token name="T_DOC_COMMENT"> * Year arguments must lie within {@see Jalali::MIN_YEAR}..{@see Jalali::MAX_YEAR};</token>
+      </line>
+      <line no="29">
+        <token name="T_DOC_COMMENT"> * otherwise InvalidDateException is thrown.</token>
+      </line>
+      <line no="30">
+        <token name="T_DOC_COMMENT"> */</token>
+      </line>
+      <line no="31">
+        <token name="T_FINAL">final</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CLASS">class</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">IranHolidays</token>
+      </line>
+      <line no="32">
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="33">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_DOC_COMMENT">/**</token>
+      </line>
+      <line no="34">
+        <token name="T_DOC_COMMENT">     * Fixed Jalali holidays: month =&gt; [day =&gt; title]</token>
+      </line>
+      <line no="35">
+        <token name="T_DOC_COMMENT">     * @var array&lt;int, array&lt;int, string&gt;&gt;</token>
+      </line>
+      <line no="36">
+        <token name="T_DOC_COMMENT">     */</token>
+      </line>
+      <line no="37">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PRIVATE">private</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STATIC">static</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_ARRAY">array</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$fixed</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_SQUARE">[</token>
+      </line>
+      <line no="38">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_LNUMBER">1</token>
+        <token name="T_WHITESPACE">  </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_SQUARE">[</token>
+      </line>
+      <line no="39">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_LNUMBER">1</token>
+        <token name="T_WHITESPACE">  </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x62C;&#x634;&#x646; &#x646;&#x648;&#x631;&#x648;&#x632;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="40">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_LNUMBER">2</token>
+        <token name="T_WHITESPACE">  </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x639;&#x6CC;&#x62F; &#x646;&#x648;&#x631;&#x648;&#x632;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="41">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_LNUMBER">3</token>
+        <token name="T_WHITESPACE">  </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x639;&#x6CC;&#x62F; &#x646;&#x648;&#x631;&#x648;&#x632;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="42">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_LNUMBER">4</token>
+        <token name="T_WHITESPACE">  </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x639;&#x6CC;&#x62F; &#x646;&#x648;&#x631;&#x648;&#x632;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="43">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_LNUMBER">12</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x631;&#x648;&#x632; &#x62C;&#x645;&#x647;&#x648;&#x631;&#x6CC; &#x627;&#x633;&#x644;&#x627;&#x645;&#x6CC;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="44">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_LNUMBER">13</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x631;&#x648;&#x632; &#x637;&#x628;&#x6CC;&#x639;&#x62A;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="45">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_CLOSE_SQUARE">]</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="46">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_LNUMBER">3</token>
+        <token name="T_WHITESPACE">  </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_SQUARE">[</token>
+      </line>
+      <line no="47">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_LNUMBER">14</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x631;&#x62D;&#x644;&#x62A; &#x627;&#x645;&#x627;&#x645; &#x62E;&#x645;&#x6CC;&#x646;&#x6CC;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="48">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_LNUMBER">15</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x642;&#x6CC;&#x627;&#x645; &#x6F1;&#x6F5; &#x62E;&#x631;&#x62F;&#x627;&#x62F;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="49">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_CLOSE_SQUARE">]</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="50">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_LNUMBER">11</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_SQUARE">[</token>
+      </line>
+      <line no="51">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_LNUMBER">22</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x67E;&#x6CC;&#x631;&#x648;&#x632;&#x6CC; &#x627;&#x646;&#x642;&#x644;&#x627;&#x628; &#x627;&#x633;&#x644;&#x627;&#x645;&#x6CC;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="52">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_CLOSE_SQUARE">]</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="53">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_LNUMBER">12</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_SQUARE">[</token>
+      </line>
+      <line no="54">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_LNUMBER">29</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x645;&#x644;&#x6CC; &#x634;&#x62F;&#x646; &#x635;&#x646;&#x639;&#x62A; &#x646;&#x641;&#x62A;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="55">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_CLOSE_SQUARE">]</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="56">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_CLOSE_SQUARE">]</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="57"/>
+      <line no="58">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_DOC_COMMENT">/**</token>
+      </line>
+      <line no="59">
+        <token name="T_DOC_COMMENT">     * Islamic (Hijri) holidays: month =&gt; [day =&gt; title]</token>
+      </line>
+      <line no="60">
+        <token name="T_DOC_COMMENT">     * @var array&lt;int, array&lt;int, string&gt;&gt;</token>
+      </line>
+      <line no="61">
+        <token name="T_DOC_COMMENT">     */</token>
+      </line>
+      <line no="62">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PRIVATE">private</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STATIC">static</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_ARRAY">array</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$islamic</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_SQUARE">[</token>
+      </line>
+      <line no="63">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_LNUMBER">1</token>
+        <token name="T_WHITESPACE">  </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_SQUARE">[</token>
+      </line>
+      <line no="64">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_LNUMBER">9</token>
+        <token name="T_WHITESPACE">  </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x62A;&#x627;&#x633;&#x648;&#x639;&#x627;&#x6CC; &#x62D;&#x633;&#x6CC;&#x646;&#x6CC;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="65">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_LNUMBER">10</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x639;&#x627;&#x634;&#x648;&#x631;&#x627;&#x6CC; &#x62D;&#x633;&#x6CC;&#x646;&#x6CC;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="66">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_CLOSE_SQUARE">]</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="67">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_LNUMBER">2</token>
+        <token name="T_WHITESPACE">  </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_SQUARE">[</token>
+      </line>
+      <line no="68">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_LNUMBER">20</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x627;&#x631;&#x628;&#x639;&#x6CC;&#x646; &#x62D;&#x633;&#x6CC;&#x646;&#x6CC;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="69">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_LNUMBER">28</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x631;&#x62D;&#x644;&#x62A; &#x67E;&#x6CC;&#x627;&#x645;&#x628;&#x631; &#x648; &#x634;&#x647;&#x627;&#x62F;&#x62A; &#x627;&#x645;&#x627;&#x645; &#x62D;&#x633;&#x646;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="70">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_COMMENT">// Imam Reza martyrdom (last day of Safar) is handled in islamicTitles()</token>
+      </line>
+      <line no="71">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_CLOSE_SQUARE">]</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="72">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_LNUMBER">3</token>
+        <token name="T_WHITESPACE">  </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_SQUARE">[</token>
+      </line>
+      <line no="73">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_LNUMBER">8</token>
+        <token name="T_WHITESPACE">  </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x634;&#x647;&#x627;&#x62F;&#x62A; &#x627;&#x645;&#x627;&#x645; &#x62D;&#x633;&#x646; &#x639;&#x633;&#x6A9;&#x631;&#x6CC;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="74">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_LNUMBER">17</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x645;&#x6CC;&#x644;&#x627;&#x62F; &#x67E;&#x6CC;&#x627;&#x645;&#x628;&#x631; &#x648; &#x627;&#x645;&#x627;&#x645; &#x635;&#x627;&#x62F;&#x642;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="75">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_CLOSE_SQUARE">]</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="76">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_LNUMBER">6</token>
+        <token name="T_WHITESPACE">  </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_SQUARE">[</token>
+      </line>
+      <line no="77">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_LNUMBER">3</token>
+        <token name="T_WHITESPACE">  </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x634;&#x647;&#x627;&#x62F;&#x62A; &#x62D;&#x636;&#x631;&#x62A; &#x641;&#x627;&#x637;&#x645;&#x647;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="78">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_CLOSE_SQUARE">]</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="79">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_LNUMBER">7</token>
+        <token name="T_WHITESPACE">  </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_SQUARE">[</token>
+      </line>
+      <line no="80">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_LNUMBER">13</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x648;&#x644;&#x627;&#x62F;&#x62A; &#x627;&#x645;&#x627;&#x645; &#x639;&#x644;&#x6CC;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="81">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_LNUMBER">27</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x645;&#x628;&#x639;&#x62B; &#x67E;&#x6CC;&#x627;&#x645;&#x628;&#x631;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="82">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_CLOSE_SQUARE">]</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="83">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_LNUMBER">8</token>
+        <token name="T_WHITESPACE">  </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_SQUARE">[</token>
+      </line>
+      <line no="84">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_LNUMBER">15</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x648;&#x644;&#x627;&#x62F;&#x62A; &#x627;&#x645;&#x627;&#x645; &#x632;&#x645;&#x627;&#x646;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="85">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_CLOSE_SQUARE">]</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="86">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_LNUMBER">9</token>
+        <token name="T_WHITESPACE">  </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_SQUARE">[</token>
+      </line>
+      <line no="87">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_LNUMBER">21</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x634;&#x647;&#x627;&#x62F;&#x62A; &#x627;&#x645;&#x627;&#x645; &#x639;&#x644;&#x6CC;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="88">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_CLOSE_SQUARE">]</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="89">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_LNUMBER">10</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_SQUARE">[</token>
+      </line>
+      <line no="90">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_LNUMBER">1</token>
+        <token name="T_WHITESPACE">  </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x639;&#x6CC;&#x62F; &#x641;&#x637;&#x631;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="91">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_LNUMBER">2</token>
+        <token name="T_WHITESPACE">  </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x62A;&#x639;&#x637;&#x6CC;&#x644; &#x639;&#x6CC;&#x62F; &#x641;&#x637;&#x631;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="92">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_LNUMBER">25</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x634;&#x647;&#x627;&#x62F;&#x62A; &#x627;&#x645;&#x627;&#x645; &#x62C;&#x639;&#x641;&#x631; &#x635;&#x627;&#x62F;&#x642;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="93">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_CLOSE_SQUARE">]</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="94">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_LNUMBER">12</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_SQUARE">[</token>
+      </line>
+      <line no="95">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_LNUMBER">10</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x639;&#x6CC;&#x62F; &#x642;&#x631;&#x628;&#x627;&#x646;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="96">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_LNUMBER">18</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x639;&#x6CC;&#x62F; &#x63A;&#x62F;&#x6CC;&#x631; &#x62E;&#x645;'</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="97">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_CLOSE_SQUARE">]</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="98">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_CLOSE_SQUARE">]</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="99"/>
+      <line no="100">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STATIC">static</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">isHoliday</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">Jalali</token>
+        <token name="T_PIPE">|</token>
+        <token name="T_STRING">int</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$year</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_QUESTION_MARK">?</token>
+        <token name="T_STRING">int</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$month</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">null</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_QUESTION_MARK">?</token>
+        <token name="T_STRING">int</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$day</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">null</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">bool</token>
+      </line>
+      <line no="101">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="102">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_RETURN">return</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">self</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_STRING">getTitle</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_VARIABLE">$year</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$month</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$day</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_IS_NOT_IDENTICAL">!==</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">null</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="103">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_CLOSE_CURLY">}</token>
+      </line>
+      <line no="104"/>
+      <line no="105">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STATIC">static</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">getTitle</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">Jalali</token>
+        <token name="T_PIPE">|</token>
+        <token name="T_STRING">int</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$year</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_QUESTION_MARK">?</token>
+        <token name="T_STRING">int</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$month</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">null</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_QUESTION_MARK">?</token>
+        <token name="T_STRING">int</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$day</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">null</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_QUESTION_MARK">?</token>
+        <token name="T_STRING">string</token>
+      </line>
+      <line no="106">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="107">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_RETURN">return</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">self</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_STRING">getTitles</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_VARIABLE">$year</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$month</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$day</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_OPEN_SQUARE">[</token>
+        <token name="T_LNUMBER">0</token>
+        <token name="T_CLOSE_SQUARE">]</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_COALESCE">??</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">null</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="108">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_CLOSE_CURLY">}</token>
+      </line>
+      <line no="109"/>
+      <line no="110">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_DOC_COMMENT">/**</token>
+      </line>
+      <line no="111">
+        <token name="T_DOC_COMMENT">     * All holiday titles for a day: fixed Jalali ones first, then Islamic.</token>
+      </line>
+      <line no="112">
+        <token name="T_DOC_COMMENT">     *</token>
+      </line>
+      <line no="113">
+        <token name="T_DOC_COMMENT">     * @return list&lt;string&gt;</token>
+      </line>
+      <line no="114">
+        <token name="T_DOC_COMMENT">     */</token>
+      </line>
+      <line no="115">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STATIC">static</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">getTitles</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">Jalali</token>
+        <token name="T_PIPE">|</token>
+        <token name="T_STRING">int</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$year</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_QUESTION_MARK">?</token>
+        <token name="T_STRING">int</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$month</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">null</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_QUESTION_MARK">?</token>
+        <token name="T_STRING">int</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$day</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">null</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_ARRAY">array</token>
+      </line>
+      <line no="116">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="117">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_IF">if</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_VARIABLE">$year</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_INSTANCEOF">instanceof</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">Jalali</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="118">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_VARIABLE">$date</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$year</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="119">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_CLOSE_CURLY">}</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_ELSE">else</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="120">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_IF">if</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_VARIABLE">$month</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_IS_IDENTICAL">===</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">null</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_BOOLEAN_OR">||</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$day</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_IS_IDENTICAL">===</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">null</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="121">
+        <token name="T_WHITESPACE">                </token>
+        <token name="T_THROW">throw</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_NEW">new</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">InvalidDateException</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'Month and day are required when the year is given as int.'</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="122">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_CLOSE_CURLY">}</token>
+      </line>
+      <line no="123">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_VARIABLE">$date</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">Jalali</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_STRING">create</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_VARIABLE">$year</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$month</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$day</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="124">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_CLOSE_CURLY">}</token>
+      </line>
+      <line no="125"/>
+      <line no="126">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_VARIABLE">$titles</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_SQUARE">[</token>
+        <token name="T_CLOSE_SQUARE">]</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="127"/>
+      <line no="128">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_VARIABLE">$fixed</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">self</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_VARIABLE">$fixed</token>
+        <token name="T_OPEN_SQUARE">[</token>
+        <token name="T_VARIABLE">$date</token>
+        <token name="T_OBJECT_OPERATOR">-&gt;</token>
+        <token name="T_STRING">getMonth</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_CLOSE_SQUARE">]</token>
+        <token name="T_OPEN_SQUARE">[</token>
+        <token name="T_VARIABLE">$date</token>
+        <token name="T_OBJECT_OPERATOR">-&gt;</token>
+        <token name="T_STRING">getDay</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_CLOSE_SQUARE">]</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_COALESCE">??</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">null</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="129">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_IF">if</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_VARIABLE">$fixed</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_IS_NOT_IDENTICAL">!==</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">null</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="130">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_VARIABLE">$titles</token>
+        <token name="T_OPEN_SQUARE">[</token>
+        <token name="T_CLOSE_SQUARE">]</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$fixed</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="131">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_CLOSE_CURLY">}</token>
+      </line>
+      <line no="132"/>
+      <line no="133">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_VARIABLE">$hijri</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">Hijri</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_STRING">make</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_VARIABLE">$date</token>
+        <token name="T_OBJECT_OPERATOR">-&gt;</token>
+        <token name="T_STRING">toGregorian</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="134">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_IF">if</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_EXCLAMATION_MARK">!</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">Hijri</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_STRING">hasUmmAlQuraData</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_VARIABLE">$hijri</token>
+        <token name="T_OBJECT_OPERATOR">-&gt;</token>
+        <token name="T_STRING">getYear</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="135">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_RETURN">return</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$titles</token>
+        <token name="T_SEMICOLON">;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_COMMENT">// outside the Umm al-Qura table: fixed Jalali holidays only</token>
+      </line>
+      <line no="136">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_CLOSE_CURLY">}</token>
+      </line>
+      <line no="137"/>
+      <line no="138">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_RETURN">return</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_SQUARE">[</token>
+        <token name="T_ELLIPSIS">...</token>
+        <token name="T_VARIABLE">$titles</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_ELLIPSIS">...</token>
+        <token name="T_STRING">self</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_STRING">islamicTitles</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_VARIABLE">$hijri</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_CLOSE_SQUARE">]</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="139">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_CLOSE_CURLY">}</token>
+      </line>
+      <line no="140"/>
+      <line no="141">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_DOC_COMMENT">/**</token>
+      </line>
+      <line no="142">
+        <token name="T_DOC_COMMENT">     * @return list&lt;string&gt;</token>
+      </line>
+      <line no="143">
+        <token name="T_DOC_COMMENT">     */</token>
+      </line>
+      <line no="144">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PRIVATE">private</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STATIC">static</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">islamicTitles</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">Hijri</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$hijri</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_ARRAY">array</token>
+      </line>
+      <line no="145">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="146">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_VARIABLE">$hm</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$hijri</token>
+        <token name="T_OBJECT_OPERATOR">-&gt;</token>
+        <token name="T_STRING">getMonth</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="147">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_VARIABLE">$hd</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$hijri</token>
+        <token name="T_OBJECT_OPERATOR">-&gt;</token>
+        <token name="T_STRING">getDay</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="148"/>
+      <line no="149">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_VARIABLE">$titles</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_SQUARE">[</token>
+        <token name="T_CLOSE_SQUARE">]</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="150">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_IF">if</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_ISSET">isset</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">self</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_VARIABLE">$islamic</token>
+        <token name="T_OPEN_SQUARE">[</token>
+        <token name="T_VARIABLE">$hm</token>
+        <token name="T_CLOSE_SQUARE">]</token>
+        <token name="T_OPEN_SQUARE">[</token>
+        <token name="T_VARIABLE">$hd</token>
+        <token name="T_CLOSE_SQUARE">]</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="151">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_VARIABLE">$titles</token>
+        <token name="T_OPEN_SQUARE">[</token>
+        <token name="T_CLOSE_SQUARE">]</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">self</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_VARIABLE">$islamic</token>
+        <token name="T_OPEN_SQUARE">[</token>
+        <token name="T_VARIABLE">$hm</token>
+        <token name="T_CLOSE_SQUARE">]</token>
+        <token name="T_OPEN_SQUARE">[</token>
+        <token name="T_VARIABLE">$hd</token>
+        <token name="T_CLOSE_SQUARE">]</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="152">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_CLOSE_CURLY">}</token>
+      </line>
+      <line no="153"/>
+      <line no="154">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_COMMENT">// Imam Reza martyrdom: last day of Safar (29 or 30 days).</token>
+      </line>
+      <line no="155">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_IF">if</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_VARIABLE">$hm</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_IS_IDENTICAL">===</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_LNUMBER">2</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_BOOLEAN_AND">&amp;&amp;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$hd</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_IS_IDENTICAL">===</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">Hijri</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_STRING">daysInMonth</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_VARIABLE">$hijri</token>
+        <token name="T_OBJECT_OPERATOR">-&gt;</token>
+        <token name="T_STRING">getYear</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_LNUMBER">2</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="156">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_VARIABLE">$titles</token>
+        <token name="T_OPEN_SQUARE">[</token>
+        <token name="T_CLOSE_SQUARE">]</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'&#x634;&#x647;&#x627;&#x62F;&#x62A; &#x627;&#x645;&#x627;&#x645; &#x631;&#x636;&#x627;'</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="157">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_CLOSE_CURLY">}</token>
+      </line>
+      <line no="158"/>
+      <line no="159">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_RETURN">return</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$titles</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="160">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_CLOSE_CURLY">}</token>
+      </line>
+      <line no="161"/>
+      <line no="162">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_DOC_COMMENT">/**</token>
+      </line>
+      <line no="163">
+        <token name="T_DOC_COMMENT">     * All fixed holidays for a Jalali year.</token>
+      </line>
+      <line no="164">
+        <token name="T_DOC_COMMENT">     * @return array&lt;string, string&gt;</token>
+      </line>
+      <line no="165">
+        <token name="T_DOC_COMMENT">     */</token>
+      </line>
+      <line no="166">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STATIC">static</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">allFixed</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">int</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$year</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_ARRAY">array</token>
+      </line>
+      <line no="167">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="168">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_STRING">self</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_STRING">assertYear</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_VARIABLE">$year</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="169"/>
+      <line no="170">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_VARIABLE">$result</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_SQUARE">[</token>
+        <token name="T_CLOSE_SQUARE">]</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="171">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_FOREACH">foreach</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">self</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_VARIABLE">$fixed</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_AS">as</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$m</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$days</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="172">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_FOREACH">foreach</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_VARIABLE">$days</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_AS">as</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$d</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$title</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="173">
+        <token name="T_WHITESPACE">                </token>
+        <token name="T_VARIABLE">$result</token>
+        <token name="T_OPEN_SQUARE">[</token>
+        <token name="T_STRING">sprintf</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'%04d/%02d/%02d'</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$year</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$m</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$d</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_CLOSE_SQUARE">]</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$title</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="174">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_CLOSE_CURLY">}</token>
+      </line>
+      <line no="175">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_CLOSE_CURLY">}</token>
+      </line>
+      <line no="176"/>
+      <line no="177">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_RETURN">return</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$result</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="178">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_CLOSE_CURLY">}</token>
+      </line>
+      <line no="179"/>
+      <line no="180">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_DOC_COMMENT">/**</token>
+      </line>
+      <line no="181">
+        <token name="T_DOC_COMMENT">     * All holidays (fixed + islamic) for a Jalali year; titles falling on the</token>
+      </line>
+      <line no="182">
+        <token name="T_DOC_COMMENT">     * same day are joined with " / ". See allTitles() for the structured form.</token>
+      </line>
+      <line no="183">
+        <token name="T_DOC_COMMENT">     *</token>
+      </line>
+      <line no="184">
+        <token name="T_DOC_COMMENT">     * @return array&lt;string, string&gt;</token>
+      </line>
+      <line no="185">
+        <token name="T_DOC_COMMENT">     */</token>
+      </line>
+      <line no="186">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STATIC">static</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">all</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">int</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$year</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_ARRAY">array</token>
+      </line>
+      <line no="187">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="188">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_RETURN">return</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">array_map</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STATIC">static</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FN">fn</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_ARRAY">array</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$t</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">string</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">implode</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">' / '</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$t</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">self</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_STRING">allTitles</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_VARIABLE">$year</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="189">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_CLOSE_CURLY">}</token>
+      </line>
+      <line no="190"/>
+      <line no="191">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_DOC_COMMENT">/**</token>
+      </line>
+      <line no="192">
+        <token name="T_DOC_COMMENT">     * All holidays for a Jalali year keyed by Y/m/d, each a list of titles.</token>
+      </line>
+      <line no="193">
+        <token name="T_DOC_COMMENT">     *</token>
+      </line>
+      <line no="194">
+        <token name="T_DOC_COMMENT">     * @return array&lt;string, list&lt;string&gt;&gt;</token>
+      </line>
+      <line no="195">
+        <token name="T_DOC_COMMENT">     */</token>
+      </line>
+      <line no="196">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STATIC">static</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">allTitles</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">int</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$year</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_ARRAY">array</token>
+      </line>
+      <line no="197">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="198">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_STRING">self</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_STRING">assertYear</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_VARIABLE">$year</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="199"/>
+      <line no="200">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_VARIABLE">$result</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_SQUARE">[</token>
+        <token name="T_CLOSE_SQUARE">]</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="201">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_VARIABLE">$end</token>
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">Jalali</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_STRING">create</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_VARIABLE">$year</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_LNUMBER">12</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">Jalali</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_STRING">daysInMonth</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_VARIABLE">$year</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_LNUMBER">12</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="202"/>
+      <line no="203">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_FOR">for</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_VARIABLE">$current</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">Jalali</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_STRING">create</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_VARIABLE">$year</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_LNUMBER">1</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_LNUMBER">1</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_SEMICOLON">;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$current</token>
+        <token name="T_OBJECT_OPERATOR">-&gt;</token>
+        <token name="T_STRING">lte</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_VARIABLE">$end</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_SEMICOLON">;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$current</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$current</token>
+        <token name="T_OBJECT_OPERATOR">-&gt;</token>
+        <token name="T_STRING">addDays</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_LNUMBER">1</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="204">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_VARIABLE">$titles</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">self</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_STRING">getTitles</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_VARIABLE">$current</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="205">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_IF">if</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_VARIABLE">$titles</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_IS_NOT_IDENTICAL">!==</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_SQUARE">[</token>
+        <token name="T_CLOSE_SQUARE">]</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="206">
+        <token name="T_WHITESPACE">                </token>
+        <token name="T_VARIABLE">$result</token>
+        <token name="T_OPEN_SQUARE">[</token>
+        <token name="T_VARIABLE">$current</token>
+        <token name="T_OBJECT_OPERATOR">-&gt;</token>
+        <token name="T_STRING">toDateString</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_CLOSE_SQUARE">]</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$titles</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="207">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_CLOSE_CURLY">}</token>
+      </line>
+      <line no="208">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_CLOSE_CURLY">}</token>
+      </line>
+      <line no="209"/>
+      <line no="210">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_RETURN">return</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$result</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="211">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_CLOSE_CURLY">}</token>
+      </line>
+      <line no="212"/>
+      <line no="213">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_DOC_COMMENT">/**</token>
+      </line>
+      <line no="214">
+        <token name="T_DOC_COMMENT">     * @throws InvalidDateException with ErrorCode::DateOutOfRange</token>
+      </line>
+      <line no="215">
+        <token name="T_DOC_COMMENT">     */</token>
+      </line>
+      <line no="216">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PRIVATE">private</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STATIC">static</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">assertYear</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">int</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$year</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">void</token>
+      </line>
+      <line no="217">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="218">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_IF">if</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_VARIABLE">$year</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_LT">&lt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">Jalali</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_STRING">MIN_YEAR</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_BOOLEAN_OR">||</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$year</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_GT">&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">Jalali</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_STRING">MAX_YEAR</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="219">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_THROW">throw</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">InvalidDateException</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_STRING">because</token>
+        <token name="T_OPEN_BRACKET">(</token>
+      </line>
+      <line no="220">
+        <token name="T_WHITESPACE">                </token>
+        <token name="T_STRING">ErrorCode</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_STRING">DateOutOfRange</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="221">
+        <token name="T_WHITESPACE">                </token>
+        <token name="T_STRING">sprintf</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'Jalali year %d is outside the supported range %d..%d.'</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$year</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">Jalali</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_STRING">MIN_YEAR</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">Jalali</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_STRING">MAX_YEAR</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="222">
+        <token name="T_WHITESPACE">                </token>
+        <token name="T_OPEN_SQUARE">[</token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'year'</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$year</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'min'</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">Jalali</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_STRING">MIN_YEAR</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'max'</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_DOUBLE_ARROW">=&gt;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">Jalali</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_STRING">MAX_YEAR</token>
+        <token name="T_CLOSE_SQUARE">]</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="223">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="224">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_CLOSE_CURLY">}</token>
+      </line>
+      <line no="225">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_CLOSE_CURLY">}</token>
+      </line>
+      <line no="226"/>
+      <line no="227">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STATIC">static</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">isWeekend</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">Jalali</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$date</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">bool</token>
+      </line>
+      <line no="228">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="229">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_RETURN">return</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_INT_CAST">(int)</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$date</token>
+        <token name="T_OBJECT_OPERATOR">-&gt;</token>
+        <token name="T_STRING">toGregorian</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_OBJECT_OPERATOR">-&gt;</token>
+        <token name="T_STRING">format</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'w'</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_IS_IDENTICAL">===</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_LNUMBER">5</token>
+        <token name="T_SEMICOLON">;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_COMMENT">// Friday</token>
+      </line>
+      <line no="230">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_CLOSE_CURLY">}</token>
+      </line>
+      <line no="231"/>
+      <line no="232">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STATIC">static</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">isBusinessDay</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">Jalali</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$date</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">bool</token>
+      </line>
+      <line no="233">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="234">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_RETURN">return</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EXCLAMATION_MARK">!</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">self</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_STRING">isWeekend</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_VARIABLE">$date</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_BOOLEAN_AND">&amp;&amp;</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EXCLAMATION_MARK">!</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">self</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_STRING">isHoliday</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_VARIABLE">$date</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="235">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_CLOSE_CURLY">}</token>
+      </line>
+      <line no="236"/>
+      <line no="237">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STATIC">static</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">nextBusinessDay</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">Jalali</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$date</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">Jalali</token>
+      </line>
+      <line no="238">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="239">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_VARIABLE">$next</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$date</token>
+        <token name="T_OBJECT_OPERATOR">-&gt;</token>
+        <token name="T_STRING">addDays</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_LNUMBER">1</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="240">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_WHILE">while</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_EXCLAMATION_MARK">!</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">self</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_STRING">isBusinessDay</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_VARIABLE">$next</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="241">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_VARIABLE">$next</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$next</token>
+        <token name="T_OBJECT_OPERATOR">-&gt;</token>
+        <token name="T_STRING">addDays</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_LNUMBER">1</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="242">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_CLOSE_CURLY">}</token>
+      </line>
+      <line no="243"/>
+      <line no="244">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_RETURN">return</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$next</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="245">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_CLOSE_CURLY">}</token>
+      </line>
+      <line no="246">
+        <token name="T_CLOSE_CURLY">}</token>
+      </line>
+      <line no="247"/>
+    </source>
+  </file>
+</phpunit>

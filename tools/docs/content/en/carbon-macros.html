@@ -1,15 +1,15 @@
 <!--
 title: Carbon macros
-description: Optional Carbon integration: convert any Carbon instance to Jalali, Hijri or Hebrew and create Carbon dates from calendar components, with the exact macro list, return types and errors.
+description: Optional Carbon support. Turn any Carbon instance into a Jalali, Hijri or Hebrew date, and create Carbon dates from calendar parts. The page lists every macro with its return type and errors.
 group: calendars
 order: 50
 -->
 <h2 id="overview">What this gives you</h2>
-<p>If <code>nesbot/carbon</code> is installed, RTLY-Kit registers a small set of macros on <code>Carbon\Carbon</code> and <code>Carbon\CarbonImmutable</code>. They let you move between Carbon and the calendar classes in one call, in both directions. Carbon is <strong>optional</strong>: RTLY-Kit does not require it, and without Carbon nothing is registered and nothing breaks. Laravel applications already ship Carbon, so the macros are available there with no extra step (see also <a href="laravel-setup.html">Laravel setup</a>).</p>
-<p><strong>Prerequisites.</strong> RTLY-Kit installed (<a href="installation.html">Installation</a>) and Carbon 3 (<code>composer require nesbot/carbon</code>; Carbon 3 is the supported version).</p>
+<p>If <code>nesbot/carbon</code> is installed, RTLY-Kit adds a few macros to <code>Carbon\Carbon</code> and <code>Carbon\CarbonImmutable</code>. They move you between Carbon and the calendar classes in one call, in both directions. Carbon is optional. Without it nothing is registered and nothing breaks. Laravel apps already ship Carbon, so the macros are there without any extra step (see <a href="laravel-setup.html">Laravel setup</a>).</p>
+<p><strong>Before you start.</strong> Install RTLY-Kit (<a href="installation.html">Installation</a>) and Carbon 3 (<code>composer require nesbot/carbon</code>).</p>
 
 <h2 id="registration">How registration works</h2>
-<p>Composer loads the package's helper file on autoload. That file boots the integration, which checks whether the Carbon classes exist and, if so, registers the macros once. You do not call anything yourself:</p>
+<p>Composer loads the package's helper file on autoload. That file starts the integration. It checks whether the Carbon classes exist and, if they do, registers the macros once. You call nothing yourself:</p>
 <pre><code class="language-php">&lt;?php
 require 'vendor/autoload.php';
 
@@ -19,22 +19,22 @@ use RtlyKit\Calendar\HijriVariant;
 use RtlyKit\Calendar\Jalali;
 
 var_dump(Carbon::hasMacro('toJalali'));   // bool(true)</code></pre>
-<div class="note"><strong>Install Carbon with Composer.</strong> The macros are registered when Composer's autoloader starts and Carbon's classes can be found. A Carbon copy that is not on the same autoloader (for example a bundled phar) is not detected. The registration classes are internal; rely on the macro names, which are part of the public API.</div>
+<div class="note"><strong>Install Carbon with Composer.</strong> The macros are registered when Composer's autoloader starts and can find the Carbon classes. A Carbon copy that is not on the same autoloader, such as a bundled phar, is not found. The registration classes are internal. The macro names are part of the public API.</div>
 
 <h2 id="list">Macro reference</h2>
 <table>
 <thead><tr><th>Macro</th><th>Kind</th><th>Returns</th><th>Notes</th></tr></thead>
 <tbody>
-<tr><td><code>toJalali()</code></td><td>instance</td><td><code>Jalali</code></td><td>Same instant and time zone as the Carbon object</td></tr>
-<tr><td><code>jformat($format = 'Y/m/d H:i:s')</code></td><td>instance</td><td><code>string</code></td><td>Shortcut for <code>toJalali()-&gt;format($format)</code>; tokens as in <a href="jalali.html#format">Jalali formatting</a></td></tr>
-<tr><td><code>toHijri(?HijriVariant $variant = null)</code></td><td>instance</td><td><code>Hijri</code></td><td>Umm al-Qura unless a variant is given</td></tr>
+<tr><td><code>toJalali()</code></td><td>instance</td><td><code>Jalali</code></td><td>Same moment and time zone as the Carbon object</td></tr>
+<tr><td><code>jformat($format = 'Y/m/d H:i:s')</code></td><td>instance</td><td><code>string</code></td><td>Shortcut for <code>toJalali()-&gt;format($format)</code>. Tokens as in <a href="jalali.html#format">Jalali formatting</a></td></tr>
+<tr><td><code>toHijri(?HijriVariant $variant = null)</code></td><td>instance</td><td><code>Hijri</code></td><td>Umm al-Qura unless you give a variant</td></tr>
 <tr><td><code>toHebrew()</code></td><td>instance</td><td><code>Hebrew</code></td><td></td></tr>
-<tr><td><code>createFromJalali($y, $m, $d, $h = 0, $i = 0, $s = 0, $tz = null)</code></td><td>static</td><td>the class you called it on</td><td><code>Carbon::</code> returns <code>Carbon</code>; <code>CarbonImmutable::</code> returns <code>CarbonImmutable</code></td></tr>
-<tr><td><code>createFromHijri($y, $m, $d, $h = 0, $i = 0, $s = 0, $tz = null, ?HijriVariant $variant = null)</code></td><td>static</td><td>the class you called it on</td><td>Variant defaults to Umm al-Qura</td></tr>
-<tr><td><code>createFromHebrew($y, $m, $d, $h = 0, $i = 0, $s = 0, $tz = null)</code></td><td>static</td><td>the class you called it on</td><td>Ordinal month numbering, see <a href="hebrew.html#months">Hebrew months</a></td></tr>
+<tr><td><code>createFromJalali($y, $m, $d, $h = 0, $i = 0, $s = 0, $tz = null)</code></td><td>static</td><td>the class you called it on</td><td><code>Carbon::</code> returns <code>Carbon</code>. <code>CarbonImmutable::</code> returns <code>CarbonImmutable</code></td></tr>
+<tr><td><code>createFromHijri($y, $m, $d, $h = 0, $i = 0, $s = 0, $tz = null, ?HijriVariant $variant = null)</code></td><td>static</td><td>the class you called it on</td><td>The variant defaults to Umm al-Qura</td></tr>
+<tr><td><code>createFromHebrew($y, $m, $d, $h = 0, $i = 0, $s = 0, $tz = null)</code></td><td>static</td><td>the class you called it on</td><td>Month numbers by position, see <a href="hebrew.html#months">Hebrew months</a></td></tr>
 </tbody>
 </table>
-<p>The <code>$tz</code> argument accepts a <code>DateTimeZone</code>, a time zone identifier string, or <code>null</code> (then the PHP default zone applies, not the zone of any existing Carbon object).</p>
+<p>The <code>$tz</code> argument takes a <code>DateTimeZone</code>, a time zone name or <code>null</code>. With <code>null</code> the PHP default zone applies, not the zone of any existing Carbon object.</p>
 
 <h2 id="to-calendar">From Carbon to a calendar</h2>
 <pre><code class="language-php">$c = Carbon::create(2026, 3, 21, 12, 0, 0, 'UTC');
@@ -45,13 +45,13 @@ echo $c-&gt;jformat('l j F Y');                   // شنبه 1 فروردین 1
 echo $c-&gt;jformat();                            // 1405/01/01 12:00:00
 echo $c-&gt;toHijri()-&gt;format('j F Y', 'en');     // 2 Shawwal 1447
 echo $c-&gt;toHebrew()-&gt;format('j F Y');          // 3 Nisan 5786</code></pre>
-<p>The result is a calendar object, not a Carbon object, so use the calendar API from there (Persian digits, for example, via <code>$c-&gt;toJalali()-&gt;format('Y/m/d', true)</code>). Because a calendar object is a normal value, you can keep working with it and go back at any time with <code>toGregorian()</code>:</p>
+<p>The result is a calendar object, not a Carbon object. Use the calendar API from there, for example Persian digits with <code>$c-&gt;toJalali()-&gt;format('Y/m/d', true)</code>. You can keep working with it and go back at any time with <code>toGregorian()</code>:</p>
 <pre><code class="language-php">echo Carbon::now('UTC')-&gt;setDate(2026, 3, 21)-&gt;toJalali()-&gt;addMonths(1)-&gt;format('Y/m/d');  // 1405/02/01</code></pre>
-<p>Calling the calendar's <code>make()</code> directly with a Carbon instance is equivalent, because Carbon is a <code>DateTimeInterface</code>:</p>
+<p>Calling the calendar's <code>make()</code> with a Carbon instance does the same, because Carbon is a <code>DateTimeInterface</code>:</p>
 <pre><code class="language-php">echo Jalali::make($c)-&gt;format('Y/m/d H:i');                                   // 1405/01/01 12:00
 echo Jalali::make(Carbon::create(2026, 3, 21, 22, 0, 0, 'UTC'), new DateTimeZone('Asia/Tehran'))-&gt;format('Y/m/d H:i');  // 1405/01/02 01:30</code></pre>
 
-<h2 id="from-calendar">From calendar components to Carbon</h2>
+<h2 id="from-calendar">From calendar parts to Carbon</h2>
 <pre><code class="language-php">$a = Carbon::createFromJalali(1405, 1, 1, 0, 0, 0, 'UTC');
 echo get_class($a), ' ', $a-&gt;toDateTimeString();      // Carbon\Carbon 2026-03-21 00:00:00
 
@@ -60,10 +60,10 @@ echo get_class($b), ' ', $b-&gt;toIso8601String();       // Carbon\CarbonImmutab
 
 echo Carbon::createFromHijri(1446, 9, 1, 0, 0, 0, 'UTC')-&gt;toDateString();   // 2025-03-01
 echo Carbon::createFromHebrew(5786, 1, 1, 0, 0, 0, 'UTC')-&gt;toDateString();  // 2025-09-23</code></pre>
-<p>Pass the Tabular Hijri variant as the last argument of <code>createFromHijri()</code>: <code>Carbon::createFromHijri(1446, 10, 1, 0, 0, 0, 'UTC', HijriVariant::Tabular)</code>.</p>
+<p>To use the Tabular Hijri variant, pass it as the last argument: <code>Carbon::createFromHijri(1446, 10, 1, 0, 0, 0, 'UTC', HijriVariant::Tabular)</code>.</p>
 
 <h2 id="errors">Errors</h2>
-<p>The macros validate through the calendar classes, so invalid or out-of-range input throws <code>RtlyKit\Exceptions\InvalidDateException</code> (never a Carbon <code>InvalidFormatException</code> for these cases), and so does an unknown time zone identifier:</p>
+<p>The macros check input through the calendar classes. Invalid or out-of-range input throws <code>RtlyKit\Exceptions\InvalidDateException</code>, not a Carbon <code>InvalidFormatException</code>. An unknown time zone name does the same:</p>
 <pre><code class="language-php">use RtlyKit\Exceptions\RtlyKitThrowable;
 
 $cases = [
@@ -80,12 +80,12 @@ foreach ($cases as $f) {
 // RtlyKit\Exceptions\InvalidDateException: Unknown timezone: Nowhere/Land
 // RtlyKit\Exceptions\InvalidDateException: Invalid Hijri date: 9999/1/1
 // RtlyKit\Exceptions\InvalidDateException: Invalid Hebrew date: 1/1/1</code></pre>
-<p>Supported ranges are those of the calendars: Jalali -620..9377, Hijri 1..9665, Hebrew 3762..13759.</p>
+<p>The supported ranges are those of the calendars: Jalali -620..9377, Hijri 1..9665, Hebrew 3762..13759.</p>
 
-<h2 id="known">Limits and cautions</h2>
-<div class="known"><strong>Known limitation.</strong> The macros inherit the accuracy of the calendar classes: Jalali is the arithmetic 33-year rule (not the astronomical official calendar), and Hijri Umm al-Qura data for AH 1300 to 1500 comes from ICU/CLDR and is not verified month by month against the official publication. Day boundaries are civil midnight.</div>
+<h2 id="known">Good to know</h2>
+<div class="note"><strong>Good to know.</strong> The macros have the same accuracy as the calendar classes. Jalali matches the official calendar for the years 1206 to 1497. Hijri Umm al-Qura month starts match the official KACST calendar for AH 1318 to 1500 (checked 2026-10-08). Day boundaries are at civil midnight.</div>
 <ul>
-<li>Macros are global per class: if another package defines a macro with the same name (<code>toJalali</code>, <code>toHijri</code> ...), whichever registers last wins. Use the calendar classes directly (<code>Jalali::make($carbon)</code>) when you need certainty.</li>
-<li>Time zones travel with the object: <code>toJalali()</code> uses the Carbon object's own zone, so normalise the zone before converting if the calendar day matters.</li>
-<li>Weekday numbers differ between calendars; do not feed <code>getDayOfWeek()</code> of one calendar into another. See <a href="convert-and-compare.html">Convert and compare dates</a>.</li>
+<li>Macros are global per class. If another package defines a macro with the same name (<code>toJalali</code>, <code>toHijri</code> and so on), the one registered last wins. Call the calendar classes directly (<code>Jalali::make($carbon)</code>) when you need to be sure.</li>
+<li>Time zones travel with the object. <code>toJalali()</code> uses the zone of the Carbon object, so set the zone before converting when the calendar day matters.</li>
+<li>Weekday numbers differ between calendars. Do not feed <code>getDayOfWeek()</code> of one calendar into another. See <a href="convert-and-compare.html">Convert and compare dates</a>.</li>
 </ul>

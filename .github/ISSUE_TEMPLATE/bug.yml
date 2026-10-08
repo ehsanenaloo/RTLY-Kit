@@ -2,10 +2,32 @@ name: Bug report
 description: Something returns a wrong result or throws unexpectedly
 labels: [bug]
 body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. Please check the [guide](https://ehsanenaloo.github.io/RTLY-Kit/) and existing issues first.
+        Wrong reference data (holidays, bank BINs, Sheba codes, ...) belongs in the "Data correction" template.
+        Security problems must be reported privately, see the security policy.
+  - type: input
+    id: version
+    attributes:
+      label: RTLY-Kit version
+      description: Output of `composer show enaxon/rtly-kit`.
+      placeholder: 0.1.1
+    validations:
+      required: true
+  - type: input
+    id: php
+    attributes:
+      label: PHP version (and Laravel/Carbon if relevant)
+      placeholder: PHP 8.3.12, Laravel 11.9, Carbon 3.8
+    validations:
+      required: true
   - type: textarea
     id: snippet
     attributes:
       label: Minimal reproducing snippet
+      description: The smallest self-contained code that shows the problem.
       render: php
     validations:
       required: true
@@ -20,17 +42,15 @@ body:
     id: actual
     attributes:
       label: Actual result
+      description: Output, or the full exception message and class.
     validations:
       required: true
-  - type: input
-    id: version
+  - type: checkboxes
+    id: checks
     attributes:
-      label: RTLY-Kit version
-    validations:
-      required: true
-  - type: input
-    id: php
-    attributes:
-      label: PHP version (and Laravel/Carbon if relevant)
-    validations:
-      required: true
+      label: Checks
+      options:
+        - label: I searched existing issues and the guide.
+          required: true
+        - label: This is not a security vulnerability.
+          required: true

@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="ar" dir="rtl" data-i18n="{&quot;dark&quot;:&quot;الوضع الداكن&quot;,&quot;light&quot;:&quot;الوضع الفاتح&quot;,&quot;to_dark&quot;:&quot;التبديل إلى السمة الداكنة&quot;,&quot;to_light&quot;:&quot;التبديل إلى السمة الفاتحة&quot;,&quot;copy&quot;:&quot;نسخ&quot;,&quot;copied&quot;:&quot;تم النسخ&quot;,&quot;copy_failed&quot;:&quot;تم التحديد؛ انسخ يدويًا&quot;,&quot;copy_label&quot;:&quot;نسخ مثال الشيفرة أعلاه&quot;,&quot;no_results&quot;:&quot;لا يوجد دليل مطابق. جرّب كلمة أقصر.&quot;,&quot;loading&quot;:&quot;ما زال فهرس البحث قيد التحميل. حاول مرة أخرى بعد قليل.&quot;,&quot;results&quot;:&quot;نتائج البحث&quot;,&quot;status&quot;:&quot;يُعرض %d من %d دليلًا&quot;,&quot;suggest&quot;:&quot;النسخة العربية&quot;,&quot;search_label&quot;:&quot;البحث في الدليل&quot;,&quot;search_placeholder&quot;:&quot;البحث في الدليل&quot;}" data-search-index="search-index.js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>استقرار واجهة API | RTLY-Kit دليل المستخدم</title>
+<meta name="description" content="ما الذي يمكنك الاعتماد عليه، وما هو داخلي، وكيف تُرقَّم الإصدارات قبل 1.0 وبعده، وما إصدارات PHP وLaravel وCarbon المدعومة.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="استقرار واجهة API | RTLY-Kit دليل المستخدم">
+<meta property="og:description" content="ما الذي يمكنك الاعتماد عليه، وما هو داخلي، وكيف تُرقَّم الإصدارات قبل 1.0 وبعده، وما إصدارات PHP وLaravel وCarbon المدعومة.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ar_AR">
+<meta property="og:locale:alternate" content="fa_IR">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:url" content="https://ehsanenaloo.github.io/RTLY-Kit/ar/api-stability.html">
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+<link rel="canonical" href="https://ehsanenaloo.github.io/RTLY-Kit/ar/api-stability.html">
+<link rel="alternate" hreflang="ar" href="https://ehsanenaloo.github.io/RTLY-Kit/ar/api-stability.html">
+<link rel="alternate" hreflang="fa" href="https://ehsanenaloo.github.io/RTLY-Kit/fa/api-stability.html">
+<link rel="alternate" hreflang="en" href="https://ehsanenaloo.github.io/RTLY-Kit/en/api-stability.html">
+<link rel="alternate" hreflang="x-default" href="https://ehsanenaloo.github.io/RTLY-Kit/">
+<link rel="stylesheet" href="../styles.css">
+<script>try{var t=localStorage.getItem("rtly-docs-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<script defer src="../app.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">انتقل إلى المحتوى</a><header class="site-header"><div class="shell header-inner"><a class="brand" href="index.html"><img src="../assets/logo.svg" width="34" height="34" alt=""><span><span class="name">RTLY-Kit</span><small>دليل المستخدم</small></span></a><nav class="top-nav" aria-label="التنقل الرئيسي"><a href="index.html">نظرة عامة</a><a href="quick-start.html">بدء سريع</a><a href="all.html">كل الأدلة</a><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">جيت هب &#8599;</a></nav><div class="header-tools"><span data-search-host></span><button type="button" class="icon-button" data-theme-toggle hidden>Theme</button><div class="lang-switch" role="group" aria-label="اللغة"><a class="icon-button" href="../fa/api-stability.html" hreflang="fa" lang="fa">فارسی</a><a class="icon-button" href="../en/api-stability.html" hreflang="en" lang="en">English</a><span class="icon-button is-current" lang="ar" aria-current="true">العربية</span></div></div></div></header>
+<main id="main">
+<div class="shell page-intro"><nav class="breadcrumbs" aria-label="مسار الصفحة"><ol><li><a href="index.html">الرئيسية</a></li><li><a href="all.html#group-reference">المرجع</a></li><li aria-current="page">استقرار واجهة API</li></ol></nav><h1>استقرار واجهة API</h1><p class="lead">ما الذي يمكنك الاعتماد عليه، وما هو داخلي، وكيف تُرقَّم الإصدارات قبل 1.0 وبعده، وما إصدارات PHP وLaravel وCarbon المدعومة.</p></div>
+<div class="shell doc-layout has-toc">
+<aside class="sidebar"><details open><summary>تصفح الأدلة</summary><nav aria-label="الأدلة"><a href="all.html">كل الأدلة</a><p>البدء</p><a href="quick-start.html">البدء السريع</a><a href="installation.html">التثبيت</a><p>التقاويم</p><a href="jalali.html">التقويم الجلالي</a><a href="hijri.html">التقويم الهجري</a><a href="hebrew.html">التقويم العبري</a><a href="convert-and-compare.html">التحويل والمقارنة بين التواريخ</a><a href="carbon-macros.html">ماكروات Carbon</a><p>التحقق من الصحة</p><a href="validators-overview.html">نظرة عامة على أدوات التحقق</a><a href="national-code.html">الرقم الوطني</a><a href="sheba-and-bank-card.html">شبا والبطاقة المصرفية</a><a href="mobile-postal-plate.html">الجوال والرمز البريدي ولوحة المركبة</a><p>الأرقام والنصوص</p><a href="digits-and-format.html">الأرقام وتنسيق الأعداد</a><a href="number-words.html">تحويل الأعداد إلى كلمات</a><a href="arabic-number-words.html">الأعداد بالحروف العربية</a><a href="text-tools.html">أدوات النصوص</a><p>العطل وأوقات الصلاة</p><a href="holidays.html">العطل الرسمية الإيرانية</a><a href="holiday-calendar.html">تقويم العطل القابل للتعديل</a><a href="prayer-times.html">أوقات الصلاة</a><p>لارافيل</p><a href="laravel-setup.html">إعداد Laravel</a><a href="laravel-validation-and-cast.html">قواعد التحقق وتحويل Eloquent</a><p>المرجع</p><a href="helpers-and-globals.html">الدوال المساعدة والدوال العامة</a><a href="error-handling.html">معالجة الأخطاء</a><a href="api-stability.html" aria-current="page">استقرار واجهة API</a><a href="accuracy-and-data.html">الدقة والبيانات</a><a href="benchmarks.html">قياس الأداء</a><a href="limits.html">الحدود</a><a href="troubleshooting-faq.html">استكشاف الأخطاء والأسئلة الشائعة</a><a href="upgrade.html">دليل الترقية</a><a href="verifying-releases.html">التحقق من الإصدارات</a></nav></details></aside>
+<article class="prose">
+<details class="toc-inline"><summary>في هذه الصفحة</summary><ol><li><a href="#public-api">واجهة API العامة</a></li><li><a href="#internal">داخلي (بلا وعد)</a></li><li><a href="#versioning">سياسة الإصدارات</a></li><li><a href="#platforms">المنصات المدعومة</a></li></ol></details>
+<h2 id="public-api">واجهة API العامة<a class="anchor" href="#public-api" aria-label="رابط إلى هذا القسم">#</a></h2>
+<p>كل ما في هذا الجدول مشمول بوعد التوافق.</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="جدول"><table>
+<thead><tr><th scope="col">المجال</th><th scope="col">الرموز العامة</th></tr></thead>
+<tbody>
+<tr><td>التقاويم</td><td><code>RtlyKit\Calendar\Jalali</code> و<code>Hijri</code> و<code>Hebrew</code> و<code>HijriVariant</code>؛ والثابتان <code>MIN_YEAR</code> / <code>MAX_YEAR</code>؛ و<code>RtlyKit\Contracts\CalendarDate</code></td></tr>
+<tr><td>التحقق من الصحة</td><td><code>RtlyKit\Contracts\Validator</code>؛ و<code>RtlyKit\Validation\NationalCode</code> و<code>Sheba</code> و<code>BankCard</code> و<code>Mobile</code> و<code>PostalCode</code> و<code>VehiclePlate</code> و<code>Result</code>، وسلاسل رموز الأخطاء التي تُرجعها</td></tr>
+<tr><td>الأرقام والنصوص</td><td><code>RtlyKit\Number\Digits</code> و<code>Format</code> و<code>NumberToWords</code> و<code>ArabicOptions</code>؛ و<code>RtlyKit\Text\Normalizer</code> و<code>Detector</code> و<code>Slugify</code></td></tr>
+<tr><td>العطل وأوقات الصلاة</td><td><code>RtlyKit\Holiday\IranHolidays</code> و<code>HolidayCalendar</code> و<code>HolidaySource</code> و<code>HolidayOrigin</code> و<code>HolidayEntry</code>؛ و<code>RtlyKit\Prayer\PrayerTimes</code> (ثوابتها <code>METHOD_*</code> / <code>ASR_*</code> ودوالها العامة) و<code>HighLatitudeRule</code></td></tr>
+<tr><td>الأخطاء</td><td><code>RtlyKit\Exceptions\RtlyKitThrowable</code> و<code>RtlyKitException</code> و<code>InvalidDateException</code> و<code>InvalidNumberException</code> و<code>InvalidPrayerConfigException</code> و<code>UnsupportedLocaleException</code>، و<code>ErrorCode</code> (أسماء الحالات وقيمها)</td></tr>
+<tr><td>الدوال المساعدة</td><td>الدوال الـ 27 ذات النطاق في <code>RtlyKit\</code> (<code>RtlyKit\jdate()</code> وغيرها) و<code>RtlyKit\Globals::register()</code> / <code>Globals::NAMES</code></td></tr>
+<tr><td>Laravel</td><td><code>RtlyKit\Laravel\RtlyKitServiceProvider</code> و<code>Facades\Jalali</code> و<code>JalaliFactory</code> و<code>Casts\JalaliCast</code>، وأسماء قواعد التحقق (<code>national_code</code> و<code>sheba</code> و<code>bank_card</code> و<code>iran_mobile</code> و<code>mobile</code> و<code>postal_code</code> و<code>vehicle_plate</code>) ومفاتيح الترجمة ضمن النطاق <code>rtly-kit</code>، وملف الإعدادات <code>rtly-kit.php</code> (وسم النشر <code>rtly-kit-config</code>)</td></tr>
+<tr><td>Carbon</td><td>أسماء الماكروات <code>toJalali</code> و<code>jformat</code> و<code>toHijri</code> و<code>toHebrew</code> و<code>createFromJalali</code> و<code>createFromHijri</code> و<code>createFromHebrew</code></td></tr>
+</tbody>
+</table></div>
+<p>السلوك الموثَّق لهذه الرموز جزء من العقد: المدخلات المقبولة، وفئة الاستثناء و<code>ErrorCode</code> المُلقيان، وأنواع القيم المُرجعة، ونطاقات السنوات، وحدود المدخلات. أما صياغة رسائل الاستثناءات والتحقق فليست جزءًا منه؛ فاعتمد بدلًا من ذلك على <code>getErrorCode()</code> أو <code>Result::errors()</code> (راجع <a href="error-handling.html">معالجة الأخطاء</a>).</p>
+
+<h2 id="internal">داخلي (بلا وعد)<a class="anchor" href="#internal" aria-label="رابط إلى هذا القسم">#</a></h2>
+<p>تحمل هذه العناصر وسم <code>@internal</code> في التوثيق، أو هي من تفاصيل التنفيذ. قد تتغير أو تختفي في أي إصدار، بما في ذلك إصدار الإصلاحات (patch). لا تستدعها ولا ترثها ولا تعتمد عليها.</p>
+<ul>
+<li><code>RtlyKit\Calendar\CalendarLimits</code></li>
+<li><code>RtlyKit\Calendar\Jdn</code></li>
+<li><code>RtlyKit\Calendar\CalendarDateTrait</code></li>
+<li><code>RtlyKit\Calendar\UmmAlQuraTable</code></li>
+<li><code>RtlyKit\Validation\Input</code></li>
+<li><code>RtlyKit\Validation\DataTables</code></li>
+<li><code>RtlyKit\Text\Utf8</code></li>
+<li><code>RtlyKit\Holiday\HolidayData</code> و<code>HolidayTitles</code></li>
+<li><code>RtlyKit\Number\Arabic\ArabicCardinal</code> و<code>ArabicOrdinal</code> و<code>ArabicToken</code> (استخدم <code>NumberToWords</code>)</li>
+<li><code>RtlyKit\Support\CarbonMacros</code> و<code>RtlyKit\Support\AutoLoader</code> (بنية التسجيل التحتية؛ استخدم الماكروات لا هاتين الفئتين)</li>
+<li>الملفات في <code>resources/data/</code> (اقرأ البيانات عبر الفئات العامة فقط)</li>
+<li><code>src/functions-global.php</code> (توصَّل إليه عبر <code>Globals::register()</code>)</li>
+<li>الأعضاء الخاصة (private) والمحمية (protected) في كل فئة، ومنشئات الفئات <code>final</code> ما لم تكن موثَّقة</li>
+</ul>
+<div class="callout note" role="note"><strong>من المفيد أن تعرف.</strong> قراءة <code>resources/data/*.php</code> مباشرة، أو استدعاء فئة من القائمة أعلاه، غير مدعومة. كانت الإصدارات التجريبية السابقة تحتفظ بجداول المراجع في فئات مستقلة؛ ولم تكن تلك الفئات جزءًا من واجهة API، وأصبحت البيانات الآن في <code>resources/data/</code> (راجع <a href="upgrade.html">الترقية</a>).</div>
+<p>وغير مشمول كذلك: المحتوى الدقيق لجداول المراجع المضمَّنة (أرقام BIN للبطاقات المصرفية، ورموز مصارف شبا، وبادئات المشغّلين، وبادئات الرقم الوطني، وأشهر أم القرى، وتواريخ العطل الرسمية). تُصحَّح هذه الجداول عند ظهور مصادر أفضل، والتصحيح ليس تغييرًا غير متوافق مع السابق. راجع <a href="accuracy-and-data.html">الدقة والبيانات</a>.</p>
+
+<h2 id="versioning">سياسة الإصدارات<a class="anchor" href="#versioning" aria-label="رابط إلى هذا القسم">#</a></h2>
+<p>يتبع RTLY-Kit <a href="https://semver.org/" rel="noopener noreferrer">الترقيم الدلالي للإصدارات (Semantic Versioning)</a>.</p>
+<ul>
+<li><strong>ابتداءً من 1.0.0:</strong> لا تُجرى تغييرات غير متوافقة على واجهة API العامة إلا في إصدار رئيسي (major). وتضيف الإصدارات الفرعية (minor) ميزات وقد تضيف حالات إلى التعدادات (enum) ودوال ورموز أخطاء. أما إصدارات الإصلاحات (patch) فتصلح الأخطاء فقط.</li>
+<li><strong>قبل 1.0.0 (الآن):</strong> قد يتضمن الإصدار الفرعي (<code>0.x</code>) تغييرات غير متوافقة مع السابق. وكل تغيير منها مدرج تحت «Changed» في سجل التغييرات، مع خطوات الانتقال في صفحة <a href="upgrade.html">الترقية</a>. ولا تكسر إصدارات الإصلاحات (<code>0.x.y</code>) واجهة API العامة. ثبّت نطاقًا فرعيًا في <code>composer.json</code> (مثل <code>~0.1.0</code>) واقرأ ملاحظات الترقية قبل الانتقال إلى النطاق التالي.</li>
+<li>إصلاح الخطأ الذي يجعل الدالة تُرجع الإجابة الصحيحة يُعدّ إصلاحًا لا تغييرًا غير متوافق مع السابق، حتى لو تغيّر الناتج. مثال: تأخّر وقت العشاء بطريقة مكة المكرمة في رمضان 30 دقيقة عند تصحيحه.</li>
+<li>إضافة حالة إلى <code>ErrorCode</code>، أو مفتاح إلى مصفوفة <code>Result::details()</code>، ليست تغييرًا غير متوافق مع السابق. اكتب <code>match</code> على <code>ErrorCode</code> مع فرع <code>default</code>.</li>
+<li>الواجهات (<code>CalendarDate</code> و<code>Validator</code> و<code>RtlyKitThrowable</code>) مخصصة للاستهلاك. قد تضيف المكتبة إليها دوال في إصدار فرعي قبل 1.0.0 وفي إصدار رئيسي بعده، فلا تطبّقها بنفسك.</li>
+<li>يُعلَن عن الإيقاف (deprecation) في سجل التغييرات وفي وسوم <code>@deprecated</code>، ويُحتفظ بالعنصر الموقوف إصدارًا فرعيًا واحدًا على الأقل بعد 1.0.0.</li>
+</ul>
+
+<h2 id="platforms">المنصات المدعومة<a class="anchor" href="#platforms" aria-label="رابط إلى هذا القسم">#</a></h2>
+<div class="table-wrap" tabindex="0" role="region" aria-label="جدول"><table>
+<thead><tr><th scope="col"></th><th scope="col">المدعوم</th></tr></thead>
+<tbody>
+<tr><td>PHP</td><td>8.2 و8.3 و8.4 و8.5 (يشغّل CI الأربعة)؛ ولا يلزم أي امتداد PHP</td></tr>
+<tr><td>Laravel (<code>illuminate/*</code>)</td><td>11 و12 و13 (يتطلب Laravel 13 PHP 8.3 أو أحدث)</td></tr>
+<tr><td>Carbon</td><td>3 (<code>nesbot/carbon ^3.0</code>)</td></tr>
+</tbody>
+</table></div>
+<p>الاعتماد الإلزامي الوحيد هو PHP نفسه. أما Carbon وLaravel فتكاملان اختياريان. يُعلَن عن إسقاط دعم إصدار من PHP أو Laravel أو Carbon في سجل التغييرات، ويحدث في إصدار فرعي قبل 1.0.0 وفي إصدار رئيسي بعده.</p>
+<nav class="reading-footer" aria-label="الصفحة السابقة والتالية"><a class="prev" rel="prev" href="error-handling.html"><small>السابق</small>معالجة الأخطاء</a><a class="next" rel="next" href="accuracy-and-data.html"><small>التالي</small>الدقة والبيانات</a></nav>
+</article>
+<nav class="toc" aria-label="في هذه الصفحة"><p>في هذه الصفحة</p><ol><li><a href="#public-api">واجهة API العامة</a></li><li><a href="#internal">داخلي (بلا وعد)</a></li><li><a href="#versioning">سياسة الإصدارات</a></li><li><a href="#platforms">المنصات المدعومة</a></li></ol></nav>
+</div>
+</main>
+<footer class="footer"><div class="shell footer-inner"><p>دليل مستخدم RTLY-Kit · الترخيص: MIT</p><div><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">المستودع على جيت هب &#8599;</a><a href="https://github.com/ehsanenaloo/RTLY-Kit/issues" rel="noopener noreferrer">الإبلاغ عن مشكلة &#8599;</a></div></div></footer>
+</body>
+</html>

@@ -34,8 +34,10 @@ final class IranHolidaysTest extends TestCase
 
     public function test_islamic_holidays_only_inside_the_umm_al_qura_table(): void
     {
-        // 1 Shawwal 1446 (Eid al-Fitr) = 2025-03-30 -> Jalali 1404/01/10, inside the table
-        $this->assertContains('عید فطر', IranHolidays::getTitles(Jalali::make('2025-03-30', $this->utc)));
+        // Official 1404 table: Eid al-Fitr (1 Shawwal 1446) is 1404/01/11 = 2025-03-31; the Umm al-Qura estimate is a day earlier
+        $this->assertContains('عید فطر', IranHolidays::getTitles(Jalali::make('2025-03-31', $this->utc)));
+        $this->assertNotContains('عید فطر', IranHolidays::getTitles(Jalali::make('2025-03-30', $this->utc)));
+        $this->assertContains('عید فطر', IranHolidays::calendar()->withOfficialData(false)->getTitles(Jalali::make('2025-03-30', $this->utc)));
 
         // Far outside AH 1300-1500: tabular guesses are NOT reported as holidays
         $future = Jalali::create(1500, 1, 1, 0, 0, 0, $this->utc); // ~2121 CE, AH ~1543
@@ -139,7 +141,8 @@ final class IranHolidaysTest extends TestCase
     public function test_imam_reza_is_on_last_day_of_safar(): void
     {
         $seen = 0;
-        foreach (IranHolidays::allTitles(1403) + IranHolidays::allTitles(1404) as $key => $titles) {
+        // Years without official data: the dates come from the Umm al-Qura table.
+        foreach (IranHolidays::allTitles(1406) + IranHolidays::allTitles(1407) as $key => $titles) {
             if (! in_array('شهادت امام رضا', $titles, true)) {
                 continue;
             }
@@ -159,7 +162,8 @@ final class IranHolidaysTest extends TestCase
     public function test_imam_sadiq_on_25_shawwal(): void
     {
         $seen = 0;
-        foreach (IranHolidays::allTitles(1403) + IranHolidays::allTitles(1404) as $key => $titles) {
+        // Years without official data: the dates come from the Umm al-Qura table.
+        foreach (IranHolidays::allTitles(1406) + IranHolidays::allTitles(1407) as $key => $titles) {
             if (! in_array('شهادت امام جعفر صادق', $titles, true)) {
                 continue;
             }

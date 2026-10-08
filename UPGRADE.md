@@ -2,7 +2,67 @@
 
 Before 1.0.0, a minor release may contain breaking changes. Each one is listed here with the steps to migrate. See [API stability](https://ehsanenaloo.github.io/RTLY-Kit/en/api-stability.html) for the policy.
 
-## From the pre-release helpers to the namespaced helpers (Unreleased)
+## From 0.1.x to 0.2.0
+
+Most applications need no change. Check the items below.
+
+1. **`ext-mbstring` is no longer required.** `composer.json` used to need the extension; now it needs only PHP. Nothing to do. If you added `ext-mbstring` to your own `composer.json` only for this package, you can remove it.
+2. **Float formatting.** `Format::withSeparator()` and `format_number()` now print a float as its shortest decimal that parses back to the same float, limited to 15 significant digits, so binary noise is gone. Strings are unchanged and stay exact: pass a string when you need more digits.
+
+   | Call | Before | After |
+   |---|---|---|
+   | `withSeparator(-1234567.891)` | `-۱٬۲۳۴٬۵۶۷٫۸۹۱۰۰۰۰۰۰۰۶۱۴۶۷` | `-۱٬۲۳۴٬۵۶۷٫۸۹۱` |
+   | `withSeparator(0.1 + 0.2)` | `۰٫۳` | `۰٫۳` (unchanged) |
+   | `withSeparator(-0.0)` | `۰` | `۰` |
+
+   If you format the result of float arithmetic, round first (`round($x, 2)`) or pass a string.
+3. **`NumberToWords::fromWords()` is strict.** It used to add the words up in any order.
+
+   | Input | Before | After |
+   |---|---|---|
+   | `دو صد` | `102` | `InvalidNumberException` (`invalid_number_words`) |
+   | `بیست یک` | `21` | `InvalidNumberException` |
+   | `صد و بیست و` | `120` | `InvalidNumberException` |
+   | `پنج و بیست` | `25` | `InvalidNumberException` |
+   | `سی و پنج` | `35` | `35` |
+
+   Write `و` between parts and keep the order hundreds, tens, units. Everything `convert()` returns still parses.
+4. **`Slugify::make()`** throws `RtlyKitException` (`invalid_argument`, `argument` = `text`) for text that is not valid UTF-8. Before, only the separator was checked. Catch `RtlyKitThrowable` or clean the input first.
+5. **`Hijri::format()` and `Hebrew::format()`** reject a pattern longer than 256 bytes with `InvalidDateException` (`input_too_long`, `argument` = `format`, `limit` = 256). `Jalali::format()` already did. The limit is in `Hijri::MAX_FORMAT_LENGTH` and `Hebrew::MAX_FORMAT_LENGTH`.
+6. **Trailing backslash in a format pattern** is dropped in all three calendars: `format('Y\')` returns just the year.
+7. **`IranHolidays::all()`, `allTitles()` and `allFixed()`** throw `InvalidDateException` (`date_out_of_range`, context `year`, `min`, `max`) for a Jalali year outside -620..9377.
+8. **Error messages** that repeat your input cut it to 40 characters and stay valid UTF-8. If you match on message text, match on `getErrorCode()` instead.
+9. **Official holiday dates for 1380 to 1405.** In these Jalali years `IranHolidays` and `is_iran_holiday()` return the published dates instead of the Umm al-Qura estimate. Other years are unchanged.
+
+   | Day | Before (estimate) | After (official) |
+   |---|---|---|
+   | 1404/01/10 | عید فطر | no holiday |
+   | 1404/01/11 | تعطیل عید فطر | عید فطر |
+   | 1404/01/01 | جشن نوروز + شهادت امام علی | جشن نوروز |
+   | 1404/12/29 | ملی شدن صنعت نفت + عید فطر | ملی شدن صنعت نفت |
+   | 1405/01/01 | جشن نوروز + تعطیل عید فطر | جشن نوروز + عید فطر |
+
+   In official years only the titles in the official table appear. Years 1380 to 1393 and 1395 are "reported": the dates come from one source, and the list of days may be incomplete. For the old behaviour use `HolidayCalendar::default()->withOfficialData(false)`. `IranHolidays::sourceOf($year)` shows where a year comes from. See the [holiday calendar guide](https://ehsanenaloo.github.io/RTLY-Kit/en/holiday-calendar.html).
+10. **High-latitude prayer times.** `PrayerTimes` has a new `HighLatitudeRule`, and the default is `AngleBased`. It acts only where a Fajr or Isha time would be missing, or farther from sunrise or sunset than the rule allows. Below about 44 degrees north nothing changes. North of about 44 to 46 degrees, around the June solstice, some values differ, and a time that was `null` now has a value.
+
+    | Place and day (MWL) | Before (same as `None`) | After (default) |
+    |---|---|---|
+    | Stockholm, 2026-06-21 | Fajr `null`, Isha `null` | Fajr `01:54`, Isha `23:40` |
+    | Munich, 2026-06-21 | Fajr `01:50`, Isha `00:12` | Fajr `02:51`, Isha `23:32` |
+
+    For the old output call `->withHighLatitudeRule(HighLatitudeRule::None)`. `nextPrayer()` now also finds a prayer that falls after midnight.
+11. **Mobile.** Validity is unchanged. Every result has a new `allocated` detail, and `Mobile::isAllocated()` returns it. The operator table follows the numbering plan more closely: the Shatel Mobile key `998` is narrowed to `09981` and `09982`, the Aptel key `99910` is widened to `9991`, and `0923`, `0931`, `0932` and `0934` are added.
+
+    | Number | Operator before | Operator after |
+    |---|---|---|
+    | `09983112345` | شاتل موبایل | `null` |
+    | `09231234567` | `null` | رایتل |
+    | `09321234567` | `null` | تالیا |
+
+    If you compare the whole `details()` array, expect the extra key `allocated`.
+12. **Arabic number words.** `convert($n, 'ar')` without options gives the same text as before for every number below 10^9. It now also accepts numbers up to 10^27. New options and the ordinals from 1 to 99 are described in the [Arabic number words guide](https://ehsanenaloo.github.io/RTLY-Kit/en/arabic-number-words.html).
+
+## From the early pre-release helpers to the namespaced helpers
 
 ### 1. Global helper functions are no longer defined by default
 

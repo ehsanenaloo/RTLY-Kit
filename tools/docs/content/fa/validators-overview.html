@@ -1,26 +1,26 @@
 <!--
-title: نمای کلی اعتبارسنج‌ها
-description: شش اعتبارسنج ایرانی چگونه کار می‌کنند: قرارداد مشترک Validator، شیء Result، کلیدهای خطای پایدار، نرمال‌سازی ورودی و سقف اندازه.
+title: مرور اعتبارسنج‌ها
+description: شش اعتبارسنج ایرانی چطور کار می‌کنند. قرارداد مشترک Validator، شیء Result، کدهای خطای پایدار، یکسان‌سازی ورودی و سقف اندازه.
 group: validation
 order: 10
 -->
 <h2 id="six-validators">شش اعتبارسنج</h2>
-<p>RTLY-Kit شش اعتبارسنج برای داده‌هایی دارد که برنامه‌های ایرانی هر روز با آن‌ها سروکار دارند. همه یک ساختار مشترک دارند؛ پس با یادگرفتن یکی، بقیه را هم می‌شناسید.</p>
+<p>RTLY-Kit برای داده‌هایی که برنامه‌های ایرانی هر روز با آن‌ها کار می‌کنند شش اعتبارسنج دارد. همه ساختار یکسانی دارند. وقتی یکی را یاد بگیرید، بقیه را هم می‌شناسید.</p>
 <table>
-<thead><tr><th>کلاس</th><th>بررسی</th><th>صفحه</th></tr></thead>
+<thead><tr><th>کلاس</th><th>چه چیزی را بررسی می‌کند</th><th>صفحه</th></tr></thead>
 <tbody>
-<tr><td><code>NationalCode</code></td><td>۱۰ رقم، رقم کنترل به پیمانهٔ ۱۱، اشارهٔ محل صدور</td><td><a href="national-code.html">کد ملی</a></td></tr>
-<tr><td><code>Sheba</code></td><td><code>IR</code> و ۲۴ رقم، ISO 7064 mod-97-10، جست‌وجوی بانک</td><td><a href="sheba-and-bank-card.html">شبا و کارت بانکی</a></td></tr>
+<tr><td><code>NationalCode</code></td><td>۱۰ رقم، رقم کنترل به پیمانهٔ ۱۱، سرنخی از محل صدور</td><td><a href="national-code.html">کد ملی</a></td></tr>
+<tr><td><code>Sheba</code></td><td><code>IR</code> و ۲۴ رقم، ISO 7064 mod-97-10، پیدا کردن بانک</td><td><a href="sheba-and-bank-card.html">شبا و کارت بانکی</a></td></tr>
 <tr><td><code>BankCard</code></td><td>۱۶ رقم، چک‌سام Luhn، تشخیص بانک از روی BIN</td><td><a href="sheba-and-bank-card.html">شبا و کارت بانکی</a></td></tr>
-<tr><td><code>Mobile</code></td><td>قالب <code>09xxxxxxxxx</code> در پنج شکل ورودی، اشارهٔ اپراتور</td><td><a href="mobile-postal-plate.html">موبایل، کدپستی، پلاک</a></td></tr>
+<tr><td><code>Mobile</code></td><td>قالب <code>09xxxxxxxxx</code> در پنج شکل ورودی، اپراتور و تخصیص پیش‌شماره</td><td><a href="mobile-postal-plate.html">موبایل، کدپستی، پلاک</a></td></tr>
 <tr><td><code>PostalCode</code></td><td>۱۰ رقم، رقم اول غیر از <code>0</code></td><td><a href="mobile-postal-plate.html">موبایل، کدپستی، پلاک</a></td></tr>
-<tr><td><code>VehiclePlate</code></td><td>قالب پلاک سواری، شکسته‌شده به اجزا</td><td><a href="mobile-postal-plate.html">موبایل، کدپستی، پلاک</a></td></tr>
+<tr><td><code>VehiclePlate</code></td><td>قالب پلاک سواری، تقسیم‌شده به بخش‌ها</td><td><a href="mobile-postal-plate.html">موبایل، کدپستی، پلاک</a></td></tr>
 </tbody>
 </table>
-<p>همه در فضای نام <code>RtlyKit\Validation</code> هستند و ارقام فارسی و عربی را همان‌طور که کاربر تایپ کرده می‌پذیرند؛ بنابراین ورودی فرم را بدون پاک‌سازی مستقیم به آن‌ها بدهید.</p>
+<p>همه در فضای‌نام <code>RtlyKit\Validation</code> هستند. رقم‌های فارسی و عربی را همان‌طور که کاربر تایپ کرده قبول می‌کنند. پس ورودی فرم را بدون تمیزکاری مستقیم به آن‌ها بدهید.</p>
 
-<h2 id="two-ways">دو روش فراخوانی</h2>
-<p>هر اعتبارسنج هم یک نتیجهٔ بولی می‌دهد و هم یک نتیجهٔ ساخت‌یافته. وقتی فقط «بله یا نه» لازم دارید از <code>isValid()</code> و وقتی می‌خواهید دلیل رد شدن را به کاربر بگویید از <code>validate()</code> استفاده کنید.</p>
+<h2 id="two-ways">دو راه برای صدا زدن</h2>
+<p>هر اعتبارسنج هم جواب بولی می‌دهد و هم جواب کامل. اگر فقط «بله یا نه» می‌خواهید، <code>isValid()</code> را بزنید. اگر می‌خواهید دلیل رد شدن را به کاربر بگویید، <code>validate()</code> را بزنید.</p>
 <pre><code class="language-php">&lt;?php
 require 'vendor/autoload.php';
 
@@ -33,15 +33,15 @@ var_dump(is_national_code('0499370899'));        // bool(true)
 $result = NationalCode::validate('0499370898');
 var_dump($result-&gt;isValid());                    // bool(false)
 print_r($result-&gt;errors());                      // Array ( [0] =&gt; invalid_checksum )</code></pre>
-<p>توابع کمکی (<code>is_national_code()</code>، <code>validate_sheba()</code> و مانند آن‌ها) در فضای نام اختصاصی‌اند و با <code>use function RtlyKit\is_national_code;</code> وارد می‌شوند. نام‌های کوتاه سراسری اختیاری است؛ <a href="helpers-and-globals.html">توابع کمکی و نام‌های سراسری</a> را ببینید.</p>
+<p>توابع کمکی (<code>is_national_code()</code>، <code>validate_sheba()</code> و مانند این‌ها) در فضای‌نام خودشان هستند و با <code>use function RtlyKit\is_national_code;</code> وارد می‌شوند. نام‌های کوتاه سراسری اختیاری است. <a href="helpers-and-globals.html">توابع کمکی و سراسری</a> را ببینید.</p>
 
 <h2 id="contract">قرارداد Validator</h2>
-<p>هر اعتبارسنج <code>RtlyKit\Contracts\Validator</code> را پیاده می‌کند که دقیقاً دو متد ایستا دارد:</p>
+<p>هر اعتبارسنج اینترفیس <code>RtlyKit\Contracts\Validator</code> را پیاده می‌کند. این اینترفیس دو متد استاتیک دارد:</p>
 <ul>
 <li><code>validate(mixed $value): Result</code></li>
-<li><code>isValid(mixed $value): bool</code>؛ میان‌بر <code>validate($value)-&gt;isValid()</code></li>
+<li><code>isValid(mixed $value): bool</code>، که کوتاه‌شدهٔ <code>validate($value)-&gt;isValid()</code> است</li>
 </ul>
-<p>اعتبارسنج‌ها بی‌حالت‌اند و برای همین متدها ایستا هستند. به این ترتیب می‌توانید اعتبارسنج را در زمان اجرا با class-string انتخاب کنید، مثلاً از روی یک آرایهٔ پیکربندی:</p>
+<p>اعتبارسنج‌ها حالت ندارند و برای همین استاتیک‌اند. پس می‌توانید اعتبارسنج را موقع اجرا با class-string انتخاب کنید، مثلاً از روی یک آرایهٔ تنظیمات:</p>
 <pre><code class="language-php">use RtlyKit\Contracts\Validator;
 use RtlyKit\Validation\Mobile;
 use RtlyKit\Validation\NationalCode;
@@ -62,19 +62,19 @@ foreach ($rules as $field =&gt; $class) {
 // national_code: ok
 // mobile: invalid_format
 // postal: ok</code></pre>
-<div class="note"><strong>هرگز استثنا پرتاب نمی‌کند.</strong> هیچ‌یک از این دو متد برای ورودی بد استثنا نمی‌اندازد. هر مقداری، از جمله <code>null</code>، آرایه، شیء، رشتهٔ خیلی بلند و UTF-8 نامعتبر، یک <code>Result</code> نامعتبر با کلید خطای پایدار می‌دهد. استثنا فقط برای خطای برنامه‌نویس در بخش‌های دیگر کتابخانه است؛ <a href="error-handling.html">مدیریت خطا</a> را ببینید.</div>
+<div class="note"><strong>خطا پرتاب نمی‌کند.</strong> هیچ‌کدام از این دو متد برای ورودی بد خطا نمی‌دهد. هر مقداری، از <code>null</code> و آرایه و شیء تا رشتهٔ خیلی بلند و UTF-8 خراب، یک <code>Result</code> نامعتبر با کد خطای پایدار می‌دهد. خطا فقط برای اشتباه برنامه‌نویس در بخش‌های دیگر کتابخانه است. <a href="error-handling.html">مدیریت خطا</a> را ببینید.</div>
 
 <h2 id="result">شیء Result</h2>
-<p><code>RtlyKit\Validation\Result</code> یک شیء مقداری تغییرناپذیر با سه متد خواندنی است:</p>
+<p><code>RtlyKit\Validation\Result</code> یک مقدار تغییرناپذیر با سه متد خواندن است:</p>
 <table>
-<thead><tr><th>متد</th><th>مقدار بازگشتی</th></tr></thead>
+<thead><tr><th>متد</th><th>خروجی</th></tr></thead>
 <tbody>
 <tr><td><code>isValid()</code></td><td><code>bool</code></td></tr>
-<tr><td><code>errors()</code></td><td><code>list&lt;string&gt;</code>؛ کلیدهای خطای پایدار، در حالت معتبر خالی</td></tr>
-<tr><td><code>details()</code></td><td><code>array&lt;string, mixed&gt;</code>؛ اطلاعاتی که اعتبارسنج در حین بررسی به دست آورده</td></tr>
+<tr><td><code>errors()</code></td><td><code>list&lt;string&gt;</code>. کدهای خطای پایدار. اگر معتبر باشد خالی است</td></tr>
+<tr><td><code>details()</code></td><td><code>array&lt;string, mixed&gt;</code>. چیزهایی که اعتبارسنج در راه فهمیده</td></tr>
 </tbody>
 </table>
-<p>جزئیات هم در نتیجهٔ معتبر و هم در نتیجهٔ نامعتبر هست (تا جایی که اعتبارسنج پیش رفته)؛ پس می‌توانید مقدار نرمال‌شده یا نام بانک را کنار پیام خطا هم نشان دهید:</p>
+<p>جزئیات هم برای نتیجهٔ معتبر هست و هم برای نامعتبر (تا هر جا که اعتبارسنج جلو رفته باشد). پس می‌توانید کنار پیام خطا، مقدار یکسان‌شده یا نام بانک را هم نشان بدهید:</p>
 <pre><code class="language-php">use RtlyKit\Validation\BankCard;
 
 $result = BankCard::validate('6037991234567890');
@@ -90,36 +90,36 @@ echo json_encode($result-&gt;details(), JSON_UNESCAPED_UNICODE);
 <tr><td><code>NationalCode</code></td><td><code>normalized</code>، <code>location</code> (<code>{province, city}</code> یا <code>null</code>)</td></tr>
 <tr><td><code>Sheba</code></td><td><code>normalized</code>، <code>bank_code</code>، <code>bank_name</code></td></tr>
 <tr><td><code>BankCard</code></td><td><code>normalized</code>، <code>bin</code>، <code>bank_name</code></td></tr>
-<tr><td><code>Mobile</code></td><td><code>normalized</code>، <code>operator</code></td></tr>
+<tr><td><code>Mobile</code></td><td><code>normalized</code>، <code>operator</code>، <code>allocated</code> (<code>bool</code>)</td></tr>
 <tr><td><code>PostalCode</code></td><td><code>normalized</code></td></tr>
-<tr><td><code>VehiclePlate</code></td><td><code>normalized</code> و در صورت تطابق قالب: <code>two_digit</code>، <code>letter</code>، <code>three_digit</code>، <code>region</code></td></tr>
+<tr><td><code>VehiclePlate</code></td><td><code>normalized</code> و، اگر قالب بخورد: <code>two_digit</code>، <code>letter</code>، <code>three_digit</code>، <code>region</code></td></tr>
 </tbody>
 </table>
-<p>مقدارهای جست‌وجو (<code>location</code>، <code>bank_name</code>، <code>operator</code>) وقتی جدول ورودی نداشته باشد <code>null</code> هستند. نبودن ورودی یعنی «ناشناخته»، نه «نامعتبر».</p>
+<p>مقدارهایی که از جدول می‌آیند (<code>location</code>، <code>bank_name</code>، <code>operator</code>) اگر ردیفی پیدا نشود <code>null</code> هستند. پیدا نشدن یعنی «نمی‌دانیم»، نه «نامعتبر».</p>
 
-<h2 id="error-keys">کلیدهای خطا</h2>
-<p>خطاها کلیدهای پایدار و ماشین‌خوان‌اند و میان نسخه‌ها تغییر نمی‌کنند؛ پس می‌توانید آن‌ها را به پیام یا ترجمهٔ خودتان نگاشت کنید. یکپارچگی لاراول دقیقاً همین کار را می‌کند؛ <a href="laravel-validation-and-cast.html">اعتبارسنجی و Cast در لاراول</a> را ببینید.</p>
+<h2 id="error-keys">کدهای خطا</h2>
+<p>کدهای خطا پایدار و ماشین‌خوان‌اند و بین نسخه‌ها عوض نمی‌شوند. می‌توانید هر کدام را به پیام یا ترجمهٔ خودتان وصل کنید. بخش Laravel هم دقیقاً همین کار را می‌کند. <a href="laravel-validation-and-cast.html">اعتبارسنجی و cast در Laravel</a> را ببینید.</p>
 <table>
-<thead><tr><th>کلید</th><th>معنا</th><th>مورد استفاده</th></tr></thead>
+<thead><tr><th>کد</th><th>معنا</th><th>کجا می‌آید</th></tr></thead>
 <tbody>
-<tr><td><code>invalid_type</code></td><td>مقدار رشته، عدد صحیح یا عدد اعشاری صحیح و متناهی نیست</td><td>همه</td></tr>
-<tr><td><code>input_too_long</code></td><td>رشته‌ای بلندتر از ۴۰۹۶ بایت</td><td>همه</td></tr>
-<tr><td><code>invalid_format</code></td><td>قالب نادرست است (نویسه‌ها، تعداد ارقام، الگو)</td><td>همه؛ در <code>PostalCode</code> برای رقم اول <code>0</code></td></tr>
-<tr><td><code>invalid_length</code></td><td>تعداد ارقام ۱۰ نیست</td><td><code>PostalCode</code></td></tr>
-<tr><td><code>repeated_digits</code></td><td>همهٔ ارقام یکسان‌اند (<code>1111111111</code>)</td><td><code>NationalCode</code>، <code>BankCard</code></td></tr>
-<tr><td><code>invalid_checksum</code></td><td>رقم یا ارقام کنترل نمی‌خواند</td><td><code>NationalCode</code>، <code>Sheba</code>، <code>BankCard</code></td></tr>
-<tr><td><code>invalid_region</code></td><td>یکی از بخش‌های عددی پلاک همه صفر است</td><td><code>VehiclePlate</code></td></tr>
+<tr><td><code>invalid_type</code></td><td>مقدار رشته، عدد صحیح یا عدد اعشاریِ صحیح و متناهی نیست</td><td>همه</td></tr>
+<tr><td><code>input_too_long</code></td><td>رشته از ۴۰۹۶ بایت بلندتر است</td><td>همه</td></tr>
+<tr><td><code>invalid_format</code></td><td>شکل ورودی درست نیست (نویسه‌ها، تعداد رقم، الگو)</td><td>همه. در <code>PostalCode</code> برای رقم اول <code>0</code></td></tr>
+<tr><td><code>invalid_length</code></td><td>تعداد رقم‌ها ۱۰ نیست</td><td><code>PostalCode</code></td></tr>
+<tr><td><code>repeated_digits</code></td><td>همهٔ رقم‌ها یکی هستند (<code>1111111111</code>)</td><td><code>NationalCode</code>، <code>BankCard</code></td></tr>
+<tr><td><code>invalid_checksum</code></td><td>رقم کنترل جور درنمی‌آید</td><td><code>NationalCode</code>، <code>Sheba</code>، <code>BankCard</code></td></tr>
+<tr><td><code>invalid_region</code></td><td>یکی از بخش‌های عددیِ پلاک همه صفر است</td><td><code>VehiclePlate</code></td></tr>
 </tbody>
 </table>
-<p>امروز هر نتیجه حداکثر یک خطا دارد (نخستین بررسی ناموفق)، اما <code>errors()</code> فهرست برمی‌گرداند تا بررسی‌های آینده بتوانند چند خطا گزارش کنند.</p>
+<p>الان هر نتیجه حداکثر یک خطا دارد (اولین بررسی که رد شد). ولی <code>errors()</code> فهرست می‌دهد تا بعداً بشود چند خطا را با هم گزارش کرد.</p>
 
-<h2 id="input-handling">پردازش ورودی</h2>
-<p>پیش از اجرای هر قاعده، مقدار از یک دروازهٔ مشترک می‌گذرد:</p>
+<h2 id="input-handling">ورودی چطور پردازش می‌شود</h2>
+<p>پیش از هر قاعده، مقدار از یک مرحلهٔ مشترک رد می‌شود:</p>
 <ul>
-<li><strong>رشته‌ها</strong> تا <strong>۴۰۹۶ بایت</strong> پذیرفته می‌شوند. هر رقم فارسی یا عربی دو بایت است؛ پس سقف حدود ۲۰۰۰ رقم از این نوع است. رشتهٔ بلندتر <code>input_too_long</code> می‌دهد.</li>
-<li><strong><code>int</code></strong> با <code>(string)</code> تبدیل می‌شود.</li>
-<li><strong><code>float</code></strong> باید متناهی، صحیح و قدرمطلقش کمتر از 10<sup>15</sup> باشد و بدون نمای علمی تبدیل می‌شود. <code>NaN</code>، <code>INF</code>، <code>1.5</code> و اعداد خیلی بزرگ <code>invalid_type</code> می‌دهند.</li>
-<li>هر چیز دیگر، یعنی <code>null</code>، <code>bool</code>، آرایه و شیء، <code>invalid_type</code> می‌دهد.</li>
+<li><strong>رشته‌ها</strong> تا <strong>۴۰۹۶ بایت</strong> قبول می‌شوند. هر رقم فارسی یا عربی دو بایت است، پس سقف حدود ۲۰۰۰ رقم از این نوع است. رشتهٔ بلندتر <code>input_too_long</code> می‌دهد.</li>
+<li><strong><code>int</code></strong> با <code>(string)</code> به رشته تبدیل می‌شود.</li>
+<li><strong><code>float</code></strong> باید متناهی و صحیح باشد و قدرمطلقش از 10<sup>15</sup> کمتر باشد. بدون نمای علمی به رشته تبدیل می‌شود. <code>NaN</code>، <code>INF</code>، <code>1.5</code> و عددهای خیلی بزرگ <code>invalid_type</code> می‌دهند.</li>
+<li>بقیه، یعنی <code>null</code>، <code>bool</code>، آرایه و شیء، <code>invalid_type</code> می‌دهند.</li>
 </ul>
 <pre><code class="language-php">use RtlyKit\Validation\NationalCode;
 use RtlyKit\Validation\PostalCode;
@@ -129,30 +129,30 @@ print_r(NationalCode::validate(1.5)-&gt;errors());                   // [invalid
 print_r(NationalCode::validate(str_repeat('1', 4097))-&gt;errors()); // [input_too_long]
 print_r(NationalCode::validate("\xff\xfe")-&gt;errors());            // [invalid_format]
 var_dump(PostalCode::validate(1234567890)-&gt;isValid());            // bool(true)</code></pre>
-<div class="warn"><strong>صفر ابتدایی و عدد صحیح.</strong> اگر کد ملی یا کدپستی را به صورت عدد صحیح بدهید، صفرهای ابتدایی از بین می‌رود: <code>499370899</code> همان <code>0499370899</code> نیست و اعتبارسنج فقط نُه رقم را می‌بیند. شناسه‌ها را از فرم یا ستون پایگاه داده تا اعتبارسنج به صورت رشته نگه دارید.</div>
+<div class="note"><strong>صفر اول و عدد صحیح.</strong> اگر کد ملی یا کدپستی را عدد صحیح بدهید، صفرهای اولش از بین می‌رود. <code>499370899</code> با <code>0499370899</code> یکی نیست و اعتبارسنج فقط نه رقم می‌بیند. این شماره‌ها را از فرم یا ستون پایگاه داده تا اعتبارسنج به شکل رشته نگه دارید.</div>
 
-<h2 id="normalization">نرمال‌سازی</h2>
-<p>پس از دروازه، هر اعتبارسنج رشته را با متد عمومی <code>normalize()</code> خودش نرمال می‌کند. قاعده‌های مشترک:</p>
+<h2 id="normalization">یکسان‌سازی</h2>
+<p>بعد از آن مرحله، هر اعتبارسنج رشته را با متد عمومی <code>normalize()</code> خودش یکسان می‌کند. قاعده‌های مشترک:</p>
 <ul>
-<li>ارقام فارسی (<code>۰-۹</code>) و عربی-هندی (<code>٠-٩</code>) با <code>Digits::toEnglish()</code> به ارقام انگلیسی تبدیل می‌شوند.</li>
-<li>جداکننده‌هایی که کاربر تایپ می‌کند حذف می‌شود: فاصله، خط تیره و نیم‌فاصله (ZWNJ). <code>Mobile</code>، <code>BankCard</code> و <code>PostalCode</code> فراتر می‌روند و فقط رقم‌ها را نگه می‌دارند.</li>
-<li><code>Sheba</code> علاوه بر این حروف را بزرگ می‌کند و به رشتهٔ ۲۴ رقمی خالی پیشوند <code>IR</code> می‌افزاید.</li>
+<li>رقم‌های فارسی (<code>۰-۹</code>) و عربی-هندی (<code>٠-٩</code>) با <code>Digits::toEnglish()</code> انگلیسی می‌شوند.</li>
+<li>جداکننده‌هایی که کاربر می‌تایپد حذف می‌شوند: فاصله، خط تیره و نیم‌فاصله (ZWNJ). <code>Mobile</code> و <code>BankCard</code> و <code>PostalCode</code> بیشتر پاک می‌کنند و فقط رقم‌ها را نگه می‌دارند.</li>
+<li>در <code>Sheba</code> حروف بزرگ می‌شوند و اگر فقط ۲۴ رقم باشد، پیشوند <code>IR</code> اضافه می‌شود.</li>
 </ul>
-<p>مقدار نرمال‌شده همیشه در <code>details()['normalized']</code> برمی‌گردد. همان را ذخیره کنید، نه ورودی خام را، تا یک شماره هرگز با دو املا ذخیره نشود.</p>
+<p>مقدار یکسان‌شده همیشه در <code>details()['normalized']</code> هست. همان را ذخیره کنید، نه ورودی خام را. این‌طور یک شماره هیچ‌وقت با دو املای مختلف ذخیره نمی‌شود.</p>
 
 <h2 id="lookups">جدول‌های جست‌وجو و منبع داده</h2>
-<p>چهار اعتبارسنج یک جست‌وجو هم دارند: بانک از روی BIN کارت، بانک از روی کد شبا، محل صدور از روی پیش‌شمارهٔ کد ملی و اپراتور از روی پیش‌شمارهٔ موبایل. این جست‌وجوها فقط امکان جانبی‌اند و اعتبار هیچ‌گاه به آن‌ها بستگی ندارد.</p>
+<p>چهار اعتبارسنج یک جست‌وجو هم دارند: بانک از روی BIN کارت، بانک از روی کد شبا، محل صدور از روی پیش‌شمارهٔ کد ملی و اپراتور از روی پیش‌شمارهٔ موبایل. این‌ها امکان کمکی‌اند و معتبر بودن به آن‌ها بستگی ندارد.</p>
 <ul>
-<li>BIN کارت بانکی: ۳۹ مورد. کد بانک شبا: ۳۸ مورد. پیش‌شمارهٔ کد ملی: ۵۴۷ مورد.</li>
-<li>یک مورد فقط وقتی وارد جدول می‌شود که دست‌کم دو منبع مستقل با هم موافق باشند. نبودن مورد یعنی ناشناخته.</li>
-<li>منابع، مجموعه‌داده‌های جامعهٔ توسعه‌دهندگان و جدول‌های عمومی‌اند. بعضی از آن‌ها ریشهٔ مشترک دارند؛ پس توافق‌شان قوی است اما کاملاً مستقل نیست.</li>
+<li>BIN کارت بانکی: ۳۹ مورد. کد بانک در شبا: ۳۸ مورد. پیش‌شمارهٔ کد ملی: ۵۴۷ مورد.</li>
+<li>هر مورد وقتی وارد جدول می‌شود که دست‌کم دو منبع مستقل با هم موافق باشند. اگر مورد در جدول نباشد، یعنی ناشناخته است.</li>
+<li>کد بانک‌های شبا با مشخصات رسمی IBAN که بانک مرکزی منتشر کرده (۱۹ کد) برابر است. بقیهٔ جدول‌ها از چند صفحهٔ عمومی گرفته شده‌اند و با هم سازگارند.</li>
 </ul>
-<div class="known"><strong>محدودیت شناخته‌شده.</strong> جدول‌های جست‌وجو داده‌های «تا حد امکان درست» هستند و فهرست رسمی نیستند. بانک‌ها ادغام و تغییر نام می‌دهند و اپراتورها قابل‌حمل‌اند. نتیجهٔ جست‌وجو را به عنوان اشاره نشان دهید و تصمیم حقوقی، مالی یا هویتی را بر آن بنا نکنید. منبع‌ها، تاریخ‌ها و هشدارها در <a href="accuracy-and-data.html">دقت و داده‌ها</a> آمده است.</div>
+<div class="note"><strong>خوب است بدانید.</strong> بانک‌ها ادغام می‌شوند، نامشان عوض می‌شود و شماره‌ها قابل انتقال بین اپراتورها هستند. پس نتیجهٔ جست‌وجو را به شکل «اشاره» نشان دهید و تصمیم مالی یا حقوقی را روی آن بنا نکنید. منبع‌ها و تاریخ بررسی‌ها در <a href="accuracy-and-data.html">دقت و داده</a> است.</div>
 
 <h2 id="next">ادامه</h2>
 <ul>
-<li><a href="national-code.html">کد ملی</a>: الگوریتم، نرمال‌سازی و اشارهٔ محل صدور.</li>
+<li><a href="national-code.html">کد ملی</a>: الگوریتم، یکسان‌سازی و محل صدور.</li>
 <li><a href="sheba-and-bank-card.html">شبا و کارت بانکی</a>: mod-97 و Luhn و تشخیص بانک.</li>
 <li><a href="mobile-postal-plate.html">موبایل، کدپستی و پلاک خودرو</a>.</li>
-<li><a href="limits.html">سقف‌ها</a>: همهٔ محدودیت‌های اندازه در یک جا.</li>
+<li><a href="limits.html">سقف‌ها</a>: همهٔ سقف‌های اندازه در یک صفحه.</li>
 </ul>

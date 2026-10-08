@@ -8,6 +8,8 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
 use RtlyKit\Contracts\CalendarDate;
+use RtlyKit\Exceptions\ErrorCode;
+use RtlyKit\Exceptions\InvalidDateException;
 
 /**
  * Behaviour shared by {@see Jalali}, {@see Hijri} and {@see Hebrew}: the
@@ -29,6 +31,24 @@ trait CalendarDateTrait
     private readonly int $hour;
     private readonly int $minute;
     private readonly int $second;
+
+    /**
+     * Reject a format pattern longer than the shared cap (the using class
+     * declares `MAX_FORMAT_LENGTH`).
+     *
+     * @throws InvalidDateException with ErrorCode::InputTooLong
+     */
+    private static function assertFormatLength(string $format): void
+    {
+        $len = strlen($format);
+        if ($len > self::MAX_FORMAT_LENGTH) {
+            throw new InvalidDateException(
+                sprintf('Format string too long (%d bytes, max %d).', $len, self::MAX_FORMAT_LENGTH),
+                errorCode: ErrorCode::InputTooLong,
+                context: ['argument' => 'format', 'limit' => self::MAX_FORMAT_LENGTH],
+            );
+        }
+    }
 
     /** New instance of the same calendar (and variant) for another instant. */
     abstract private function withInstant(DateTimeImmutable $instant): static;

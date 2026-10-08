@@ -92,7 +92,8 @@ final class Jalali implements CalendarDate
         );
 
         if ($this->year < self::MIN_YEAR || $this->year > self::MAX_YEAR) {
-            throw new InvalidDateException(
+            throw InvalidDateException::because(
+                ErrorCode::DateOutOfRange,
                 sprintf('Date out of the supported Jalali range (%d..%d): %d', self::MIN_YEAR, self::MAX_YEAR, $this->year),
             );
         }
@@ -252,14 +253,12 @@ final class Jalali implements CalendarDate
      * (the RFC mandates English Gregorian names). Escape literals with a backslash. Unknown characters
      * are copied as-is. Pass $persianDigits = true to convert digits to Persian.
      * Patterns longer than {@see self::MAX_FORMAT_LENGTH} bytes throw
-     * {@see InvalidDateException}.
+     * {@see InvalidDateException} (ErrorCode::InputTooLong).
      */
     public function format(string $format = 'Y/m/d H:i:s', bool $persianDigits = false): string
     {
+        self::assertFormatLength($format);
         $len = strlen($format);
-        if ($len > self::MAX_FORMAT_LENGTH) {
-            throw new InvalidDateException(sprintf('Format string too long (%d bytes, max %d).', $len, self::MAX_FORMAT_LENGTH));
-        }
 
         $out = '';
 
@@ -353,7 +352,7 @@ final class Jalali implements CalendarDate
         $newMonth++;
 
         if ($newYear < self::MIN_YEAR || $newYear > self::MAX_YEAR) {
-            throw new InvalidDateException("Jalali year out of the supported range: {$newYear}");
+            throw InvalidDateException::because(ErrorCode::DateOutOfRange, "Jalali year out of the supported range: {$newYear}");
         }
 
         $day = min($this->day, self::daysInMonth($newYear, $newMonth));
@@ -551,7 +550,7 @@ final class Jalali implements CalendarDate
     public static function jalaliToGregorian(int $jy, int $jm, int $jd): array
     {
         if ($jy < self::MIN_YEAR || $jy > self::MAX_YEAR || $jm < 1 || $jm > 12 || $jd < 1 || $jd > 31) {
-            throw new InvalidDateException("Jalali date out of the supported range: {$jy}/{$jm}/{$jd}");
+            throw InvalidDateException::because(ErrorCode::DateOutOfRange, "Jalali date out of the supported range: {$jy}/{$jm}/{$jd}");
         }
 
         // Months 1-6 have 31 days, months 7-11 have 30.

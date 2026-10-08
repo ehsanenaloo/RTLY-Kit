@@ -1,5 +1,8 @@
 blank_issues_enabled: false
 contact_links:
+  - name: Documentation and guide
+    url: https://ehsanenaloo.github.io/RTLY-Kit/
+    about: Read the guide first; most questions are answered there.
   - name: Security vulnerability
     url: https://github.com/ehsanenaloo/RTLY-Kit/security/advisories/new
     about: Report vulnerabilities privately. Do not open a public issue.

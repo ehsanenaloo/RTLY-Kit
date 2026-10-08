@@ -1,0 +1,143 @@
+<!--
+title: التقويم العبري
+description: فئة التاريخ العبري (اليهودي) غير القابلة للتغيير، بترقيم ترتيبي للأشهر وآدار الأول والثاني في السنة الكبيسة، وأسماء الأشهر بالإنجليزية والعبرية والفارسية: إنشاء التواريخ وتحليلها وتنسيقها وإزاحتها وقياسها.
+group: calendars
+order: 30
+-->
+<h2 id="overview">ما الذي تفعله الفئة</h2>
+<p><code>RtlyKit\Calendar\Hebrew</code> هي قيمة تاريخ ووقت لا تتغير بعد إنشائها، في التقويم العبري (اليهودي). كُتبت بـ PHP الخالص (دون <code>ext-calendar</code>) وتنفّذ التقويم الحسابي الثابت: مولد تِشري (molad)، وتأجيلات <em>dehiyyot</em> الأربعة، وأطوال السنوات 353 و354 و355 يومًا للسنة العادية و383 و384 و385 يومًا للسنة الكبيسة. وكبقية التقويمات، تحتفظ بلحظة واحدة من النوع <code>DateTimeImmutable</code> وتنفّذ العقد <code>CalendarDate</code> (انظر <a href="convert-and-compare.html">التحويل والمقارنة بين التواريخ</a>).</p>
+<pre><code class="language-php">&lt;?php
+require 'vendor/autoload.php';
+
+use RtlyKit\Calendar\Hebrew;
+use RtlyKit\Exceptions\InvalidDateException;
+use function RtlyKit\hebrew_date;   // مساعد ضمن فضاء الأسماء، مكافئ لـ Hebrew::make()
+
+$utc = new DateTimeZone('UTC');</code></pre>
+<div class="note"><strong>من المفيد أن تعرف.</strong> يبدأ اليوم العبري عند الغروب، أما هذه الفئة فتغيّر التاريخ عند منتصف الليل المدني، مثل بقية تقويمات المكتبة. لذلك فإن ما بعد الغروب (كمساء ليلة العطلة) يُنسب دينيًا إلى التاريخ العبري التالي، لكنه يبقى هنا على تاريخ يومه المدني. والفئة لا تحسب العطل، ولا الفقرات الأسبوعية من التوراة (parashot)، ولا عدّ العومر.</div>
+
+<h2 id="months">ترقيم الأشهر</h2>
+<p>تُرقَّم الأشهر بحسب <strong>موضعها الترتيبي في السنة بدءًا من تِشري</strong> (رأس السنة المدنية). وفي السنة الكبيسة يكون آدار الأول وآدار الثاني شهرين منفصلين:</p>
+<ul>
+<li>الأشهر من 1 إلى 5 هي دائمًا: Tishrei وCheshvan وKislev وTevet وShevat.</li>
+<li>السنة العادية: 6 = Adar، 7 = Nisan، 8 = Iyar، 9 = Sivan، 10 = Tammuz، 11 = Av، 12 = Elul.</li>
+<li>السنة الكبيسة: 6 = Adar I، 7 = Adar II، 8 = Nisan، 9 = Iyar، 10 = Sivan، 11 = Tammuz، 12 = Av، 13 = Elul.</li>
+</ul>
+<div class="note"><strong>ترقيم يختلف عن Hebcal.</strong> يختلف هذا الترقيم عن Hebcal (حيث Nisan = 1) وعن <code>ext-calendar</code> في PHP. فشهر Elul هو الشهر 12 في السنة العادية و13 في الكبيسة، وشهر Nisan هو الشهر 7 أو 8. خذ أرقام الأشهر من <code>Hebrew</code> نفسها (<code>getMonth()</code> و<code>monthName()</code> و<code>monthsInYear()</code>) ولا تأخذها من جداول مكتبة أخرى.</div>
+<pre><code class="language-php">foreach ([5784, 5785] as $y) {
+    $a = [];
+    for ($m = 1; $m &lt;= Hebrew::monthsInYear($y); $m++) {
+        $a[] = $m.':'.Hebrew::monthName($y, $m).'('.Hebrew::daysInMonth($y, $m).')';
+    }
+    echo $y, ' ', implode(' ', $a), "\n";
+}
+// 5784 1:Tishrei(30) 2:Cheshvan(29) 3:Kislev(29) 4:Tevet(29) 5:Shevat(30) 6:Adar I(30) 7:Adar II(29) 8:Nisan(30) 9:Iyar(29) 10:Sivan(30) 11:Tammuz(29) 12:Av(30) 13:Elul(29)
+// 5785 1:Tishrei(30) 2:Cheshvan(30) 3:Kislev(30) 4:Tevet(29) 5:Shevat(30) 6:Adar(29) 7:Nisan(30) 8:Iyar(29) 9:Sivan(30) 10:Tammuz(29) 11:Av(30) 12:Elul(29)</code></pre>
+<p>تدعم <code>Hebrew::monthName($year, $month, $locale = 'en')</code> اللغات <code>en</code> و<code>he</code> و<code>fa</code> (واللغات غير المعروفة تستخدم <code>en</code>)؛ وفي السنة العادية يكون الموضع 6 هو <em>Adar</em> البسيط.</p>
+
+<h2 id="make">إنشاء التواريخ</h2>
+<p>تتحقق <code>Hebrew::create($year, $month, $day, $hour = 0, $minute = 0, $second = 0, $timezone = null)</code> من التاريخ بحسب الطول الفعلي لذلك الشهر في تلك السنة (يتراوح Cheshvan وKislev بين 29 و30 يومًا).</p>
+<pre><code class="language-php">$e = Hebrew::create(5785, 1, 1, 0, 0, 0, $utc);
+
+echo $e;                                   // 5785/01/01 00:00:00
+echo $e-&gt;toGregorian()-&gt;format('Y-m-d');   // 2024-10-03
+echo Hebrew::create(5785, 7, 15, 0, 0, 0, $utc)-&gt;toGregorian()-&gt;format('Y-m-d');  // 2025-04-13  (15 Nisan 5785)
+echo Hebrew::create(5786, 1, 10, 0, 0, 0, $utc)-&gt;toGregorian()-&gt;format('Y-m-d l'); // 2025-10-02 Thursday</code></pre>
+<p>تقبل <code>Hebrew::make($time = null, $timezone = null)</code> كائنًا من <code>DateTimeInterface</code>، أو أي <code>CalendarDate</code>، أو طابعًا زمنيًا من النوع <code>int</code>، أو سلسلة نصية، أو <code>null</code>؛ والمساعد هو <code>hebrew_date()</code>. وتمرير نسخة <code>Hebrew</code> يُرجعها دون تغيير.</p>
+<pre><code class="language-php">echo Hebrew::make('2025-10-07', $utc);                       // 5786/01/15 00:00:00
+echo hebrew_date('2025-10-07')-&gt;format('Y/m/d F');           // 5786/01/15 Tishrei
+echo Hebrew::make('5785/01/10', $utc);                       // 5785/01/10 00:00:00
+echo Hebrew::make('0001-09-06')-&gt;format('Y/m/d');            // 3762/01/01</code></pre>
+<h3 id="string-rules">دلالات السلاسل النصية</h3>
+<ol>
+<li>تتحول الأرقام الفارسية والعربية إلى أرقام إنجليزية؛ وتُقصّ المسافات من الطرفين؛ والسلسلة الفارغة تُطلق <code>InvalidDateException</code>.</li>
+<li>السلسلة بالصيغة <code>Y/m/d</code> أو <code>Y-m-d</code> (و<code>H:i[:s]</code> اختياري) وسنتها <strong>3000 أو أكثر</strong> تُقرأ تاريخًا <em>عبريًا</em>، بالترقيم الترتيبي للأشهر الموصوف أعلاه. (العتبة معاكسة لما في Jalali وHijri اللذين يقرآن السنوات <em>الأقل</em> من 1700 تاريخًا لهما.)</li>
+<li>كل سلسلة أخرى تُحلَّل تاريخًا ميلاديًا أو نصًا حرًّا.</li>
+</ol>
+<p>فـ <code>'5785/01/10'</code> عبري، و<code>'2025-10-07'</code> ميلادي، أما <code>'3000/01/01'</code> فتُقرأ سنة عبرية 3000 وهي أقل من الحد الأدنى المدعوم، ولذلك تُطلق <code>Invalid Hebrew date: 3000/1/1</code>.</p>
+
+<h2 id="range">النطاق المدعوم والأخطاء</h2>
+<p>السنوات العبرية المدعومة من <code>Hebrew::MIN_YEAR</code> = <strong>3762</strong> إلى <code>Hebrew::MAX_YEAR</code> = <strong>13759</strong>. وهي بالضبط السنوات الواقعة داخل السنوات الميلادية من 1 إلى 9999: أول يوم هو 1 Tishrei 3762 (0001-09-06) وآخر يوم هو آخر يوم من Elul 13759 (9999-11-03). وأي قيمة خارج ذلك تُطلق <code>InvalidDateException</code>؛ بينما تُرجع <code>isValid()</code> القيمة false.</p>
+<pre><code class="language-php">foreach ([[3761, 1, 1], [13760, 1, 1], [5785, 13, 1], [5785, 3, 31]] as [$y, $m, $d]) {
+    try { Hebrew::create($y, $m, $d); }
+    catch (InvalidDateException $x) { echo $x-&gt;getMessage(), "\n"; }
+}
+// Invalid Hebrew date: 3761/1/1
+// Invalid Hebrew date: 13760/1/1
+// Invalid Hebrew date: 5785/13/1       (5785 is a regular year: 12 months)
+// Invalid Hebrew date: 5785/3/31
+
+echo Hebrew::create(5784, 13, 1) instanceof Hebrew ? 'ok' : '';   // ok  (5784 is a leap year)
+
+try { Hebrew::make('0001-01-01'); }
+catch (InvalidDateException $x) { echo $x-&gt;getMessage(); }
+// Date out of the supported Hebrew range (3762..13759): 3761</code></pre>
+<p>تقبل الدوال الحسابية الخالصة <code>daysInYear()</code> و<code>daysInMonth()</code> و<code>monthName()</code> السنوات من 1 إلى 13759 (السنة 0 تُطلق <code>Hebrew year out of the supported range: 0</code>)؛ ولا يستخدم الحدَّ الأدنى الأضيق 3762 إلا إنشاء التواريخ.</p>
+
+<h2 id="getters">قراءة القيم</h2>
+<p>دوال القراءة هي دوال العقد (<code>getYear()</code> و<code>getMonth()</code> و<code>getDay()</code> وأجزاء الوقت و<code>getTimestamp()</code> و<code>getTimezone()</code> و<code>toGregorian()</code> و<code>toDateString()</code> و<code>toDateTimeString()</code>). والدالة <code>getMonth()</code> تُرجع الشهر الترتيبي الموصوف أعلاه.</p>
+<h3 id="weekdays">ترقيم أيام الأسبوع</h3>
+<p>تبدأ <code>getDayOfWeek()</code> والرمز <code>w</code> <strong>من الأحد</strong>: 0 = الأحد إلى 6 = السبت (مثل Hijri وPHP، وخلافًا لـ Jalali). والرمز <code>N</code> هو الرقم بحسب ISO (الاثنين = 1).</p>
+<pre><code class="language-php">echo $e-&gt;getDayOfWeek();   // 4   (كان 1 Tishrei 5785 يوم خميس)
+foreach (range(0, 6) as $i) { echo $e-&gt;addDays($i)-&gt;getDayOfWeek(); }  // 4560123</code></pre>
+
+<h2 id="format">التنسيق</h2>
+<p><code>format($pattern = 'Y/m/d H:i:s', $locale = 'en')</code> حيث <code>$locale</code> إحدى القيم <code>en</code> أو <code>he</code> أو <code>fa</code>. الأرقام لاتينية دائمًا. وتُبطل الشرطة المائلة العكسية المعنى الخاص للمحرف الذي يليها.</p>
+<pre><code class="language-php">echo $e-&gt;format('l j F Y');         // Thursday 1 Tishrei 5785
+echo $e-&gt;format('l j F Y', 'he');   // חמישי 1 תשרי 5785
+echo $e-&gt;format('l j F Y', 'fa');   // پنجشنبه 1 تشری 5785
+
+echo Hebrew::create(5784, 6, 15, 0, 0, 0, $utc)-&gt;format('j F');   // 15 Adar I
+echo Hebrew::create(5784, 7, 15, 0, 0, 0, $utc)-&gt;format('j F');   // 15 Adar II</code></pre>
+<table>
+<thead><tr><th>الرمز</th><th>المعنى</th></tr></thead>
+<tbody>
+<tr><td><code>Y y m n d j</code></td><td>السنة، والشهر (الترتيبي)، واليوم</td></tr>
+<tr><td><code>H G h g i s</code></td><td>الوقت من اليوم (نظام 24 ساعة و12 ساعة)</td></tr>
+<tr><td><code>F M</code></td><td>اسم الشهر بحسب اللغة (Adar I/II أو Adar بحسب الحال)</td></tr>
+<tr><td><code>l</code></td><td>اسم يوم الأسبوع بحسب اللغة</td></tr>
+<tr><td><code>w N</code></td><td>الأحد = 0؛ والاثنين بحسب ISO = 1</td></tr>
+<tr><td><code>z t L</code></td><td>رقم اليوم في السنة بدءًا من الصفر؛ وعدد أيام الشهر؛ و1 للسنة الكبيسة (13 شهرًا)</td></tr>
+<tr><td><code>a A</code></td><td><code>am</code>/<code>pm</code> و<code>AM</code>/<code>PM</code></td></tr>
+<tr><td><code>S W c r</code></td><td>فارغ؛ وأسبوع ISO للحظة الميلادية؛ و<code>Y-m-d\TH:i:sP</code> مع التاريخ العبري؛ وRFC 2822</td></tr>
+<tr><td><code>U e T P p O Z I u v</code></td><td>تُفوَّض إلى اللحظة الأساسية</td></tr>
+</tbody>
+</table>
+
+<h2 id="modify">الإزاحة والضبط</h2>
+<p>الدوال هي نفسها في <a href="jalali.html#modify">Jalali</a>. وهناك قاعدتان خاصتان بالتقويم العبري لهما أهميتهما:</p>
+<ul>
+<li><strong>الأشهر</strong> تُعدّ أشهرًا ترتيبية، ويُعدّ آدار الأول وآدار الثاني شهرين منفصلين؛ ويُقصَّر اليوم إلى طول الشهر الهدف. والعمل محدود (دورات كاملة من 19 سنة، ثم 19 خطوة سنوية على الأكثر)، ولا يتوقف على كِبَر قيمة <code>$months</code>.</li>
+<li><strong>السنوات</strong> تحافظ على الشهر «نفسه»: فالانتقال من سنة كبيسة إلى سنة عادية يحوّل Adar I وAdar II إلى Adar؛ والانتقال من سنة عادية إلى كبيسة يحوّل Adar إلى <em>Adar II</em>.</li>
+</ul>
+<pre><code class="language-php">$adar1 = Hebrew::create(5784, 6, 15, 0, 0, 0, $utc);
+echo $adar1-&gt;addMonths(1)-&gt;format('Y/m/d F');                                  // 5784/07/15 Adar II
+echo Hebrew::create(5784, 7, 15, 0, 0, 0, $utc)-&gt;addYears(1)-&gt;format('Y/m/d F'); // 5785/06/15 Adar
+echo Hebrew::create(5785, 2, 29, 0, 0, 0, $utc)-&gt;addMonths(1);                   // 5785/03/29 00:00:00
+echo Hebrew::create(5785, 5, 30, 0, 0, 0, $utc)-&gt;addMonths(1)-&gt;format('Y/m/d F'); // 5785/06/29 Adar  (مقصَّر)
+echo $e-&gt;endOfMonth();   // 5785/01/30 23:59:59
+echo $e-&gt;endOfYear();    // 5785/12/29 23:59:59</code></pre>
+
+<h2 id="compare-diff">المقارنة والقياس</h2>
+<p>تعمل المقارنة على اللحظات وتقبل أي تقويم. تحسب <code>diffInMonths()</code> الأشهر العبرية الكاملة (ويُحتسب Adar I وAdar II منفصلين)؛ وتعتمد <code>diffInYears()</code> على الذكرى السنوية (فالسنة العبرية فيها 12 أو 13 شهرًا، فليست عدد الأشهر مقسومًا على 12).</p>
+<pre><code class="language-php">echo Hebrew::create(5784, 1, 1, 0, 0, 0, $utc)-&gt;diffInMonths(Hebrew::create(5785, 1, 1, 0, 0, 0, $utc)); // 13
+echo Hebrew::create(5780, 3, 3, 0, 0, 0, $utc)-&gt;diffInYears(Hebrew::create(5785, 3, 2, 0, 0, 0, $utc));  // 4</code></pre>
+
+<h2 id="static">الحساب التقويمي</h2>
+<table>
+<thead><tr><th>الدالة</th><th>ما تُرجعه</th></tr></thead>
+<tbody>
+<tr><td><code>Hebrew::isValid($y, $m, $d)</code></td><td><code>bool</code></td></tr>
+<tr><td><code>Hebrew::isLeapYear($y)</code></td><td>صحيحة للسنوات 3 و6 و8 و11 و14 و17 و19 من الدورة ذات الـ 19 سنة</td></tr>
+<tr><td><code>Hebrew::monthsInYear($y)</code></td><td>12 أو 13</td></tr>
+<tr><td><code>Hebrew::daysInYear($y)</code></td><td>353 أو 354 أو 355 أو 383 أو 384 أو 385</td></tr>
+<tr><td><code>Hebrew::daysInMonth($y, $m)</code></td><td>29 أو 30؛ وتُطلق استثناءً لشهر يتجاوز عدد أشهر السنة</td></tr>
+<tr><td><code>Hebrew::gregorianToHebrew($gy, $gm, $gd)</code></td><td><code>[year, ordinalMonth, day]</code></td></tr>
+<tr><td><code>Hebrew::hebrewToGregorian($hy, $hm, $hd)</code></td><td><code>[year, month, day]</code></td></tr>
+</tbody>
+</table>
+<pre><code class="language-php">echo (Hebrew::isLeapYear(5784) ? 'leap' : 'regular'), ' ', (Hebrew::isLeapYear(5785) ? 'leap' : 'regular'); // leap regular
+echo Hebrew::daysInYear(5784), ' ', Hebrew::daysInYear(5785), ' ', Hebrew::daysInYear(5786);             // 383 355 354
+echo json_encode(Hebrew::gregorianToHebrew(2025, 10, 3));   // [5786,1,11]
+echo json_encode(Hebrew::hebrewToGregorian(5786, 1, 1));    // [2025,9,23]</code></pre>
+<p>ذو صلة: التحويل بين التقويمات في <a href="convert-and-compare.html">التحويل والمقارنة بين التواريخ</a>، وماكروات Carbon (<code>toHebrew()</code> و<code>createFromHebrew()</code>) في <a href="carbon-macros.html">ماكروات Carbon</a>.</p>

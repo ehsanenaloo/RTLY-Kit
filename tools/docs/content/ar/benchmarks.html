@@ -1,0 +1,59 @@
+<!--
+title: قياس الأداء
+description: قياس أداء مصغّر وصريح لـ RTLY-Kit مقابل morilog/jalali، مع المنهج كاملًا والتحفظات وأمر من سطر واحد لإعادة التشغيل على جهازك.
+group: reference
+order: 50
+-->
+<div class="note"><strong>من المفيد أن تعرف.</strong> هذه قياسات مصغّرة لثلاثة سيناريوهات صغيرة، شُغّلت مرة واحدة على جهاز واحد. وهي تُظهر التكلفة النسبية لهذا الحِمل فقط ولا تصلح حكمًا عامًا. أعد تشغيلها بالأمر الوارد أدناه قبل أن تقتبس أي رقم.</div>
+
+<h2 id="what">ما الذي تتم مقارنته</h2>
+<p><a href="https://github.com/morilog/jalali">morilog/jalali</a> الإصدار v3.5.0 (أكثر حزم التقويم الجلالي استخدامًا) مقابل RTLY-Kit، في ثلاث عمليات:</p>
+<table>
+<thead><tr><th>السيناريو</th><th>RTLY-Kit</th><th>morilog/jalali</th></tr></thead>
+<tbody>
+<tr><td>من نص ميلادي إلى جلالي <code>Y/m/d</code></td><td><code>Jalali::make('2025-03-21')-&gt;format('Y/m/d')</code></td><td><code>Jalalian::fromDateTime('2025-03-21')-&gt;format('Y/m/d')</code></td></tr>
+<tr><td>من جلالي <code>y/m/d</code> إلى ميلادي <code>Y-m-d</code></td><td><code>Jalali::create(1404, m, d)-&gt;toGregorian()-&gt;format('Y-m-d')</code></td><td><code>(new Jalalian(1404, m, d))-&gt;toCarbon()-&gt;format('Y-m-d')</code></td></tr>
+<tr><td><code>addDays</code> ثم التنسيق</td><td><code>Jalali::create(1404, 1, 1)-&gt;addDays(n)-&gt;format('Y/m/d')</code></td><td><code>(new Jalalian(1404, 1, 1))-&gt;addDays(n)-&gt;format('Y/m/d')</code></td></tr>
+</tbody>
+</table>
+<p>جانب RTLY-Kit من كل سيناريو، كما تكتبه عادةً:</p>
+<pre><code class="language-php">&lt;?php
+require __DIR__.'/vendor/autoload.php';
+
+use RtlyKit\Calendar\Jalali;
+
+echo Jalali::make('2025-03-21')-&gt;format('Y/m/d'), "\n";                       // 1404/01/01
+echo Jalali::create(1404, 1, 1)-&gt;toGregorian()-&gt;format('Y-m-d'), "\n";       // 2025-03-21
+echo Jalali::create(1404, 1, 1)-&gt;addDays(100)-&gt;format('Y/m/d'), "\n";        // 1404/04/08</code></pre>
+
+<h2 id="results">النتائج</h2>
+<p>تشغيل واحد، والقيمة الوسطى من 5 تكرارات، في كل منها 20,000 دورة. البيئة: PHP 8.2.30 CLI داخل Docker على Windows 11، مع <code>opcache.enable_cli=1</code>.</p>
+<table>
+<thead><tr><th>السيناريو</th><th>RTLY-Kit (µs/op)</th><th>morilog/jalali (µs/op)</th><th>النسبة</th></tr></thead>
+<tbody>
+<tr><td>من نص ميلادي إلى جلالي <code>Y/m/d</code></td><td>13.33</td><td>153.84</td><td>11.5x</td></tr>
+<tr><td>من جلالي <code>y/m/d</code> إلى ميلادي <code>Y-m-d</code></td><td>12.80</td><td>58.55</td><td>4.6x</td></tr>
+<tr><td><code>addDays</code> + التنسيق</td><td>33.18</td><td>479.04</td><td>14.4x</td></tr>
+</tbody>
+</table>
+<p>بلغت ذروة الذاكرة للعملية كلها، مع تحميل المكتبتين، 4 MiB.</p>
+<p>أظهر تشغيل سابق غير منهجي، بلا opcache ومع مزيج مختلف من السيناريوهات، فجوة أكبر (نحو 25x). والتفاوت بين التشغيلات هو الدرس نفسه: النسبة تعتمد على السيناريو وعلى إعدادات PHP.</p>
+
+<h2 id="correctness">التحقق المتقاطع من الصحة</h2>
+<p>لكل يوم من 1900-01-01 إلى 2099-12-27 (73,000 يوم متتالٍ) يطابق التاريخ الجلالي في RTLY-Kit ما تعطيه <code>CalendarUtils::toJalali</code> في morilog: 0 اختلافات. تطبّق المكتبتان قاعدة السنة الكبيسة الحسابية ذات الدورة 33 سنة، فالتطابق يعني أن إحداهما متسقة مع الأخرى. أما مطابقة التقويم الإيراني الرسمي فمفحوصة بمقارنة أخرى للسنوات 1206 إلى 1497 (راجع <a href="accuracy-and-data.html">الدقة والبيانات</a>).</p>
+
+<h2 id="why">لماذا هذا الفرق؟</h2>
+<p>لم نُجرِ تحليل أداء (profiling) لهذا، فما يلي تفسير محتمل لا مثبت. يغلّف RTLY-Kit كائن <code>DateTimeImmutable</code> عاديًا ويحوّل بحساب الأعداد الصحيحة. أما morilog فيبني كائنات Carbon ويعالجها، وهي أكبر بكثير (آليات التحليل والإعدادات المحلية)، فجزء من الفرق اختيار معماري وليس خوارزمية التحويل وحدها. وإن كنت تستخدم Carbon في كل مكان أصلًا، فقد يكون الفرق الذي يهمّك أصغر.</p>
+
+<h2 id="reproduce">إعادة التشغيل</h2>
+<p>يوجد القياس في <code>tools/benchmark</code> داخل المستودع. يثبّت ملف <code>composer.json</code> فيه RTLY-Kit من شجرة العمل، إضافةً إلى <code>morilog/jalali</code>، في مجلد <code>vendor/</code> خاص به (وهو ليس جزءًا من الحزمة). يطبع السكربت إصدار PHP وإعدادات opcache وJIT والقيمة الوسطى للتكرارات.</p>
+<pre><code class="language-bash">docker compose -f tools/docker-compose.yml run --rm php sh -c 'cd tools/benchmark &amp;&amp; composer install -n &amp;&amp; php -d opcache.enable_cli=1 run.php 20000 5'</code></pre>
+<p>لا يمكن مقارنة الأرقام الصادرة عن أجهزة مختلفة.</p>
+
+<h2 id="limitations">القيود</h2>
+<ul>
+<li>ثلاثة سيناريوهات فقط؛ لا أحمال تعتمد على التنسيق المكثف أو التحليل المكثف أو المصفوفات الكبيرة.</li>
+<li>جهاز واحد وبناء PHP واحد؛ وDocker على Windows يضيف ضجيجًا.</li>
+<li>لا قياس للذاكرة لكل كائن، سوى الذروة الإجمالية.</li>
+<li>قِيست morilog/jalali وحدها؛ ولم تُقَس حزم أخرى.</li>
+</ul>

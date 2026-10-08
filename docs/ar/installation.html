@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="ar" dir="rtl" data-i18n="{&quot;dark&quot;:&quot;الوضع الداكن&quot;,&quot;light&quot;:&quot;الوضع الفاتح&quot;,&quot;to_dark&quot;:&quot;التبديل إلى السمة الداكنة&quot;,&quot;to_light&quot;:&quot;التبديل إلى السمة الفاتحة&quot;,&quot;copy&quot;:&quot;نسخ&quot;,&quot;copied&quot;:&quot;تم النسخ&quot;,&quot;copy_failed&quot;:&quot;تم التحديد؛ انسخ يدويًا&quot;,&quot;copy_label&quot;:&quot;نسخ مثال الشيفرة أعلاه&quot;,&quot;no_results&quot;:&quot;لا يوجد دليل مطابق. جرّب كلمة أقصر.&quot;,&quot;loading&quot;:&quot;ما زال فهرس البحث قيد التحميل. حاول مرة أخرى بعد قليل.&quot;,&quot;results&quot;:&quot;نتائج البحث&quot;,&quot;status&quot;:&quot;يُعرض %d من %d دليلًا&quot;,&quot;suggest&quot;:&quot;النسخة العربية&quot;,&quot;search_label&quot;:&quot;البحث في الدليل&quot;,&quot;search_placeholder&quot;:&quot;البحث في الدليل&quot;}" data-search-index="search-index.js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>التثبيت | RTLY-Kit دليل المستخدم</title>
+<meta name="description" content="المتطلبات والتثبيت عبر Composer أو Docker، وتكامل Carbon وLaravel الاختياري، والإصدارات المدعومة، وكيفية التحقق من التثبيت وإزالة الحزمة بشكل نظيف.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="التثبيت | RTLY-Kit دليل المستخدم">
+<meta property="og:description" content="المتطلبات والتثبيت عبر Composer أو Docker، وتكامل Carbon وLaravel الاختياري، والإصدارات المدعومة، وكيفية التحقق من التثبيت وإزالة الحزمة بشكل نظيف.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ar_AR">
+<meta property="og:locale:alternate" content="fa_IR">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:url" content="https://ehsanenaloo.github.io/RTLY-Kit/ar/installation.html">
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+<link rel="canonical" href="https://ehsanenaloo.github.io/RTLY-Kit/ar/installation.html">
+<link rel="alternate" hreflang="ar" href="https://ehsanenaloo.github.io/RTLY-Kit/ar/installation.html">
+<link rel="alternate" hreflang="fa" href="https://ehsanenaloo.github.io/RTLY-Kit/fa/installation.html">
+<link rel="alternate" hreflang="en" href="https://ehsanenaloo.github.io/RTLY-Kit/en/installation.html">
+<link rel="alternate" hreflang="x-default" href="https://ehsanenaloo.github.io/RTLY-Kit/">
+<link rel="stylesheet" href="../styles.css">
+<script>try{var t=localStorage.getItem("rtly-docs-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<script defer src="../app.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">انتقل إلى المحتوى</a><header class="site-header"><div class="shell header-inner"><a class="brand" href="index.html"><img src="../assets/logo.svg" width="34" height="34" alt=""><span><span class="name">RTLY-Kit</span><small>دليل المستخدم</small></span></a><nav class="top-nav" aria-label="التنقل الرئيسي"><a href="index.html">نظرة عامة</a><a href="quick-start.html">بدء سريع</a><a href="all.html">كل الأدلة</a><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">جيت هب &#8599;</a></nav><div class="header-tools"><span data-search-host></span><button type="button" class="icon-button" data-theme-toggle hidden>Theme</button><div class="lang-switch" role="group" aria-label="اللغة"><a class="icon-button" href="../fa/installation.html" hreflang="fa" lang="fa">فارسی</a><a class="icon-button" href="../en/installation.html" hreflang="en" lang="en">English</a><span class="icon-button is-current" lang="ar" aria-current="true">العربية</span></div></div></div></header>
+<main id="main">
+<div class="shell page-intro"><nav class="breadcrumbs" aria-label="مسار الصفحة"><ol><li><a href="index.html">الرئيسية</a></li><li><a href="all.html#group-start">البدء</a></li><li aria-current="page">التثبيت</li></ol></nav><h1>التثبيت</h1><p class="lead">المتطلبات والتثبيت عبر Composer أو Docker، وتكامل Carbon وLaravel الاختياري، والإصدارات المدعومة، وكيفية التحقق من التثبيت وإزالة الحزمة بشكل نظيف.</p></div>
+<div class="shell doc-layout has-toc">
+<aside class="sidebar"><details open><summary>تصفح الأدلة</summary><nav aria-label="الأدلة"><a href="all.html">كل الأدلة</a><p>البدء</p><a href="quick-start.html">البدء السريع</a><a href="installation.html" aria-current="page">التثبيت</a><p>التقاويم</p><a href="jalali.html">التقويم الجلالي</a><a href="hijri.html">التقويم الهجري</a><a href="hebrew.html">التقويم العبري</a><a href="convert-and-compare.html">التحويل والمقارنة بين التواريخ</a><a href="carbon-macros.html">ماكروات Carbon</a><p>التحقق من الصحة</p><a href="validators-overview.html">نظرة عامة على أدوات التحقق</a><a href="national-code.html">الرقم الوطني</a><a href="sheba-and-bank-card.html">شبا والبطاقة المصرفية</a><a href="mobile-postal-plate.html">الجوال والرمز البريدي ولوحة المركبة</a><p>الأرقام والنصوص</p><a href="digits-and-format.html">الأرقام وتنسيق الأعداد</a><a href="number-words.html">تحويل الأعداد إلى كلمات</a><a href="arabic-number-words.html">الأعداد بالحروف العربية</a><a href="text-tools.html">أدوات النصوص</a><p>العطل وأوقات الصلاة</p><a href="holidays.html">العطل الرسمية الإيرانية</a><a href="holiday-calendar.html">تقويم العطل القابل للتعديل</a><a href="prayer-times.html">أوقات الصلاة</a><p>لارافيل</p><a href="laravel-setup.html">إعداد Laravel</a><a href="laravel-validation-and-cast.html">قواعد التحقق وتحويل Eloquent</a><p>المرجع</p><a href="helpers-and-globals.html">الدوال المساعدة والدوال العامة</a><a href="error-handling.html">معالجة الأخطاء</a><a href="api-stability.html">استقرار واجهة API</a><a href="accuracy-and-data.html">الدقة والبيانات</a><a href="benchmarks.html">قياس الأداء</a><a href="limits.html">الحدود</a><a href="troubleshooting-faq.html">استكشاف الأخطاء والأسئلة الشائعة</a><a href="upgrade.html">دليل الترقية</a><a href="verifying-releases.html">التحقق من الإصدارات</a></nav></details></aside>
+<article class="prose">
+<details class="toc-inline"><summary>في هذه الصفحة</summary><ol><li><a href="#requirements">المتطلبات</a></li><li><a href="#composer">التثبيت عبر Composer</a><ol><li><a href="#optional">الحزم الاختيارية</a></li></ol></li><li><a href="#docker">التثبيت دون PHP على جهازك (Docker)</a></li><li><a href="#versions">الإصدارات المدعومة</a></li><li><a href="#verify">التحقق من التثبيت</a><ol><li><a href="#problems">إذا فشل شيء ما</a></li></ol></li><li><a href="#uninstall">إلغاء التثبيت</a></li></ol></details>
+<h2 id="requirements">المتطلبات<a class="anchor" href="#requirements" aria-label="رابط إلى هذا القسم">#</a></h2>
+<div class="table-wrap" tabindex="0" role="region" aria-label="جدول"><table>
+<thead><tr><th scope="col">المتطلب</th><th scope="col">الحالة</th><th scope="col">ملاحظات</th></tr></thead>
+<tbody>
+<tr><td>PHP <code>^8.2</code></td><td>إلزامي</td><td>يُختبر في CI على PHP 8.2 و8.3 و8.4 و8.5. هذا هو المطلوب الوحيد، ولا يلزم أي امتداد إضافي (حتى mbstring)</td></tr>
+<tr><td>Composer 2</td><td>مطلوب للتثبيت</td><td>يتولى التحميل التلقائي؛ ولا تعتمد الحزمة على أي اعتماد إلزامي في Composer</td></tr>
+<tr><td><code>nesbot/carbon</code> ^3.0</td><td>اختياري</td><td>يفعّل <a href="carbon-macros.html">ماكروات Carbon</a></td></tr>
+<tr><td><code>illuminate/support</code> ^11 أو ^12 أو ^13</td><td>اختياري</td><td>الاكتشاف التلقائي في Laravel، والواجهة (Facade)، وقواعد التحقق، وتحويل Eloquent (<a href="laravel-setup.html">إعداد Laravel</a>)</td></tr>
+</tbody>
+</table></div>
+<p>هذا كل شيء. لا تحتاج إلى <code>ext-mbstring</code> ولا <code>ext-calendar</code> ولا <code>ext-intl</code> ولا إلى أي قاعدة بيانات: التقاويم الثلاثة مكتوبة بـ PHP الخالص، وجدول أم القرى مضمَّن داخل الحزمة.</p>
+
+<h2 id="composer">التثبيت عبر Composer<a class="anchor" href="#composer" aria-label="رابط إلى هذا القسم">#</a></h2>
+<pre tabindex="0"><code class="language-bash">composer require enaxon/rtly-kit</code></pre>
+<p>تأكد من أن سكربت الدخول لديك يحمّل المحمّل التلقائي لـ Composer مرة واحدة:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">&lt;?php
+require</span> __DIR__.<span class="tok-s">'/vendor/autoload.php'</span>;</code></pre>
+<p>يربط المحمّل التلقائي النطاق <code>RtlyKit\</code> بالمجلد <code>src/</code> في الحزمة، ويحمّل أيضًا ملف مساعدة واحدًا يعرّف الدوال المساعدة ذات النطاق (<code>RtlyKit\jdate()</code> وغيرها). لا يعرّف هذا الملف أي دالة عامة؛ راجع <a href="helpers-and-globals.html">الدوال المساعدة والعامة</a> لمعرفة الأسماء القصيرة الاختيارية.</p>
+<h3 id="optional">الحزم الاختيارية<a class="anchor" href="#optional" aria-label="رابط إلى هذا القسم">#</a></h3>
+<pre tabindex="0"><code class="language-bash">composer require nesbot/carbon          # ماكروات Carbon: toJalali() وcreateFromJalali() وغيرهما
+composer require illuminate/support     # فقط في المشاريع غير المبنية على Laravel التي تريد مكوّنات Laravel</code></pre>
+<p>يعمل كلا التكاملين من تلقاء نفسه. تُسجَّل ماكروات Carbon عندما يعثر المحمّل التلقائي على Carbon. أما في تطبيق Laravel فيُعثر على مزوّد الخدمة (Service Provider) والاسم المستعار للواجهة <code>Jalali</code> عبر الاكتشاف التلقائي للحزم، فلا يُضاف شيء إلى <code>config/app.php</code>. بعد التثبيت في مشروع Laravel قائم، نفّذ <code>php artisan package:discover</code> إذا كان نشرك يخزّن الاكتشاف مؤقتًا.</p>
+
+<h2 id="docker">التثبيت دون PHP على جهازك (Docker)<a class="anchor" href="#docker" aria-label="رابط إلى هذا القسم">#</a></h2>
+<p>إذا لم يكن PHP وComposer مثبّتين محليًا، فشغّلهما من الصور الرسمية. من مجلد مشروعك:</p>
+<pre tabindex="0"><code class="language-bash">docker run --rm -v "$PWD":/app -w /app composer:2 require enaxon/rtly-kit
+docker run --rm -v "$PWD":/app -w /app php:8.3-cli php quick.php</code></pre>
+<p>يثبّت الأمر الأول الحزمة في <code>vendor/</code>؛ ويشغّل الثاني سكربتًا مثل الموجود في <a href="quick-start.html">البدء السريع</a> على PHP 8.3. وللعمل على المكتبة نفسها، استنسخ المستودع واستخدم الملف <code>docker-compose.yml</code> فيه:</p>
+<pre tabindex="0"><code class="language-bash">docker compose -f tools/docker-compose.yml run --rm php composer install
+docker compose -f tools/docker-compose.yml run --rm php composer test
+docker compose -f tools/docker-compose.yml run --rm php php -r 'require "vendor/autoload.php"; echo RtlyKit\jdate("2026-03-21")-&gt;format("Y/m/d");'</code></pre>
+
+<h2 id="versions">الإصدارات المدعومة<a class="anchor" href="#versions" aria-label="رابط إلى هذا القسم">#</a></h2>
+<ul>
+<li><strong>PHP</strong> 8.2 و8.3 و8.4 و8.5 (مصفوفة CI).</li>
+<li><strong>Laravel</strong> 11 و12 و13 (يتطلب Laravel 13 نفسه PHP 8.3 أو أحدث).</li>
+<li><strong>Carbon</strong> 3.</li>
+<li><strong>الإصدارات.</strong> قبل 1.0.0 قد يتضمن الإصدار الفرعي (minor) تغييرات غير متوافقة مع السابق. يرد كل تغيير منها في دليل الترقية مع خطوات الانتقال (<a href="upgrade.html">الترقية</a>)، ويرد وعد التوافق وقائمة الفئات الداخلية في <a href="api-stability.html">استقرار واجهة API</a>. حتى 1.0.0، ثبّت الإصدار الفرعي في قيد <code>composer.json</code> (قيد tilde مثل <code>~0.x.y</code> مع الإصدار الذي اختبرته)، واقرأ دليل الترقية قبل رفعه.</li>
+</ul>
+
+<h2 id="verify">التحقق من التثبيت<a class="anchor" href="#verify" aria-label="رابط إلى هذا القسم">#</a></h2>
+<p>أنشئ الملف <code>verify.php</code> في جذر مشروعك:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">&lt;?php
+require</span> __DIR__.<span class="tok-s">'/vendor/autoload.php'</span>;
+
+<span class="tok-k">echo</span> PHP_VERSION, <span class="tok-s">"\n"</span>;
+<span class="tok-k">echo</span> \RtlyKit\jdate(<span class="tok-s">'2026-03-21'</span>)-&gt;format(<span class="tok-s">'Y/m/d'</span>), <span class="tok-s">"\n"</span>;   <span class="tok-c">// 1405/01/01</span></code></pre>
+<p>شغّل <code>php verify.php</code>. يجب أن يطبع السطر الأخير <code>1405/01/01</code>؛ أما إصدار PHP أقل من 8.2 فيعني أن البيئة لا تستوفي المتطلبات. ويفيد أيضًا أمران من Composer:</p>
+<pre tabindex="0"><code class="language-bash">composer show enaxon/rtly-kit            # الإصدار المثبّت والبيانات الوصفية
+composer check-platform-reqs          # يفحص PHP والامتدادات مقابل كل حزمة مثبّتة</code></pre>
+<h3 id="problems">إذا فشل شيء ما<a class="anchor" href="#problems" aria-label="رابط إلى هذا القسم">#</a></h3>
+<ul>
+<li><code>Class "RtlyKit\..." not found</code> أو <code>Call to undefined function RtlyKit\jdate()</code>: لم يُحمَّل <code>vendor/autoload.php</code>، أو أن المحمّل التلقائي في Composer قديم؛ نفّذ <code>composer dump-autoload</code>.</li>
+<li><code>Call to undefined function jdate()</code> (دون النطاق): الأسماء العامة القصيرة اختيارية. استخدم <code>use function RtlyKit\jdate;</code> أو استدعِ <code>\RtlyKit\Globals::register()</code>.</li>
+<li>يرفض Composer التثبيت ويذكر إصدار PHP: ثبّت PHP 8.2 أو أحدث.</li>
+<li>حالات أخرى: <a href="troubleshooting-faq.html">استكشاف الأخطاء والأسئلة الشائعة</a>.</li>
+</ul>
+
+<h2 id="uninstall">إلغاء التثبيت<a class="anchor" href="#uninstall" aria-label="رابط إلى هذا القسم">#</a></h2>
+<ol>
+<li>أزل الحزمة: <code>composer remove enaxon/rtly-kit</code>. وهذا يعيد إنشاء المحمّل التلقائي أيضًا.</li>
+<li>احذف استخداماتك الخاصة: أسطر <code>use RtlyKit\...</code> و<code>use function RtlyKit\...</code>، واستدعاءات <code>\RtlyKit\Globals::register()</code>، وأي كتل catch لـ <code>RtlyKit\Exceptions\*</code>. ابحث في شيفرتك عن <code>RtlyKit</code> للعثور عليها كلها.</li>
+<li>مشاريع Carbon: تختفي الماكروات (<code>toJalali</code> و<code>jformat</code> و<code>toHijri</code> و<code>toHebrew</code> و<code>createFromJalali</code> و<code>createFromHijri</code> و<code>createFromHebrew</code>) مع الحزمة؛ فاستبدل استدعاءاتها أولًا.</li>
+<li>مشاريع Laravel: أزل قواعد التحقق <code>national_code</code> و<code>sheba</code> و<code>bank_card</code> و<code>iran_mobile</code> و<code>mobile</code> و<code>postal_code</code> و<code>vehicle_plate</code> من طلبات النماذج (form requests)، وأزل <code>JalaliCast</code> من نماذجك، وأي استخدام للواجهة <code>Jalali</code>، وأي ملفات ترجمة نسختها من الحزمة. ثم نفّذ <code>php artisan optimize:clear</code>. إن إزالة الحزمة لا تمسّ البيانات التي كتبها تطبيقك في قاعدة البيانات، فتحقق من طريقة تخزين التحويل (Cast) لها قبل أن تحذفه.</li>
+</ol>
+<p>لا تثبّت الحزمة شيئًا خارج <code>vendor/</code> (سوى ملف القفل وبيانات التحميل التلقائي الخاصة بـ Composer)، فلا يوجد ما يلزم تنظيفه بعد ذلك.</p>
+<nav class="reading-footer" aria-label="الصفحة السابقة والتالية"><a class="prev" rel="prev" href="quick-start.html"><small>السابق</small>البدء السريع</a><a class="next" rel="next" href="jalali.html"><small>التالي</small>التقويم الجلالي</a></nav>
+</article>
+<nav class="toc" aria-label="في هذه الصفحة"><p>في هذه الصفحة</p><ol><li><a href="#requirements">المتطلبات</a></li><li><a href="#composer">التثبيت عبر Composer</a><ol><li><a href="#optional">الحزم الاختيارية</a></li></ol></li><li><a href="#docker">التثبيت دون PHP على جهازك (Docker)</a></li><li><a href="#versions">الإصدارات المدعومة</a></li><li><a href="#verify">التحقق من التثبيت</a><ol><li><a href="#problems">إذا فشل شيء ما</a></li></ol></li><li><a href="#uninstall">إلغاء التثبيت</a></li></ol></nav>
+</div>
+</main>
+<footer class="footer"><div class="shell footer-inner"><p>دليل مستخدم RTLY-Kit · الترخيص: MIT</p><div><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">المستودع على جيت هب &#8599;</a><a href="https://github.com/ehsanenaloo/RTLY-Kit/issues" rel="noopener noreferrer">الإبلاغ عن مشكلة &#8599;</a></div></div></footer>
+</body>
+</html>

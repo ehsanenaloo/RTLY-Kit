@@ -6,50 +6,53 @@ Package: enaxon/rtly-kit (install: composer require enaxon/rtly-kit). Requires P
 
 ## Getting started
 
-- [Quick start](en/quick-start.html): Install RTLY-Kit with Composer and, in about five minutes, convert a Jalali date, validate an Iranian national code and handle your first library exception.
-- [Installation](en/installation.html): Requirements, installation with Composer or Docker, optional Carbon and Laravel integration, supported versions, how to verify the install and how to remove the package cleanly.
+- [Quick start](en/quick-start.html): Install RTLY-Kit with Composer. In about five minutes you will convert a Jalali date, check an Iranian national code and catch your first library exception.
+- [Installation](en/installation.html): Requirements, installation with Composer or Docker, optional Carbon and Laravel support, supported versions, how to check the install and how to remove the package.
 
 ## Calendars
 
-- [Jalali calendar](en/jalali.html): The immutable Jalali (Persian, Solar Hijri) date class: create and parse dates, format them with PHP date tokens, shift and snap them, compare and diff them, with the exact year range and error behaviour.
-- [Hijri calendar](en/hijri.html): The immutable Hijri (Islamic) date class with the Umm al-Qura month table and an arithmetic Tabular variant: create, parse and format dates in Arabic, Persian or English, shift, compare and diff them.
-- [Hebrew calendar](en/hebrew.html): The immutable Hebrew (Jewish) date class with ordinal month numbering, leap-year Adar I and II, and month names in English, Hebrew and Persian: create, parse, format, shift and measure dates.
-- [Convert and compare dates](en/convert-and-compare.html): The shared CalendarDate contract of Jalali, Hijri and Hebrew, how to convert a date between calendars, and how comparison and differences work across calendars and time zones.
-- [Carbon macros](en/carbon-macros.html): Optional Carbon integration: convert any Carbon instance to Jalali, Hijri or Hebrew and create Carbon dates from calendar components, with the exact macro list, return types and errors.
+- [Jalali calendar](en/jalali.html): The immutable Jalali (Persian, Solar Hijri) date class. Create and parse dates, format them with PHP date tokens, shift and snap them, compare them and measure the gap, with the exact year range and error behaviour.
+- [Hijri calendar](en/hijri.html): The immutable Hijri (Islamic) date class with the Umm al-Qura month table and an arithmetic Tabular variant. Create, parse and format dates in Arabic, Persian or English, shift them, compare them and measure the gap.
+- [Hebrew calendar](en/hebrew.html): The immutable Hebrew (Jewish) date class with ordinal month numbers, Adar I and Adar II in leap years, and month names in English, Hebrew and Persian. Create, parse, format, shift and measure dates.
+- [Convert and compare dates](en/convert-and-compare.html): The shared CalendarDate contract of Jalali, Hijri and Hebrew. How to convert a date between calendars, and how comparing and measuring works across calendars and time zones.
+- [Carbon macros](en/carbon-macros.html): Optional Carbon support. Turn any Carbon instance into a Jalali, Hijri or Hebrew date, and create Carbon dates from calendar parts. The page lists every macro with its return type and errors.
 
 ## Validation
 
-- [Validators overview](en/validators-overview.html): How the six Iranian validators work: the shared Validator contract, the Result object, stable error keys, input normalization and size limits.
+- [Validators overview](en/validators-overview.html): How the six Iranian validators work. The shared Validator contract, the Result object, stable error keys, input cleaning and size limits.
 - [National code](en/national-code.html): Validate Iranian national codes (کد ملی) with the mod-11 check digit, accept Persian and Arabic digits, and read the place-of-issue hint safely.
-- [Sheba and bank card](en/sheba-and-bank-card.html): Validate Sheba (IBAN) numbers with ISO 7064 mod-97-10 and bank card numbers with the Luhn checksum, and look up the issuing bank with honest data caveats.
-- [Mobile, postal code and plate](en/mobile-postal-plate.html): Validate Iranian mobile numbers in every common input form, postal codes, and vehicle plates, with operator hints, parsing and honest limits.
+- [Sheba and bank card](en/sheba-and-bank-card.html): Validate Sheba (IBAN) numbers with ISO 7064 mod-97-10 and bank card numbers with the Luhn checksum, and look up the issuing bank. The page says where the bank data comes from.
+- [Mobile, postal code and plate](en/mobile-postal-plate.html): Validate Iranian mobile numbers in every common input form, postal codes and vehicle plates, with operator hints, an allocation flag and parsing.
 
 ## Numbers and text
 
-- [Digits and number formatting](en/digits-and-format.html): Convert between English, Persian and Arabic-Indic digits, format numbers with Persian separators, and build Persian ordinals, with every cap and edge case spelled out.
-- [Number to words](en/number-words.html): Spell integers out in Persian (up to 10^21) and Modern Standard Arabic (below 10^9), and read Persian number words back into numbers with fromWords().
-- [Text tools](en/text-tools.html): Normalize Persian and Arabic text, repair half-spaces, detect language and direction, and build URL-safe slugs, with the exact behavior and edge cases of each tool.
+- [Digits and number formatting](en/digits-and-format.html): Convert between English, Persian and Arabic-Indic digits, format numbers with Persian separators and build Persian ordinals. Every cap and edge case is listed.
+- [Number to words](en/number-words.html): Spell integers out in Persian (up to 10^21) and Arabic (up to 10^27), and read Persian number words back into numbers with fromWords().
+- [Arabic number words](en/arabic-number-words.html): Spell numbers in Modern Standard Arabic with the right gender, case and vowel marks, up to 10^27, and write the ordinals from 1 to 99. Every option is shown with real output.
+- [Text tools](en/text-tools.html): Normalize Persian and Arabic text, repair half-spaces, detect language and direction, and build URL-safe slugs. Each tool is described with its exact behavior and edge cases.
 
 ## Holidays and prayer times
 
-- [Iranian holidays](en/holidays.html): Look up official Iranian public holidays for any Jalali date, list a whole year, and find business days. Fixed solar holidays are exact; Islamic holidays are estimates.
-- [Prayer times](en/prayer-times.html): Compute Fajr, sunrise, Dhuhr, Asr, Maghrib and Isha for any location with six calculation methods, with an honest per-method verification status.
+- [Iranian holidays](en/holidays.html): Look up official Iranian public holidays for any Jalali date, list a whole year, and find business days. Official dates are used for 1394 to 1405, and other years are estimated.
+- [Holiday calendar](en/holiday-calendar.html): Use official Iranian holiday dates, see where each date comes from, and fix moon-sighting differences with your own offsets, month starts and extra or removed days.
+- [Prayer times](en/prayer-times.html): Compute Fajr, sunrise, Dhuhr, Asr, Maghrib and Isha for any place with six calculation methods, high-latitude rules and manual tuning. The page lists what each method was checked against.
 
 ## Laravel
 
-- [Laravel setup](en/laravel-setup.html): How RTLY-Kit plugs into Laravel: package auto-discovery, what the service provider registers, the Jalali facade, and the fa/en/ar validation messages you can override.
+- [Laravel setup](en/laravel-setup.html): How RTLY-Kit plugs into Laravel. Package auto-discovery, what the service provider registers, the Jalali facade, the optional config file and the fa, en and ar validation messages.
 - [Validation rules and Eloquent cast](en/laravel-validation-and-cast.html): Use the Iranian validation rules in Laravel forms, store Jalali dates in Eloquent models with JalaliCast, and show them in Blade.
 
 ## Reference
 
-- [Helpers and globals](en/helpers-and-globals.html): The 27 namespaced helper functions, how to import them, and the opt-in Globals::register() that adds short global names without ever overwriting yours.
-- [Error handling](en/error-handling.html): Which calls throw, which never do, the exception hierarchy, the stable ErrorCode values, and how to catch and log failures safely.
+- [Helpers and globals](en/helpers-and-globals.html): The 27 namespaced helper functions, how to import them, and the opt-in Globals::register() that adds short global names without ever replacing yours.
+- [Error handling](en/error-handling.html): Which calls throw and which never do, the exception hierarchy, the stable ErrorCode values, and how to catch and log failures safely.
 - [API stability](en/api-stability.html): What you can rely on, what is internal, how versions are numbered before and after 1.0, and which PHP, Laravel and Carbon versions are supported.
-- [Accuracy and data](en/accuracy-and-data.html): Where every embedded data table comes from, what has been verified against what, and what has not been verified. Read it before you rely on the results in production.
-- [Benchmarks](en/benchmarks.html): A small, honest micro-benchmark of RTLY-Kit against morilog/jalali, with the full method, the caveats and a one-line command to reproduce it on your machine.
-- [Limits](en/limits.html): Every hard limit in one place: supported year ranges, input size caps, number-word ranges, the Umm al-Qura range and the other numeric boundaries of the library.
-- [Troubleshooting and FAQ](en/troubleshooting-faq.html): Answers to the questions people actually hit: missing helpers, weekday numbering, string years, time zones, Carbon macros, the Eloquent cast, prayer times and holidays.
-- [Upgrade guide](en/upgrade.html): Breaking changes before 1.0 with the exact steps to migrate, plus the highlights of the changelog for the 0.x series.
+- [Accuracy and data](en/accuracy-and-data.html): Where every embedded data table comes from, what we compared it with and when, and what each result means. Read it before you rely on the results in production.
+- [Benchmarks](en/benchmarks.html): A small micro-benchmark of RTLY-Kit against morilog/jalali, with the full method, the caveats and a one-line command to reproduce it on your machine.
+- [Limits](en/limits.html): Every hard limit in one place. Supported year ranges, input size caps, number-word ranges, the Umm al-Qura range, tuning ranges and the other numeric boundaries of the library.
+- [Troubleshooting and FAQ](en/troubleshooting-faq.html): Answers to the questions people ask most. Missing helpers, weekday numbers, string years, time zones, Carbon macros, the Eloquent cast, prayer times and holidays.
+- [Upgrade guide](en/upgrade.html): Changes that can affect your code before 1.0, with before and after examples and the steps to migrate, plus the highlights of the changelog for the 0.x series.
+- [Verifying releases](en/verifying-releases.html): How to check that a release archive is the file the release workflow built, with a checksum and a build provenance attestation, and how this relates to a Composer install.
 
 ## Notes for readers and tools
 

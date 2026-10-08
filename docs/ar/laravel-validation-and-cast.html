@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="ar" dir="rtl" data-i18n="{&quot;dark&quot;:&quot;الوضع الداكن&quot;,&quot;light&quot;:&quot;الوضع الفاتح&quot;,&quot;to_dark&quot;:&quot;التبديل إلى السمة الداكنة&quot;,&quot;to_light&quot;:&quot;التبديل إلى السمة الفاتحة&quot;,&quot;copy&quot;:&quot;نسخ&quot;,&quot;copied&quot;:&quot;تم النسخ&quot;,&quot;copy_failed&quot;:&quot;تم التحديد؛ انسخ يدويًا&quot;,&quot;copy_label&quot;:&quot;نسخ مثال الشيفرة أعلاه&quot;,&quot;no_results&quot;:&quot;لا يوجد دليل مطابق. جرّب كلمة أقصر.&quot;,&quot;loading&quot;:&quot;ما زال فهرس البحث قيد التحميل. حاول مرة أخرى بعد قليل.&quot;,&quot;results&quot;:&quot;نتائج البحث&quot;,&quot;status&quot;:&quot;يُعرض %d من %d دليلًا&quot;,&quot;suggest&quot;:&quot;النسخة العربية&quot;,&quot;search_label&quot;:&quot;البحث في الدليل&quot;,&quot;search_placeholder&quot;:&quot;البحث في الدليل&quot;}" data-search-index="search-index.js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>قواعد التحقق وتحويل Eloquent | RTLY-Kit دليل المستخدم</title>
+<meta name="description" content="استخدم قواعد التحقق الإيرانية في نماذج Laravel، وخزّن التواريخ الجلالية في نماذج Eloquent عبر JalaliCast، واعرضها في Blade.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="قواعد التحقق وتحويل Eloquent | RTLY-Kit دليل المستخدم">
+<meta property="og:description" content="استخدم قواعد التحقق الإيرانية في نماذج Laravel، وخزّن التواريخ الجلالية في نماذج Eloquent عبر JalaliCast، واعرضها في Blade.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ar_AR">
+<meta property="og:locale:alternate" content="fa_IR">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:url" content="https://ehsanenaloo.github.io/RTLY-Kit/ar/laravel-validation-and-cast.html">
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+<link rel="canonical" href="https://ehsanenaloo.github.io/RTLY-Kit/ar/laravel-validation-and-cast.html">
+<link rel="alternate" hreflang="ar" href="https://ehsanenaloo.github.io/RTLY-Kit/ar/laravel-validation-and-cast.html">
+<link rel="alternate" hreflang="fa" href="https://ehsanenaloo.github.io/RTLY-Kit/fa/laravel-validation-and-cast.html">
+<link rel="alternate" hreflang="en" href="https://ehsanenaloo.github.io/RTLY-Kit/en/laravel-validation-and-cast.html">
+<link rel="alternate" hreflang="x-default" href="https://ehsanenaloo.github.io/RTLY-Kit/">
+<link rel="stylesheet" href="../styles.css">
+<script>try{var t=localStorage.getItem("rtly-docs-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<script defer src="../app.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">انتقل إلى المحتوى</a><header class="site-header"><div class="shell header-inner"><a class="brand" href="index.html"><img src="../assets/logo.svg" width="34" height="34" alt=""><span><span class="name">RTLY-Kit</span><small>دليل المستخدم</small></span></a><nav class="top-nav" aria-label="التنقل الرئيسي"><a href="index.html">نظرة عامة</a><a href="quick-start.html">بدء سريع</a><a href="all.html">كل الأدلة</a><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">جيت هب &#8599;</a></nav><div class="header-tools"><span data-search-host></span><button type="button" class="icon-button" data-theme-toggle hidden>Theme</button><div class="lang-switch" role="group" aria-label="اللغة"><a class="icon-button" href="../fa/laravel-validation-and-cast.html" hreflang="fa" lang="fa">فارسی</a><a class="icon-button" href="../en/laravel-validation-and-cast.html" hreflang="en" lang="en">English</a><span class="icon-button is-current" lang="ar" aria-current="true">العربية</span></div></div></div></header>
+<main id="main">
+<div class="shell page-intro"><nav class="breadcrumbs" aria-label="مسار الصفحة"><ol><li><a href="index.html">الرئيسية</a></li><li><a href="all.html#group-laravel">لارافيل</a></li><li aria-current="page">قواعد التحقق وتحويل Eloquent</li></ol></nav><h1>قواعد التحقق وتحويل Eloquent</h1><p class="lead">استخدم قواعد التحقق الإيرانية في نماذج Laravel، وخزّن التواريخ الجلالية في نماذج Eloquent عبر JalaliCast، واعرضها في Blade.</p></div>
+<div class="shell doc-layout has-toc">
+<aside class="sidebar"><details open><summary>تصفح الأدلة</summary><nav aria-label="الأدلة"><a href="all.html">كل الأدلة</a><p>البدء</p><a href="quick-start.html">البدء السريع</a><a href="installation.html">التثبيت</a><p>التقاويم</p><a href="jalali.html">التقويم الجلالي</a><a href="hijri.html">التقويم الهجري</a><a href="hebrew.html">التقويم العبري</a><a href="convert-and-compare.html">التحويل والمقارنة بين التواريخ</a><a href="carbon-macros.html">ماكروات Carbon</a><p>التحقق من الصحة</p><a href="validators-overview.html">نظرة عامة على أدوات التحقق</a><a href="national-code.html">الرقم الوطني</a><a href="sheba-and-bank-card.html">شبا والبطاقة المصرفية</a><a href="mobile-postal-plate.html">الجوال والرمز البريدي ولوحة المركبة</a><p>الأرقام والنصوص</p><a href="digits-and-format.html">الأرقام وتنسيق الأعداد</a><a href="number-words.html">تحويل الأعداد إلى كلمات</a><a href="arabic-number-words.html">الأعداد بالحروف العربية</a><a href="text-tools.html">أدوات النصوص</a><p>العطل وأوقات الصلاة</p><a href="holidays.html">العطل الرسمية الإيرانية</a><a href="holiday-calendar.html">تقويم العطل القابل للتعديل</a><a href="prayer-times.html">أوقات الصلاة</a><p>لارافيل</p><a href="laravel-setup.html">إعداد Laravel</a><a href="laravel-validation-and-cast.html" aria-current="page">قواعد التحقق وتحويل Eloquent</a><p>المرجع</p><a href="helpers-and-globals.html">الدوال المساعدة والدوال العامة</a><a href="error-handling.html">معالجة الأخطاء</a><a href="api-stability.html">استقرار واجهة API</a><a href="accuracy-and-data.html">الدقة والبيانات</a><a href="benchmarks.html">قياس الأداء</a><a href="limits.html">الحدود</a><a href="troubleshooting-faq.html">استكشاف الأخطاء والأسئلة الشائعة</a><a href="upgrade.html">دليل الترقية</a><a href="verifying-releases.html">التحقق من الإصدارات</a></nav></details></aside>
+<article class="prose">
+<details class="toc-inline"><summary>في هذه الصفحة</summary><ol><li><a href="#rules">قواعد التحقق</a></li><li><a href="#usage">استخدامها</a></li><li><a href="#input">المدخلات التي تقبلها القواعد</a></li><li><a href="#cast">تحويل Eloquent باسم JalaliCast</a><ol><li><a href="#cast-input">القيم المقبولة عند الإسناد</a></li><li><a href="#cast-errors">الأخطاء</a></li><li><a href="#cast-json">تسلسل النموذج</a></li></ol></li><li><a href="#request">طلبات النماذج</a></li><li><a href="#blade">Blade</a></li></ol></details>
+<h2 id="rules">قواعد التحقق<a class="anchor" href="#rules" aria-label="رابط إلى هذا القسم">#</a></h2>
+<p>بعد تثبيت الحزمة (<a href="laravel-setup.html">إعداد Laravel</a>) تتوفر ست قواعد (بسبعة أسماء، لأن <code>mobile</code> اسم مختصر لـ <code>iran_mobile</code>) في أي مُحقِّق أو طلب نموذج (form request) أو استدعاء <code>$request-&gt;validate()</code>. وهي تغلّف أدوات التحقق الموثقة في صفحات التحقق.</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="جدول"><table>
+<thead><tr><th scope="col">القاعدة</th><th scope="col">تقبل</th><th scope="col">التفاصيل</th></tr></thead>
+<tbody>
+<tr><td><code>national_code</code></td><td>الرقم الوطني الإيراني</td><td><a href="national-code.html">الرقم الوطني</a></td></tr>
+<tr><td><code>sheba</code></td><td>شبا / IBAN، مع البادئة <code>IR</code> أو بدونها</td><td><a href="sheba-and-bank-card.html">شبا والبطاقة المصرفية</a></td></tr>
+<tr><td><code>bank_card</code></td><td>رقم بطاقة مصرفية من 16 رقماً (فحص Luhn)</td><td><a href="sheba-and-bank-card.html">شبا والبطاقة المصرفية</a></td></tr>
+<tr><td><code>iran_mobile</code></td><td>رقم جوال إيراني</td><td><a href="mobile-postal-plate.html">الجوال والرمز البريدي واللوحة</a></td></tr>
+<tr><td><code>mobile</code></td><td>اسم مختصر بديل لـ <code>iran_mobile</code></td><td>سلوك مطابق</td></tr>
+<tr><td><code>postal_code</code></td><td>رمز بريدي إيراني من 10 أرقام</td><td><a href="mobile-postal-plate.html">الجوال والرمز البريدي واللوحة</a></td></tr>
+<tr><td><code>vehicle_plate</code></td><td>لوحة مركبة إيرانية، مثل <code>12ب345-67</code></td><td><a href="mobile-postal-plate.html">الجوال والرمز البريدي واللوحة</a></td></tr>
+</tbody>
+</table></div>
+<div class="callout note" role="note"><strong>من المفيد أن تعرف.</strong> الكلمة <code>mobile</code> عامة. فإذا سجّلت حزمة أخرى أو شيفرتك قاعدة باسم <code>mobile</code>، فاستخدم <code>iran_mobile</code> في كل مكان لتجنب الالتباس.</div>
+
+<h2 id="usage">استخدامها<a class="anchor" href="#usage" aria-label="رابط إلى هذا القسم">#</a></h2>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">use</span> Illuminate\Http\Request;
+
+<span class="tok-k">public</span> <span class="tok-k">function</span> store(Request <span class="tok-v">$request</span>)
+{
+    <span class="tok-v">$data</span> = <span class="tok-v">$request</span>-&gt;validate([
+        <span class="tok-s">'national_code'</span> =&gt; <span class="tok-s">'required|national_code'</span>,
+        <span class="tok-s">'mobile'</span>        =&gt; <span class="tok-s">'required|iran_mobile'</span>,
+        <span class="tok-s">'card'</span>          =&gt; <span class="tok-s">'nullable|bank_card'</span>,
+        <span class="tok-s">'iban'</span>          =&gt; <span class="tok-s">'nullable|sheba'</span>,
+        <span class="tok-s">'postal'</span>        =&gt; <span class="tok-s">'required|postal_code'</span>,
+        <span class="tok-s">'plate'</span>         =&gt; <span class="tok-s">'nullable|vehicle_plate'</span>,
+    ]);
+}</code></pre>
+<p>عند التشغيل على بيانات سيئة بلغة <code>fa</code>، أنتج تشغيل تحقق فعلي ما يلي:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-c">// national_code = '1234567890', mobile = '0912', iban = 'IR000000000000000000000000'</span>
+<span class="tok-c">// card وpostal وplate تحمل قيماً صالحة وتجتاز التحقق.</span>
+<span class="tok-c">//</span>
+<span class="tok-c">// national_code: national code کد ملی معتبر نیست.</span>
+<span class="tok-c">// mobile: mobile شماره موبایل معتبر نیست.</span>
+<span class="tok-c">// iban: iban شماره شبا معتبر نیست.</span></code></pre>
+<p>النص الإنجليزي هو "The national code is not a valid Iranian national code." والنص العربي متوفر أيضاً؛ راجع <a href="laravel-setup.html#translations">الترجمات</a> و<a href="laravel-setup.html#override">تجاوز الرسائل</a>.</p>
+
+<h2 id="input">المدخلات التي تقبلها القواعد<a class="anchor" href="#input" aria-label="رابط إلى هذا القسم">#</a></h2>
+<ul>
+<li><strong>السلاسل النصية.</strong> تُقبل الأرقام الفارسية والعربية: <code>۰۰۱۳۵۴۲۴۱۹</code> تجتاز <code>national_code</code>.</li>
+<li><strong>الأعداد الصحيحة والعشرية</strong> تُحوَّل إلى سلسلة نصية أولًا. احذر من الأعداد التي تبدأ بصفر: فالعدد <code>13542419</code> في JSON فقد الأصفار البادئة في <code>0013542419</code> و<strong>يفشل</strong>. أرسل الأرقام الوطنية وأرقام الجوال والرموز البريدية سلاسل نصية.</li>
+<li><strong>المصفوفات والكائنات والقيم المنطقية</strong> لا تصل إلى أداة التحقق أبدًا وتفشل في القاعدة ببساطة.</li>
+<li><strong>القيم الفارغة.</strong> كما في قواعد Laravel نفسها، تُتخطى السلسلة الفارغة والمفتاح المفقود ما لم يكن الحقل <code>required</code>. أما <code>null</code> الصريحة فتفشل ما لم يكن الحقل <code>nullable</code>. عبّر عما تقصده بـ <code>required</code> أو <code>nullable</code>.</li>
+</ul>
+<pre tabindex="0"><code class="language-php"><span class="tok-v">$f</span>-&gt;make([<span class="tok-s">'n'</span> =&gt; <span class="tok-s">'۰۰۱۳۵۴۲۴۱۹'</span>], [<span class="tok-s">'n'</span> =&gt; <span class="tok-s">'national_code'</span>])-&gt;passes();          <span class="tok-c">// true</span>
+<span class="tok-v">$f</span>-&gt;make([<span class="tok-s">'n'</span> =&gt; <span class="tok-n">13542419</span>],      [<span class="tok-s">'n'</span> =&gt; <span class="tok-s">'national_code'</span>])-&gt;passes();          <span class="tok-c">// false (فُقدت الأصفار البادئة)</span>
+<span class="tok-v">$f</span>-&gt;make([<span class="tok-s">'n'</span> =&gt; <span class="tok-k">null</span>],          [<span class="tok-s">'n'</span> =&gt; <span class="tok-s">'nullable|national_code'</span>])-&gt;passes(); <span class="tok-c">// true</span>
+<span class="tok-v">$f</span>-&gt;make([<span class="tok-s">'n'</span> =&gt; <span class="tok-k">null</span>],          [<span class="tok-s">'n'</span> =&gt; <span class="tok-s">'national_code'</span>])-&gt;passes();          <span class="tok-c">// false</span>
+<span class="tok-v">$f</span>-&gt;make([<span class="tok-s">'n'</span> =&gt; <span class="tok-s">''</span>],            [<span class="tok-s">'n'</span> =&gt; <span class="tok-s">'national_code'</span>])-&gt;passes();          <span class="tok-c">// true  (تُتخطى)</span>
+<span class="tok-v">$f</span>-&gt;make([<span class="tok-s">'n'</span> =&gt; <span class="tok-s">''</span>],            [<span class="tok-s">'n'</span> =&gt; <span class="tok-s">'required|national_code'</span>])-&gt;passes(); <span class="tok-c">// false</span>
+<span class="tok-v">$f</span>-&gt;make([],                     [<span class="tok-s">'n'</span> =&gt; <span class="tok-s">'national_code'</span>])-&gt;passes();          <span class="tok-c">// true  (المفتاح مفقود)</span></code></pre>
+<p>إذا احتجت إلى سبب فشل القيمة (طول خاطئ أو مجموع تحقق سيئ أو نوع خاطئ)، فاستدعِ أدوات التحقق المستقلة التي تُرجع <code>Result</code> منظّمة؛ راجع <a href="validators-overview.html">نظرة عامة على أدوات التحقق</a>.</p>
+
+<h2 id="cast">تحويل Eloquent باسم JalaliCast<a class="anchor" href="#cast" aria-label="رابط إلى هذا القسم">#</a></h2>
+<p>يُبقي <code>RtlyKit\Laravel\Casts\JalaliCast</code> عمود قاعدة البيانات ميلاديًا (<code>Y-m-d H:i:s</code>) كما تتوقع كل الأدوات، ويُظهر السمة في النموذج كائنًا غير قابل للتغيير من <code>RtlyKit\Calendar\Jalali</code>.</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">use</span> Illuminate\Database\Eloquent\Model;
+<span class="tok-k">use</span> RtlyKit\Laravel\Casts\JalaliCast;
+
+<span class="tok-k">class</span> Post <span class="tok-k">extends</span> Model
+{
+    <span class="tok-k">protected</span> <span class="tok-v">$guarded</span> = [];
+
+    <span class="tok-k">protected</span> <span class="tok-v">$casts</span> = [
+        <span class="tok-s">'published_at'</span> =&gt; JalaliCast::<span class="tok-k">class</span>,
+    ];
+}
+
+<span class="tok-v">$post</span> = <span class="tok-k">new</span> Post();
+<span class="tok-v">$post</span>-&gt;published_at = <span class="tok-s">'1404/01/15 10:30'</span>;
+
+<span class="tok-k">echo</span> <span class="tok-v">$post</span>-&gt;getAttributes()[<span class="tok-s">'published_at'</span>];          <span class="tok-c">// 2025-04-04 10:30:00   (القيمة المخزَّنة)</span>
+<span class="tok-k">echo</span> <span class="tok-v">$post</span>-&gt;published_at-&gt;format(<span class="tok-s">'Y/m/d H:i'</span>);        <span class="tok-c">// 1404/01/15 10:30</span>
+<span class="tok-k">echo</span> get_class(<span class="tok-v">$post</span>-&gt;published_at);                  <span class="tok-c">// RtlyKit\Calendar\Jalali</span>
+<span class="tok-k">echo</span> <span class="tok-v">$post</span>-&gt;published_at-&gt;addDays(<span class="tok-n">20</span>)-&gt;format(<span class="tok-s">'Y/m/d'</span>); <span class="tok-c">// 1404/02/04</span></code></pre>
+<p>يبقى نوع العمود <code>datetime</code> أو <code>timestamp</code>؛ ولا حاجة إلى تغيير في الترحيل (migration).</p>
+
+<h3 id="cast-input">القيم المقبولة عند الإسناد<a class="anchor" href="#cast-input" aria-label="رابط إلى هذا القسم">#</a></h3>
+<div class="table-wrap" tabindex="0" role="region" aria-label="جدول"><table>
+<thead><tr><th scope="col">القيمة المُسنَدة</th><th scope="col">المخزَّن (ميلادي)</th></tr></thead>
+<tbody>
+<tr><td>سلسلة جلالية <code>'1404/01/15 10:30'</code></td><td><code>2025-04-04 10:30:00</code></td></tr>
+<tr><td>تاريخ جلالي فقط بأرقام فارسية وشرطات <code>'۱۴۰۴-۰۱-۱۵'</code></td><td><code>2025-04-04 00:00:00</code></td></tr>
+<tr><td>سلسلة ميلادية <code>'2025-04-04 08:00:00'</code></td><td><code>2025-04-04 08:00:00</code></td></tr>
+<tr><td>طابع زمني Unix (int) <code>1743753600</code></td><td><code>2025-04-04 08:00:00</code> (مع منطقة زمنية افتراضية UTC)</td></tr>
+<tr><td>أي <code>DateTimeInterface</code> (بما فيها Carbon)</td><td>اللحظة نفسها، بصيغة <code>Y-m-d H:i:s</code></td></tr>
+<tr><td>كائن <code>Jalali</code></td><td>ما يعادله ميلاديًا</td></tr>
+<tr><td><code>null</code> أو <code>''</code></td><td><code>null</code></td></tr>
+</tbody>
+</table></div>
+<p>تُقرأ السلسلة جلالية إذا كانت سنتها بين 1200 و1599 وكان الفاصل <code>/</code> أو <code>-</code>، مع وقت اختياري <code>HH:MM</code> أو <code>HH:MM:SS</code> بعد مسافة أو <code>T</code>. وأي سلسلة أخرى تمرّ عبر محلِّل التواريخ العادي على أنها ميلادية.</p>
+
+<h3 id="cast-errors">الأخطاء<a class="anchor" href="#cast-errors" aria-label="رابط إلى هذا القسم">#</a></h3>
+<p>المدخل السيئ يُطلق <code>RtlyKit\Exceptions\InvalidDateException</code> لحظة إسناده، ولا يظهر خطأ PHP خام أبدًا:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-v">$post</span>-&gt;published_at = <span class="tok-s">'1404/13/01'</span>;   <span class="tok-c">// Invalid Jalali date: 1404/13/1</span>
+<span class="tok-v">$post</span>-&gt;published_at = <span class="tok-s">'1404/07/31'</span>;   <span class="tok-c">// Invalid Jalali date: 1404/7/31   (شهر مهر 30 يوماً)</span>
+<span class="tok-v">$post</span>-&gt;published_at = <span class="tok-s">'not a date'</span>;   <span class="tok-c">// Unable to parse date: not a date</span>
+<span class="tok-v">$post</span>-&gt;published_at = <span class="tok-n">1.5</span>;            <span class="tok-c">// Cannot cast value for 'published_at' to a date.</span>
+<span class="tok-v">$post</span>-&gt;published_at = [<span class="tok-s">'x'</span>];          <span class="tok-c">// Cannot cast value for 'published_at' to a date.</span></code></pre>
+<p>تحقق من مدخلات المستخدم قبل أن تصل إلى النموذج (انظر مثال طلب النموذج أدناه)، كي يؤدي الخطأ الإملائي إلى خطأ في الحقل بدل استثناء. القراءة متساهلة مع <code>null</code> والسلسلة الفارغة (كلتاهما تعطي <code>null</code>)، لكن السمة التي تحمل نصًا غير قابل للتحليل في قاعدة البيانات تُطلق <code>InvalidDateException</code> عند قراءتها.</p>
+
+<h3 id="cast-json">تسلسل النموذج<a class="anchor" href="#cast-json" aria-label="رابط إلى هذا القسم">#</a></h3>
+<p>تنفّذ <code>Jalali</code> و<code>Hijri</code> و<code>Hebrew</code> الواجهة <code>JsonSerializable</code>: فاستدعاء <code>toJson()</code> على نموذج فيه سمة <code>JalaliCast</code> يعطي النص نفسه الذي يعطيه <code>(string) $date</code>، مثل <code>{"published_at":"1404/01/01 10:00:00"}</code>. أما <code>toArray()</code> فتُبقي كائن <code>Jalali</code>؛ نسّقه بنفسك إذا احتجت إلى نمط آخر.</p>
+
+<h2 id="request">طلبات النماذج<a class="anchor" href="#request" aria-label="رابط إلى هذا القسم">#</a></h2>
+<p>لا توجد قاعدة مضمّنة لحقل تاريخ جلالي، فتحقق من الصيغة بقاعدة regex في Laravel أو بقاعدة مخصصة صغيرة، ثم دع التحويل (cast) يتولى التحويل:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">public</span> <span class="tok-k">function</span> rules(): <span class="tok-k">array</span>
+{
+    <span class="tok-k">return</span> [
+        <span class="tok-s">'published_at'</span> =&gt; [<span class="tok-s">'required'</span>, <span class="tok-s">'regex:/^1[2-5]\d\d[\/-]\d{1,2}[\/-]\d{1,2}$/u'</span>],
+    ];
+}</code></pre>
+<p>التاريخ حسن الصياغة لكنه مستحيل مثل <code>1404/07/31</code> يصل إلى التحويل ويُطلق الاستثناء هناك؛ فالتقط <code>InvalidDateException</code> في قاعدة مخصصة أو في المتحكم (controller) إذا كان المستخدمون يكتبون نصًا حرًا.</p>
+
+<h2 id="blade">Blade<a class="anchor" href="#blade" aria-label="رابط إلى هذا القسم">#</a></h2>
+<p>يمنحك التحويل كائن <code>Jalali</code>، فلا يحتاج Blade إلى أي دالة مساعدة:</p>
+<pre tabindex="0"><code class="language-php">{{ <span class="tok-v">$post</span>-&gt;published_at?-&gt;format(<span class="tok-s">'Y/m/d'</span>) }}            {{-- <span class="tok-n">1404</span>/<span class="tok-n">01</span>/<span class="tok-n">15</span> --}}
+{{ <span class="tok-v">$post</span>-&gt;published_at?-&gt;format(<span class="tok-s">'l j F Y'</span>) }}          {{-- جمعه <span class="tok-n">15</span> فروردین <span class="tok-n">1404</span> --}}
+{{ \RtlyKit\to_persian_digits(<span class="tok-v">$post</span>-&gt;published_at-&gt;format(<span class="tok-s">'Y/m/d'</span>)) }}  {{-- ۱۴۰۴/۰۱/۱۵ --}}</code></pre>
+<p>أما العمود <em>غير</em> المحوَّل، مثل <code>created_at</code> القياسي (وهو نسخة Carbon)، فاستخدم الدالة المساعدة ضمن فضاء الأسماء. الدوال المساعدة ضمن فضاء الأسماء محمَّلة دائماً، فلا حاجة إلى تسجيل:</p>
+<pre tabindex="0"><code class="language-php">{{ \RtlyKit\jdate(<span class="tok-v">$post</span>-&gt;created_at)-&gt;format(<span class="tok-s">'Y/m/d H:i'</span>) }}   {{-- <span class="tok-n">1404</span>/<span class="tok-n">01</span>/<span class="tok-n">15</span> <span class="tok-n">08</span>:<span class="tok-n">00</span> --}}</code></pre>
+<p>استورد الدالة في أعلى ملف Blade بـ <code>@php use function RtlyKit\jdate; @endphp</code> إن كنت تستخدمها كثيرًا. ومع ماكروات Carbon يصبح الأمر <code>$post-&gt;created_at-&gt;jformat('Y/m/d')</code>؛ راجع <a href="carbon-macros.html">ماكروات Carbon</a>.</p>
+<div class="callout note" role="note"><strong>ملاحظة.</strong> السمة الفارغة (null) لا تُنسَّق من تلقاء نفسها: استخدم عامل nullsafe (<code>?-&gt;</code>) كما هو موضح، وإلا أطلق Blade خطأً عند <code>null</code>. وللاطلاع على القائمة الكاملة لحروف التنسيق راجع <a href="jalali.html">صفحة التقويم الجلالي</a>.</div>
+<nav class="reading-footer" aria-label="الصفحة السابقة والتالية"><a class="prev" rel="prev" href="laravel-setup.html"><small>السابق</small>إعداد Laravel</a><a class="next" rel="next" href="helpers-and-globals.html"><small>التالي</small>الدوال المساعدة والدوال العامة</a></nav>
+</article>
+<nav class="toc" aria-label="في هذه الصفحة"><p>في هذه الصفحة</p><ol><li><a href="#rules">قواعد التحقق</a></li><li><a href="#usage">استخدامها</a></li><li><a href="#input">المدخلات التي تقبلها القواعد</a></li><li><a href="#cast">تحويل Eloquent باسم JalaliCast</a><ol><li><a href="#cast-input">القيم المقبولة عند الإسناد</a></li><li><a href="#cast-errors">الأخطاء</a></li><li><a href="#cast-json">تسلسل النموذج</a></li></ol></li><li><a href="#request">طلبات النماذج</a></li><li><a href="#blade">Blade</a></li></ol></nav>
+</div>
+</main>
+<footer class="footer"><div class="shell footer-inner"><p>دليل مستخدم RTLY-Kit · الترخيص: MIT</p><div><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">المستودع على جيت هب &#8599;</a><a href="https://github.com/ehsanenaloo/RTLY-Kit/issues" rel="noopener noreferrer">الإبلاغ عن مشكلة &#8599;</a></div></div></footer>
+</body>
+</html>

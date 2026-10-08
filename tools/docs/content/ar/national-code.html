@@ -1,0 +1,110 @@
+<!--
+title: الرقم الوطني
+description: تحقق من الأرقام الوطنية الإيرانية (کد ملی) برقم التحقق mod-11، مع قبول الأرقام الفارسية والعربية، وقراءة تلميح مكان الإصدار بأمان.
+group: validation
+order: 20
+-->
+<h2 id="quick-start">البدء السريع</h2>
+<pre><code class="language-php">&lt;?php
+require 'vendor/autoload.php';
+
+use RtlyKit\Validation\NationalCode;
+
+var_dump(NationalCode::isValid('0499370899'));      // bool(true)
+var_dump(NationalCode::isValid('۰۴۹۹۳۷۰۸۹۹'));      // bool(true)، أرقام فارسية
+var_dump(NationalCode::isValid('049-937-0899'));    // bool(true)، تُحذف الشرطات
+
+$result = NationalCode::validate('0499370899');
+echo json_encode($result-&gt;details(), JSON_UNESCAPED_UNICODE);
+// {"normalized":"0499370899","location":{"province":"تهران","city":"شهرری"}}</code></pre>
+<p>تطبّق الفئة <a href="validators-overview.html#contract">عقد <code>Validator</code></a> المشترك، فتُرجع <code>validate()</code> كائن <code>Result</code> ولا يُلقي شيء استثناءً بسبب مُدخَل سيّئ. والدالتان المساعدتان هما <code>RtlyKit\is_national_code()</code> و<code>RtlyKit\validate_national_code()</code>:</p>
+<pre><code class="language-php">use function RtlyKit\is_national_code;
+use function RtlyKit\validate_national_code;
+
+var_dump(is_national_code('۰۴۹۹۳۷۰۸۹۹'));                  // bool(true)
+print_r(validate_national_code('0499370898')-&gt;errors());  // Array ( [0] =&gt; invalid_checksum )</code></pre>
+
+<h2 id="what-is-checked">ما الذي يُفحص</h2>
+<p>تجري الفحوص بهذا الترتيب وتتوقف عند أول فشل:</p>
+<ol>
+<li><strong>النوع والحجم.</strong> تُقبل النصوص و<code>int</code> و<code>float</code> ذو القيمة الصحيحة؛ وأي شيء آخر هو <code>invalid_type</code>، والنص الذي يزيد على 4096 بايت هو <code>input_too_long</code>.</li>
+<li><strong>التطبيع.</strong> تتحول الأرقام الفارسية والعربية إلى إنجليزية؛ وتُحذف المسافات والشرطات والمسافات الصفرية (ZWNJ) ويُقصّ الطرفان.</li>
+<li><strong>الصيغة.</strong> 10 أرقام بالضبط، وإلا <code>invalid_format</code>.</li>
+<li><strong>الأرقام المكررة.</strong> تمرّ الأرقام من <code>0000000000</code> إلى <code>9999999999</code> من الحساب بمحض المصادفة لكنها ليست أرقامًا حقيقية، فتُرجع <code>repeated_digits</code>.</li>
+<li><strong>رقم التحقق</strong> (قاعدة mod-11 أدناه)، وإلا <code>invalid_checksum</code>.</li>
+</ol>
+
+<h2 id="algorithm">خوارزمية رقم التحقق</h2>
+<p>اضرب كلًا من الأرقام التسعة الأولى في وزن من 10 نزولًا إلى 2، واجمع النواتج، وخذ باقي قسمة المجموع على 11. إذا كان الباقي 0 أو 1 فرقم التحقق يساوي الباقي؛ وإلا فهو 11 ناقص الباقي.</p>
+<p>للرقم <code>0499370899</code>: النواتج هي 0 و36 و72 و63 و18 و35 و0 و24 و18، ومجموعها 266. وباقي قسمة 266 على 11 هو 2، فيجب أن يكون رقم التحقق 11 &minus; 2 = 9، وآخر رقم هو 9 فعلًا.</p>
+<pre><code class="language-php">print_r(NationalCode::validate('0499370898')-&gt;errors());   // [invalid_checksum]
+print_r(NationalCode::validate('1111111111')-&gt;errors());   // [repeated_digits]
+print_r(NationalCode::validate('12345')-&gt;errors());        // [invalid_format]
+print_r(NationalCode::validate('abc')-&gt;errors());          // [invalid_format]</code></pre>
+<div class="note"><strong>أبقِه نصًا.</strong> قد يبدأ الرقم الوطني بصفر. فالاستدعاء <code>NationalCode::validate(499370899)</code> يتلقى الأرقام التسعة <code>499370899</code> ويُرجع <code>invalid_format</code>. لذلك لا تحوّل القيمة إلى عدد صحيح في أي خطوة بين الإدخال وأداة التحقق، ومن ذلك عمود قاعدة البيانات ورقم JSON.</div>
+
+<h2 id="accepted-input">المُدخَلات المقبولة</h2>
+<table>
+<thead><tr><th>المُدخَل</th><th>النتيجة</th></tr></thead>
+<tbody>
+<tr><td><code>'0499370899'</code></td><td>صالح</td></tr>
+<tr><td><code>'۰۴۹۹۳۷۰۸۹۹'</code> (أرقام فارسية)</td><td>صالح</td></tr>
+<tr><td><code>'٠٤٩٩٣٧٠٨٩٩'</code> (أرقام هندية عربية)</td><td>صالح</td></tr>
+<tr><td><code>'049-937-0899'</code>، <code>' 0499370899 '</code></td><td>صالح؛ تُحذف الفواصل والمسافات</td></tr>
+<tr><td><code>null</code>، <code>[]</code>، <code>1.5</code></td><td><code>invalid_type</code></td></tr>
+<tr><td><code>12.0</code></td><td>يُقرأ على أنه <code>'12'</code>، فيكون <code>invalid_format</code></td></tr>
+<tr><td>4097 نويسة</td><td><code>input_too_long</code></td></tr>
+</tbody>
+</table>
+<p>لا تُعامل فواصلَ إلا المسافات والشرطات وZWNJ. أما الشرطات المائلة والنقاط والحروف فلا تُحذف وتسبب <code>invalid_format</code>.</p>
+<p>للحصول على الصيغة المنظَّفة دون تحقق، استدعِ <code>NationalCode::normalize()</code>:</p>
+<pre><code class="language-php">echo NationalCode::normalize(' ۰۴۹-۹۳۷ ۰۸۹۹ ');   // 0499370899</code></pre>
+
+<h2 id="result">تفاصيل Result</h2>
+<table>
+<thead><tr><th>المفتاح</th><th>النوع</th><th>المعنى</th></tr></thead>
+<tbody>
+<tr><td><code>normalized</code></td><td>string</td><td>الرقم بعد التطبيع (فارغ في حالتي <code>invalid_type</code> / <code>input_too_long</code>)</td></tr>
+<tr><td><code>location</code></td><td>array أو null</td><td><code>{province, city}</code> للرقم الصالح الذي توجد بادئته في الجدول، وإلا <code>null</code></td></tr>
+</tbody>
+</table>
+<p>مفاتيح الأخطاء: <code>invalid_format</code> و<code>repeated_digits</code> و<code>invalid_checksum</code> و<code>invalid_type</code> و<code>input_too_long</code>. ومعنى كل منها في <a href="validators-overview.html#error-keys">جدول مفاتيح الأخطاء</a>.</p>
+
+<h2 id="location">تلميح مكان الإصدار</h2>
+<p>الأرقام الثلاثة الأولى من الرقم الوطني بادئة يخصصها السجل المدني. تحوّلها <code>NationalCode::getLocation()</code> إلى محافظة ومدينة، وتُرجع <code>null</code> حين يكون الرقم غير صالح أو حين لا تكون البادئة في الجدول:</p>
+<pre><code class="language-php">print_r(NationalCode::getLocation('0499370899'));
+// Array ( [province] =&gt; تهران [city] =&gt; شهرری )
+
+var_dump(NationalCode::getLocation('0499370898'));   // NULL (رقم غير صالح)
+
+$a = NationalCode::validate('0012345679');   // البادئة 001
+echo json_encode($a-&gt;details()['location'], JSON_UNESCAPED_UNICODE);
+// {"province":"تهران","city":"تهران مرکزی"}
+
+$b = NationalCode::validate('9991234561');   // رقم تحقق صحيح، والبادئة 999 غير موجودة في الجدول
+var_dump($b-&gt;isValid(), $b-&gt;details()['location']);   // bool(true)  NULL</code></pre>
+<div class="note"><strong>من المفيد أن تعرف.</strong> تدل البادئة على المكان الذي <em>صدرت</em> فيه شهادة الميلاد أو البطاقة الأصلية، وليس على مكان ولادة الشخص أو إقامته. كثيرون يحملون أرقامًا صدرت في أماكن أخرى، وقد تغيّرت حدود المحافظات منذ الإصدار (كرج مثلًا تظهر تحت طهران). لذلك استخدم المكان معلومة إرشادية فقط، لا للتحقق من الهوية أو الأصل أو الإقامة.<br>لا ينشر السجل المدني قائمة تقرؤها الآلة. والجدول هنا يضم 547 بادئة، وكل بادئة فيه اتفقت عليها ثلاث مجموعات بيانات منشورة على المحافظة والمدينة معًا، ولم تناقضها مجموعة رابعة. وبعض هذه المجموعات مشتق من بعض. والبادئة غير الموجودة تعني «غير معروف» ولا تعني «غير صالح». المصادر في <a href="accuracy-and-data.html">الدقة والبيانات</a>.</div>
+
+<h2 id="what-is-not-checked">ما لا يخبرك به التحقق</h2>
+<ul>
+<li>رقم التحقق الصحيح يعني أن الرقم سليم الصياغة. ولا يعني أن الرقم صدر يومًا أو أنه يخص شخصًا بعينه.</li>
+<li>تستخدم الأشخاص الاعتبارية معرّفًا مختلفًا من 11 رقمًا. ولا تتعامل معه أداة التحقق هذه، ويُرفض بـ <code>invalid_format</code>.</li>
+<li>أرقام تعريف الأجانب (Amayesh وما يشبهها) نظام مختلف وغير مشمولة.</li>
+</ul>
+
+<h2 id="in-forms">الاستخدام في نموذج</h2>
+<p>اعرض للمستخدم رسالة تختارها بحسب مفتاح الخطأ، واحفظ القيمة المطبَّعة:</p>
+<pre><code class="language-php">$messages = [
+    'invalid_format'   =&gt; 'The national code must be 10 digits.',
+    'repeated_digits'  =&gt; 'This national code is not valid.',
+    'invalid_checksum' =&gt; 'This national code is not valid.',
+];
+
+$result = NationalCode::validate($_POST['national_code'] ?? null);
+if (! $result-&gt;isValid()) {
+    $key = $result-&gt;errors()[0];
+    echo $messages[$key] ?? 'Invalid input.';
+} else {
+    $code = $result-&gt;details()['normalized'];   // احفظ هذه القيمة
+}</code></pre>
+<p>وفي Laravel استخدم القاعدة الجاهزة والترجمات بدلًا من ذلك؛ انظر <a href="laravel-validation-and-cast.html">التحقق والتحويل (Cast) في Laravel</a>.</p>

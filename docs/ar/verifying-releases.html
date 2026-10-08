@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ar" dir="rtl" data-i18n="{&quot;dark&quot;:&quot;الوضع الداكن&quot;,&quot;light&quot;:&quot;الوضع الفاتح&quot;,&quot;to_dark&quot;:&quot;التبديل إلى السمة الداكنة&quot;,&quot;to_light&quot;:&quot;التبديل إلى السمة الفاتحة&quot;,&quot;copy&quot;:&quot;نسخ&quot;,&quot;copied&quot;:&quot;تم النسخ&quot;,&quot;copy_failed&quot;:&quot;تم التحديد؛ انسخ يدويًا&quot;,&quot;copy_label&quot;:&quot;نسخ مثال الشيفرة أعلاه&quot;,&quot;no_results&quot;:&quot;لا يوجد دليل مطابق. جرّب كلمة أقصر.&quot;,&quot;loading&quot;:&quot;ما زال فهرس البحث قيد التحميل. حاول مرة أخرى بعد قليل.&quot;,&quot;results&quot;:&quot;نتائج البحث&quot;,&quot;status&quot;:&quot;يُعرض %d من %d دليلًا&quot;,&quot;suggest&quot;:&quot;النسخة العربية&quot;,&quot;search_label&quot;:&quot;البحث في الدليل&quot;,&quot;search_placeholder&quot;:&quot;البحث في الدليل&quot;}" data-search-index="search-index.js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>التحقق من الإصدارات | RTLY-Kit دليل المستخدم</title>
+<meta name="description" content="كيف تتحقق بالمجموع الاختباري وبشهادة مصدر البناء من أن أرشيف الإصدار هو الملف الذي بناه سير عمل الإصدار، وما علاقة ذلك بالتثبيت عبر Composer.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="التحقق من الإصدارات | RTLY-Kit دليل المستخدم">
+<meta property="og:description" content="كيف تتحقق بالمجموع الاختباري وبشهادة مصدر البناء من أن أرشيف الإصدار هو الملف الذي بناه سير عمل الإصدار، وما علاقة ذلك بالتثبيت عبر Composer.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ar_AR">
+<meta property="og:locale:alternate" content="fa_IR">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:url" content="https://ehsanenaloo.github.io/RTLY-Kit/ar/verifying-releases.html">
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+<link rel="canonical" href="https://ehsanenaloo.github.io/RTLY-Kit/ar/verifying-releases.html">
+<link rel="alternate" hreflang="ar" href="https://ehsanenaloo.github.io/RTLY-Kit/ar/verifying-releases.html">
+<link rel="alternate" hreflang="fa" href="https://ehsanenaloo.github.io/RTLY-Kit/fa/verifying-releases.html">
+<link rel="alternate" hreflang="en" href="https://ehsanenaloo.github.io/RTLY-Kit/en/verifying-releases.html">
+<link rel="alternate" hreflang="x-default" href="https://ehsanenaloo.github.io/RTLY-Kit/">
+<link rel="stylesheet" href="../styles.css">
+<script>try{var t=localStorage.getItem("rtly-docs-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<script defer src="../app.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">انتقل إلى المحتوى</a><header class="site-header"><div class="shell header-inner"><a class="brand" href="index.html"><img src="../assets/logo.svg" width="34" height="34" alt=""><span><span class="name">RTLY-Kit</span><small>دليل المستخدم</small></span></a><nav class="top-nav" aria-label="التنقل الرئيسي"><a href="index.html">نظرة عامة</a><a href="quick-start.html">بدء سريع</a><a href="all.html">كل الأدلة</a><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">جيت هب &#8599;</a></nav><div class="header-tools"><span data-search-host></span><button type="button" class="icon-button" data-theme-toggle hidden>Theme</button><div class="lang-switch" role="group" aria-label="اللغة"><a class="icon-button" href="../fa/verifying-releases.html" hreflang="fa" lang="fa">فارسی</a><a class="icon-button" href="../en/verifying-releases.html" hreflang="en" lang="en">English</a><span class="icon-button is-current" lang="ar" aria-current="true">العربية</span></div></div></div></header>
+<main id="main">
+<div class="shell page-intro"><nav class="breadcrumbs" aria-label="مسار الصفحة"><ol><li><a href="index.html">الرئيسية</a></li><li><a href="all.html#group-reference">المرجع</a></li><li aria-current="page">التحقق من الإصدارات</li></ol></nav><h1>التحقق من الإصدارات</h1><p class="lead">كيف تتحقق بالمجموع الاختباري وبشهادة مصدر البناء من أن أرشيف الإصدار هو الملف الذي بناه سير عمل الإصدار، وما علاقة ذلك بالتثبيت عبر Composer.</p></div>
+<div class="shell doc-layout has-toc">
+<aside class="sidebar"><details open><summary>تصفح الأدلة</summary><nav aria-label="الأدلة"><a href="all.html">كل الأدلة</a><p>البدء</p><a href="quick-start.html">البدء السريع</a><a href="installation.html">التثبيت</a><p>التقاويم</p><a href="jalali.html">التقويم الجلالي</a><a href="hijri.html">التقويم الهجري</a><a href="hebrew.html">التقويم العبري</a><a href="convert-and-compare.html">التحويل والمقارنة بين التواريخ</a><a href="carbon-macros.html">ماكروات Carbon</a><p>التحقق من الصحة</p><a href="validators-overview.html">نظرة عامة على أدوات التحقق</a><a href="national-code.html">الرقم الوطني</a><a href="sheba-and-bank-card.html">شبا والبطاقة المصرفية</a><a href="mobile-postal-plate.html">الجوال والرمز البريدي ولوحة المركبة</a><p>الأرقام والنصوص</p><a href="digits-and-format.html">الأرقام وتنسيق الأعداد</a><a href="number-words.html">تحويل الأعداد إلى كلمات</a><a href="arabic-number-words.html">الأعداد بالحروف العربية</a><a href="text-tools.html">أدوات النصوص</a><p>العطل وأوقات الصلاة</p><a href="holidays.html">العطل الرسمية الإيرانية</a><a href="holiday-calendar.html">تقويم العطل القابل للتعديل</a><a href="prayer-times.html">أوقات الصلاة</a><p>لارافيل</p><a href="laravel-setup.html">إعداد Laravel</a><a href="laravel-validation-and-cast.html">قواعد التحقق وتحويل Eloquent</a><p>المرجع</p><a href="helpers-and-globals.html">الدوال المساعدة والدوال العامة</a><a href="error-handling.html">معالجة الأخطاء</a><a href="api-stability.html">استقرار واجهة API</a><a href="accuracy-and-data.html">الدقة والبيانات</a><a href="benchmarks.html">قياس الأداء</a><a href="limits.html">الحدود</a><a href="troubleshooting-faq.html">استكشاف الأخطاء والأسئلة الشائعة</a><a href="upgrade.html">دليل الترقية</a><a href="verifying-releases.html" aria-current="page">التحقق من الإصدارات</a></nav></details></aside>
+<article class="prose">
+<details class="toc-inline"><summary>في هذه الصفحة</summary><ol><li><a href="#what-you-get">ما الذي يتضمنه الإصدار</a></li><li><a href="#checksum">فحص المجموع الاختباري</a></li><li><a href="#attestation">فحص مصدر البناء</a></li><li><a href="#composer">التثبيت عبر Packagist وComposer</a></li><li><a href="#limits">ما لا يثبته هذا</a></li></ol></details>
+<h2 id="what-you-get">ما الذي يتضمنه الإصدار<a class="anchor" href="#what-you-get" aria-label="رابط إلى هذا القسم">#</a></h2>
+<p>يؤدي دفع وسم إصدار مثل <code>v0.2.0</code> إلى تشغيل سير عمل الإصدار في مستودع GitHub. وقبل أن يبني أي شيء يفحص أربعة أمور: أن الوسم إصدار صالح، وأن أحدث قسم في <code>CHANGELOG.md</code> يحمل الإصدار نفسه، وأن الإيداع الموسوم ضمن الفرع <code>main</code>، وأن تشغيل CI لذلك الإيداع ناجح. وإذا فشل أي فحص فلا يُنشر شيء.</p>
+<p>ثم يبني الأرشيفين بالأمر <code>git archive</code>، فتُستبعد الملفات الموسومة بـ <code>export-ignore</code> (الاختبارات ومصادر الدليل وملفات الأدوات وCI و<code>composer.lock</code>). ويحتوي إصدار GitHub لذلك الوسم على الملفات الآتية:</p>
+<ul>
+<li><code>rtly-kit-X.Y.Z.tar.gz</code> و<code>rtly-kit-X.Y.Z.zip</code>، وهما الإيداع نفسه بصيغتين.</li>
+<li><code>SHA256SUMS</code>، وفيه المجموع الاختباري SHA-256 للأرشيفين.</li>
+<li>شهادة موقَّعة لمصدر البناء لكلا الأرشيفين، يحتفظ بها GitHub. وهي ليست ملفًا في صفحة الإصدار.</li>
+</ul>
+<div class="callout note" role="note"><strong>ملاحظة.</strong> هذه الملفات موجودة فقط في الإصدارات التي نشرها سير العمل هذا. وقد لا تحتوي إصدارات أقدم على أي منها. استبدل <code>X.Y.Z</code> بالإصدار الذي نزّلته.</div>
+
+<h2 id="checksum">فحص المجموع الاختباري<a class="anchor" href="#checksum" aria-label="رابط إلى هذا القسم">#</a></h2>
+<p>نزّل الأرشيف و<code>SHA256SUMS</code> في مجلد واحد ثم شغّل:</p>
+<pre tabindex="0"><code class="language-bash">sha256sum --check SHA256SUMS</code></pre>
+<p>يجب أن ينتهي كل سطر بـ <code>OK</code>. وإذا نزّلت <code>.tar.gz</code> وحده فسيعدّ الأمر غياب <code>.zip</code> خطأً؛ فاستخدم <code>sha256sum --check --ignore-missing SHA256SUMS</code>. وفي macOS استخدم <code>shasum -a 256 -c SHA256SUMS</code>.</p>
+<p>يثبت المجموع الاختباري أن تنزيلك غير تالف وأنه الملف المسمّى في <code>SHA256SUMS</code>. لكن الملفين من صفحة الإصدار نفسها، فلا يحميك المجموع الاختباري وحده ممن يستطيع تغيير تلك الصفحة. ولهذا استخدم الشهادة.</p>
+
+<h2 id="attestation">فحص مصدر البناء<a class="anchor" href="#attestation" aria-label="رابط إلى هذا القسم">#</a></h2>
+<p>مع تثبيت <a href="https://cli.github.com/" rel="noopener noreferrer">GitHub CLI</a>:</p>
+<pre tabindex="0"><code class="language-bash">gh attestation verify rtly-kit-X.Y.Z.tar.gz --repo ehsanenaloo/RTLY-Kit</code></pre>
+<p>يبحث الأمر عن الشهادة التي وقّعتها GitHub Actions لهذا الملف بعينه ويفحصها. وتعني رسالة النجاح أن الأرشيف أنتجه تشغيل لسير عمل في المستودع <code>ehsanenaloo/RTLY-Kit</code>، وأن الملف لم يتغير منذ ذلك الحين. شغّل الأمر نفسه على ملف <code>.zip</code> إن كنت تستخدمه.</p>
+
+<h2 id="composer">التثبيت عبر Packagist وComposer<a class="anchor" href="#composer" aria-label="رابط إلى هذا القسم">#</a></h2>
+<p>تعلم Packagist بالوسم الجديد عبر webhook خاص بها، فيثبّت <code>composer require enaxon/rtly-kit</code> شيفرة الوسم نفسه. ولا يعمل سير عمل الإصدار إلا لإيداع موسوم يقع ضمن <code>main</code>.</p>
+<p>الأرشيف الذي ينزّله Composer تولّده GitHub للوسم؛ وليس هو الملف المشهود له أعلاه. ولمعرفة أي إيداع حصلت عليه، انظر في <code>composer.lock</code> تحت <code>enaxon/rtly-kit</code>: القيمة <code>source.reference</code> هي تجزئة الإيداع. وقارنها بالوسم:</p>
+<pre tabindex="0"><code class="language-bash">git ls-remote https://github.com/ehsanenaloo/RTLY-Kit refs/tags/vX.Y.Z</code></pre>
+<p>وفي وسم يشير إلى إيداع، تكون التجزئة المطبوعة هي نفسها الموجودة في ملف القفل لديك. (الوسم المشروح يطبع سطرًا ثانيًا ينتهي بـ <code>^{}</code>؛ وهذا السطر هو الإيداع.)</p>
+
+<h2 id="limits">ما لا يثبته هذا<a class="anchor" href="#limits" aria-label="رابط إلى هذا القسم">#</a></h2>
+<ul>
+<li>لا يراجع الشيفرة. فهو يبيّن من أين جاء الأرشيف، لا أن الشيفرة خالية من الأخطاء. وللثغرات المعروفة في بيانات المرجع راجع <a href="accuracy-and-data.html">الدقة والبيانات</a>.</li>
+<li>وسوم git غير موقَّعة. وتعتمد الفحوص أعلاه على المستودع وسير عمله وخدمة الشهادات في GitHub.</li>
+<li>لا توجد قائمة مواد برمجية (SBOM) منفصلة. فالحزمة بلا اعتمادات إلزامية (راجع <a href="installation.html">التثبيت</a>).</li>
+</ul>
+<p>للإبلاغ عن مشكلة أمنية في إصدار، راجع الملف <code>SECURITY.md</code> في المستودع.</p>
+<nav class="reading-footer" aria-label="الصفحة السابقة والتالية"><a class="prev" rel="prev" href="upgrade.html"><small>السابق</small>دليل الترقية</a><span></span></nav>
+</article>
+<nav class="toc" aria-label="في هذه الصفحة"><p>في هذه الصفحة</p><ol><li><a href="#what-you-get">ما الذي يتضمنه الإصدار</a></li><li><a href="#checksum">فحص المجموع الاختباري</a></li><li><a href="#attestation">فحص مصدر البناء</a></li><li><a href="#composer">التثبيت عبر Packagist وComposer</a></li><li><a href="#limits">ما لا يثبته هذا</a></li></ol></nav>
+</div>
+</main>
+<footer class="footer"><div class="shell footer-inner"><p>دليل مستخدم RTLY-Kit · الترخيص: MIT</p><div><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">المستودع على جيت هب &#8599;</a><a href="https://github.com/ehsanenaloo/RTLY-Kit/issues" rel="noopener noreferrer">الإبلاغ عن مشكلة &#8599;</a></div></div></footer>
+</body>
+</html>

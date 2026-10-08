@@ -1,0 +1,109 @@
+<!--
+title: شبا والبطاقة المصرفية
+description: تحقق من أرقام شبا (IBAN) بمعيار ISO 7064 mod-97-10 ومن أرقام البطاقات المصرفية بالمجموع الاختباري Luhn، وابحث عن المصرف المُصدِر مع تنبيهات صريحة حول البيانات.
+group: validation
+order: 30
+-->
+<h2 id="quick-start">البدء السريع</h2>
+<pre><code class="language-php">&lt;?php
+require 'vendor/autoload.php';
+
+use RtlyKit\Validation\BankCard;
+use RtlyKit\Validation\Sheba;
+use function RtlyKit\is_bank_card;
+use function RtlyKit\is_sheba;
+
+var_dump(Sheba::isValid('IR800170000000000000000123'));   // bool(true)
+var_dump(is_sheba('800170000000000000000123'));           // bool(true)، تُضاف "IR" نيابةً عنك
+var_dump(BankCard::isValid('6037-9912-3456-7893'));       // bool(true)
+var_dump(is_bank_card('۶۰۳۷۹۹۱۲۳۴۵۶۷۸۹۳'));               // bool(true)، أرقام فارسية
+
+echo Sheba::getBankName('IR800170000000000000000123'), "\n";   // بانک ملی ایران
+echo BankCard::getBankName('6219861234567898'), "\n";          // بانک سامان</code></pre>
+<p>الأرقام في هذه الأمثلة مصطنعة: تجتاز المجموع الاختباري لكنها لا تخص حسابات حقيقية. وتطبّق الفئتان كلتاهما <a href="validators-overview.html#contract">عقد <code>Validator</code></a> المشترك، ولا تُلقيان استثناءً بسبب مُدخَل سيّئ، ولهما أيضًا الدالتان المساعدتان <code>validate_sheba()</code> و<code>validate_bank_card()</code>.</p>
+
+<h2 id="sheba">شبا (IBAN)</h2>
+<h3 id="sheba-format">الصيغة</h3>
+<p>رقم شبا هو IBAN الإيراني: <code>IR</code>، ثم رقما تحقق، ثم BBAN من 22 رقماً، أي 26 نويسة في المجموع. وتحدد الأرقام الثلاثة الأولى من BBAN المصرف.</p>
+<pre><code class="language-text">IR 80 017 0000000000000000123
+│  │  │   └─ rest of the BBAN (19 digits)
+│  │  └──── bank code (3 digits)
+│  └─────── check digits
+└────────── country code</code></pre>
+
+<h3 id="sheba-normalization">التطبيع</h3>
+<p>تحوّل <code>Sheba::normalize()</code> النص إلى أحرف كبيرة، وتحوّل الأرقام الفارسية والعربية، وتحذف المسافات والشرطات والمسافات الصفرية. أما النص المكوّن من 24 رقمًا بالضبط، وهي الصيغة الشائعة «بدون IR» التي تطبعها المصارف، فتُضاف إليه البادئة <code>IR</code>. وأي مُدخَل آخر يُترك كما كُتب ثم يفشل في فحص الصيغة:</p>
+<pre><code class="language-php">echo Sheba::normalize('800170000000000000000123');        // IR800170000000000000000123
+echo Sheba::normalize('ir80 0170 0000');                   // IR8001700000
+echo json_encode(Sheba::validate('ir80-0170-0000-0000-0000-0001-23')-&gt;isValid());   // true</code></pre>
+
+<h3 id="sheba-checks">ما الذي يُفحص</h3>
+<ol>
+<li>النوع والحجم (<code>invalid_type</code> و<code>input_too_long</code>).</li>
+<li>الصيغة: <code>IR</code> يليه 24 رقمًا بالضبط، وإلا <code>invalid_format</code>.</li>
+<li>المجموع الاختباري: ISO 7064 mod-97-10. تُنقل النويسات الأربع الأولى إلى النهاية، ويتحول <code>I</code> و<code>R</code> إلى 18 و27، ويجب أن يساوي العدد الناتج بالنسبة إلى 97 القيمة 1؛ وإلا <code>invalid_checksum</code>.</li>
+</ol>
+<p>يجري البحث عن المصرف قبل المجموع الاختباري، فيكون رمز المصرف موجودًا في <code>details()</code> حتى مع رقم تحقق خاطئ:</p>
+<pre><code class="language-php">$r = Sheba::validate('IR060170000000000000000123');
+var_dump($r-&gt;isValid());       // bool(false)
+print_r($r-&gt;errors());         // Array ( [0] =&gt; invalid_checksum )
+echo $r-&gt;details()['bank_name']; // بانک ملی ایران
+
+$ok = Sheba::validate('IR800170000000000000000123');
+echo json_encode($ok-&gt;details(), JSON_UNESCAPED_UNICODE);
+// {"normalized":"IR800170000000000000000123","bank_code":"017","bank_name":"بانک ملی ایران"}
+
+$unknown = Sheba::validate('IR049990000000000000000123');
+var_dump($unknown-&gt;isValid(), $unknown-&gt;details()['bank_name']);   // bool(true)  NULL</code></pre>
+<p>التفاصيل: <code>normalized</code> و<code>bank_code</code> (نص من ثلاثة أرقام، أو <code>null</code> عند فشل الصيغة) و<code>bank_name</code> (أو <code>null</code> حين لا يكون الرمز في الجدول). ورقم شبا صحيح المجموع الاختباري ورمز مصرفه غير معروف هو رقم <em>صالح</em>؛ والاسم وحده هو المفقود.</p>
+<div class="note"><strong>أسماء المصارف.</strong> الأسماء هي أسماء المصرف المُصدِر وقت التخصيص. وتحتفظ رموز المصارف التي اندمجت لاحقًا باسمها الأصلي.</div>
+
+<h2 id="bank-card">رقم البطاقة المصرفية</h2>
+<h3 id="card-format">الصيغة والفحوص</h3>
+<p>تتكون البطاقة المصرفية الإيرانية من 16 رقمًا. وتُبقي <code>BankCard::normalize()</code> على الأرقام فقط بعد تحويل الفارسية والعربية منها، فالمسافات والشرطات وسائر الفواصل مسموح بها. والفحوص بالترتيب:</p>
+<ol>
+<li>النوع والحجم.</li>
+<li>16 رقمًا بالضبط، وإلا <code>invalid_format</code>.</li>
+<li>تطابق الأرقام الستة عشر جميعها (مثل <code>0000000000000000</code>) يعطي <code>repeated_digits</code>.</li>
+<li>المجموع الاختباري Luhn، وإلا <code>invalid_checksum</code>. بدءًا من اليمين يُضاعَف كل رقم ثانٍ (مع طرح 9 حين تتجاوز النتيجة 9)، ويجب أن يقبل مجموع الأرقام القسمة على 10.</li>
+</ol>
+<pre><code class="language-php">$ok = BankCard::validate('6037-9912 3456 7893');
+echo json_encode($ok-&gt;details(), JSON_UNESCAPED_UNICODE);
+// {"normalized":"6037991234567893","bin":"603799","bank_name":"بانک ملی ایران"}
+
+print_r(BankCard::validate('6037991234567890')-&gt;errors());   // [invalid_checksum]
+print_r(BankCard::validate('0000000000000000')-&gt;errors());   // [repeated_digits]
+print_r(BankCard::validate('1234')-&gt;errors());               // [invalid_format]
+
+$x = BankCard::validate('9999991234567893');   // المجموع الاختباري سليم، لكن BIN غير موجود في الجدول
+var_dump($x-&gt;isValid(), $x-&gt;details()['bank_name']);   // bool(true)  NULL</code></pre>
+<p>التفاصيل: <code>normalized</code> و<code>bin</code> (أول ستة أرقام، أو <code>null</code> إذا فشلت الصيغة) و<code>bank_name</code>. وكما في شبا، يجري البحث عن BIN قبل فحصي تكرار الأرقام والمجموع الاختباري.</p>
+<p>الدالتان <code>BankCard::getBankName()</code> و<code>Sheba::getBankName()</code> اختصاران يُرجعان الاسم لرقم <em>صالح</em> فقط، و<code>null</code> فيما عدا ذلك:</p>
+<pre><code class="language-php">var_dump(BankCard::getBankName('6037991234567890'));   // NULL، لأن المجموع الاختباري يفشل
+var_dump(BankCard::getBankName('6037991234567893'));   // string(26) "بانک ملی ایران"</code></pre>
+
+<h2 id="data">بيانات البحث عن المصرف</h2>
+<table>
+<thead><tr><th>الجدول</th><th>المفتاح</th><th>عدد البنود</th></tr></thead>
+<tbody>
+<tr><td>رموز BIN للبطاقات</td><td>أول 6 أرقام من البطاقة</td><td>39</td></tr>
+<tr><td>رموز المصارف في شبا</td><td>3 أرقام بعد <code>IRkk</code></td><td>38</td></tr>
+</tbody>
+</table>
+<p>لا يُدرَج البند إلا إذا اتفق مصدران مستقلان على الأقل على المطابقة (جداول بادئات المصارف العامة ومجموعات البيانات المجتمعية). أما البنود ذات المصدر الواحد أو المتعارضة فتُترك عن قصد.</p>
+<p>ما فحصناه في 2026-10-08:</p>
+<ul>
+<li>تذكر مواصفة IBAN الوطنية المنشورة لدى البنك المركزي الإيراني 19 رمزًا للمصارف، وهي كلها تطابق جدولنا. وتحسم القائمة أيضًا أمر الرمز 051: فهو يخص مؤسسة «توسعه» الائتمانية.</li>
+<li>رموز BIN للبطاقات وبقية رموز شبا تتفق مع عدة صفحات عامة. وبالنسبة إلى BIN 585983 (تجارت) لدينا أيضًا إعلان المصرف نفسه كما نقلته وكالتا أنباء.</li>
+</ul>
+<div class="note"><strong>من المفيد أن تعرف.</strong> الجداول صغيرة، فكثير من البطاقات الصالحة صادر عن مصرف غير مدرج، ويكون <code>bank_name</code> عندئذ <code>null</code>. ولم نصل إلى سجل رسمي لرموز BIN، وقائمة البنك المركزي مؤرخة بسنة 2017، لذلك تعتمد الرموز الأحدث على صفحات عامة. المصارف تندمج وتغيّر أسماءها وتعيد تخصيص النطاقات، فاعرض الاسم على أنه تلميح، ولا تستخدمه في قرار قانوني أو مالي. التفاصيل في <a href="accuracy-and-data.html">الدقة والبيانات</a>.</div>
+<p>لا تعتمد الصلاحية على هذه الجداول أبدًا. فالرقم صحيح المجموع الاختباري صالح سواء عُرف مصرفه أم لم يُعرف.</p>
+
+<h2 id="notes">ملاحظات عملية</h2>
+<ul>
+<li>يكشف المجموع الاختباري الأخطاء المطبعية لا الأرقام المزيفة. ولا يستطيع أن يخبرك بأن بطاقة موجودة أو بأن حسابًا يخص شخصًا ما.</li>
+<li>تحقق من رقم البطاقة للشكل فقط. ولا تسجّل أرقام البطاقات كاملة في السجلات أبداً، ولا تخزّن CVV2 ولا كلمة السر الثانية.</li>
+<li>خزّن القيمة المطبَّعة، لتكون <code>6037-9912-3456-7893</code> و<code>6037991234567893</code> السجل نفسه.</li>
+<li>يجب أن تبقى أرقام البطاقات وأرقام شبا نصوصًا. فالعدد المكوّن من 16 رقمًا قد يتجاوز ما يستطيع رقم JSON أو عدد عشري تمثيله بدقة.</li>
+</ul>
+<p>سقف الحجم وقواعد النوع هي نفسها لكل أداة تحقق؛ انظر <a href="validators-overview.html#input-handling">معالجة المُدخَلات</a>.</p>

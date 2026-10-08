@@ -1,0 +1,229 @@
+{
+    "$schema": "../vendor/infection/infection/resources/schema.json",
+    "source": {
+        "directories": ["../src"],
+        "excludes": ["functions-global.php"]
+    },
+    "phpUnit": {
+        "configDir": ".",
+        "customPath": "infection-phpunit.php"
+    },
+    "timeout": 20,
+    "logs": {
+        "text": "../build/infection/infection.log",
+        "summary": "../build/infection/summary.log",
+        "json": "../build/infection/infection.json"
+    },
+    "mutators": {
+        "@default": true,
+
+        // ---------------------------------------------------------------------------------
+        // Equivalent mutants: the changed code cannot alter any observable result. Each
+        // entry names the line (by its text, so it survives edits elsewhere in the file)
+        // and says why. Anything that CAN change a result is killed by a test instead.
+        // ---------------------------------------------------------------------------------
+
+        // Lines on which every mutant is equivalent.
+        "global-ignoreSourceCodeByRegex": [
+            // Jalali::gregorianToJalali(): the estimate of the year is corrected by the loops that
+            // follow (one of them is excluded from coverage as defensive); a different estimate
+            // only costs iterations.
+            ".*\\$guess = intdiv\\(\\$rel \\* 33, 12053\\);.*",
+            ".*if \\(\\$rel < 0 && \\$rel \\* 33 % 12053 !== 0\\) \\{.*",
+            ".*\\$guess--;.*",
+            // Hebrew::gregorianToHebrew() and addMonths(): same reasoning, the loops after the estimate converge.
+            ".*intdiv\\(\\(\\$jdn - self::EPOCH_JDN\\) \\* 98496, 35975351\\) \\+ 1;.*",
+            ".*\\$y = intdiv\\(\\$target, 235\\) \\* 19 \\+ 1;.*",
+            // Hijri::gregorianToHijri(): estimate of the table year, corrected by the loops that follow.
+            ".*\\$year = min\\(\\$table->lastYear, \\$table->firstYear \\+ intdiv\\(.*",
+            // Hijri::addMonths(): this branch only runs for a negative month total, i.e. a year below 1,
+            // which the range check right after it rejects whatever the month value is.
+            ".*\\$month \\+= 12;.*",
+            // Code that cannot run and is excluded from coverage for that reason: the lines that carry a
+            // codeCoverageIgnore marker, and the defensive loops and guards between Start and End markers.
+            ".*// @codeCoverageIgnore\\s*$",
+            ".*if \\(\\$jdn < self::EPOCH_JDN\\) \\{.*",
+            ".*throw new InvalidDateException\\(\"Date precedes the Hebrew calendar epoch.*",
+            ".*while \\(\\$jdn < \\$table->yearStart\\(\\$year\\)\\) \\{.*",
+            ".*while \\(self::yearStartJdn\\(\\$jy\\) > \\$jdn\\) \\{.*",
+            ".*\\$jy--;.*"
+        ],
+
+        // Hebrew::format() and Hijri::format() append every token with `$out .= match (...)`;
+        // an int concatenated to a string gives the same text as its string cast.
+        "CastString": {
+            "ignore": [
+                "RtlyKit\\Calendar\\Hebrew::format",
+                "RtlyKit\\Calendar\\Hijri::format"
+            ]
+        },
+
+        "IncrementInteger": {
+            "ignoreSourceCodeByRegex": [
+                // Adding or removing one chalakim (1/1080 hour) to the molad offset never moves a new year
+                // between Hebrew years 1 and 13761 (checked for every year), so 12084 may be 12083 or 12085.
+                ".*\\$parts = 12084 \\+ 13753 \\* \\$months;.*",
+                // Utf8::encode(): the lead byte of a 4-byte result. Lower-case results never exceed U+1E922,
+                // so the bits above the 18th shift are always zero.
+                ".*default => chr\\(0xF0 \\| \\(\\(\\$cp >> 18\\) & 0x07\\)\\).*",
+                // Utf8::decode(): the single-byte arm cannot be reached, only characters of 2 to 4 bytes are decoded.
+                ".*default => \\$b\\[0\\],.*",
+                // Utf8::decode(): the lead-byte bits above the 18th shift only matter for code points >= U+20000,
+                // none of which has a lower-case form; they are left alone however they are decoded.
+                ".*4 => \\(\\(\\$b\\[0\\] & 0x07\\) << 18\\).*"
+            ]
+        },
+        "DecrementInteger": {
+            "ignoreSourceCodeByRegex": [
+                ".*\\$parts = 12084 \\+ 13753 \\* \\$months;.*",
+                ".*default => chr\\(0xF0 \\| \\(\\(\\$cp >> 18\\) & 0x07\\)\\).*",
+                // Hebrew::addYears(): `$m === 7` or `$m === 6` give the same month, 6, for every month above 6.
+                ".*\\$m = \\$m <= 6 \\? \\$m : \\(\\$m === 7 \\? 6 : \\$m - 1\\);.*",
+                // Utf8::lowerChar(): binary search midpoint; `>> 0` still finds the range, one entry at a time.
+                ".*\\$mid = \\(\\$lo \\+ \\$hi\\) >> 1;.*",
+                // JalaliCast::fromJalaliString(): (int) of the whole match ($m[0]) is the year, as PHP reads the leading digits.
+                ".*return Jalali::create\\(\\(int\\) \\$m\\[1\\], \\(int\\) \\$m\\[2\\], \\(int\\) \\$m\\[3\\],.*",
+                ".*4 => \\(\\(\\$b\\[0\\] & 0x07\\) << 18\\).*",
+                // CalendarLimits::matchOwnFormat(): (int) of the whole match is the year as well, for the same reason.
+                ".*return \\[\\(int\\) \\$m\\[1\\], \\(int\\) \\$m\\[3\\], .*"
+            ]
+        },
+        "Decrement": {
+            "ignore": [
+                // The `$year--` / `$jy--` of the defensive loops that are excluded from coverage (the estimate never overshoots).
+                "RtlyKit\\Calendar\\Hijri::gregorianToHijri",
+                "RtlyKit\\Calendar\\Jalali::gregorianToJalali"
+            ]
+        },
+        "ShiftRight": {
+            "ignoreSourceCodeByRegex": [
+                ".*default => chr\\(0xF0 \\| \\(\\(\\$cp >> 18\\) & 0x07\\)\\).*"
+            ]
+        },
+        "MatchArmRemoval": {
+            "ignoreSourceCodeByRegex": [
+                ".*default => \\$b\\[0\\],.*"
+            ]
+        },
+        "Plus": {
+            "ignoreSourceCodeByRegex": [
+                ".*\\$parts = 12084 \\+ 13753 \\* \\$months;.*"
+            ]
+        },
+        "GreaterThan": {
+            "ignoreSourceCodeByRegex": [
+                // First correction loop of gregorianToHebrew(): `>=` lets the second loop undo the extra step.
+                ".*while \\(self::newYearJdn\\(\\$y\\) > \\$jdn\\) \\{.*",
+                // diffInYears(): with 0 years there is nothing to subtract.
+                ".*if \\(\\$years > 0 && \\$lo->addYears\\(\\$years\\)->getTimestamp\\(\\) > \\$hi->getTimestamp\\(\\)\\) \\{.*",
+                // between(): swapping two equal bounds changes nothing.
+                ".*if \\(\\$a > \\$b\\) \\{.*"
+            ]
+        },
+        "GreaterThanNegotiation": {
+            "ignoreSourceCodeByRegex": [
+                ".*while \\(self::newYearJdn\\(\\$y\\) > \\$jdn\\) \\{.*"
+            ]
+        },
+        "LessThanOrEqualTo": {
+            "ignoreSourceCodeByRegex": [
+                // Two dates with the same timestamp: both orders give a difference of zero.
+                ".*\\[\\$lo, \\$hi\\] = \\$this->getTimestamp\\(\\) <= \\$other->getTimestamp\\(\\) \\? \\[\\$this, \\$other\\] : \\[\\$other, \\$this\\];.*",
+                // Hijri::tabularFromJdn(): month 12 is also produced by the fallback return after the loop.
+                ".*for \\(\\$m = 1; \\$m <= 12; \\$m\\+\\+\\) \\{.*",
+                // UmmAlQuraTable::fromArray(): year starts grow by at least 353 days, so this guard cannot fail.
+                ".*if \\(\\$previous !== null && \\$start <= \\$previous\\) \\{.*"
+            ]
+        },
+        "Modulus": {
+            "ignoreSourceCodeByRegex": [
+                // `($y % n) + n` vs `($y % n) + n * n`: both are congruent to $y modulo n, and only that residue is used.
+                ".*\\(\\(\\$year % 19\\) \\+ 19\\) % 19.*",
+                ".*\\(\\(\\$year % 30\\) \\+ 30\\) % 30.*"
+            ]
+        },
+        "GreaterThanOrEqualTo": {
+            "ignoreSourceCodeByRegex": [
+                // 1 Muharram 1300 (the first table day) is also 1 Muharram 1300 in the tabular calendar.
+                ".*if \\(\\$jdn >= \\$table->firstJdn\\(\\) && \\$jdn < \\$table->endJdn\\(\\)\\) \\{.*"
+            ]
+        },
+        "LessThan": {
+            "ignoreSourceCodeByRegex": [
+                // Bit 12 of a month bitmask is always 0 here (bitmasks above 0xFFF are rejected first).
+                ".*for \\(\\$m = 0; \\$m < 12; \\$m\\+\\+\\) \\{.*",
+                // Jalali::gregorianToJalali(): day 186 of the year is 1 Mehr (month 7, day 1) on both branches.
+                ".*if \\(\\$doy < 186\\) \\{.*",
+                // Utf8::encode(): no lower-case mapping produces U+0080, U+0800 or U+10000 exactly.
+                ".*\\$cp < 0x80 => chr.*",
+                ".*\\$cp < 0x800 => chr.*",
+                ".*\\$cp < 0x10000 => chr.*"
+            ]
+        },
+        "CastInt": {
+            "ignoreSourceCodeByRegex": [
+                // format('w') is a numeric string; PHP adds to it as to an int.
+                ".*return \\(\\(int\\) \\$this->gregorian->format\\('w'\\) \\+ 1\\) % 7;.*",
+                // DateInterval::$days is an int for a diff() result.
+                ".*\\$days\\s+= \\(int\\) \\$interval->days;.*"
+            ]
+        },
+        "LogicalAnd": {
+            "ignore": [
+                // Hijri::isLeapYear(): the table branch and the tabular branch give the same answer
+                // whenever the table is not the source of the month lengths.
+                "RtlyKit\\Calendar\\Hijri::isLeapYear"
+            ]
+        },
+        "LogicalOr": {
+            "ignoreSourceCodeByRegex": [
+                // Jalali::isValid(): daysInMonth() returns 0 for a month outside 1..12, so day <= 0 is false anyway.
+                ".*if \\(\\$year < self::MIN_YEAR \\|\\| \\$year > self::MAX_YEAR \\|\\| \\$month < 1 \\|\\| \\$month > 12 \\|\\| \\$day < 1\\) \\{.*",
+                // Hebrew::addYears(): rebuild() repeats this range check with the same exception.
+                ".*if \\(\\$y < self::MIN_YEAR \\|\\| \\$y > self::MAX_YEAR\\) \\{.*"
+            ],
+            "ignore": [
+                // Hebrew::daysInMonth(): the month guard repeats the one in slot(), which throws the same exception.
+                "RtlyKit\\Calendar\\Hebrew::daysInMonth"
+            ]
+        },
+        "Throw_": {
+            "ignoreSourceCodeByRegex": [
+                ".*throw InvalidDateException::because\\(ErrorCode::DateOutOfRange, \"Hebrew year out of the supported range: \\{\\$y\\}\"\\);.*"
+            ],
+            "ignore": [
+                "RtlyKit\\Calendar\\Hebrew::daysInMonth"
+            ]
+        },
+        "NotIdentical": {
+            "ignoreSourceCodeByRegex": [
+                ".*if \\(\\$previous !== null && \\$start <= \\$previous\\) \\{.*"
+            ]
+        },
+        "Foreach_": {
+            "ignoreSourceCodeByRegex": [
+                ".*foreach \\(\\$starts as \\$start\\) \\{.*"
+            ]
+        },
+        "ArrayItemRemoval": {
+            "ignoreSourceCodeByRegex": [
+                // Carbon 3 shares macros between Carbon and CarbonImmutable, and CarbonImmutable is added right after.
+                ".*\\$classes = \\[\\\\Carbon\\\\Carbon::class\\];.*"
+            ]
+        },
+        "IfNegation": {
+            "ignoreSourceCodeByRegex": [
+                // Same reason: with Carbon 3 the second class changes nothing.
+                ".*if \\(class_exists\\(\\\\Carbon\\\\CarbonImmutable::class\\)\\) \\{.*"
+            ]
+        },
+        "ReturnRemoval": {
+            "ignore": [
+                // Utf8::lower(): without the early return, an ASCII-only string passes through the (empty) replacement unchanged.
+                "RtlyKit\\Text\\Utf8::lower"
+            ]
+        }
+    },
+    "minMsi": 92,
+    "minCoveredMsi": 92
+}

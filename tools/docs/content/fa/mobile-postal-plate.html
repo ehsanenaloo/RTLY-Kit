@@ -1,6 +1,6 @@
 <!--
 title: موبایل، کدپستی و پلاک
-description: اعتبارسنجی شمارهٔ موبایل ایران در همهٔ شکل‌های رایج ورودی، کدپستی و پلاک خودرو، همراه با اشارهٔ اپراتور، تجزیه و محدودیت‌های صادقانه.
+description: اعتبارسنجی شمارهٔ موبایل ایران در همهٔ شکل‌های رایج، کدپستی و پلاک خودرو، همراه با اپراتور، تخصیص پیش‌شماره و تقسیم پلاک به بخش‌ها.
 group: validation
 order: 40
 -->
@@ -20,11 +20,11 @@ var_dump(is_postal_code('۱۲۳۴۵-۶۷۸۹۰'));          // bool(true)
 var_dump(is_vehicle_plate('12ب345 ایران 67'));    // bool(true)
 
 echo Mobile::getOperator('09121234567'), "\n";    // همراه اول</code></pre>
-<p>هر سه <a href="validators-overview.html#contract">قرارداد <code>Validator</code></a> را پیاده می‌کنند. توابع کمکی‌شان <code>validate_mobile()</code>، <code>validate_postal_code()</code> و <code>validate_vehicle_plate()</code> است.</p>
+<p>هر سه <a href="validators-overview.html#contract">قرارداد <code>Validator</code></a> را دارند. توابع کمکی‌شان <code>validate_mobile()</code>، <code>validate_postal_code()</code> و <code>validate_vehicle_plate()</code> هستند.</p>
 
 <h2 id="mobile">شمارهٔ موبایل</h2>
-<h3 id="mobile-forms">شکل‌های پذیرفته‌شده</h3>
-<p><code>Mobile</code> همه‌چیز را به شکل ملی <code>09xxxxxxxxx</code> (۱۱ رقم) نرمال می‌کند. این پنج املا را می‌پذیرد، با ارقام فارسی یا عربی و با فاصله، خط تیره یا پرانتز در میانه:</p>
+<h3 id="mobile-forms">شکل‌هایی که قبول می‌شود</h3>
+<p><code>Mobile</code> همه‌چیز را به شکل ملی <code>09xxxxxxxxx</code> (۱۱ رقم) درمی‌آورد. این پنج شکل را قبول می‌کند، با رقم فارسی یا عربی و با فاصله، خط تیره یا پرانتز بین رقم‌ها:</p>
 <table>
 <thead><tr><th>ورودی</th><th><code>normalized</code></th></tr></thead>
 <tbody>
@@ -37,31 +37,38 @@ echo Mobile::getOperator('09121234567'), "\n";    // همراه اول</code></p
 <tr><td><code>(0912) 123-4567</code></td><td><code>09121234567</code></td></tr>
 </tbody>
 </table>
-<p>چون <code>Mobile</code> فقط رقم‌ها را نگه می‌دارد، هر جداکنندهٔ غیررقمی کنار گذاشته می‌شود. عدد صحیح مثل <code>9121234567</code> هم پذیرفته می‌شود (صفر ابتدایی ندارد که از دست برود، پس به شکل ۱۰ رقمی خوانده می‌شود).</p>
+<p>چون <code>Mobile</code> فقط رقم‌ها را نگه می‌دارد، هر جداکنندهٔ غیررقمی کنار می‌رود. عدد صحیح مثل <code>9121234567</code> هم قبول می‌شود. صفر اول ندارد که از دست برود، پس به شکل ۱۰ رقمی خوانده می‌شود.</p>
 
 <h3 id="mobile-rules">قاعده</h3>
-<p>اعتبار یک بررسی قالب است: پس از نرمال‌سازی شماره باید با <code>09</code> شروع شود، سپس رقمی از ۰ تا ۴ یا ۹ بیاید و هشت رقم دیگر. این‌ها بلوک‌های <code>090x</code> تا <code>094x</code> و <code>099x</code> هستند که به شبکه‌های تلفن همراه اختصاص یافته‌اند. هر چیز دیگر، مثل <code>0950...</code> یا شمارهٔ ۱۰ رقمی، <code>invalid_format</code> می‌دهد.</p>
+<p>معتبر بودن فقط بررسی شکل است. بعد از یکسان‌سازی، شماره باید با <code>09</code> شروع شود، بعد رقمی از ۰ تا ۴ یا ۹ بیاید و هشت رقم دیگر. این‌ها بلوک‌های <code>090x</code> تا <code>094x</code> و <code>099x</code> هستند. هر چیز دیگر، مثل <code>0950...</code> یا شمارهٔ ۱۰ رقمی، <code>invalid_format</code> می‌دهد.</p>
 <pre><code class="language-php">$r = Mobile::validate('09121234567');
 echo json_encode($r-&gt;details(), JSON_UNESCAPED_UNICODE);
-// {"normalized":"09121234567","operator":"همراه اول"}
+// {"normalized":"09121234567","operator":"همراه اول","allocated":true}
 
 print_r(Mobile::validate('09501234567')-&gt;errors());   // [invalid_format]
 print_r(Mobile::validate('0912123456')-&gt;errors());    // [invalid_format]
 echo Mobile::normalize('+98 912 123 4567');           // 09121234567</code></pre>
 
-<h3 id="mobile-operator">اشارهٔ اپراتور</h3>
-<p><code>details()['operator']</code> و <code>Mobile::getOperator()</code> شماره را در جدول کوچکی از پیش‌شماره‌های جاافتاده جست‌وجو می‌کنند: همراه اول (<code>0910</code> تا <code>0919</code> و <code>0990</code> تا <code>0994</code>)، ایرانسل (<code>0900</code> تا <code>0905</code>، <code>0930</code>، <code>0933</code>، <code>0935</code> تا <code>0939</code>)، رایتل (<code>0920</code> تا <code>0922</code>)، شاتل موبایل (<code>0998</code>) و آپتل (<code>09991</code>). طولانی‌ترین پیش‌شمارهٔ منطبق برنده است. برای شمارهٔ معتبری که پیش‌شمارهٔ آن در جدول نیست اپراتور <code>null</code> است:</p>
+<h3 id="mobile-operator">اپراتور</h3>
+<p><code>details()['operator']</code> و <code>Mobile::getOperator()</code> پیش‌شماره را در یک جدول کوچک پیدا می‌کنند. همراه اول (<code>0910</code> تا <code>0919</code> و <code>0990</code> تا <code>0994</code>)، ایرانسل (<code>0900</code> تا <code>0905</code>، <code>0930</code>، <code>0933</code> و <code>0935</code> تا <code>0939</code>)، اسپادان (<code>0931</code>)، تالیا (<code>0932</code>)، تله‌کیش (<code>0934</code>)، رایتل (<code>0920</code> تا <code>0923</code>)، شاتل موبایل (<code>09981</code> و <code>09982</code>) و آپتل (<code>09991</code>). اگر چند پیش‌شماره جور شود، بلندترین انتخاب می‌شود. برای شمارهٔ معتبری که پیش‌شمارهٔ آن در جدول نیست، اپراتور <code>null</code> است:</p>
 <pre><code class="language-php">echo Mobile::getOperator('09351234567'), "\n";           // ایرانسل
 echo Mobile::getOperator('09981234567'), "\n";           // شاتل موبایل
 echo Mobile::getOperator('09991012345'), "\n";           // آپتل
 var_dump(Mobile::validate('09951234567')-&gt;isValid());   // bool(true)
-var_dump(Mobile::getOperator('09951234567'));            // NULL، معتبر اما در جدول نیست
+var_dump(Mobile::getOperator('09951234567'));            // NULL، معتبر است ولی در جدول نیست
 var_dump(Mobile::getOperator('09501234567'));            // NULL، شمارهٔ نامعتبر</code></pre>
-<div class="known"><strong>محدودیت شناخته‌شده.</strong> اپراتور فقط اشاره‌ای بر پایهٔ پیش‌شماره است. قابلیت حفظ شماره (MNP) اجازه می‌دهد با تغییر اپراتور شماره حفظ شود؛ پس پیش‌شماره هرگز اپراتور فعلی را تضمین نمی‌کند. جدول عمداً محافظه‌کار است: بلوک‌هایی که تخصیصشان در منابع مختلف فرق دارد (مثلاً <code>0931</code>، <code>0932</code>، <code>0934</code>، <code>0940</code> تا <code>0949</code> و بیشتر <code>0995</code> تا <code>0999</code>) حذف شده‌اند و <code>null</code> برمی‌گردانند، هرچند شماره همچنان معتبر است. این جدول منبع مشخصی ندارد که جداگانه ذکر شده باشد؛ <a href="accuracy-and-data.html">دقت و داده‌ها</a> را ببینید. مسیریابی پیامک یا صورتحساب را بر آن بنا نکنید.</div>
-<p>جزئیات: <code>normalized</code> و <code>operator</code>. تنها کلیدهای خطا <code>invalid_format</code>، <code>invalid_type</code> و <code>input_too_long</code> هستند. تلفن ثابت و شمارهٔ بین‌المللی پذیرفته نمی‌شود.</p>
+<h3 id="mobile-allocated">تخصیص پیش‌شماره</h3>
+<p>کلید <code>allocated</code> در <code>details()</code> می‌گوید پیش‌شمارهٔ شماره در بلوک‌هایی هست که سازمان تنظیم مقررات و ارتباطات رادیویی در طرح شماره‌گذاری ملی برای خدمات موبایل آورده یا نه. این طرح را به ITU اعلام کرده است. <code>Mobile::isAllocated()</code> همین را به شکل <code>bool</code> می‌دهد و فقط برای شمارهٔ خوش‌شکل <code>true</code> است.</p>
+<pre><code class="language-php">var_dump(Mobile::isAllocated('09121234567'));   // bool(true)
+var_dump(Mobile::isAllocated('09061234567'));   // bool(false)
+var_dump(Mobile::isAllocated('0912'));          // bool(false)
+echo json_encode(Mobile::validate('09061234567')-&gt;details(), JSON_UNESCAPED_UNICODE);
+// {"normalized":"09061234567","operator":null,"allocated":false}</code></pre>
+<div class="note"><strong>خوب است بدانید.</strong> <code>allocated</code> برابر <code>false</code> یعنی پیش‌شماره در طرح منتشرشده نیست. شاید تازه باشد. این به معنای نامعتبر بودن شماره نیست و <code>isValid()</code> هنوز فقط شکل را می‌سنجد. اپراتور هم فقط یک سرنخ بر پایهٔ پیش‌شماره است. چون شماره را می‌شود با تغییر اپراتور نگه داشت (MNP)، پیش‌شماره اپراتور فعلی را تضمین نمی‌کند. بلوک‌هایی که مالکشان را از دو منبع نتوانستیم تأیید کنیم در جدول اپراتور نیامده‌اند و <code>null</code> می‌دهند. پیام‌رسانی یا صورتحساب را روی اپراتور بنا نکنید. جزئیات در <a href="accuracy-and-data.html">دقت و داده</a> است.</div>
+<p>کلیدهای جزئیات: <code>normalized</code>، <code>operator</code> و <code>allocated</code>. تنها کدهای خطا <code>invalid_format</code>، <code>invalid_type</code> و <code>input_too_long</code> هستند. تلفن ثابت و شمارهٔ بین‌المللی قبول نمی‌شود.</p>
 
 <h2 id="postal-code">کدپستی</h2>
-<p>کدپستی ایران ۱۰ رقم دارد و هرگز با <code>0</code> شروع نمی‌شود. <code>PostalCode</code> فقط رقم‌ها را نگه می‌دارد (ابتدا ارقام فارسی و عربی تبدیل می‌شود، سپس جداکننده‌هایی مثل فاصله و خط تیره حذف می‌شود) و طول و رقم اول را بررسی می‌کند:</p>
+<p>کدپستی ایران ۱۰ رقم است و با <code>0</code> شروع نمی‌شود. <code>PostalCode</code> فقط رقم‌ها را نگه می‌دارد (اول رقم‌های فارسی و عربی انگلیسی می‌شوند، بعد جداکننده‌هایی مثل فاصله و خط تیره حذف می‌شوند) و طول و رقم اول را می‌سنجد:</p>
 <pre><code class="language-php">$r = PostalCode::validate('۱۲۳۴۵-۶۷۸۹۰');
 echo json_encode($r-&gt;details());   // {"normalized":"1234567890"}
 
@@ -71,16 +78,16 @@ print_r(PostalCode::validate('0123456789')-&gt;errors());     // [invalid_format
 <table>
 <thead><tr><th>خطا</th><th>معنا</th></tr></thead>
 <tbody>
-<tr><td><code>invalid_length</code></td><td>تعداد ارقام ۱۰ نیست</td></tr>
+<tr><td><code>invalid_length</code></td><td>تعداد رقم‌ها ۱۰ نیست</td></tr>
 <tr><td><code>invalid_format</code></td><td>کد با <code>0</code> شروع می‌شود</td></tr>
-<tr><td><code>invalid_type</code>، <code>input_too_long</code></td><td><a href="validators-overview.html#input-handling">پردازش ورودی</a> را ببینید</td></tr>
+<tr><td><code>invalid_type</code>، <code>input_too_long</code></td><td><a href="validators-overview.html#input-handling">ورودی چطور پردازش می‌شود</a> را ببینید</td></tr>
 </tbody>
 </table>
-<div class="note"><strong>فقط قالب.</strong> کدپستی رقم کنترل ندارد و بازهٔ منطقه‌ای هم بررسی نمی‌شود: کد ۱۰ رقمی که با <code>0</code> شروع نشود معتبر است، حتی اگر پست آن را تخصیص نداده باشد. عدد صحیحی مثل <code>1234567890</code> پذیرفته می‌شود چون کد معتبر هرگز با صفر شروع نمی‌شود، اما نگه‌داری کدپستی به صورت رشته همچنان عادت امن‌تری است.</div>
+<div class="note"><strong>فقط شکل.</strong> کدپستی رقم کنترل ندارد و بازهٔ منطقه هم بررسی نمی‌شود. هر کد ۱۰ رقمی که با <code>0</code> شروع نشود معتبر است، حتی اگر پست آن را نداده باشد. عدد صحیح <code>1234567890</code> هم قبول می‌شود، چون کد معتبر هیچ‌وقت با صفر شروع نمی‌شود. ولی بهتر است کدپستی را باز هم رشته نگه دارید.</div>
 
 <h2 id="vehicle-plate">پلاک خودرو</h2>
-<h3 id="plate-shape">قالب</h3>
-<p><code>VehiclePlate</code> پلاک رایج سواری را می‌شناسد: دو رقم، یک حرف، سه رقم و کد دورقمی ایران، به شکل <code>12ب345 ایران 67</code>. واژهٔ «ایران»، فاصله، خط تیره، زیرخط و نیم‌فاصله نادیده گرفته می‌شود؛ پس همهٔ این شکل‌ها یک پلاک‌اند:</p>
+<h3 id="plate-shape">شکل پلاک</h3>
+<p><code>VehiclePlate</code> پلاک رایج سواری را می‌شناسد: دو رقم، یک حرف، سه رقم و کد دورقمی ایران، مثل <code>12ب345 ایران 67</code>. کلمهٔ «ایران»، فاصله، خط تیره، زیرخط و نیم‌فاصله نادیده گرفته می‌شود. پس همهٔ این شکل‌ها یک پلاک‌اند:</p>
 <pre><code class="language-php">echo VehiclePlate::normalize('۱۲ ب ۳۴۵ ایران ۶۷');   // 12ب34567
 
 $r = VehiclePlate::validate('12ب345 ایران 67');
@@ -92,7 +99,7 @@ print_r(VehiclePlate::parse('12ب345 ایران 67'));
 var_dump(VehiclePlate::parse('xx'));   // NULL</code></pre>
 
 <h3 id="plate-letters">حرف‌ها</h3>
-<p>حرف باید یکی از این‌ها باشد: <code>الف ب پ ت ث ج د ز س ش ص ط ع ف ق ک گ ل م ن و ه ی ژ</code>. شکل بلند <code>الف</code> یک حرف شمرده می‌شود. <code>D</code> و <code>S</code> لاتین برای پلاک‌های دیپلمات و ویژه پذیرفته می‌شود. صورت‌های عربی حروف ابتدا نرمال می‌شوند؛ پس <code>ك</code> و <code>ي</code> به‌صورت <code>ک</code> و <code>ی</code> خوانده می‌شوند:</p>
+<p>حرف باید یکی از این‌ها باشد: <code>الف ب پ ت ث ج د ز س ش ص ط ع ف ق ک گ ل م ن و ه ی ژ</code>. «الف» به شکل کامل هم یک حرف حساب می‌شود. <code>D</code> و <code>S</code> لاتین برای پلاک دیپلمات و ویژه قبول می‌شود. شکل‌های عربی حرف‌ها اول یکسان می‌شوند. پس <code>ك</code> و <code>ي</code> مثل <code>ک</code> و <code>ی</code> خوانده می‌شوند:</p>
 <pre><code class="language-php">echo json_encode(VehiclePlate::validate('12ي34567')-&gt;details(), JSON_UNESCAPED_UNICODE);
 // {"normalized":"12ی34567","two_digit":"12","letter":"ی","three_digit":"345","region":"67"}
 
@@ -101,11 +108,11 @@ var_dump(VehiclePlate::isValid('12الف34567'));     // bool(true)</code></pre>
 
 <h3 id="plate-errors">خطاها</h3>
 <ul>
-<li><code>invalid_format</code>: قالب نمی‌خواند (تعداد ارقام نادرست، حرف غیرمجاز یا بخشی که جا افتاده).</li>
-<li><code>invalid_region</code>: قالب می‌خواند اما کد ایران <code>00</code>، بخش دورقمی <code>00</code> یا بخش سه‌رقمی <code>000</code> است. بخش‌های تجزیه‌شده همچنان در <code>details()</code> هست.</li>
+<li><code>invalid_format</code>: شکل پلاک نمی‌خواند (تعداد رقم اشتباه، حرف غیرمجاز یا بخش جاافتاده).</li>
+<li><code>invalid_region</code>: شکل می‌خواند، ولی کد ایران <code>00</code> است یا بخش دورقمی <code>00</code> یا بخش سه‌رقمی <code>000</code>. بخش‌های جداشده باز هم در <code>details()</code> هستند.</li>
 </ul>
 <pre><code class="language-php">print_r(VehiclePlate::validate('12ب345')-&gt;errors());       // [invalid_format]
 print_r(VehiclePlate::validate('12ب34500')-&gt;errors());     // [invalid_region]
 print_r(VehiclePlate::validate('00ب34567')-&gt;errors());     // [invalid_region]</code></pre>
-<div class="known"><strong>محدودیت شناخته‌شده.</strong> این اعتبارسنج قالب و غیرصفر بودن عددها را بررسی می‌کند. نمی‌داند کدام کد ایران وجود دارد، کدام حرف برای کدام نوع خودرو است، و خانواده‌های دیگر پلاک (موتورسیکلت، قالب‌های قدیمی، پلاک مناطق آزاد و دولتی) مدل نشده‌اند. نتیجهٔ معتبر یعنی پلاک خوش‌قالب است، نه اینکه صادر شده باشد.</div>
-<p><code>VehiclePlate::parse()</code> چهار بخش را به صورت آرایه برمی‌گرداند، یا <code>null</code> وقتی پلاک با همان قاعده‌های <code>validate()</code> معتبر نباشد.</p>
+<div class="note"><strong>خوب است بدانید.</strong> این اعتبارسنج شکل پلاک و صفر نبودن عددها را می‌سنجد. نمی‌داند کدام کد ایران وجود دارد یا کدام حرف برای کدام نوع خودرو است. نوع‌های دیگر پلاک (موتورسیکلت، شکل‌های قدیمی، مناطق آزاد و پلاک دولتی) پوشش داده نشده‌اند. نتیجهٔ معتبر یعنی پلاک خوش‌شکل است، نه اینکه واقعاً صادر شده باشد.</div>
+<p><code>VehiclePlate::parse()</code> چهار بخش را در آرایه می‌دهد، یا <code>null</code> اگر پلاک با همان قاعده‌های <code>validate()</code> معتبر نباشد.</p>

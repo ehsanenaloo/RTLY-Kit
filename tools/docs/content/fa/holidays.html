@@ -1,19 +1,20 @@
 <!--
 title: تعطیلات رسمی ایران
-description: تعطیلات رسمی ایران را برای هر تاریخ جلالی بررسی کنید، فهرست کل سال را بگیرید و روز کاری بعدی را پیدا کنید. تعطیلات ثابت شمسی دقیق‌اند و تعطیلات مذهبی تخمینی.
+description: تعطیلات رسمی ایران را برای هر تاریخ جلالی بررسی کنید، فهرست کل سال را بگیرید و روز کاری بعدی را پیدا کنید. تاریخ‌های مذهبی ۱۳۹۴ و ۱۳۹۶ تا ۱۴۰۵ رسمی‌اند.
 group: dates-and-times
 order: 10
 -->
 <h2 id="overview">این کلاس چه می‌کند</h2>
-<p>کلاس <code>RtlyKit\Holiday\IranHolidays</code> چهار پرسش دربارهٔ یک تاریخ جلالی را پاسخ می‌دهد: آیا تعطیل رسمی است، عنوان تعطیلی چیست، آیا آخر هفته است و روز کاری بعدی کدام است. همهٔ متدها <code>static</code> هستند و کلاس <code>final</code> است. عنوان‌ها همان‌طور که در تقویم رسمی آمده‌اند، فارسی برگردانده می‌شوند.</p>
-<p>دو نوع تعطیلی با هم ترکیب شده‌اند:</p>
+<p>کلاس <code>RtlyKit\Holiday\IranHolidays</code> چهار سؤال دربارهٔ یک تاریخ جلالی را جواب می‌دهد: تعطیل رسمی است یا نه، اسم تعطیلی چیست، آخر هفته است یا نه، و روز کاری بعدی کدام است. همهٔ متدها <code>static</code> هستند و کلاس <code>final</code> است. عنوان‌ها فارسی‌اند و همان‌طور که در تقویم رسمی آمده‌اند.</p>
+<p>دو نوع تعطیلی در کار است:</p>
 <ul>
-<li><strong>تعطیلات ثابت شمسی</strong> هر سال در یک تاریخ جلالی می‌افتند (نوروز، ۲۲ بهمن و مانند آن) و دقیق‌اند.</li>
-<li><strong>تعطیلات مذهبی (قمری)</strong> از تقویم هجری قمری به‌دست می‌آیند و هر سال حدود ۱۱ روز در سال شمسی جابه‌جا می‌شوند. این‌ها تخمینی‌اند؛ بخش <a href="#limits">دقت و محدودیت‌ها</a> را ببینید.</li>
+<li><strong>تعطیلات ثابت شمسی</strong> هر سال در یک تاریخ جلالی هستند (نوروز، ۲۲ بهمن و مانند آن) و دقیق‌اند.</li>
+<li><strong>تعطیلات مذهبی (قمری)</strong> با رؤیت هلال تعیین می‌شوند و هر سال حدود ۱۱ روز در تقویم شمسی جلو می‌آیند. برای سال‌های ۱۳۹۴ و ۱۳۹۶ تا ۱۴۰۵ تاریخ‌های رسمی را داریم و در بقیهٔ سال‌ها از تقویم ام‌القری تخمین می‌زنیم. جزئیات در <a href="#limits">دقت و محدودیت‌ها</a> است.</li>
 </ul>
+<p>متدهای این صفحه همیشه از تنظیمات پیش‌فرض استفاده می‌کنند. اگر می‌خواهید تاریخ رؤیت هلال را خودتان وارد کنید یا تعطیلی اضافه و حذف کنید، <a href="holiday-calendar.html">تقویم تعطیلات</a> را ببینید.</p>
 
 <h2 id="check">بررسی یک روز</h2>
-<p>هر جست‌وجو یا یک شیء <code>Jalali</code> می‌پذیرد یا سه عدد صحیح (سال، ماه، روز).</p>
+<p>هر جست‌وجو یا یک شیء <code>Jalali</code> می‌گیرد یا سه عدد صحیح (سال، ماه، روز).</p>
 <pre><code class="language-php">use RtlyKit\Calendar\Jalali;
 use RtlyKit\Holiday\IranHolidays;
 use function RtlyKit\is_iran_holiday;
@@ -21,20 +22,20 @@ use function RtlyKit\is_iran_holiday;
 var_dump(IranHolidays::isHoliday(1404, 11, 22));              // bool(true)
 var_dump(IranHolidays::getTitle(1404, 11, 22));               // string(38) "پیروزی انقلاب اسلامی"
 var_dump(IranHolidays::isHoliday(Jalali::create(1404, 1, 5))); // bool(false)
-var_dump(is_iran_holiday(1404, 1, 1));                        // bool(true)  (تابع کمکی در فضای نام)</code></pre>
-<p>متد <code>getTitle()</code> نخستین عنوان یا <code>null</code> را برمی‌گرداند. اگر دو مناسبت در یک روز بیفتند، از <code>getTitles()</code> استفاده کنید؛ فهرستی است که تعطیلی ثابت در آغاز و تعطیلی مذهبی پس از آن می‌آید:</p>
-<pre><code class="language-php">print_r(IranHolidays::getTitles(Jalali::create(1404, 1, 1)));
-// Array ( [0] => جشن نوروز [1] => شهادت امام علی )</code></pre>
-<p>مورد دوم از آن‌رو آمده که تقویم ام‌القری ۲۱ رمضان ۱۴۴۶ را روی ۱ فروردین ۱۴۰۴ قرار می‌دهد. این تاریخ محاسبه‌شده است نه اعلام‌شده، و دقیقاً به همین دلیل تعطیلات مذهبی تخمینی‌اند. محدودیت را در ادامه ببینید.</p>
+var_dump(is_iran_holiday(1404, 1, 1));                        // bool(true)  (تابع کمکی در فضای‌نام)</code></pre>
+<p>متد <code>getTitle()</code> اولین عنوان را می‌دهد، یا <code>null</code>. اگر دو مناسبت در یک روز باشند، <code>getTitles()</code> را بزنید. این متد فهرستی می‌دهد که تعطیلی ثابت اول و تعطیلی مذهبی بعد از آن می‌آید:</p>
+<pre><code class="language-php">print_r(IranHolidays::getTitles(Jalali::create(1405, 1, 1)));
+// Array ( [0] =&gt; جشن نوروز [1] =&gt; عید فطر )</code></pre>
+<p>روز اول فروردین ۱۴۰۵ با اول شوال ۱۴۴۷ یکی است. این تاریخ از جدول رسمی آمده است.</p>
 
 <h2 id="year">فهرست کل سال</h2>
-<p>سه متد یک سال کامل را برمی‌گردانند؛ کلیدها رشتهٔ <code>Y/m/d</code> و به ترتیب صعودی‌اند:</p>
+<p>سه متد یک سال کامل را می‌دهند. کلیدها رشتهٔ <code>Y/m/d</code> هستند و از اول سال به آخر مرتب شده‌اند:</p>
 <ul>
-<li><code>allFixed(int $year)</code> فقط تعطیلات ثابت شمسی را برمی‌گرداند و برای هر تاریخ یک عنوان دارد.</li>
-<li><code>all(int $year)</code> تعطیلات ثابت و مذهبی را برمی‌گرداند؛ عنوان‌های یک روز با <code> / </code> به هم وصل می‌شوند.</li>
+<li><code>allFixed(int $year)</code> فقط تعطیلات ثابت شمسی را می‌دهد و برای هر تاریخ یک عنوان دارد.</li>
+<li><code>all(int $year)</code> هم ثابت‌ها و هم مذهبی‌ها را می‌دهد. اگر یک روز چند عنوان داشته باشد، با <code> / </code> به هم وصل می‌شوند.</li>
 <li><code>allTitles(int $year)</code> شکل ساخت‌یافته است: هر مقدار یک <code>list&lt;string&gt;</code> است.</li>
 </ul>
-<pre><code class="language-php">foreach (IranHolidays::allFixed(1404) as $date => $title) {
+<pre><code class="language-php">foreach (IranHolidays::allFixed(1404) as $date =&gt; $title) {
     echo $date, '  ', $title, "\n";
 }
 // 1404/01/01  جشن نوروز
@@ -48,38 +49,48 @@ var_dump(is_iran_holiday(1404, 1, 1));                        // bool(true)  (ت
 // 1404/11/22  پیروزی انقلاب اسلامی
 // 1404/12/29  ملی شدن صنعت نفت
 
-echo count(IranHolidays::all(1404));    // 27 (تعطیلات ثابت و مذهبی، یک ورودی برای هر روز)</code></pre>
-<p>بخش مذهبی ۱۴۰۴ برای نمونه شامل <code>1404/01/10 عید فطر</code>، <code>1404/01/11 تعطیل عید فطر</code>، <code>1404/03/16 عید قربان</code>، <code>1404/03/24 عید غدیر خم</code>، <code>1404/04/13 تاسوعای حسینی</code> و <code>1404/04/14 عاشورای حسینی</code> است. توجه کنید که عید فطر روی <code>1404/12/29</code> هم می‌افتد، چون سال قمری کوتاه‌تر از سال شمسی است و یک مناسبت می‌تواند دو بار در یک سال شمسی رخ دهد؛ <code>all()</code> در آن روز <code>ملی شدن صنعت نفت / عید فطر</code> را می‌دهد.</p>
+echo count(IranHolidays::all(1404));    // 26 (ثابت و مذهبی، یک ورودی برای هر روز)</code></pre>
+<p>تعطیلات مذهبی ۱۴۰۴ شامل این‌هاست: <code>1404/01/11 عید فطر</code>، <code>1404/01/12 تعطیل عید فطر</code>، <code>1404/03/16 عید قربان</code>، <code>1404/03/24 عید غدیر خم</code>، <code>1404/04/14 تاسوعای حسینی</code> و <code>1404/04/15 عاشورای حسینی</code>. در سال ۱۴۰۴ عید فطر دو بار نمی‌آید: عید فطر ۱۴۴۷ روی اول فروردین ۱۴۰۵ است و در فهرست ۱۴۰۵ می‌آید.</p>
 
 <h2 id="business">آخر هفته و روز کاری</h2>
 <p>سه متد کمکی یک شیء <code>Jalali</code> می‌گیرند:</p>
 <ul>
-<li><code>isWeekend($date)</code> فقط در <strong>جمعه</strong> برابر <code>true</code> است.</li>
+<li><code>isWeekend($date)</code> فقط روز <strong>جمعه</strong> <code>true</code> است.</li>
 <li><code>isBusinessDay($date)</code> وقتی <code>true</code> است که روز نه آخر هفته باشد و نه تعطیل رسمی.</li>
-<li><code>nextBusinessDay($date)</code> نخستین روز کاری پس از تاریخ داده‌شده را برمی‌گرداند (خود آن روز حساب نمی‌شود).</li>
+<li><code>nextBusinessDay($date)</code> اولین روز کاری بعد از تاریخ داده‌شده را می‌دهد (خود آن روز حساب نمی‌شود).</li>
 </ul>
 <pre><code class="language-php">foreach ([Jalali::create(1404, 11, 20), Jalali::create(1404, 11, 21), Jalali::create(1404, 11, 22)] as $d) {
-    echo $d->toDateString(),
+    echo $d-&gt;toDateString(),
         ' weekend=', var_export(IranHolidays::isWeekend($d), true),
         ' business=', var_export(IranHolidays::isBusinessDay($d), true),
-        ' next=', IranHolidays::nextBusinessDay($d)->toDateString(), "\n";
+        ' next=', IranHolidays::nextBusinessDay($d)-&gt;toDateString(), "\n";
 }
 // 1404/11/20 weekend=false business=true next=1404/11/21
 // 1404/11/21 weekend=false business=true next=1404/11/23
 // 1404/11/22 weekend=false business=false next=1404/11/23</code></pre>
-<div class="note"><strong>نکته.</strong> فقط جمعه آخر هفته حساب می‌شود. پنجشنبه اینجا روز کاری است و نیم‌روز پنجشنبه، تقویم استانی و تعطیلی‌های موردی (مثل آلودگی هوا یا اعلام دولت) در نظر گرفته نمی‌شوند. اگر سازمان شما پنجشنبه‌ها تعطیل است، پس از <code>isBusinessDay()</code> خودتان آن را فیلتر کنید.</div>
+<div class="note"><strong>نکته.</strong> فقط جمعه آخر هفته حساب می‌شود. پنجشنبه اینجا روز کاری است. نیم‌روز پنجشنبه، تقویم استان‌ها و تعطیلی‌های موردی (مثل آلودگی هوا یا اعلام دولت) در نظر گرفته نمی‌شوند. اگر سازمان شما پنجشنبه‌ها تعطیل است، بعد از <code>isBusinessDay()</code> خودتان آن را فیلتر کنید.</div>
 
 <h2 id="errors">ورودی نامعتبر</h2>
-<p>ورودی نادرست یک زیرکلاس <code>RtlyKitException</code> پرتاب می‌کند و هرگز خطای خام PHP نمی‌دهد. <a href="error-handling.html">مدیریت خطا</a> را ببینید.</p>
+<p>ورودی نادرست یکی از زیرکلاس‌های <code>RtlyKitException</code> را می‌دهد و خطای خام PHP بیرون نمی‌آید. <a href="error-handling.html">مدیریت خطا</a> را ببینید.</p>
 <pre><code class="language-php">IranHolidays::isHoliday(1404, 13, 1);  // InvalidDateException: Invalid Jalali date: 1404/13/1
 IranHolidays::isHoliday(1404);         // InvalidDateException: Month and day are required when the year is given as int.
-IranHolidays::all(99999);              // InvalidDateException (سال خارج از بازهٔ ‎-620..9377)</code></pre>
+IranHolidays::all(99999);              // InvalidDateException با کد date_out_of_range (سال بیرون از ‎-620..9377)</code></pre>
 
 <h2 id="limits">دقت و محدودیت‌ها</h2>
-<div class="known"><strong>محدودیت شناخته‌شده.</strong> تعطیلات ثابت شمسی دقیق‌اند. تعطیلات مذهبی از تقویم هجری ام‌القری محاسبه می‌شوند، اما ایران تاریخ مناسبت‌های مذهبی را با رؤیت هلال تعیین می‌کند. بنابراین روز اعلام‌شدهٔ رسمی ممکن است ۱ تا ۲ روز با روز محاسبه‌شده فرق داشته باشد. تعطیلات مذهبی را تخمین بدانید و پیش از تکیه بر آن‌ها برای حقوق و دستمزد، مهلت‌ها یا تاریخ‌های حقوقی، با اعلام رسمی تطبیق دهید.</div>
+<table>
+<thead><tr><th>سال‌های جلالی</th><th>تاریخ تعطیلات مذهبی از کجا می‌آید</th></tr></thead>
+<tbody>
+<tr><td>۱۳۹۴ و ۱۳۹۶ تا ۱۴۰۵</td><td>تاریخ‌های رسمی، با دو منبع برای هر سال</td></tr>
+<tr><td>۱۳۸۰ تا ۱۳۹۳ و ۱۳۹۵</td><td>فقط تاریخ‌ها از یک منبع گزارش‌شده. فهرست مناسبت‌ها در این سال‌ها کامل نیست</td></tr>
+<tr><td>بقیهٔ سال‌ها (از جمله ۱۴۰۶ به بعد)</td><td>تخمین از جدول ام‌القری</td></tr>
+</tbody>
+</table>
+<p>برای اینکه بفهمید هر سال از کدام دسته است، <code>IranHolidays::sourceOf($year)</code> را بزنید. مقدارش یکی از <code>HolidaySource::Official</code> و <code>Reported</code> و <code>Estimated</code> است.</p>
+<div class="note"><strong>خوب است بدانید.</strong> تعطیلات ثابت شمسی دقیق‌اند. تاریخ مناسبت‌های مذهبی در ایران با رؤیت هلال تعیین می‌شود، پس برای سال‌هایی که تخمینی‌اند ممکن است ۱ تا ۲ روز با اعلام رسمی فرق داشته باشد. اگر برای حقوق، مهلت قانونی یا تاریخ حقوقی به این تاریخ‌ها تکیه می‌کنید، با اعلام رسمی مقایسه کنید. در <a href="holiday-calendar.html">تقویم تعطیلات</a> می‌توانید تاریخ رؤیت هلال را خودتان بدهید.</div>
 <ul>
-<li><strong>بازه.</strong> تعطیلات مذهبی فقط درون جدول ام‌القری تعبیه‌شده گزارش می‌شوند (سال‌های هجری ۱۳۰۰ تا ۱۵۰۰، یعنی ۱۸۸۲-۱۱-۱۲ تا ۲۰۷۷-۱۱-۱۶). بیرون از آن، <code>isHoliday()</code>، <code>getTitles()</code>، <code>all()</code> و <code>allTitles()</code> فقط تعطیلات ثابت شمسی را می‌دهند، چون برون‌یابی جدولی برای تعطیلات قابل اعتماد نیست. نمونه: <code>IranHolidays::getTitles(Jalali::create(1500, 1, 1))</code> فقط <code>["جشن نوروز"]</code> را برمی‌گرداند.</li>
-<li><strong>پوشش داده‌نشده.</strong> تعطیلی‌های موردی که دولت اعلام می‌کند و مناسبت‌هایی که تعطیل نیستند.</li>
-<li><strong>منبع داده</strong> در صفحهٔ <a href="accuracy-and-data.html">دقت و داده‌ها</a> آمده است.</li>
+<li><strong>بازهٔ تخمین.</strong> تعطیلات مذهبیِ تخمینی فقط داخل جدول ام‌القری گزارش می‌شوند (سال‌های هجری ۱۳۰۰ تا ۱۵۰۰، یعنی از 1882-11-12 تا 2077-11-16). بیرون از آن، <code>isHoliday()</code>، <code>getTitles()</code>، <code>all()</code> و <code>allTitles()</code> فقط تعطیلات ثابت شمسی را می‌دهند، چون حدس جدولی برای تعطیلات قابل اتکا نیست. مثلاً <code>IranHolidays::getTitles(Jalali::create(1500, 1, 1))</code> فقط <code>["جشن نوروز"]</code> را می‌دهد.</li>
+<li><strong>بازهٔ سال جلالی.</strong> <code>all()</code> و <code>allTitles()</code> و <code>allFixed()</code> سال‌های جلالی ‎-۶۲۰ تا ۹۳۷۷ را قبول می‌کنند. برای سال بیرون از این بازه <code>InvalidDateException</code> با کد <code>date_out_of_range</code> و زمینهٔ <code>year</code> و <code>min</code> و <code>max</code> می‌گیرید. هر سال داخل بازه، از جمله اولین و آخرین سال، جواب می‌دهد. جایی که تعطیلات اسلامی را نشود حساب کرد (قبل از مبدأ هجری یا بیرون از جدول ۱۳۰۰ تا ۱۵۰۰) فقط تعطیلات ثابت می‌آید و خطایی پرتاب نمی‌شود.</li>
+<li><strong>پوشش داده‌نشده.</strong> تعطیلی‌های موردی که دولت اعلام می‌کند، و مناسبت‌هایی که تعطیل نیستند.</li>
+<li><strong>منبع داده</strong> در <a href="accuracy-and-data.html">دقت و داده</a> آمده است.</li>
 </ul>
-<p>مرتبط: <a href="jalali.html">تقویم جلالی</a> و <a href="hijri.html">تقویم هجری</a>.</p>
+<p>ببینید: <a href="holiday-calendar.html">تقویم تعطیلات</a>، <a href="jalali.html">تقویم جلالی</a> و <a href="hijri.html">تقویم هجری</a>.</p>

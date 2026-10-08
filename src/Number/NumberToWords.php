@@ -7,7 +7,10 @@ namespace RtlyKit\Number;
 use RtlyKit\Exceptions\ErrorCode;
 use RtlyKit\Exceptions\InvalidNumberException;
 use RtlyKit\Exceptions\UnsupportedLocaleException;
+use RtlyKit\Number\Arabic\ArabicCardinal;
+use RtlyKit\Number\Arabic\ArabicOrdinal;
 use RtlyKit\Text\Normalizer;
+use RtlyKit\Text\Utf8;
 
 /**
  * Convert integers to Persian words and back.
@@ -84,98 +87,94 @@ final class NumberToWords
      * Convert an integer to cardinal words.
      *
      * Locales: `fa` (default; every integer below 10^21) and `ar` (Modern
-     * Standard Arabic; |n| below 10^9, tested for 0 to 999,999,999 and
-     * negatives). Arabic limitations: output is masculine/abstract counting
-     * form only (no gender agreement with the counted noun, no case endings or
-     * tanwin); groups such as 102 in 102,000 use the plain compound form
-     * without the special construct-state rules.
+     * Standard Arabic; every integer below 10^27, see {@see ArabicOptions}).
+     * Without options the Arabic output is the plain "bare counting" form
+     * (masculine, nominative, no vowel marks); options select the gender of a
+     * counted noun, the case, vowel marks, hundreds spelling and more. Passing
+     * options together with a non-Arabic locale is an error.
      *
-     * @throws InvalidNumberException when the value is not an integer or is too large
      * Input caps: a string longer than 4096 bytes is rejected before any
      * processing; floats must be finite and integral (3.0 is accepted, 1.5 is
      * rejected instead of being silently truncated).
      *
+     * @param ArabicOptions|array<array-key, mixed>|null $options Arabic only
+     *
+     * @throws InvalidNumberException when the value is not an integer, is too large or an option is invalid
      * @throws UnsupportedLocaleException when the locale is not supported
      */
-    public static function convert(int|float|string $number, string $locale = 'fa'): string
+    public static function convert(int|float|string $number, string $locale = 'fa', ArabicOptions|array|null $options = null): string
+    {
+        $lang = self::language($locale);
+
+        if ($lang === 'ar') {
+            $resolved = ArabicOptions::resolve($options);
+            [$negative, $digits] = self::parse($number, ArabicCardinal::MAX_DIGITS);
+
+            return ArabicCardinal::words($digits, $negative, $resolved);
+        }
+
+        self::rejectOptions($options, $locale);
+
+        return self::convertFa($number);
+    }
+
+    /**
+     * Convert a positive integer from 1 to 99 to an Arabic ordinal word
+     * (الأول، الثانية عشرة، الحادي والعشرون).
+     *
+     * Only the `gender`, `case` and `definite` options apply. Ordinals above
+     * 99 are not supported. The default locale is `ar`; Persian ordinals are
+     * produced by {@see Format::ordinal()}.
+     *
+     * @param ArabicOptions|array<array-key, mixed>|null $options
+     *
+     * @throws InvalidNumberException when the value is not an integer from 1 to 99 or an option is invalid
+     * @throws UnsupportedLocaleException when the locale is not `ar`
+     */
+    public static function ordinal(int|string $number, string $locale = 'ar', ArabicOptions|array|null $options = null): string
+    {
+        $lang = self::language($locale);
+        if ($lang !== 'ar') {
+            throw new UnsupportedLocaleException(sprintf("Ordinal words support only the Arabic locale 'ar' (got '%s'); use Format::ordinal() for Persian.", Utf8::truncate($locale, 40)), context: ['locale' => Utf8::truncate($locale, 40)]);
+        }
+
+        $resolved = ArabicOptions::resolve($options);
+        if ($resolved->diacritics !== ArabicOptions::DIACRITICS_NONE) {
+            throw new InvalidNumberException('Vowel marks are not supported for ordinals.', errorCode: ErrorCode::InvalidArgument, context: ['option' => 'diacritics']);
+        }
+
+        [$negative, $digits] = self::parse($number, ArabicCardinal::MAX_DIGITS);
+
+        if ($negative || $digits === '0') {
+            throw new InvalidNumberException('Ordinals are defined for positive integers only.', errorCode: ErrorCode::InvalidNumber);
+        }
+
+        if (strlen($digits) > 2) {
+            throw new InvalidNumberException('Arabic ordinals are supported from 1 to 99.', errorCode: ErrorCode::NumberTooLarge, context: ['limit' => ArabicOrdinal::MAX]);
+        }
+
+        return ArabicOrdinal::words((int) $digits, $resolved);
+    }
+
+    private static function language(string $locale): string
     {
         $lang = strtolower(substr($locale, 0, 2));
 
-        return match ($lang) {
-            'fa' => self::convertFa($number),
-            'ar' => self::convertAr($number),
-            default => throw new UnsupportedLocaleException(sprintf("Unsupported locale '%s' (use 'fa' or 'ar').", $locale), context: ['locale' => mb_substr($locale, 0, 40)]),
-        };
+        if ($lang !== 'fa' && $lang !== 'ar') {
+            throw new UnsupportedLocaleException(sprintf("Unsupported locale '%s' (use 'fa' or 'ar').", Utf8::truncate($locale, 40)), context: ['locale' => Utf8::truncate($locale, 40)]);
+        }
+
+        return $lang;
     }
 
-    private static function convertAr(int|float|string $number): string
+    /**
+     * @param ArabicOptions|array<array-key, mixed>|null $options
+     */
+    private static function rejectOptions(ArabicOptions|array|null $options, string $locale): void
     {
-        [$negative, $digits] = self::parse($number);
-
-        if (strlen($digits) > 9) {
-            throw new InvalidNumberException('Arabic conversion supports numbers below 10^9.', errorCode: ErrorCode::NumberTooLarge, context: ['limit' => '10^9']);
+        if ($options !== null) {
+            throw new InvalidNumberException(sprintf("Options are only supported for the Arabic locale 'ar' (got '%s').", Utf8::truncate($locale, 40)), errorCode: ErrorCode::InvalidArgument, context: ['locale' => Utf8::truncate($locale, 40)]);
         }
-
-        if ($digits === '0') {
-            return 'صفر';
-        }
-
-        $n = (int) $digits;
-        $parts = [];
-        $scales = [
-            2 => ['مليون', 'مليونان', 'ملايين'],
-            1 => ['ألف', 'ألفان', 'آلاف'],
-        ];
-
-        foreach ($scales as $scale => [$singular, $dual, $plural]) {
-            $group = intdiv($n, 1000 ** $scale) % 1000;
-            if ($group === 0) {
-                continue;
-            }
-            $parts[] = match (true) {
-                $group === 1 => $singular,
-                $group === 2 => $dual,
-                $group === 200 => 'مئتا '.$singular,
-                $group >= 3 && $group <= 10 => self::arBelowThousand($group).' '.$plural,
-                default => self::arBelowThousand($group).' '.$singular,
-            };
-        }
-
-        $rest = $n % 1000;
-        if ($rest > 0) {
-            $parts[] = self::arBelowThousand($rest);
-        }
-
-        $words = implode(' و', $parts);
-
-        return $negative ? 'سالب '.$words : $words;
-    }
-
-    private static function arBelowThousand(int $number): string
-    {
-        $units = [1 => 'واحد', 'اثنان', 'ثلاثة', 'أربعة', 'خمسة', 'ستة', 'سبعة', 'ثمانية', 'تسعة'];
-        $teens = [10 => 'عشرة', 'أحد عشر', 'اثنا عشر', 'ثلاثة عشر', 'أربعة عشر', 'خمسة عشر', 'ستة عشر', 'سبعة عشر', 'ثمانية عشر', 'تسعة عشر'];
-        $tens = [2 => 'عشرون', 'ثلاثون', 'أربعون', 'خمسون', 'ستون', 'سبعون', 'ثمانون', 'تسعون'];
-        $hundreds = [1 => 'مئة', 'مئتان', 'ثلاثمئة', 'أربعمئة', 'خمسمئة', 'ستمئة', 'سبعمئة', 'ثمانمئة', 'تسعمئة'];
-
-        $parts = [];
-        if ($number >= 100) {
-            $parts[] = $hundreds[intdiv($number, 100)];
-            $number %= 100;
-        }
-
-        if ($number >= 20) {
-            if ($number % 10 > 0) {
-                $parts[] = $units[$number % 10];
-            }
-            $parts[] = $tens[intdiv($number, 10)];
-        } elseif ($number >= 10) {
-            $parts[] = $teens[$number];
-        } elseif ($number > 0) {
-            $parts[] = $units[$number];
-        }
-
-        return implode(' و', $parts);
     }
 
     private static function convertFa(int|float|string $number): string
@@ -233,43 +232,75 @@ final class NumberToWords
             array_shift($tokens);
         }
 
-        $small = array_flip(self::UNITS) + array_flip(self::TENS) + array_flip(self::HUNDREDS);
-        // array_flip(TENS) maps word => tens digit; scale to its value.
+        // word => [value, class]; class 1 hundreds, 2 tens, 3 units and teens
+        $small = [];
+        foreach (self::UNITS as $v => $w) {
+            $small[$w] = [$v, 3];
+        }
         foreach (self::TENS as $d => $w) {
-            $small[$w] = $d * 10;
+            $small[$w] = [$d * 10, 2];
         }
         foreach (self::HUNDREDS as $d => $w) {
-            $small[$w] = $d * 100;
+            $small[$w] = [$d * 100, 1];
         }
         $scales = array_flip(self::SCALES);
 
         $groups = [];
         $current = 0;
+        $stage = 0;          // highest word class used in the current group (0 = none)
         $lastScale = PHP_INT_MAX;
+        $previous = 'start'; // start | small | scale | and
         $seen = false;
 
         foreach ($tokens as $token) {
             if ($token === 'و') {
+                if ($previous !== 'small' && $previous !== 'scale') {
+                    throw new InvalidNumberException("Misplaced 'و' in number words.", errorCode: ErrorCode::InvalidNumberWords);
+                }
+                $previous = 'and';
+
                 continue;
             }
+
             if (isset($small[$token])) {
-                $current += $small[$token];
+                [$value, $class] = $small[$token];
+
+                if ($previous === 'small' || $previous === 'scale') {
+                    throw new InvalidNumberException(sprintf("Missing 'و' before '%s'.", Utf8::truncate($token, 40)), errorCode: ErrorCode::InvalidNumberWords);
+                }
+                // Canonical order inside a group: hundreds, then tens, then units (or a 10-19 word alone).
+                $teen = $class === 3 && $value >= 10;
+                if ($value === 0 && ($seen || count($tokens) > 1)) {
+                    throw new InvalidNumberException("'صفر' cannot be combined with other number words.", errorCode: ErrorCode::InvalidNumberWords);
+                }
+                if ($class <= $stage || ($teen && $stage > 1)) {
+                    throw new InvalidNumberException(sprintf("Number words out of order near '%s'.", Utf8::truncate($token, 40)), errorCode: ErrorCode::InvalidNumberWords);
+                }
+                $current += $value;
+                $stage = $teen ? 3 : $class;
+                $previous = 'small';
                 $seen = true;
             } elseif (isset($scales[$token])) {
                 $scale = $scales[$token];
+                if ($previous === 'and' || ($previous === 'scale')) {
+                    throw new InvalidNumberException(sprintf("Misplaced scale word '%s'.", Utf8::truncate($token, 40)), errorCode: ErrorCode::InvalidNumberWords);
+                }
                 if ($scale >= $lastScale) {
                     throw new InvalidNumberException("Scales out of order near '{$token}'.", errorCode: ErrorCode::InvalidNumberWords);
                 }
                 $groups[$scale] = $current === 0 ? 1 : $current;
                 $current = 0;
+                $stage = 0;
                 $lastScale = $scale;
+                $previous = 'scale';
                 $seen = true;
             } else {
-                throw new InvalidNumberException("Unknown number word '{$token}'.", errorCode: ErrorCode::InvalidNumberWords);
+                throw new InvalidNumberException(sprintf("Unknown number word '%s'.", Utf8::truncate($token, 40)), errorCode: ErrorCode::InvalidNumberWords);
             }
-            if ($current > 999) {
-                throw new InvalidNumberException('Group value exceeds 999.', errorCode: ErrorCode::InvalidNumberWords);
-            }
+        }
+
+        if ($previous === 'and') {
+            throw new InvalidNumberException("Number words cannot end with 'و'.", errorCode: ErrorCode::InvalidNumberWords);
         }
 
         if (! $seen) {
@@ -297,7 +328,7 @@ final class NumberToWords
     /**
      * @return array{0: bool, 1: string} [negative, unsigned digits without leading zeros]
      */
-    private static function parse(int|float|string $number): array
+    private static function parse(int|float|string $number, int $maxDigits = self::MAX_DIGITS): array
     {
         if (is_float($number)) {
             if (! is_finite($number)) {
@@ -320,15 +351,17 @@ final class NumberToWords
             : str_replace([',', '٬', ' ', "\u{00A0}"], '', Digits::toEnglish(trim($number)));
 
         if (preg_match('/^([+-]?)(\d+)$/', $raw, $m) !== 1) {
-            throw new InvalidNumberException(sprintf("'%s' is not a valid integer.", is_int($number) ? (string) $number : mb_substr($number, 0, 40)));
+            throw new InvalidNumberException(sprintf("'%s' is not a valid integer.", is_int($number) ? (string) $number : Utf8::truncate($number, 40)));
         }
 
         $digits = ltrim($m[2], '0');
         if ($digits === '') {
             return [false, '0'];
         }
-        if (strlen($digits) > self::MAX_DIGITS) {
-            throw new InvalidNumberException('Number is too large (limit is 10^21 - 1).', errorCode: ErrorCode::NumberTooLarge, context: ['limit' => '10^21 - 1']);
+        if (strlen($digits) > $maxDigits) {
+            $limit = '10^'.$maxDigits.' - 1';
+
+            throw new InvalidNumberException(sprintf('Number is too large (limit is %s).', $limit), errorCode: ErrorCode::NumberTooLarge, context: ['limit' => $limit]);
         }
 
         return [$m[1] === '-', $digits];

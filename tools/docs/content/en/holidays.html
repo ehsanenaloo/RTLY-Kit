@@ -1,19 +1,20 @@
 <!--
 title: Iranian holidays
-description: Look up official Iranian public holidays for any Jalali date, list a whole year, and find business days. Fixed solar holidays are exact; Islamic holidays are estimates.
+description: Look up official Iranian public holidays for any Jalali date, list a whole year, and find business days. Official dates are used for 1394 to 1405, and other years are estimated.
 group: dates-and-times
 order: 10
 -->
 <h2 id="overview">What it does</h2>
-<p><code>RtlyKit\Holiday\IranHolidays</code> answers four questions about a Jalali date: is it an official public holiday, what is the holiday called, is it a weekend, and what is the next working day. All methods are static and the class is <code>final</code>. Holiday titles are returned in Persian, exactly as they appear on the official calendar.</p>
+<p><code>RtlyKit\Holiday\IranHolidays</code> answers four questions about a Jalali date. Is it an official public holiday? What is the holiday called? Is it a weekend? What is the next working day? All methods are static and the class is <code>final</code>. Titles are returned in Persian, as on the official calendar.</p>
 <p>Two kinds of holiday are combined:</p>
 <ul>
-<li><strong>Fixed solar holidays</strong> fall on the same Jalali date every year (Nowruz, 22 Bahman, and so on). They are exact.</li>
-<li><strong>Islamic (lunar) holidays</strong> are derived from the Hijri calendar, so they move through the Jalali year by about 11 days annually. They are estimates, see <a href="#limits">Accuracy and limits</a>.</li>
+<li><strong>Fixed solar holidays</strong> fall on the same Jalali date every year (Nowruz, 22 Bahman and so on). They are exact.</li>
+<li><strong>Islamic (lunar) holidays</strong> move through the Jalali year by about 11 days each year. For the Jalali years 1380 to 1405 the library returns the dates that were published. For other years it calculates them from the Hijri calendar. See <a href="#limits">Accuracy and limits</a>.</li>
 </ul>
+<p>To see where the dates of a year come from, to correct them, or to add your own days, use <a href="holiday-calendar.html">HolidayCalendar</a>. The static methods on this page use its default calendar.</p>
 
 <h2 id="check">Checking a single day</h2>
-<p>Every lookup accepts either a <code>Jalali</code> object or three integers (year, month, day).</p>
+<p>Every lookup accepts a <code>Jalali</code> object or three integers (year, month, day).</p>
 <pre><code class="language-php">use RtlyKit\Calendar\Jalali;
 use RtlyKit\Holiday\IranHolidays;
 use function RtlyKit\is_iran_holiday;
@@ -22,19 +23,19 @@ var_dump(IranHolidays::isHoliday(1404, 11, 22));              // bool(true)
 var_dump(IranHolidays::getTitle(1404, 11, 22));               // string(38) "پیروزی انقلاب اسلامی"
 var_dump(IranHolidays::isHoliday(Jalali::create(1404, 1, 5))); // bool(false)
 var_dump(is_iran_holiday(1404, 1, 1));                        // bool(true)  (namespaced helper)</code></pre>
-<p><code>getTitle()</code> returns the first title or <code>null</code>. When two holidays coincide on one day, use <code>getTitles()</code>, which returns a list with the fixed holiday first and the Islamic one second:</p>
-<pre><code class="language-php">print_r(IranHolidays::getTitles(Jalali::create(1404, 1, 1)));
-// Array ( [0] => جشن نوروز [1] => شهادت امام علی )</code></pre>
-<p>The second entry appears because the Umm al-Qura calendar places 21 Ramadan 1446 on 1 Farvardin 1404. It is computed, not announced, which is exactly why Islamic holidays are estimates. See the limitation below.</p>
+<p><code>getTitle()</code> returns the first title, or <code>null</code>. When two holidays fall on one day, use <code>getTitles()</code>. It returns a list with the fixed holiday first and the Islamic one second:</p>
+<pre><code class="language-php">print_r(IranHolidays::getTitles(1405, 1, 1));
+// Array ( [0] =&gt; جشن نوروز [1] =&gt; عید فطر )</code></pre>
+<p>In 1405, Eid al-Fitr is on 1 Farvardin, the same day as Nowruz. This is the official date.</p>
 
 <h2 id="year">Listing a whole year</h2>
-<p>Three methods return a year, each keyed by <code>Y/m/d</code> strings in ascending order:</p>
+<p>Three methods return a year. Each result is keyed by <code>Y/m/d</code> strings in ascending order:</p>
 <ul>
 <li><code>allFixed(int $year)</code> returns only the fixed solar holidays, one title per date.</li>
-<li><code>all(int $year)</code> returns fixed and Islamic holidays; titles falling on the same day are joined with <code> / </code>.</li>
-<li><code>allTitles(int $year)</code> is the structured form: each value is a <code>list&lt;string&gt;</code>.</li>
+<li><code>all(int $year)</code> returns fixed and Islamic holidays. Titles on the same day are joined with <code> / </code>.</li>
+<li><code>allTitles(int $year)</code> is the structured form. Each value is a <code>list&lt;string&gt;</code>.</li>
 </ul>
-<pre><code class="language-php">foreach (IranHolidays::allFixed(1404) as $date => $title) {
+<pre><code class="language-php">foreach (IranHolidays::allFixed(1404) as $date =&gt; $title) {
     echo $date, '  ', $title, "\n";
 }
 // 1404/01/01  جشن نوروز
@@ -48,38 +49,48 @@ var_dump(is_iran_holiday(1404, 1, 1));                        // bool(true)  (na
 // 1404/11/22  پیروزی انقلاب اسلامی
 // 1404/12/29  ملی شدن صنعت نفت
 
-echo count(IranHolidays::all(1404));    // 27 (fixed + Islamic holidays, one entry per day)</code></pre>
-<p>The Islamic part of 1404 is, for example, <code>1404/01/10 عید فطر</code>, <code>1404/01/11 تعطیل عید فطر</code>, <code>1404/03/16 عید قربان</code>, <code>1404/03/24 عید غدیر خم</code>, <code>1404/04/13 تاسوعای حسینی</code> and <code>1404/04/14 عاشورای حسینی</code>. Note that Eid al-Fitr also lands on <code>1404/12/29</code>, because a Hijri year is shorter than a Jalali year and the same holiday can occur twice; <code>all()</code> then prints <code>ملی شدن صنعت نفت / عید فطر</code> on that day.</p>
+echo count(IranHolidays::all(1404));    // 26 (fixed + Islamic holidays, one entry per day)</code></pre>
+<p>The Islamic part of 1404 includes <code>1404/01/11 عید فطر</code>, <code>1404/03/16 عید قربان</code>, <code>1404/03/24 عید غدیر خم</code>, <code>1404/04/14 تاسوعای حسینی</code> and <code>1404/04/15 عاشورای حسینی</code>. When a fixed and an Islamic holiday share a day, <code>all()</code> joins them, for example <code>1404/01/12 روز جمهوری اسلامی / تعطیل عید فطر</code>.</p>
 
 <h2 id="business">Weekends and business days</h2>
 <p>Three helpers take a <code>Jalali</code> object:</p>
 <ul>
-<li><code>isWeekend($date)</code> is <code>true</code> only on <strong>Friday</strong>.</li>
+<li><code>isWeekend($date)</code> is <code>true</code> only on Friday.</li>
 <li><code>isBusinessDay($date)</code> is <code>true</code> when the day is neither a weekend nor a holiday.</li>
-<li><code>nextBusinessDay($date)</code> returns the first business day strictly after the given date.</li>
+<li><code>nextBusinessDay($date)</code> returns the first business day after the given date.</li>
 </ul>
 <pre><code class="language-php">foreach ([Jalali::create(1404, 11, 20), Jalali::create(1404, 11, 21), Jalali::create(1404, 11, 22)] as $d) {
-    echo $d->toDateString(),
+    echo $d-&gt;toDateString(),
         ' weekend=', var_export(IranHolidays::isWeekend($d), true),
         ' business=', var_export(IranHolidays::isBusinessDay($d), true),
-        ' next=', IranHolidays::nextBusinessDay($d)->toDateString(), "\n";
+        ' next=', IranHolidays::nextBusinessDay($d)-&gt;toDateString(), "\n";
 }
 // 1404/11/20 weekend=false business=true next=1404/11/21
 // 1404/11/21 weekend=false business=true next=1404/11/23
 // 1404/11/22 weekend=false business=false next=1404/11/23</code></pre>
-<div class="note"><strong>Note.</strong> Only Friday is treated as a weekend. Thursday is a business day here, and Thursday half-days, regional calendars and ad-hoc closures (for example weather or official announcements) are not modelled. If your organisation closes on Thursdays, filter that yourself after calling <code>isBusinessDay()</code>.</div>
+<div class="note"><strong>Note.</strong> Only Friday counts as a weekend. Thursday is a business day here. Thursday half-days, regional calendars and one-off closures (for example for weather) are not modelled. If your organisation closes on Thursdays, filter that yourself after calling <code>isBusinessDay()</code>.</div>
 
 <h2 id="errors">Invalid input</h2>
 <p>Bad input throws a subclass of <code>RtlyKitException</code>, never a raw PHP error. See <a href="error-handling.html">Error handling</a>.</p>
 <pre><code class="language-php">IranHolidays::isHoliday(1404, 13, 1);  // InvalidDateException: Invalid Jalali date: 1404/13/1
 IranHolidays::isHoliday(1404);         // InvalidDateException: Month and day are required when the year is given as int.
-IranHolidays::all(99999);              // InvalidDateException (year outside -620..9377)</code></pre>
+IranHolidays::all(99999);              // InvalidDateException, code date_out_of_range (year outside -620..9377)</code></pre>
 
 <h2 id="limits">Accuracy and limits</h2>
-<div class="known"><strong>Known limitation.</strong> Fixed solar holidays are exact. Islamic holidays are computed from the Umm al-Qura Hijri calendar, but Iran fixes its religious dates by moon sighting. The announced Iranian day can therefore differ from the computed one by 1 to 2 days. Treat Islamic holidays as estimates and confirm them against the official announcement before you rely on them for payroll, deadlines or legal dates.</div>
+<p>Iran fixes its religious dates by moon sighting. What you get depends on the Jalali year:</p>
+<table>
+<thead><tr><th>Years</th><th>Source of the Islamic dates</th></tr></thead>
+<tbody>
+<tr><td>1394, 1396 to 1405</td><td>Official yearly calendar, checked against a second source</td></tr>
+<tr><td>1380 to 1393, 1395</td><td>Published dates from one source</td></tr>
+<tr><td>All other years</td><td>Calculated from the Umm al-Qura table, inside AH 1300 to 1500</td></tr>
+</tbody>
+</table>
+<div class="note"><strong>Good to know.</strong> A calculated date can differ from the announced one by one or two days. Check the announcement before you use an estimated date for payroll, deadlines or legal dates. <code>IranHolidays::sourceOf($year)</code> tells you which source a year uses, and <a href="holiday-calendar.html">HolidayCalendar</a> lets you correct the dates.</div>
 <ul>
-<li><strong>Range.</strong> Islamic holidays are reported only inside the embedded Umm al-Qura table (Hijri years 1300 to 1500, 1882-11-12 to 2077-11-16). Outside it, <code>isHoliday()</code>, <code>getTitles()</code>, <code>all()</code> and <code>allTitles()</code> return the fixed solar holidays only, because tabular extrapolation is not reliable for holidays. Example: <code>IranHolidays::getTitles(Jalali::create(1500, 1, 1))</code> returns just <code>["جشن نوروز"]</code>.</li>
-<li><strong>Not covered.</strong> Extra one-off holidays declared by the government, and the list of observances that are not days off.</li>
-<li><strong>Source of the data</strong> is described in the <a href="accuracy-and-data.html">accuracy and data</a> page.</li>
+<li><strong>Range of the estimate.</strong> Estimated Islamic holidays are reported only inside the embedded Umm al-Qura table (Hijri years 1300 to 1500, 1882-11-12 to 2077-11-16). Outside it, the lookups return the fixed solar holidays only, because an arithmetic extrapolation is not reliable for holidays. Example: <code>IranHolidays::getTitles(Jalali::create(1500, 1, 1))</code> returns just <code>["جشن نوروز"]</code>.</li>
+<li><strong>Jalali year range.</strong> <code>all()</code>, <code>allTitles()</code> and <code>allFixed()</code> accept Jalali years -620 to 9377 and work for every year in that range. For a year outside it they throw <code>InvalidDateException</code> with the code <code>date_out_of_range</code> and the context <code>year</code>, <code>min</code> and <code>max</code>. Where Islamic holidays cannot be derived (before the Hijri epoch, or outside AH 1300 to 1500), only the fixed holidays are returned and nothing is thrown.</li>
+<li><strong>Not covered.</strong> One-off holidays that the government declares, and observances that are not days off.</li>
+<li><strong>Source of the data</strong> is described on the <a href="accuracy-and-data.html">Accuracy and data</a> page.</li>
 </ul>
 <p>Related: <a href="jalali.html">the Jalali calendar</a> and <a href="hijri.html">the Hijri calendar</a>.</p>

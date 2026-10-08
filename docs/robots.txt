@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://ehsanenaloo.github.io/RTLY-Kit/sitemap.xml

@@ -4,37 +4,44 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Text tools | RTLY-Kit User guide</title>
-<meta name="description" content="Normalize Persian and Arabic text, repair half-spaces, detect language and direction, and build URL-safe slugs, with the exact behavior and edge cases of each tool.">
+<meta name="description" content="Normalize Persian and Arabic text, repair half-spaces, detect language and direction, and build URL-safe slugs. Each tool is described with its exact behavior and edge cases.">
 <meta name="color-scheme" content="light dark">
 <meta property="og:title" content="Text tools | RTLY-Kit User guide">
-<meta property="og:description" content="Normalize Persian and Arabic text, repair half-spaces, detect language and direction, and build URL-safe slugs, with the exact behavior and edge cases of each tool.">
+<meta property="og:description" content="Normalize Persian and Arabic text, repair half-spaces, detect language and direction, and build URL-safe slugs. Each tool is described with its exact behavior and edge cases.">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="fa_IR">
+<meta property="og:locale:alternate" content="ar_AR">
+<meta property="og:url" content="https://ehsanenaloo.github.io/RTLY-Kit/en/text-tools.html">
 <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
-<link rel="alternate" hreflang="fa" href="../fa/text-tools.html">
+<link rel="canonical" href="https://ehsanenaloo.github.io/RTLY-Kit/en/text-tools.html">
+<link rel="alternate" hreflang="en" href="https://ehsanenaloo.github.io/RTLY-Kit/en/text-tools.html">
+<link rel="alternate" hreflang="fa" href="https://ehsanenaloo.github.io/RTLY-Kit/fa/text-tools.html">
+<link rel="alternate" hreflang="ar" href="https://ehsanenaloo.github.io/RTLY-Kit/ar/text-tools.html">
+<link rel="alternate" hreflang="x-default" href="https://ehsanenaloo.github.io/RTLY-Kit/">
 <link rel="stylesheet" href="../styles.css">
 <script>try{var t=localStorage.getItem("rtly-docs-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <script defer src="../app.js"></script>
 </head>
 <body>
-<a class="skip" href="#main">Skip to content</a><header class="site-header"><div class="shell header-inner"><a class="brand" href="index.html"><img src="../assets/logo.svg" width="34" height="34" alt=""><span><span class="name">RTLY-Kit</span><small>User guide</small></span></a><nav class="top-nav" aria-label="Primary"><a href="index.html">Overview</a><a href="quick-start.html">Quick start</a><a href="all.html">All guides</a><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">GitHub &#8599;</a></nav><div class="header-tools"><span data-search-host></span><button type="button" class="icon-button" data-theme-toggle hidden>Theme</button><a class="icon-button" href="../fa/text-tools.html" hreflang="fa" lang="fa" aria-label="تغییر به فارسی">فارسی</a></div></div></header>
+<a class="skip" href="#main">Skip to content</a><header class="site-header"><div class="shell header-inner"><a class="brand" href="index.html"><img src="../assets/logo.svg" width="34" height="34" alt=""><span><span class="name">RTLY-Kit</span><small>User guide</small></span></a><nav class="top-nav" aria-label="Primary"><a href="index.html">Overview</a><a href="quick-start.html">Quick start</a><a href="all.html">All guides</a><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">GitHub &#8599;</a></nav><div class="header-tools"><span data-search-host></span><button type="button" class="icon-button" data-theme-toggle hidden>Theme</button><div class="lang-switch" role="group" aria-label="Language"><a class="icon-button" href="../fa/text-tools.html" hreflang="fa" lang="fa">فارسی</a><span class="icon-button is-current" lang="en" aria-current="true">English</span><a class="icon-button" href="../ar/text-tools.html" hreflang="ar" lang="ar">العربية</a></div></div></div></header>
 <main id="main">
-<div class="shell page-intro"><nav class="breadcrumbs" aria-label="Breadcrumb"><ol><li><a href="index.html">Home</a></li><li><a href="all.html#group-numbers-text">Numbers and text</a></li><li aria-current="page">Text tools</li></ol></nav><h1>Text tools</h1><p class="lead">Normalize Persian and Arabic text, repair half-spaces, detect language and direction, and build URL-safe slugs, with the exact behavior and edge cases of each tool.</p></div>
+<div class="shell page-intro"><nav class="breadcrumbs" aria-label="Breadcrumb"><ol><li><a href="index.html">Home</a></li><li><a href="all.html#group-numbers-text">Numbers and text</a></li><li aria-current="page">Text tools</li></ol></nav><h1>Text tools</h1><p class="lead">Normalize Persian and Arabic text, repair half-spaces, detect language and direction, and build URL-safe slugs. Each tool is described with its exact behavior and edge cases.</p></div>
 <div class="shell doc-layout has-toc">
-<aside class="sidebar"><details open><summary>Browse the guides</summary><nav aria-label="Guides"><a href="all.html">All guides</a><p>Getting started</p><a href="quick-start.html">Quick start</a><a href="installation.html">Installation</a><p>Calendars</p><a href="jalali.html">Jalali calendar</a><a href="hijri.html">Hijri calendar</a><a href="hebrew.html">Hebrew calendar</a><a href="convert-and-compare.html">Convert and compare dates</a><a href="carbon-macros.html">Carbon macros</a><p>Validation</p><a href="validators-overview.html">Validators overview</a><a href="national-code.html">National code</a><a href="sheba-and-bank-card.html">Sheba and bank card</a><a href="mobile-postal-plate.html">Mobile, postal code and plate</a><p>Numbers and text</p><a href="digits-and-format.html">Digits and number formatting</a><a href="number-words.html">Number to words</a><a href="text-tools.html" aria-current="page">Text tools</a><p>Holidays and prayer times</p><a href="holidays.html">Iranian holidays</a><a href="prayer-times.html">Prayer times</a><p>Laravel</p><a href="laravel-setup.html">Laravel setup</a><a href="laravel-validation-and-cast.html">Validation rules and Eloquent cast</a><p>Reference</p><a href="helpers-and-globals.html">Helpers and globals</a><a href="error-handling.html">Error handling</a><a href="api-stability.html">API stability</a><a href="accuracy-and-data.html">Accuracy and data</a><a href="benchmarks.html">Benchmarks</a><a href="limits.html">Limits</a><a href="troubleshooting-faq.html">Troubleshooting and FAQ</a><a href="upgrade.html">Upgrade guide</a></nav></details></aside>
+<aside class="sidebar"><details open><summary>Browse the guides</summary><nav aria-label="Guides"><a href="all.html">All guides</a><p>Getting started</p><a href="quick-start.html">Quick start</a><a href="installation.html">Installation</a><p>Calendars</p><a href="jalali.html">Jalali calendar</a><a href="hijri.html">Hijri calendar</a><a href="hebrew.html">Hebrew calendar</a><a href="convert-and-compare.html">Convert and compare dates</a><a href="carbon-macros.html">Carbon macros</a><p>Validation</p><a href="validators-overview.html">Validators overview</a><a href="national-code.html">National code</a><a href="sheba-and-bank-card.html">Sheba and bank card</a><a href="mobile-postal-plate.html">Mobile, postal code and plate</a><p>Numbers and text</p><a href="digits-and-format.html">Digits and number formatting</a><a href="number-words.html">Number to words</a><a href="arabic-number-words.html">Arabic number words</a><a href="text-tools.html" aria-current="page">Text tools</a><p>Holidays and prayer times</p><a href="holidays.html">Iranian holidays</a><a href="holiday-calendar.html">Holiday calendar</a><a href="prayer-times.html">Prayer times</a><p>Laravel</p><a href="laravel-setup.html">Laravel setup</a><a href="laravel-validation-and-cast.html">Validation rules and Eloquent cast</a><p>Reference</p><a href="helpers-and-globals.html">Helpers and globals</a><a href="error-handling.html">Error handling</a><a href="api-stability.html">API stability</a><a href="accuracy-and-data.html">Accuracy and data</a><a href="benchmarks.html">Benchmarks</a><a href="limits.html">Limits</a><a href="troubleshooting-faq.html">Troubleshooting and FAQ</a><a href="upgrade.html">Upgrade guide</a><a href="verifying-releases.html">Verifying releases</a></nav></details></aside>
 <article class="prose">
 <details class="toc-inline"><summary>On this page</summary><ol><li><a href="#normalizer">Normalizer</a><ol><li><a href="#normalize">normalize()</a></li><li><a href="#half-space">fixHalfSpace()</a></li><li><a href="#clean">clean()</a></li></ol></li><li><a href="#detector">Detector</a><ol><li><a href="#persian-arabic">isPersian() and isArabic()</a></li><li><a href="#direction">Direction and RTL</a></li><li><a href="#rtl-locale">isRtlLocale()</a></li></ol></li><li><a href="#slugify">Slugify</a><ol><li><a href="#slug-separator">The separator</a></li></ol></li></ol></details>
 <h2 id="normalizer">Normalizer<a class="anchor" href="#normalizer" aria-label="Link to this section">#</a></h2>
-<p><code>RtlyKit\Text\Normalizer</code> makes Persian text comparable and storable. User input mixes Arabic and Persian letterforms (an Arabic keyboard types «ي» and «ك»), diacritics, tatweel and stray whitespace; the same word then looks identical on screen but fails a string comparison or a database search.</p>
+<p><code>RtlyKit\Text\Normalizer</code> makes Persian text comparable and storable. User input mixes Arabic and Persian letter shapes (an Arabic keyboard types «ي» and «ك»), vowel marks, tatweel and stray whitespace. The same word then looks identical on screen but fails a string comparison or a database search.</p>
 
 <h3 id="normalize">normalize()<a class="anchor" href="#normalize" aria-label="Link to this section">#</a></h3>
 <p><code>Normalizer::normalize($text, $removeDiacritics = true)</code> does the following:</p>
 <ul>
 <li>Arabic letters become their Persian counterparts: «ك» to «ک», «ي» «ى» «ے» to «ی», «ة» «ۀ» to «ه», «ؤ» to «و», «إ» «أ» «ٱ» to «ا».</li>
-<li>Arabic-Indic digits (<code>٠-٩</code>) become Persian digits (<code>۰-۹</code>). English digits are left alone.</li>
+<li>Arabic-Indic digits (<code>٠-٩</code>) become Persian digits (<code>۰-۹</code>). English digits stay.</li>
 <li>Tatweel (the stretching character U+0640) is removed.</li>
-<li>Harakat, the short-vowel marks (U+064B to U+065F and U+0670), are removed unless you pass <code>false</code> as the second argument.</li>
-<li>Runs of whitespace (spaces, tabs, newlines) collapse to a single space, and the ends are trimmed.</li>
+<li>Harakat, the short-vowel marks (U+064B to U+065F and U+0670), are removed. Pass <code>false</code> as the second argument to keep them.</li>
+<li>Runs of whitespace (spaces, tabs, newlines) become a single space, and the ends are trimmed.</li>
 </ul>
 <pre tabindex="0"><code class="language-php"><span class="tok-k">&lt;?php
 require</span> <span class="tok-s">'vendor/autoload.php'</span>;
@@ -49,39 +56,39 @@ require</span> <span class="tok-s">'vendor/autoload.php'</span>;
 <span class="tok-k">echo</span> Normalizer::normalize(<span class="tok-s">"ثَبْت  ١٢٣ 456"</span>), <span class="tok-s">"\n"</span>;         <span class="tok-c">// ثبت ۱۲۳ 456</span>
 <span class="tok-k">echo</span> Normalizer::normalize(<span class="tok-s">"ثَبْت"</span>, <span class="tok-k">false</span>), <span class="tok-s">"\n"</span>;           <span class="tok-c">// ثَبْت (diacritics kept)</span>
 <span class="tok-k">echo</span> normalize_text(<span class="tok-s">'كتاب'</span>), <span class="tok-s">"\n"</span>;                          <span class="tok-c">// کتاب</span></code></pre>
-<div class="callout note" role="note"><strong>What it leaves alone.</strong> Standalone hamza «ء» and «ئ» are intentionally untouched, because they are meaningful in Persian and Arabic words. The half-space (ZWNJ) is preserved: «می‌خواهم» comes out byte-identical. English letters are unchanged.</div>
+<div class="callout note" role="note"><strong>What it leaves alone.</strong> The standalone hamza «ء» and «ئ» are not touched, because they carry meaning in Persian and Arabic words. The half-space (ZWNJ) is kept: «می‌خواهم» comes out byte for byte the same. English letters are unchanged.</div>
 <p>The helper <code>normalize_text()</code> calls <code>Normalizer::normalize()</code> with the defaults.</p>
 
 <h3 id="half-space">fixHalfSpace()<a class="anchor" href="#half-space" aria-label="Link to this section">#</a></h3>
-<p>The half-space (ZWNJ, U+200C) is what makes «می‌خواهم» look right. Copy and paste often leaves several of them in a row, or one hanging next to a space or at the end of the text. <code>fixHalfSpace()</code> cleans that up:</p>
+<p>The half-space (ZWNJ, U+200C) is what makes «می‌خواهم» look right. Copy and paste often leaves several in a row, or one next to a space or at the end of the text. <code>fixHalfSpace()</code> cleans that up:</p>
 <ul>
 <li>Soft hyphens (U+00AD) are removed.</li>
-<li>A run of ZWNJs collapses to one.</li>
-<li>A ZWNJ directly before or after whitespace is removed.</li>
+<li>A run of ZWNJs becomes one.</li>
+<li>A ZWNJ right before or after whitespace is removed.</li>
 <li>ZWNJs at the very start and end of the text are removed.</li>
 </ul>
 <pre tabindex="0"><code class="language-php"><span class="tok-v">$a</span> = <span class="tok-s">"می\u{200C}\u{200C}\u{200C}خواهم"</span>;
-<span class="tok-k">echo</span> mb_strlen(<span class="tok-v">$a</span>), <span class="tok-s">' '</span>, mb_strlen(Normalizer::fixHalfSpace(<span class="tok-v">$a</span>)), <span class="tok-s">"\n"</span>;   <span class="tok-c">// 10 8</span>
+<span class="tok-k">echo</span> preg_match_all(<span class="tok-s">'/./u'</span>, <span class="tok-v">$a</span>), <span class="tok-s">' '</span>, preg_match_all(<span class="tok-s">'/./u'</span>, Normalizer::fixHalfSpace(<span class="tok-v">$a</span>)), <span class="tok-s">"\n"</span>;   <span class="tok-c">// 10 8</span>
 
 <span class="tok-v">$b</span> = <span class="tok-s">"\u{200C}سلام \u{200C}دنیا\u{200C}"</span>;
-<span class="tok-k">echo</span> mb_strlen(<span class="tok-v">$b</span>), <span class="tok-s">' '</span>, mb_strlen(Normalizer::fixHalfSpace(<span class="tok-v">$b</span>)), <span class="tok-s">"\n"</span>;   <span class="tok-c">// 12 9</span>
+<span class="tok-k">echo</span> preg_match_all(<span class="tok-s">'/./u'</span>, <span class="tok-v">$b</span>), <span class="tok-s">' '</span>, preg_match_all(<span class="tok-s">'/./u'</span>, Normalizer::fixHalfSpace(<span class="tok-v">$b</span>)), <span class="tok-s">"\n"</span>;   <span class="tok-c">// 12 9</span>
 <span class="tok-k">echo</span> Normalizer::fixHalfSpace(<span class="tok-v">$b</span>), <span class="tok-s">"\n"</span>;                                  <span class="tok-c">// سلام دنیا</span></code></pre>
-<p>It does not insert missing half-spaces and does not collapse ordinary spaces.</p>
+<p>It does not add missing half-spaces and does not merge ordinary spaces.</p>
 
 <h3 id="clean">clean()<a class="anchor" href="#clean" aria-label="Link to this section">#</a></h3>
-<p><code>Normalizer::clean()</code> is the all-in-one version for storage and search: <code>normalize()</code>, then <code>fixHalfSpace()</code>, then removal of the invisible characters zero-width space (U+200B), zero-width joiner (U+200D) and the byte order mark (U+FEFF). ZWNJ is the only zero-width character kept.</p>
+<p><code>Normalizer::clean()</code> is the all-in-one version for storage and search. It runs <code>normalize()</code>, then <code>fixHalfSpace()</code>, then removes the invisible characters zero-width space (U+200B), zero-width joiner (U+200D) and the byte order mark (U+FEFF). ZWNJ is the only zero-width character it keeps.</p>
 <pre tabindex="0"><code class="language-php"><span class="tok-v">$c</span> = <span class="tok-s">"كتاب\u{200B}ي  ١٢٣"</span>;
 <span class="tok-k">echo</span> Normalizer::clean(<span class="tok-v">$c</span>), <span class="tok-s">"\n"</span>;   <span class="tok-c">// کتابی ۱۲۳</span></code></pre>
-<p>Applying <code>normalize()</code> alone to the same text would leave the invisible zero-width space inside the word, which is why <code>clean()</code> exists. Use it before storing or indexing user-supplied text.</p>
+<p><code>normalize()</code> alone would leave the invisible zero-width space inside the word. That is why <code>clean()</code> exists. Use it before you store or index user text.</p>
 
 <h2 id="detector">Detector<a class="anchor" href="#detector" aria-label="Link to this section">#</a></h2>
 <p><code>RtlyKit\Text\Detector</code> answers questions about script, language and direction. All methods are static and never throw.</p>
 
 <h3 id="persian-arabic">isPersian() and isArabic()<a class="anchor" href="#persian-arabic" aria-label="Link to this section">#</a></h3>
-<p>Both are heuristics for Arabic-script text. Persian is recognised by letters that exist only in Persian (<code>پ چ ژ گ</code>, the Persian forms <code>ک</code> and <code>ی</code>, and Persian digits). Arabic is recognised by <code>ي ك ى ة</code> and Arabic-Indic digits. Letters shared by both languages, including «ه» and the hamza forms, are not counted. The text is Persian when Persian-only letters are at least as frequent as Arabic-only letters, so ties and text with no distinguishing letters count as Persian.</p>
+<p>Both are heuristics for Arabic-script text. Persian is recognised by letters that exist only in Persian (<code>پ چ ژ گ</code>, the Persian forms <code>ک</code> and <code>ی</code>, and Persian digits). Arabic is recognised by <code>ي ك ى ة</code> and Arabic-Indic digits. Letters that both languages share, including «ه» and the hamza forms, are not counted. The text counts as Persian when Persian-only letters are at least as frequent as Arabic-only letters. So ties, and text with no telling letters, count as Persian.</p>
 <pre tabindex="0"><code class="language-php"><span class="tok-k">use</span> RtlyKit\Text\Detector;
 
-var_dump(Detector::isPersian(<span class="tok-s">'سلام'</span>));        <span class="tok-c">// bool(true), no distinguishing letters, Persian by default</span>
+var_dump(Detector::isPersian(<span class="tok-s">'سلام'</span>));        <span class="tok-c">// bool(true), no telling letters, Persian by default</span>
 var_dump(Detector::isPersian(<span class="tok-s">'گچپژ'</span>));        <span class="tok-c">// bool(true)</span>
 var_dump(Detector::isArabic(<span class="tok-s">'مرحبا بكم'</span>));    <span class="tok-c">// bool(true)</span>
 var_dump(Detector::isArabic(<span class="tok-s">'كتاب ي'</span>));       <span class="tok-c">// bool(true)</span>
@@ -89,23 +96,23 @@ var_dump(Detector::isPersian(<span class="tok-s">'hello'</span>));       <span c
 var_dump(Detector::isPersian(<span class="tok-s">'۱۲۳'</span>));         <span class="tok-c">// bool(true), Persian digits</span>
 var_dump(Detector::isArabic(<span class="tok-s">'٣٤٥'</span>));          <span class="tok-c">// bool(true), Arabic-Indic digits</span>
 var_dump(Detector::isPersian(<span class="tok-s">''</span>));            <span class="tok-c">// bool(false)</span></code></pre>
-<div class="callout known" role="note"><strong>Known limitation.</strong> This is a letter-frequency heuristic, not a language identifier. Very short text, names and Arabic words written in Persian are ambiguous. Text mixing Arabic and Persian can go either way. Do not use it for decisions that must be right; use it to choose a sensible default.</div>
+<div class="callout note" role="note"><strong>Good to know.</strong> This is a letter-count heuristic and not a language identifier. Very short text, names and Arabic words written in Persian can be ambiguous, and text that mixes both can go either way. Use it to choose a sensible default, not for decisions that must be exact.</div>
 
 <h3 id="direction">Direction and RTL<a class="anchor" href="#direction" aria-label="Link to this section">#</a></h3>
 <ul>
-<li><code>containsRtl($text)</code>: whether the text contains any character from a right-to-left script (Hebrew, Arabic and its supplements, Syriac, Thaana, N'Ko and others, Arabic presentation forms) or the RLM mark.</li>
-<li><code>direction($text)</code>: <code>'rtl'</code> or <code>'ltr'</code> from the <strong>first strong letter</strong>, following the Unicode bidirectional rule. Digits, punctuation and spaces are neutral. Text with no letters returns <code>'ltr'</code>.</li>
-<li><code>isHebrew($text)</code>: whether the text contains Hebrew letters.</li>
+<li><code>containsRtl($text)</code>: whether the text has any character from a right-to-left script (Hebrew, Arabic and its supplements, Syriac, Thaana, N'Ko and others, Arabic presentation forms) or the RLM mark.</li>
+<li><code>direction($text)</code>: <code>'rtl'</code> or <code>'ltr'</code>, taken from the first strong letter, following the Unicode bidirectional rule. Digits, punctuation and spaces are neutral. Text with no letters returns <code>'ltr'</code>.</li>
+<li><code>isHebrew($text)</code>: whether the text has Hebrew letters.</li>
 </ul>
 <pre tabindex="0"><code class="language-php">var_dump(Detector::containsRtl(<span class="tok-s">'abc'</span>));           <span class="tok-c">// bool(false)</span>
 <span class="tok-k">echo</span> Detector::direction(<span class="tok-s">'سلام hello'</span>), <span class="tok-s">"\n"</span>;    <span class="tok-c">// rtl</span>
 <span class="tok-k">echo</span> Detector::direction(<span class="tok-s">'Hello مرحبا'</span>), <span class="tok-s">"\n"</span>;   <span class="tok-c">// ltr (the first letter is Latin)</span>
 <span class="tok-k">echo</span> Detector::direction(<span class="tok-s">'۱۲۳'</span>), <span class="tok-s">"\n"</span>;           <span class="tok-c">// ltr (digits are neutral, there is no letter)</span>
 var_dump(Detector::isHebrew(<span class="tok-s">'שלום'</span>));            <span class="tok-c">// bool(true)</span></code></pre>
-<p>The helpers <code>contains_rtl()</code> and <code>text_direction()</code> wrap <code>containsRtl()</code> and <code>direction()</code>. Use <code>direction()</code> for an HTML <code>dir</code> attribute on user-generated text.</p>
+<p>The helpers <code>contains_rtl()</code> and <code>text_direction()</code> wrap <code>containsRtl()</code> and <code>direction()</code>. Use <code>direction()</code> for an HTML <code>dir</code> attribute on user-written text.</p>
 
 <h3 id="rtl-locale">isRtlLocale()<a class="anchor" href="#rtl-locale" aria-label="Link to this section">#</a></h3>
-<p><code>isRtlLocale($locale)</code> says whether a locale tag is written right-to-left. It splits on <code>-</code>, <code>_</code>, <code>.</code> and <code>@</code>, ignores case and surrounding spaces, and returns true when the language is a right-to-left one (<code>fa</code>, <code>ar</code>, <code>he</code>, <code>ur</code>, <code>ps</code>, <code>ug</code>, <code>dv</code>, <code>ckb</code>, <code>azb</code> and others) or when a script subtag such as <code>Arab</code> or <code>Hebr</code> is present.</p>
+<p><code>isRtlLocale($locale)</code> tells you if a locale tag is written right to left. It splits on <code>-</code>, <code>_</code>, <code>.</code> and <code>@</code>, ignores case and surrounding spaces, and returns true when the language is a right-to-left one (<code>fa</code>, <code>ar</code>, <code>he</code>, <code>ur</code>, <code>ps</code>, <code>ug</code>, <code>dv</code>, <code>ckb</code>, <code>azb</code> and others) or when a script subtag such as <code>Arab</code> or <code>Hebr</code> is present.</p>
 <pre tabindex="0"><code class="language-php">var_dump(Detector::isRtlLocale(<span class="tok-s">'fa_IR'</span>));     <span class="tok-c">// bool(true)</span>
 var_dump(Detector::isRtlLocale(<span class="tok-s">'ar-SA'</span>));     <span class="tok-c">// bool(true)</span>
 var_dump(Detector::isRtlLocale(<span class="tok-s">'ckb-IQ'</span>));    <span class="tok-c">// bool(true)</span>
@@ -115,12 +122,12 @@ var_dump(Detector::isRtlLocale(<span class="tok-s">'en'</span>));        <span c
 var_dump(Detector::isRtlLocale(<span class="tok-s">''</span>));          <span class="tok-c">// bool(false)</span></code></pre>
 
 <h2 id="slugify">Slugify<a class="anchor" href="#slugify" aria-label="Link to this section">#</a></h2>
-<p><code>Slugify::make($text, $separator = '-')</code> turns a title into a URL-friendly slug while keeping Persian and Arabic letters readable. It never transliterates.</p>
+<p><code>Slugify::make($text, $separator = '-')</code> turns a title into a URL-friendly slug and keeps Persian and Arabic letters readable. It does not transliterate.</p>
 <ol>
-<li>The text is normalized with <code>Normalizer::normalize()</code>.</li>
+<li>The text is cleaned with <code>Normalizer::normalize()</code>.</li>
 <li>Whitespace and half-spaces become the separator.</li>
 <li>Everything except letters (any script), combining marks, digits (any set), hyphens and underscores is dropped. Punctuation and emoji disappear.</li>
-<li>Repeated hyphens, underscores and separators collapse to one, and separators are trimmed from both ends.</li>
+<li>Repeated hyphens, underscores and separators become one, and separators are trimmed from both ends.</li>
 <li>The result is lower-cased as UTF-8.</li>
 </ol>
 <pre tabindex="0"><code class="language-php"><span class="tok-k">use</span> RtlyKit\Text\Slugify;
@@ -135,23 +142,23 @@ var_dump(Detector::isRtlLocale(<span class="tok-s">''</span>));          <span c
 <span class="tok-k">echo</span> Slugify::make(<span class="tok-s">'سلام 😀 دنیا'</span>), <span class="tok-s">"\n"</span>;            <span class="tok-c">// سلام-دنیا</span>
 <span class="tok-k">echo</span> Slugify::make(<span class="tok-s">'عکس.jpg'</span>), <span class="tok-s">"\n"</span>;                 <span class="tok-c">// عکسjpg</span>
 var_dump(Slugify::make(<span class="tok-s">'$%^&amp;'</span>));                    <span class="tok-c">// string(0) ""</span></code></pre>
-<p>Two things to keep in mind. Digits keep the set they were typed in (<code>۱۲۳</code> stays Persian), so run <code>Digits::toEnglish()</code> first if you want ASCII digits in URLs. And a dot is dropped, not treated as a separator, so file extensions fuse with the name (<code>عکسjpg</code>); slugify the name and extension separately.</p>
+<p>Two things to keep in mind. Digits keep the set they were typed in (<code>۱۲۳</code> stays Persian), so run <code>Digits::toEnglish()</code> first if you want ASCII digits in URLs. A dot is dropped and not treated as a separator, so a file extension joins the name (<code>عکسjpg</code>). Slugify the name and the extension separately.</p>
 
 <h3 id="slug-separator">The separator<a class="anchor" href="#slug-separator" aria-label="Link to this section">#</a></h3>
-<p>Pass any string as the second argument: <code>'_'</code>, a longer string, or an empty string to join words without any separator.</p>
+<p>Pass any string as the second argument: <code>'_'</code>, a longer string, or an empty string to join the words with nothing between them.</p>
 <pre tabindex="0"><code class="language-php"><span class="tok-k">echo</span> Slugify::make(<span class="tok-s">'سلام دنیا'</span>, <span class="tok-s">'_'</span>), <span class="tok-s">"\n"</span>;        <span class="tok-c">// سلام_دنیا</span>
 <span class="tok-k">echo</span> Slugify::make(<span class="tok-s">'سلام دنیا'</span>, <span class="tok-s">''</span>), <span class="tok-s">"\n"</span>;         <span class="tok-c">// سلامدنیا</span>
 <span class="tok-k">echo</span> Slugify::make(<span class="tok-s">'Hello World'</span>, <span class="tok-s">'--'</span>), <span class="tok-s">"\n"</span>;     <span class="tok-c">// hello--world</span></code></pre>
-<p>The separator is limited to <strong>64 bytes</strong> and must be valid UTF-8. A longer one throws <code>RtlyKitException</code> with the code <code>input_too_long</code>; an invalid one throws it with <code>invalid_argument</code>:</p>
+<p>The separator is limited to 64 bytes and must be valid UTF-8. A longer one throws <code>RtlyKitException</code> with the code <code>input_too_long</code>. An invalid one throws it with <code>invalid_argument</code>:</p>
 <pre tabindex="0"><code class="language-php"><span class="tok-k">try</span> {
     Slugify::make(<span class="tok-s">'Hello World'</span>, str_repeat(<span class="tok-s">'x'</span>, <span class="tok-n">65</span>));
 } <span class="tok-k">catch</span> (\RtlyKit\Exceptions\RtlyKitException <span class="tok-v">$e</span>) {
     <span class="tok-k">echo</span> <span class="tok-v">$e</span>-&gt;getMessage(), <span class="tok-s">' ['</span>, <span class="tok-v">$e</span>-&gt;getErrorCode()-&gt;value, <span class="tok-s">"]\n"</span>;
     <span class="tok-c">// The slug separator is too long. [input_too_long]</span>
 }</code></pre>
-<div class="callout warn" role="note"><strong>Empty slugs and uniqueness.</strong> A title made only of punctuation produces an empty string, and different titles can produce the same slug. Handle the empty case (for example fall back to an id) and enforce uniqueness in your own storage layer.</div>
-<div class="callout note" role="note"><strong>Encoding.</strong> Slugify expects UTF-8 text. It does not validate the text itself, and invalid bytes in the input are not reported. Validate or convert the encoding of untrusted input first.</div>
-<nav class="reading-footer" aria-label="Previous and next page"><a class="prev" rel="prev" href="number-words.html"><small>Previous</small>Number to words</a><a class="next" rel="next" href="holidays.html"><small>Next</small>Iranian holidays</a></nav>
+<div class="callout note" role="note"><strong>Good to know.</strong> A title made only of punctuation gives an empty string, and different titles can give the same slug. Handle the empty case yourself (for example, fall back to an id) and enforce uniqueness in your storage layer.</div>
+<div class="callout note" role="note"><strong>Encoding.</strong> Slugify needs valid UTF-8 for both the text and the separator. Invalid bytes in the text throw <code>RtlyKitException</code> with the code <code>invalid_argument</code>, because a slug is an identifier and bad bytes should not pass through. <code>Normalizer</code> is more forgiving. It works on a best-effort basis and returns input it cannot process as it was. Lower-casing uses the Unicode simple case mapping and needs no PHP extension.</div>
+<nav class="reading-footer" aria-label="Previous and next page"><a class="prev" rel="prev" href="arabic-number-words.html"><small>Previous</small>Arabic number words</a><a class="next" rel="next" href="holidays.html"><small>Next</small>Iranian holidays</a></nav>
 </article>
 <nav class="toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#normalizer">Normalizer</a><ol><li><a href="#normalize">normalize()</a></li><li><a href="#half-space">fixHalfSpace()</a></li><li><a href="#clean">clean()</a></li></ol></li><li><a href="#detector">Detector</a><ol><li><a href="#persian-arabic">isPersian() and isArabic()</a></li><li><a href="#direction">Direction and RTL</a></li><li><a href="#rtl-locale">isRtlLocale()</a></li></ol></li><li><a href="#slugify">Slugify</a><ol><li><a href="#slug-separator">The separator</a></li></ol></li></ol></nav>
 </div>

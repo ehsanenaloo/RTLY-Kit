@@ -109,13 +109,17 @@
   --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 10px 28px rgba(0, 0, 0, .35);
 }
 
-/* Persian: system Persian-capable stack, looser leading, no letter-spacing (it breaks letter joining). */
+/* Persian and Arabic: system Arabic-script stack, looser leading, no letter-spacing (it breaks letter joining). */
 :root:lang(fa) {
   --font: Vazirmatn, "Vazir", Tahoma, "Segoe UI", "Noto Naskh Arabic", "Noto Sans Arabic", ui-sans-serif, system-ui, sans-serif;
 }
+:root:lang(ar) {
+  --font: "Segoe UI", Tahoma, "Noto Sans Arabic", "Noto Naskh Arabic", "Geeza Pro", "Droid Arabic Kufi", ui-sans-serif, system-ui, sans-serif;
+}
 :lang(fa) body { line-height: 1.95; }
-:lang(fa) *, :lang(fa) *::before, :lang(fa) *::after { letter-spacing: 0 !important; }
-:lang(fa) .eyebrow, :lang(fa) .tag, :lang(fa) .sidebar p, :lang(fa) .toc p, :lang(fa) .callout > strong:first-child { text-transform: none; }
+:lang(ar) body { line-height: 1.9; }
+:is(:lang(fa), :lang(ar)) *, :is(:lang(fa), :lang(ar)) *::before, :is(:lang(fa), :lang(ar)) *::after { letter-spacing: 0 !important; }
+:is(:lang(fa), :lang(ar)) .eyebrow, :is(:lang(fa), :lang(ar)) .tag, :is(:lang(fa), :lang(ar)) .sidebar p, :is(:lang(fa), :lang(ar)) .toc p, :is(:lang(fa), :lang(ar)) .callout > strong:first-child { text-transform: none; }
 
 *, *::before, *::after { box-sizing: border-box; }
 
@@ -194,6 +198,9 @@ a:hover { color: var(--accent-strong); }
   border-radius: 999px; padding: 6px 12px; font-size: .88rem; font-weight: 550; text-decoration: none; white-space: nowrap; display: inline-block;
 }
 .icon-button:hover, a.icon-button:hover { background: var(--accent-soft); color: var(--accent-ink); }
+.lang-switch { display: inline-flex; gap: 4px; align-items: center; }
+.lang-switch .icon-button { padding: 5px 10px; }
+.lang-switch .icon-button.is-current { background: var(--accent-soft); color: var(--accent-ink); border-color: var(--accent); font-weight: 650; cursor: default; }
 
 /* ---------- Hero ---------- */
 .hero { padding-block: clamp(36px, 7vw, 88px) 36px; background: radial-gradient(900px 380px at 85% -10%, var(--accent-soft), transparent 70%), linear-gradient(180deg, var(--bg-tint), var(--bg)); border-bottom: 1px solid var(--line); }
@@ -381,7 +388,7 @@ caption { text-align: start; font-size: .86rem; color: var(--muted); padding: 8p
 .chooser { min-height: 100vh; display: grid; align-content: center; padding-block: 40px; }
 .chooser h1 { margin: 12px 0 4px; font-size: clamp(2rem, 5vw, 3rem); letter-spacing: -.02em; }
 .chooser .lead { margin-bottom: 26px; }
-.chooser .lead[lang="fa"] { direction: rtl; }
+.chooser .lead[lang="fa"], .chooser .lead[lang="ar"] { direction: rtl; }
 .lang-cards { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); max-width: 720px; }
 .lang-cards .card.is-suggested { border-color: var(--accent); box-shadow: var(--shadow); }
 .lang-cards .card h2 { margin: 0; font-size: 1.5rem; }

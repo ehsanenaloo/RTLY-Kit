@@ -3,44 +3,51 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>قواعد اعتبارسنجی و کست Eloquent | RTLY-Kit راهنمای کاربر</title>
-<meta name="description" content="قواعد اعتبارسنجی ایرانی را در فرم‌های لاراول به کار ببرید، تاریخ جلالی را با JalaliCast در مدل‌های Eloquent ذخیره کنید و در Blade نمایش دهید.">
+<title>قانون‌های اعتبارسنجی و cast در Eloquent | RTLY-Kit راهنمای کاربر</title>
+<meta name="description" content="قانون‌های اعتبارسنجی ایرانی را در فرم‌های Laravel به کار ببرید، تاریخ جلالی را با JalaliCast در مدل‌های Eloquent ذخیره کنید و در Blade نشان بدهید.">
 <meta name="color-scheme" content="light dark">
-<meta property="og:title" content="قواعد اعتبارسنجی و کست Eloquent | RTLY-Kit راهنمای کاربر">
-<meta property="og:description" content="قواعد اعتبارسنجی ایرانی را در فرم‌های لاراول به کار ببرید، تاریخ جلالی را با JalaliCast در مدل‌های Eloquent ذخیره کنید و در Blade نمایش دهید.">
+<meta property="og:title" content="قانون‌های اعتبارسنجی و cast در Eloquent | RTLY-Kit راهنمای کاربر">
+<meta property="og:description" content="قانون‌های اعتبارسنجی ایرانی را در فرم‌های Laravel به کار ببرید، تاریخ جلالی را با JalaliCast در مدل‌های Eloquent ذخیره کنید و در Blade نشان بدهید.">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="fa_IR">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:locale:alternate" content="ar_AR">
+<meta property="og:url" content="https://ehsanenaloo.github.io/RTLY-Kit/fa/laravel-validation-and-cast.html">
 <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
-<link rel="alternate" hreflang="en" href="../en/laravel-validation-and-cast.html">
+<link rel="canonical" href="https://ehsanenaloo.github.io/RTLY-Kit/fa/laravel-validation-and-cast.html">
+<link rel="alternate" hreflang="fa" href="https://ehsanenaloo.github.io/RTLY-Kit/fa/laravel-validation-and-cast.html">
+<link rel="alternate" hreflang="en" href="https://ehsanenaloo.github.io/RTLY-Kit/en/laravel-validation-and-cast.html">
+<link rel="alternate" hreflang="ar" href="https://ehsanenaloo.github.io/RTLY-Kit/ar/laravel-validation-and-cast.html">
+<link rel="alternate" hreflang="x-default" href="https://ehsanenaloo.github.io/RTLY-Kit/">
 <link rel="stylesheet" href="../styles.css">
 <script>try{var t=localStorage.getItem("rtly-docs-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <script defer src="../app.js"></script>
 </head>
 <body>
-<a class="skip" href="#main">پرش به محتوا</a><header class="site-header"><div class="shell header-inner"><a class="brand" href="index.html"><img src="../assets/logo.svg" width="34" height="34" alt=""><span><span class="name">RTLY-Kit</span><small>راهنمای کاربر</small></span></a><nav class="top-nav" aria-label="ناوبری اصلی"><a href="index.html">نمای کلی</a><a href="quick-start.html">شروع سریع</a><a href="all.html">همهٔ راهنماها</a><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">گیت‌هاب &#8599;</a></nav><div class="header-tools"><span data-search-host></span><button type="button" class="icon-button" data-theme-toggle hidden>Theme</button><a class="icon-button" href="../en/laravel-validation-and-cast.html" hreflang="en" lang="en" aria-label="Switch to English">English</a></div></div></header>
+<a class="skip" href="#main">پرش به محتوا</a><header class="site-header"><div class="shell header-inner"><a class="brand" href="index.html"><img src="../assets/logo.svg" width="34" height="34" alt=""><span><span class="name">RTLY-Kit</span><small>راهنمای کاربر</small></span></a><nav class="top-nav" aria-label="ناوبری اصلی"><a href="index.html">نمای کلی</a><a href="quick-start.html">شروع سریع</a><a href="all.html">همهٔ راهنماها</a><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">گیت‌هاب &#8599;</a></nav><div class="header-tools"><span data-search-host></span><button type="button" class="icon-button" data-theme-toggle hidden>Theme</button><div class="lang-switch" role="group" aria-label="زبان"><span class="icon-button is-current" lang="fa" aria-current="true">فارسی</span><a class="icon-button" href="../en/laravel-validation-and-cast.html" hreflang="en" lang="en">English</a><a class="icon-button" href="../ar/laravel-validation-and-cast.html" hreflang="ar" lang="ar">العربية</a></div></div></div></header>
 <main id="main">
-<div class="shell page-intro"><nav class="breadcrumbs" aria-label="مسیر صفحه"><ol><li><a href="index.html">خانه</a></li><li><a href="all.html#group-laravel">لاراول</a></li><li aria-current="page">قواعد اعتبارسنجی و کست Eloquent</li></ol></nav><h1>قواعد اعتبارسنجی و کست Eloquent</h1><p class="lead">قواعد اعتبارسنجی ایرانی را در فرم‌های لاراول به کار ببرید، تاریخ جلالی را با JalaliCast در مدل‌های Eloquent ذخیره کنید و در Blade نمایش دهید.</p></div>
+<div class="shell page-intro"><nav class="breadcrumbs" aria-label="مسیر صفحه"><ol><li><a href="index.html">خانه</a></li><li><a href="all.html#group-laravel">لاراول</a></li><li aria-current="page">قانون‌های اعتبارسنجی و cast در Eloquent</li></ol></nav><h1>قانون‌های اعتبارسنجی و cast در Eloquent</h1><p class="lead">قانون‌های اعتبارسنجی ایرانی را در فرم‌های Laravel به کار ببرید، تاریخ جلالی را با JalaliCast در مدل‌های Eloquent ذخیره کنید و در Blade نشان بدهید.</p></div>
 <div class="shell doc-layout has-toc">
-<aside class="sidebar"><details open><summary>فهرست راهنماها</summary><nav aria-label="راهنماها"><a href="all.html">همهٔ راهنماها</a><p>شروع کار</p><a href="quick-start.html">شروع سریع</a><a href="installation.html">نصب</a><p>تقویم‌ها</p><a href="jalali.html">تقویم جلالی</a><a href="hijri.html">تقویم هجری</a><a href="hebrew.html">تقویم عبری</a><a href="convert-and-compare.html">تبدیل و مقایسهٔ تاریخ‌ها</a><a href="carbon-macros.html">ماکروهای Carbon</a><p>اعتبارسنجی</p><a href="validators-overview.html">نمای کلی اعتبارسنج‌ها</a><a href="national-code.html">کد ملی</a><a href="sheba-and-bank-card.html">شبا و کارت بانکی</a><a href="mobile-postal-plate.html">موبایل، کدپستی و پلاک</a><p>اعداد و متن</p><a href="digits-and-format.html">ارقام و قالب‌بندی اعداد</a><a href="number-words.html">عدد به حروف</a><a href="text-tools.html">ابزارهای متن</a><p>تعطیلات و اوقات شرعی</p><a href="holidays.html">تعطیلات رسمی ایران</a><a href="prayer-times.html">اوقات شرعی</a><p>لاراول</p><a href="laravel-setup.html">راه‌اندازی لاراول</a><a href="laravel-validation-and-cast.html" aria-current="page">قواعد اعتبارسنجی و کست Eloquent</a><p>مرجع</p><a href="helpers-and-globals.html">توابع کمکی و سراسری</a><a href="error-handling.html">مدیریت خطا</a><a href="api-stability.html">پایداری API</a><a href="accuracy-and-data.html">دقت و داده‌ها</a><a href="benchmarks.html">بنچمارک</a><a href="limits.html">محدودیت‌ها</a><a href="troubleshooting-faq.html">عیب‌یابی و پرسش‌های متداول</a><a href="upgrade.html">راهنمای ارتقا</a></nav></details></aside>
+<aside class="sidebar"><details open><summary>فهرست راهنماها</summary><nav aria-label="راهنماها"><a href="all.html">همهٔ راهنماها</a><p>شروع کار</p><a href="quick-start.html">شروع سریع</a><a href="installation.html">نصب</a><p>تقویم‌ها</p><a href="jalali.html">تقویم جلالی</a><a href="hijri.html">تقویم هجری</a><a href="hebrew.html">تقویم عبری</a><a href="convert-and-compare.html">تبدیل و مقایسهٔ تاریخ‌ها</a><a href="carbon-macros.html">ماکروهای Carbon</a><p>اعتبارسنجی</p><a href="validators-overview.html">مرور اعتبارسنج‌ها</a><a href="national-code.html">کد ملی</a><a href="sheba-and-bank-card.html">شبا و کارت بانکی</a><a href="mobile-postal-plate.html">موبایل، کدپستی و پلاک</a><p>اعداد و متن</p><a href="digits-and-format.html">رقم‌ها و قالب‌بندی عدد</a><a href="number-words.html">عدد به حروف</a><a href="arabic-number-words.html">عدد به حروف عربی</a><a href="text-tools.html">ابزارهای متن</a><p>تعطیلات و اوقات شرعی</p><a href="holidays.html">تعطیلات رسمی ایران</a><a href="holiday-calendar.html">تقویم تعطیلات</a><a href="prayer-times.html">اوقات شرعی</a><p>لاراول</p><a href="laravel-setup.html">راه‌اندازی Laravel</a><a href="laravel-validation-and-cast.html" aria-current="page">قانون‌های اعتبارسنجی و cast در Eloquent</a><p>مرجع</p><a href="helpers-and-globals.html">توابع کمکی و سراسری</a><a href="error-handling.html">مدیریت خطا</a><a href="api-stability.html">پایداری API</a><a href="accuracy-and-data.html">دقت و داده</a><a href="benchmarks.html">بنچمارک</a><a href="limits.html">سقف‌ها</a><a href="troubleshooting-faq.html">عیب‌یابی و پرسش‌های متداول</a><a href="upgrade.html">راهنمای ارتقا</a><a href="verifying-releases.html">راستی‌آزمایی انتشارها</a></nav></details></aside>
 <article class="prose">
-<details class="toc-inline"><summary>در این صفحه</summary><ol><li><a href="#rules">قواعد اعتبارسنجی</a></li><li><a href="#usage">کاربرد</a></li><li><a href="#input">چه ورودی‌ای پذیرفته می‌شود</a></li><li><a href="#cast">کست Eloquent با نام JalaliCast</a><ol><li><a href="#cast-input">مقدارهای پذیرفته‌شده هنگام انتساب</a></li><li><a href="#cast-errors">خطاها</a></li><li><a href="#cast-json">سریال‌سازی مدل</a></li></ol></li><li><a href="#request">فرم‌ریکوئست</a></li><li><a href="#blade">Blade</a></li></ol></details>
-<h2 id="rules">قواعد اعتبارسنجی<a class="anchor" href="#rules" aria-label="پیوند به این بخش">#</a></h2>
-<p>پس از نصب بسته (<a href="laravel-setup.html">راه‌اندازی لاراول</a>)، هفت قاعده در هر validator، form request یا فراخوانی <code>$request->validate()</code> در دسترس است. این قواعد اعتبارسنج‌هایی را که در صفحه‌های اعتبارسنجی آمده‌اند در بر می‌گیرند.</p>
+<details class="toc-inline"><summary>در این صفحه</summary><ol><li><a href="#rules">قانون‌های اعتبارسنجی</a></li><li><a href="#usage">استفاده</a></li><li><a href="#input">چه ورودی‌ای قبول می‌شود</a></li><li><a href="#cast">cast در Eloquent با JalaliCast</a><ol><li><a href="#cast-input">مقدارهایی که می‌شود نوشت</a></li><li><a href="#cast-errors">خطاها</a></li><li><a href="#cast-json">تبدیل مدل به JSON</a></li></ol></li><li><a href="#request">form request</a></li><li><a href="#blade">Blade</a></li></ol></details>
+<h2 id="rules">قانون‌های اعتبارسنجی<a class="anchor" href="#rules" aria-label="پیوند به این بخش">#</a></h2>
+<p>بعد از نصب بسته (<a href="laravel-setup.html">راه‌اندازی Laravel</a>)، شش قانون در دسترس است (با هفت نام، چون <code>mobile</code> نام کوتاه <code>iran_mobile</code> است). آن‌ها را در هر validator، form request یا <code>$request-&gt;validate()</code> می‌توانید بنویسید. هر قانون یکی از اعتبارسنج‌های توضیح‌داده‌شده در صفحه‌های اعتبارسنجی است.</p>
 <div class="table-wrap" tabindex="0" role="region" aria-label="جدول"><table>
-<thead><tr><th scope="col">قاعده</th><th scope="col">می‌پذیرد</th><th scope="col">جزئیات</th></tr></thead>
+<thead><tr><th scope="col">قانون</th><th scope="col">چه چیزی را قبول می‌کند</th><th scope="col">جزئیات</th></tr></thead>
 <tbody>
 <tr><td><code>national_code</code></td><td>کد ملی ایران</td><td><a href="national-code.html">کد ملی</a></td></tr>
-<tr><td><code>sheba</code></td><td>شبا / IBAN، با پیشوند <code>IR</code> یا بدون آن</td><td><a href="sheba-and-bank-card.html">شبا و کارت بانکی</a></td></tr>
+<tr><td><code>sheba</code></td><td>شبا / IBAN، با <code>IR</code> یا بدون آن</td><td><a href="sheba-and-bank-card.html">شبا و کارت بانکی</a></td></tr>
 <tr><td><code>bank_card</code></td><td>شمارهٔ کارت بانکی ۱۶ رقمی (بررسی Luhn)</td><td><a href="sheba-and-bank-card.html">شبا و کارت بانکی</a></td></tr>
-<tr><td><code>iran_mobile</code></td><td>شمارهٔ موبایل ایران</td><td><a href="mobile-postal-plate.html">موبایل، کد پستی، پلاک</a></td></tr>
+<tr><td><code>iran_mobile</code></td><td>شمارهٔ موبایل ایران</td><td><a href="mobile-postal-plate.html">موبایل، کدپستی، پلاک</a></td></tr>
 <tr><td><code>mobile</code></td><td>نام کوتاه <code>iran_mobile</code></td><td>رفتار یکسان</td></tr>
-<tr><td><code>postal_code</code></td><td>کد پستی ۱۰ رقمی ایران</td><td><a href="mobile-postal-plate.html">موبایل، کد پستی، پلاک</a></td></tr>
-<tr><td><code>vehicle_plate</code></td><td>پلاک خودروی ایران، مثلاً <code>12ب345-67</code></td><td><a href="mobile-postal-plate.html">موبایل، کد پستی، پلاک</a></td></tr>
+<tr><td><code>postal_code</code></td><td>کدپستی ۱۰ رقمی ایران</td><td><a href="mobile-postal-plate.html">موبایل، کدپستی، پلاک</a></td></tr>
+<tr><td><code>vehicle_plate</code></td><td>پلاک خودروی ایران، مثلاً <code>12ب345-67</code></td><td><a href="mobile-postal-plate.html">موبایل، کدپستی، پلاک</a></td></tr>
 </tbody>
 </table></div>
-<div class="callout warn" role="note"><strong>هم‌نامی.</strong> <code>mobile</code> واژه‌ای عمومی است. اگر بستهٔ دیگر یا کد خودتان قاعده‌ای با همین نام ثبت کند، همه‌جا از <code>iran_mobile</code> استفاده کنید تا ابهامی نماند.</div>
+<div class="callout note" role="note"><strong>نام تکراری.</strong> <code>mobile</code> اسم عمومی است. اگر بستهٔ دیگری یا کد خودتان قانونی با همین نام ثبت کند، همه‌جا <code>iran_mobile</code> را بنویسید تا اشتباه نشود.</div>
 
-<h2 id="usage">کاربرد<a class="anchor" href="#usage" aria-label="پیوند به این بخش">#</a></h2>
+<h2 id="usage">استفاده<a class="anchor" href="#usage" aria-label="پیوند به این بخش">#</a></h2>
 <pre tabindex="0"><code class="language-php"><span class="tok-k">use</span> Illuminate\Http\Request;
 
 <span class="tok-k">public</span> <span class="tok-k">function</span> store(Request <span class="tok-v">$request</span>)
@@ -54,33 +61,33 @@
         <span class="tok-s">'plate'</span>         =&gt; <span class="tok-s">'nullable|vehicle_plate'</span>,
     ]);
 }</code></pre>
-<p>اجرای واقعی با دادهٔ نادرست و زبان <code>fa</code> این خروجی را داد:</p>
+<p>اجرای واقعی با داده‌های نادرست و زبان <code>fa</code> این نتیجه را داد:</p>
 <pre tabindex="0"><code class="language-php"><span class="tok-c">// national_code = '1234567890'، mobile = '0912'، iban = 'IR000000000000000000000000'</span>
-<span class="tok-c">// card، postal و plate مقدار درست دارند و رد می‌شوند.</span>
+<span class="tok-c">// card و postal و plate درست‌اند و رد نمی‌شوند.</span>
 <span class="tok-c">//</span>
 <span class="tok-c">// national_code: national code کد ملی معتبر نیست.</span>
 <span class="tok-c">// mobile: mobile شماره موبایل معتبر نیست.</span>
 <span class="tok-c">// iban: iban شماره شبا معتبر نیست.</span></code></pre>
-<p>متن انگلیسی «The national code is not a valid Iranian national code.» است و متن عربی هم موجود است؛ <a href="laravel-setup.html#translations">ترجمه‌ها</a> و <a href="laravel-setup.html#override">بازنویسی پیام</a> را ببینید.</p>
+<p>متن انگلیسی «The national code is not a valid Iranian national code.» است و متن عربی هم هست. <a href="laravel-setup.html#translations">ترجمه‌ها</a> و <a href="laravel-setup.html#override">عوض کردن پیام‌ها</a> را ببینید.</p>
 
-<h2 id="input">چه ورودی‌ای پذیرفته می‌شود<a class="anchor" href="#input" aria-label="پیوند به این بخش">#</a></h2>
+<h2 id="input">چه ورودی‌ای قبول می‌شود<a class="anchor" href="#input" aria-label="پیوند به این بخش">#</a></h2>
 <ul>
-<li><strong>رشته‌ها.</strong> ارقام فارسی و عربی پذیرفته می‌شوند: <code>۰۰۱۳۵۴۲۴۱۹</code> قاعدهٔ <code>national_code</code> را می‌گذراند.</li>
-<li><strong>عدد صحیح و اعشاری</strong> ابتدا به رشته تبدیل می‌شود. مراقب عددهایی باشید که با صفر شروع می‌شوند: عدد JSON با مقدار <code>13542419</code> صفرهای ابتدای <code>0013542419</code> را از دست داده و <strong>رد می‌شود</strong>. کد ملی، موبایل و کد پستی را به‌صورت رشته بفرستید.</li>
-<li><strong>آرایه، شیء و بولی</strong> هرگز به اعتبارسنج نمی‌رسند و به‌سادگی قاعده را رد می‌کنند.</li>
-<li><strong>مقدار تهی.</strong> مانند قواعد خود لاراول، رشتهٔ خالی و کلید غایب نادیده گرفته می‌شوند مگر فیلد <code>required</code> باشد. مقدار صریح <code>null</code> رد می‌شود مگر فیلد <code>nullable</code> باشد. با <code>required</code> یا <code>nullable</code> منظورتان را روشن کنید.</li>
+<li><strong>رشته.</strong> رقم‌های فارسی و عربی قبول می‌شوند. <code>۰۰۱۳۵۴۲۴۱۹</code> قانون <code>national_code</code> را رد می‌کند و می‌گذراند.</li>
+<li><strong>عدد صحیح و اعشاری</strong> اول به رشته تبدیل می‌شود. مراقب عددهایی باشید که با صفر شروع می‌شوند. عدد JSON با مقدار <code>13542419</code> صفرهای اول <code>0013542419</code> را از دست داده و <strong>رد می‌شود</strong>. کد ملی، موبایل و کدپستی را رشته بفرستید.</li>
+<li><strong>آرایه، شیء و بولی</strong> به اعتبارسنج نمی‌رسند و قانون را رد می‌کنند.</li>
+<li><strong>مقدار خالی.</strong> مثل قانون‌های خود Laravel، رشتهٔ خالی و کلید غایب نادیده گرفته می‌شود، مگر فیلد <code>required</code> باشد. مقدار صریح <code>null</code> رد می‌شود، مگر فیلد <code>nullable</code> باشد. با <code>required</code> یا <code>nullable</code> منظورتان را روشن کنید.</li>
 </ul>
 <pre tabindex="0"><code class="language-php"><span class="tok-v">$f</span>-&gt;make([<span class="tok-s">'n'</span> =&gt; <span class="tok-s">'۰۰۱۳۵۴۲۴۱۹'</span>], [<span class="tok-s">'n'</span> =&gt; <span class="tok-s">'national_code'</span>])-&gt;passes();          <span class="tok-c">// true</span>
-<span class="tok-v">$f</span>-&gt;make([<span class="tok-s">'n'</span> =&gt; <span class="tok-n">13542419</span>],      [<span class="tok-s">'n'</span> =&gt; <span class="tok-s">'national_code'</span>])-&gt;passes();          <span class="tok-c">// false (صفرهای ابتدا از دست رفته)</span>
+<span class="tok-v">$f</span>-&gt;make([<span class="tok-s">'n'</span> =&gt; <span class="tok-n">13542419</span>],      [<span class="tok-s">'n'</span> =&gt; <span class="tok-s">'national_code'</span>])-&gt;passes();          <span class="tok-c">// false (صفرهای اول از دست رفته)</span>
 <span class="tok-v">$f</span>-&gt;make([<span class="tok-s">'n'</span> =&gt; <span class="tok-k">null</span>],          [<span class="tok-s">'n'</span> =&gt; <span class="tok-s">'nullable|national_code'</span>])-&gt;passes(); <span class="tok-c">// true</span>
 <span class="tok-v">$f</span>-&gt;make([<span class="tok-s">'n'</span> =&gt; <span class="tok-k">null</span>],          [<span class="tok-s">'n'</span> =&gt; <span class="tok-s">'national_code'</span>])-&gt;passes();          <span class="tok-c">// false</span>
 <span class="tok-v">$f</span>-&gt;make([<span class="tok-s">'n'</span> =&gt; <span class="tok-s">''</span>],            [<span class="tok-s">'n'</span> =&gt; <span class="tok-s">'national_code'</span>])-&gt;passes();          <span class="tok-c">// true  (نادیده گرفته می‌شود)</span>
 <span class="tok-v">$f</span>-&gt;make([<span class="tok-s">'n'</span> =&gt; <span class="tok-s">''</span>],            [<span class="tok-s">'n'</span> =&gt; <span class="tok-s">'required|national_code'</span>])-&gt;passes(); <span class="tok-c">// false</span>
 <span class="tok-v">$f</span>-&gt;make([],                     [<span class="tok-s">'n'</span> =&gt; <span class="tok-s">'national_code'</span>])-&gt;passes();          <span class="tok-c">// true  (کلید غایب)</span></code></pre>
-<p>اگر دلیل رد شدن مقدار را می‌خواهید (طول نادرست، رقم کنترل غلط، نوع نادرست)، اعتبارسنج‌های مستقل را صدا بزنید که <code>Result</code> ساخت‌یافته برمی‌گردانند؛ <a href="validators-overview.html">مرور اعتبارسنج‌ها</a> را ببینید.</p>
+<p>اگر دلیل رد شدن را هم می‌خواهید (طول نادرست، رقم کنترل غلط، نوع نادرست)، خود اعتبارسنج را صدا بزنید که <code>Result</code> کامل می‌دهد. <a href="validators-overview.html">مرور اعتبارسنج‌ها</a> را ببینید.</p>
 
-<h2 id="cast">کست Eloquent با نام JalaliCast<a class="anchor" href="#cast" aria-label="پیوند به این بخش">#</a></h2>
-<p>کلاس <code>RtlyKit\Laravel\Casts\JalaliCast</code> ستون پایگاه داده را میلادی (<code>Y-m-d H:i:s</code>) نگه می‌دارد، همان‌طور که همهٔ ابزارها انتظار دارند، و ویژگی مدل را به‌صورت یک شیء تغییرناپذیر <code>RtlyKit\Calendar\Jalali</code> نشان می‌دهد.</p>
+<h2 id="cast">cast در Eloquent با JalaliCast<a class="anchor" href="#cast" aria-label="پیوند به این بخش">#</a></h2>
+<p>کلاس <code>RtlyKit\Laravel\Casts\JalaliCast</code> ستون پایگاه داده را میلادی (<code>Y-m-d H:i:s</code>) نگه می‌دارد، همان‌طور که همهٔ ابزارها انتظار دارند. در مدل، مقدار را به شکل یک شیء تغییرناپذیر <code>RtlyKit\Calendar\Jalali</code> نشان می‌دهد.</p>
 <pre tabindex="0"><code class="language-php"><span class="tok-k">use</span> Illuminate\Database\Eloquent\Model;
 <span class="tok-k">use</span> RtlyKit\Laravel\Casts\JalaliCast;
 
@@ -100,57 +107,57 @@
 <span class="tok-k">echo</span> <span class="tok-v">$post</span>-&gt;published_at-&gt;format(<span class="tok-s">'Y/m/d H:i'</span>);        <span class="tok-c">// 1404/01/15 10:30</span>
 <span class="tok-k">echo</span> get_class(<span class="tok-v">$post</span>-&gt;published_at);                  <span class="tok-c">// RtlyKit\Calendar\Jalali</span>
 <span class="tok-k">echo</span> <span class="tok-v">$post</span>-&gt;published_at-&gt;addDays(<span class="tok-n">20</span>)-&gt;format(<span class="tok-s">'Y/m/d'</span>); <span class="tok-c">// 1404/02/04</span></code></pre>
-<p>نوع ستون همان <code>datetime</code> یا <code>timestamp</code> می‌ماند و مایگریشن تغییری نمی‌کند.</p>
+<p>نوع ستون همان <code>datetime</code> یا <code>timestamp</code> می‌ماند و migration عوض نمی‌شود.</p>
 
-<h3 id="cast-input">مقدارهای پذیرفته‌شده هنگام انتساب<a class="anchor" href="#cast-input" aria-label="پیوند به این بخش">#</a></h3>
+<h3 id="cast-input">مقدارهایی که می‌شود نوشت<a class="anchor" href="#cast-input" aria-label="پیوند به این بخش">#</a></h3>
 <div class="table-wrap" tabindex="0" role="region" aria-label="جدول"><table>
-<thead><tr><th scope="col">مقدار انتسابی</th><th scope="col">مقدار ذخیره‌شده (میلادی)</th></tr></thead>
+<thead><tr><th scope="col">مقداری که می‌نویسید</th><th scope="col">مقدار ذخیره‌شده (میلادی)</th></tr></thead>
 <tbody>
 <tr><td>رشتهٔ جلالی <code>'1404/01/15 10:30'</code></td><td><code>2025-04-04 10:30:00</code></td></tr>
-<tr><td>فقط تاریخ جلالی با ارقام فارسی و خط تیره <code>'۱۴۰۴-۰۱-۱۵'</code></td><td><code>2025-04-04 00:00:00</code></td></tr>
+<tr><td>فقط تاریخ جلالی با رقم فارسی و خط تیره <code>'۱۴۰۴-۰۱-۱۵'</code></td><td><code>2025-04-04 00:00:00</code></td></tr>
 <tr><td>رشتهٔ میلادی <code>'2025-04-04 08:00:00'</code></td><td><code>2025-04-04 08:00:00</code></td></tr>
-<tr><td>برچسب زمانی یونیکس (عدد صحیح) <code>1743753600</code></td><td><code>2025-04-04 08:00:00</code> (با منطقهٔ زمانی پیش‌فرض UTC)</td></tr>
+<tr><td>زمان یونیکس (عدد صحیح) <code>1743753600</code></td><td><code>2025-04-04 08:00:00</code> (با منطقهٔ زمانی پیش‌فرض UTC)</td></tr>
 <tr><td>هر <code>DateTimeInterface</code> (از جمله Carbon)</td><td>همان لحظه، به شکل <code>Y-m-d H:i:s</code></td></tr>
 <tr><td>شیء <code>Jalali</code></td><td>معادل میلادی آن</td></tr>
 <tr><td><code>null</code> یا <code>''</code></td><td><code>null</code></td></tr>
 </tbody>
 </table></div>
-<p>رشته‌ای جلالی خوانده می‌شود که سالش ۱۲۰۰ تا ۱۵۹۹ و جداکننده‌اش <code>/</code> یا <code>-</code> باشد، با ساعت اختیاری <code>HH:MM</code> یا <code>HH:MM:SS</code> پس از فاصله یا <code>T</code>. هر رشتهٔ دیگر مانند تاریخ میلادی از تجزیه‌گر معمول می‌گذرد.</p>
+<p>رشته‌ای جلالی حساب می‌شود که سالش بین ۱۲۰۰ و ۱۵۹۹ باشد و جداکننده‌اش <code>/</code> یا <code>-</code>، با ساعت اختیاری <code>HH:MM</code> یا <code>HH:MM:SS</code> بعد از فاصله یا <code>T</code>. بقیهٔ رشته‌ها مثل تاریخ میلادی خوانده می‌شوند.</p>
 
 <h3 id="cast-errors">خطاها<a class="anchor" href="#cast-errors" aria-label="پیوند به این بخش">#</a></h3>
-<p>ورودی نادرست هنگام انتساب <code>RtlyKit\Exceptions\InvalidDateException</code> پرتاب می‌کند، نه خطای خام PHP:</p>
+<p>ورودی نادرست موقع نوشتن <code>RtlyKit\Exceptions\InvalidDateException</code> می‌دهد، نه خطای خام PHP:</p>
 <pre tabindex="0"><code class="language-php"><span class="tok-v">$post</span>-&gt;published_at = <span class="tok-s">'1404/13/01'</span>;   <span class="tok-c">// Invalid Jalali date: 1404/13/1</span>
 <span class="tok-v">$post</span>-&gt;published_at = <span class="tok-s">'1404/07/31'</span>;   <span class="tok-c">// Invalid Jalali date: 1404/7/31   (مهر ۳۰ روز دارد)</span>
 <span class="tok-v">$post</span>-&gt;published_at = <span class="tok-s">'not a date'</span>;   <span class="tok-c">// Unable to parse date: not a date</span>
 <span class="tok-v">$post</span>-&gt;published_at = <span class="tok-n">1.5</span>;            <span class="tok-c">// Cannot cast value for 'published_at' to a date.</span>
 <span class="tok-v">$post</span>-&gt;published_at = [<span class="tok-s">'x'</span>];          <span class="tok-c">// Cannot cast value for 'published_at' to a date.</span></code></pre>
-<p>ورودی کاربر را پیش از رسیدن به مدل اعتبارسنجی کنید (مثال form request را در ادامه ببینید) تا اشتباه تایپی خطای فرم بدهد، نه استثنا. خواندن برای <code>null</code> و رشتهٔ خالی آسان‌گیر است (هر دو <code>null</code> می‌دهند)، اما اگر در پایگاه داده متنِ غیرقابل‌تجزیه باشد، خواندن ویژگی <code>InvalidDateException</code> پرتاب می‌کند.</p>
+<p>ورودی کاربر را قبل از رسیدن به مدل اعتبارسنجی کنید (مثال form request پایین‌تر است) تا اشتباه تایپی خطای فرم بدهد، نه استثنا. خواندن برای <code>null</code> و رشتهٔ خالی راحت‌گیر است (هر دو <code>null</code> می‌دهند). ولی اگر در پایگاه داده متنی باشد که خوانده نمی‌شود، خواندن ویژگی <code>InvalidDateException</code> می‌دهد.</p>
 
-<h3 id="cast-json">سریال‌سازی مدل<a class="anchor" href="#cast-json" aria-label="پیوند به این بخش">#</a></h3>
-<p>کلاس‌های <code>Jalali</code>، <code>Hijri</code> و <code>Hebrew</code> پیاده‌ساز <code>JsonSerializable</code> هستند: <code>toJson()</code> در مدلی با ویژگی <code>JalaliCast</code> همان متن <code>(string) $date</code> را می‌دهد، مثلاً <code>{"published_at":"1404/01/01 10:00:00"}</code>. <code>toArray()</code> خود شیء <code>Jalali</code> را نگه می‌دارد؛ برای قالب دیگر خودتان قالب‌بندی کنید.</p>
+<h3 id="cast-json">تبدیل مدل به JSON<a class="anchor" href="#cast-json" aria-label="پیوند به این بخش">#</a></h3>
+<p>کلاس‌های <code>Jalali</code> و <code>Hijri</code> و <code>Hebrew</code> <code>JsonSerializable</code> هستند. در مدلی که <code>JalaliCast</code> دارد، <code>toJson()</code> همان <code>(string) $date</code> را می‌دهد، مثلاً <code>{"published_at":"1404/01/01 10:00:00"}</code>. <code>toArray()</code> خود شیء <code>Jalali</code> را نگه می‌دارد. اگر شکل دیگری می‌خواهید، خودتان قالب‌بندی کنید.</p>
 
-<h2 id="request">فرم‌ریکوئست<a class="anchor" href="#request" aria-label="پیوند به این بخش">#</a></h2>
-<p>قاعدهٔ آماده‌ای برای فیلد تاریخ جلالی نیست؛ شکل را با قاعدهٔ regex لاراول یا یک قاعدهٔ سفارشی کوچک بررسی کنید و تبدیل را به کست بسپارید:</p>
+<h2 id="request">form request<a class="anchor" href="#request" aria-label="پیوند به این بخش">#</a></h2>
+<p>قانون آماده‌ای برای فیلد تاریخ جلالی نیست. شکل را با قانون regex خود Laravel یا یک قانون کوچک دلخواه بررسی کنید و تبدیل را به cast بسپارید:</p>
 <pre tabindex="0"><code class="language-php"><span class="tok-k">public</span> <span class="tok-k">function</span> rules(): <span class="tok-k">array</span>
 {
     <span class="tok-k">return</span> [
         <span class="tok-s">'published_at'</span> =&gt; [<span class="tok-s">'required'</span>, <span class="tok-s">'regex:/^1[2-5]\d\d[\/-]\d{1,2}[\/-]\d{1,2}$/u'</span>],
     ];
 }</code></pre>
-<p>الگو برای <code>1404/01/15</code> و <code>1404-1-5</code> می‌گذرد و برای <code>2025/01/01</code> و <code>abc</code> رد می‌شود. تاریخ خوش‌ساخت اما ناممکنی مانند <code>1404/07/31</code> باز هم به کست می‌رسد و همان‌جا استثنا می‌دهد؛ اگر کاربر متن آزاد تایپ می‌کند، <code>InvalidDateException</code> را در یک قاعدهٔ سفارشی یا در کنترلر بگیرید.</p>
+<p>این الگو <code>1404/01/15</code> و <code>1404-1-5</code> را می‌گذراند و <code>2025/01/01</code> و <code>abc</code> را رد می‌کند. تاریخی که شکلش درست است ولی وجود ندارد، مثل <code>1404/07/31</code>، به cast می‌رسد و همان‌جا خطا می‌دهد. اگر کاربر متن آزاد می‌نویسد، <code>InvalidDateException</code> را در یک قانون دلخواه یا در controller بگیرید.</p>
 
 <h2 id="blade">Blade<a class="anchor" href="#blade" aria-label="پیوند به این بخش">#</a></h2>
-<p>کست یک شیء <code>Jalali</code> می‌دهد، پس Blade اصلاً به تابع کمکی نیاز ندارد:</p>
+<p>cast یک شیء <code>Jalali</code> می‌دهد. پس در Blade به تابع کمکی نیازی نیست:</p>
 <pre tabindex="0"><code class="language-php">{{ <span class="tok-v">$post</span>-&gt;published_at?-&gt;format(<span class="tok-s">'Y/m/d'</span>) }}            {{-- <span class="tok-n">1404</span>/<span class="tok-n">01</span>/<span class="tok-n">15</span> --}}
 {{ <span class="tok-v">$post</span>-&gt;published_at?-&gt;format(<span class="tok-s">'l j F Y'</span>) }}          {{-- جمعه <span class="tok-n">15</span> فروردین <span class="tok-n">1404</span> --}}
 {{ \RtlyKit\to_persian_digits(<span class="tok-v">$post</span>-&gt;published_at-&gt;format(<span class="tok-s">'Y/m/d'</span>)) }}  {{-- ۱۴۰۴/۰۱/۱۵ --}}</code></pre>
-<p>برای ستونی که کست <em>نشده</em>، مثل <code>created_at</code> استاندارد (نمونهٔ Carbon)، از تابع کمکی فضای‌نامی استفاده کنید. توابع فضای‌نامی همیشه بارگیری می‌شوند و ثبت‌نامی لازم ندارند:</p>
+<p>برای ستونی که cast <em>ندارد</em>، مثل <code>created_at</code> معمولی (یک Carbon)، از تابع فضای‌نام‌دار استفاده کنید. این توابع همیشه بارگذاری می‌شوند و ثبت‌نام نمی‌خواهند:</p>
 <pre tabindex="0"><code class="language-php">{{ \RtlyKit\jdate(<span class="tok-v">$post</span>-&gt;created_at)-&gt;format(<span class="tok-s">'Y/m/d H:i'</span>) }}   {{-- <span class="tok-n">1404</span>/<span class="tok-n">01</span>/<span class="tok-n">15</span> <span class="tok-n">08</span>:<span class="tok-n">00</span> --}}</code></pre>
-<p>اگر زیاد به کار می‌برید، بالای فایل Blade با <code>@php use function RtlyKit\jdate; @endphp</code> واردش کنید. با ماکروهای Carbon همین کار <code>$post->created_at->jformat('Y/m/d')</code> است؛ <a href="carbon-macros.html">ماکروهای Carbon</a> را ببینید.</p>
-<div class="callout note" role="note"><strong>نکته.</strong> ویژگی <code>null</code> خودکار قالب‌بندی نمی‌شود: همان‌طور که نشان داده شد از عملگر nullsafe یعنی <code>?-></code> استفاده کنید، وگرنه Blade روی <code>null</code> خطا می‌دهد. فهرست کامل حروف قالب در صفحهٔ <a href="jalali.html">تقویم جلالی</a> است.</div>
-<nav class="reading-footer" aria-label="صفحهٔ قبلی و بعدی"><a class="prev" rel="prev" href="laravel-setup.html"><small>قبلی</small>راه‌اندازی لاراول</a><a class="next" rel="next" href="helpers-and-globals.html"><small>بعدی</small>توابع کمکی و سراسری</a></nav>
+<p>اگر زیاد به کار می‌برید، بالای فایل Blade با <code>@php use function RtlyKit\jdate; @endphp</code> واردش کنید. با ماکروهای Carbon همین کار <code>$post-&gt;created_at-&gt;jformat('Y/m/d')</code> است. <a href="carbon-macros.html">ماکروهای Carbon</a> را ببینید.</p>
+<div class="callout note" role="note"><strong>نکته.</strong> ویژگی‌ای که <code>null</code> باشد خودکار قالب‌بندی نمی‌شود. مثل بالا از <code>?-&gt;</code> استفاده کنید، وگرنه Blade روی <code>null</code> خطا می‌دهد. فهرست کامل توکن‌های قالب در <a href="jalali.html">تقویم جلالی</a> است.</div>
+<nav class="reading-footer" aria-label="صفحهٔ قبلی و بعدی"><a class="prev" rel="prev" href="laravel-setup.html"><small>قبلی</small>راه‌اندازی Laravel</a><a class="next" rel="next" href="helpers-and-globals.html"><small>بعدی</small>توابع کمکی و سراسری</a></nav>
 </article>
-<nav class="toc" aria-label="در این صفحه"><p>در این صفحه</p><ol><li><a href="#rules">قواعد اعتبارسنجی</a></li><li><a href="#usage">کاربرد</a></li><li><a href="#input">چه ورودی‌ای پذیرفته می‌شود</a></li><li><a href="#cast">کست Eloquent با نام JalaliCast</a><ol><li><a href="#cast-input">مقدارهای پذیرفته‌شده هنگام انتساب</a></li><li><a href="#cast-errors">خطاها</a></li><li><a href="#cast-json">سریال‌سازی مدل</a></li></ol></li><li><a href="#request">فرم‌ریکوئست</a></li><li><a href="#blade">Blade</a></li></ol></nav>
+<nav class="toc" aria-label="در این صفحه"><p>در این صفحه</p><ol><li><a href="#rules">قانون‌های اعتبارسنجی</a></li><li><a href="#usage">استفاده</a></li><li><a href="#input">چه ورودی‌ای قبول می‌شود</a></li><li><a href="#cast">cast در Eloquent با JalaliCast</a><ol><li><a href="#cast-input">مقدارهایی که می‌شود نوشت</a></li><li><a href="#cast-errors">خطاها</a></li><li><a href="#cast-json">تبدیل مدل به JSON</a></li></ol></li><li><a href="#request">form request</a></li><li><a href="#blade">Blade</a></li></ol></nav>
 </div>
 </main>
 <footer class="footer"><div class="shell footer-inner"><p>راهنمای RTLY-Kit · مجوز MIT</p><div><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">مخزن در گیت‌هاب &#8599;</a><a href="https://github.com/ehsanenaloo/RTLY-Kit/issues" rel="noopener noreferrer">گزارش مشکل &#8599;</a></div></div></footer>

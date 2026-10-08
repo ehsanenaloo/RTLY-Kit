@@ -1,6 +1,6 @@
 <!--
 title: Sheba and bank card
-description: Validate Sheba (IBAN) numbers with ISO 7064 mod-97-10 and bank card numbers with the Luhn checksum, and look up the issuing bank with honest data caveats.
+description: Validate Sheba (IBAN) numbers with ISO 7064 mod-97-10 and bank card numbers with the Luhn checksum, and look up the issuing bank. The page says where the bank data comes from.
 group: validation
 order: 30
 -->
@@ -20,19 +20,19 @@ var_dump(is_bank_card('۶۰۳۷۹۹۱۲۳۴۵۶۷۸۹۳'));               // boo
 
 echo Sheba::getBankName('IR800170000000000000000123'), "\n";   // بانک ملی ایران
 echo BankCard::getBankName('6219861234567898'), "\n";          // بانک سامان</code></pre>
-<p>The numbers in these examples are synthetic: they pass the checksum but do not belong to real accounts. Both classes implement the shared <a href="validators-overview.html#contract"><code>Validator</code> contract</a>, never throw for bad input, and also have the helpers <code>validate_sheba()</code> and <code>validate_bank_card()</code>.</p>
+<p>The numbers in these examples are made up. They pass the checksum but belong to no real account. Both classes implement the shared <a href="validators-overview.html#contract"><code>Validator</code> contract</a> and never throw for bad input. They also have the helpers <code>validate_sheba()</code> and <code>validate_bank_card()</code>.</p>
 
 <h2 id="sheba">Sheba (IBAN)</h2>
 <h3 id="sheba-format">Format</h3>
-<p>A Sheba number is the Iranian IBAN: <code>IR</code>, two check digits, and a 22-digit BBAN, 26 characters in all. The first three digits of the BBAN identify the bank.</p>
+<p>A Sheba number is the Iranian IBAN. It is <code>IR</code>, two check digits and a 22-digit BBAN, 26 characters in all. The first three digits of the BBAN identify the bank.</p>
 <pre><code class="language-text">IR 80 017 0000000000000000123
 │  │  │   └─ rest of the BBAN (19 digits)
 │  │  └──── bank code (3 digits)
 │  └─────── check digits
 └────────── country code</code></pre>
 
-<h3 id="sheba-normalization">Normalization</h3>
-<p><code>Sheba::normalize()</code> upper-cases the text, converts Persian and Arabic digits, and removes spaces, hyphens and half-spaces. A bare string of exactly 24 digits, the common "without IR" form that banks print, gets the <code>IR</code> prefix. Any other input is left as typed and then fails the format check:</p>
+<h3 id="sheba-normalization">Cleaning the input</h3>
+<p><code>Sheba::normalize()</code> upper-cases the text, converts Persian and Arabic digits, and removes spaces, hyphens and half-spaces. A bare string of exactly 24 digits, the form that banks often print without <code>IR</code>, gets the <code>IR</code> prefix. Any other input stays as typed and then fails the format check:</p>
 <pre><code class="language-php">echo Sheba::normalize('800170000000000000000123');        // IR800170000000000000000123
 echo Sheba::normalize('ir80 0170 0000');                   // IR8001700000
 echo json_encode(Sheba::validate('ir80-0170-0000-0000-0000-0001-23')-&gt;isValid());   // true</code></pre>
@@ -41,9 +41,9 @@ echo json_encode(Sheba::validate('ir80-0170-0000-0000-0000-0001-23')-&gt;isValid
 <ol>
 <li>Type and size (<code>invalid_type</code>, <code>input_too_long</code>).</li>
 <li>Format: <code>IR</code> followed by exactly 24 digits, otherwise <code>invalid_format</code>.</li>
-<li>Checksum: ISO 7064 mod-97-10. The first four characters move to the end, <code>I</code> and <code>R</code> become 18 and 27, and the resulting number modulo 97 must equal 1; otherwise <code>invalid_checksum</code>.</li>
+<li>Checksum: ISO 7064 mod-97-10. The first four characters move to the end, <code>I</code> and <code>R</code> become 18 and 27, and the resulting number modulo 97 must equal 1. Otherwise the error is <code>invalid_checksum</code>.</li>
 </ol>
-<p>The bank lookup runs before the checksum, so the bank code is present in <code>details()</code> even for a number with a wrong check digit:</p>
+<p>The bank lookup runs before the checksum. So the bank code is in <code>details()</code> even for a number with a wrong check digit:</p>
 <pre><code class="language-php">$r = Sheba::validate('IR060170000000000000000123');
 var_dump($r-&gt;isValid());       // bool(false)
 print_r($r-&gt;errors());         // Array ( [0] =&gt; invalid_checksum )
@@ -55,17 +55,17 @@ echo json_encode($ok-&gt;details(), JSON_UNESCAPED_UNICODE);
 
 $unknown = Sheba::validate('IR049990000000000000000123');
 var_dump($unknown-&gt;isValid(), $unknown-&gt;details()['bank_name']);   // bool(true)  NULL</code></pre>
-<p>Details: <code>normalized</code>, <code>bank_code</code> (three-digit string, or <code>null</code> when the format failed), <code>bank_name</code> (or <code>null</code> when the code is not in the table). A checksum-valid Sheba with an unknown bank code is <em>valid</em>; the name is simply missing.</p>
-<div class="note"><strong>Bank names.</strong> Names are those of the issuing bank at assignment time. Codes of banks that later merged keep their original name.</div>
+<p>Details: <code>normalized</code>, <code>bank_code</code> (a three-digit string, or <code>null</code> when the format failed) and <code>bank_name</code> (or <code>null</code> when the code is not in the table). A Sheba with a valid checksum and an unknown bank code is valid. Only the name is missing.</p>
+<div class="note"><strong>Bank names.</strong> A name is the name of the issuing bank when the code was assigned. Codes of banks that later merged keep their original name.</div>
 
 <h2 id="bank-card">Bank card number</h2>
 <h3 id="card-format">Format and checks</h3>
-<p>An Iranian bank card has 16 digits. <code>BankCard::normalize()</code> keeps only the digits after converting Persian and Arabic ones, so spaces, hyphens and other separators are free. The checks, in order:</p>
+<p>An Iranian bank card has 16 digits. <code>BankCard::normalize()</code> keeps only the digits after converting Persian and Arabic ones, so spaces, hyphens and other separators are fine. The checks run in this order:</p>
 <ol>
 <li>Type and size.</li>
 <li>Exactly 16 digits, otherwise <code>invalid_format</code>.</li>
-<li>All 16 digits identical (for example <code>0000000000000000</code>) gives <code>repeated_digits</code>.</li>
-<li>The Luhn checksum, otherwise <code>invalid_checksum</code>. Starting from the right, every second digit is doubled (subtracting 9 when the result exceeds 9), and the digit sum must be divisible by 10.</li>
+<li>All 16 digits the same (for example <code>0000000000000000</code>) gives <code>repeated_digits</code>.</li>
+<li>The Luhn checksum, otherwise <code>invalid_checksum</code>. Starting from the right, every second digit is doubled (subtract 9 when the result is above 9). The digit sum must divide by 10.</li>
 </ol>
 <pre><code class="language-php">$ok = BankCard::validate('6037-9912 3456 7893');
 echo json_encode($ok-&gt;details(), JSON_UNESCAPED_UNICODE);
@@ -77,8 +77,8 @@ print_r(BankCard::validate('1234')-&gt;errors());               // [invalid_form
 
 $x = BankCard::validate('9999991234567893');   // checksum ok, BIN not in the table
 var_dump($x-&gt;isValid(), $x-&gt;details()['bank_name']);   // bool(true)  NULL</code></pre>
-<p>Details: <code>normalized</code>, <code>bin</code> (first six digits, or <code>null</code> if the format failed), <code>bank_name</code>. As with Sheba, the BIN lookup runs before the digit-repetition and checksum checks.</p>
-<p><code>BankCard::getBankName()</code> and <code>Sheba::getBankName()</code> are shortcuts that return the name only for a <em>valid</em> number, and <code>null</code> otherwise:</p>
+<p>Details: <code>normalized</code>, <code>bin</code> (the first six digits, or <code>null</code> if the format failed) and <code>bank_name</code>. As with Sheba, the BIN lookup runs before the repeated-digit and checksum checks.</p>
+<p><code>BankCard::getBankName()</code> and <code>Sheba::getBankName()</code> are shortcuts. They return the name only for a valid number, and <code>null</code> otherwise:</p>
 <pre><code class="language-php">var_dump(BankCard::getBankName('6037991234567890'));   // NULL, because the checksum fails
 var_dump(BankCard::getBankName('6037991234567893'));   // string(26) "بانک ملی ایران"</code></pre>
 
@@ -90,15 +90,20 @@ var_dump(BankCard::getBankName('6037991234567893'));   // string(26) "بانک �
 <tr><td>Sheba bank codes</td><td>3 digits after <code>IRkk</code></td><td>38</td></tr>
 </tbody>
 </table>
-<p>An entry is included only when at least two independent sources agree on the mapping (public bank-prefix tables and community datasets). Single-source or conflicting entries are left out on purpose.</p>
-<div class="known"><strong>Known limitation.</strong> The tables are small and best-effort. Many valid cards come from a bank that is not listed, and for those <code>bank_name</code> is <code>null</code>. Some of the community sources share ancestry, so their agreement is strong but not fully independent, and the official Central Bank of Iran table was not reachable when the data was compiled (a few Sheba codes are confirmed by two sources only). Banks merge, rename and reassign ranges, so the data was checked on 2026-10-07 and will drift. Treat the name as a display hint; never use it for legal or financial decisions. Details are in <a href="accuracy-and-data.html">Accuracy and data</a>.</div>
-<p>Validity never depends on these tables. A checksum-valid number is valid whether or not its bank is known.</p>
+<p>An entry is included only when at least two independent sources agree on it (public bank-prefix tables and community datasets). Entries found in one source, or with conflicting sources, are left out.</p>
+<p>What we checked on 2026-10-08:</p>
+<ul>
+<li>The Central Bank of Iran's national IBAN specification lists 19 bank identifiers. All 19 match our table. The list also settles code 051: it belongs to the credit institution Tose'e.</li>
+<li>Card BINs and the other Sheba codes agree with several public pages. For BIN 585983 (Tejarat) we also have the bank's own announcement as reported by two news sites.</li>
+</ul>
+<div class="note"><strong>Good to know.</strong> The tables are small. Many valid cards come from a bank that is not listed, and then <code>bank_name</code> is <code>null</code>. No official BIN registry was reachable, and the Central Bank list is dated 2017, so newer codes rely on public pages. Banks merge, rename and reassign ranges, so show the name as a hint and do not use it for legal or financial decisions. Details are in <a href="accuracy-and-data.html">Accuracy and data</a>.</div>
+<p>Validity never depends on these tables. A number with a valid checksum is valid whether or not its bank is known.</p>
 
 <h2 id="notes">Practical notes</h2>
 <ul>
-<li>The checksum catches typos, not fake numbers. It cannot tell you that a card exists or that an account belongs to someone.</li>
-<li>Validate the card number for shape only. Never log full card numbers, and do not store the CVV2 or the second password.</li>
-<li>Store the normalized value, so <code>6037-9912-3456-7893</code> and <code>6037991234567893</code> are the same record.</li>
-<li>Card numbers and Sheba numbers must stay strings. A 16-digit number may exceed what a JSON number or float can hold exactly.</li>
+<li>The checksum catches typos. It cannot tell you that a card exists or that an account belongs to someone.</li>
+<li>Check the card number for shape only. Never log full card numbers, and do not store the CVV2 or the second password.</li>
+<li>Store the cleaned value, so <code>6037-9912-3456-7893</code> and <code>6037991234567893</code> are one record.</li>
+<li>Keep card numbers and Sheba numbers as strings. A 16-digit number can be too big for a JSON number or float to hold exactly.</li>
 </ul>
-<p>The size cap and type rules are the same as for every validator; see <a href="validators-overview.html#input-handling">Input handling</a>.</p>
+<p>The size cap and type rules are the same as for every validator. See <a href="validators-overview.html#input-handling">Input handling</a>.</p>

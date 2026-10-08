@@ -1,0 +1,139 @@
+<!--
+title: Arabic number words
+description: Spell numbers in Modern Standard Arabic with the right gender, case and vowel marks, up to 10^27, and write the ordinals from 1 to 99. Every option is shown with real output.
+group: numbers-text
+order: 25
+-->
+<h2 id="overview">What it does</h2>
+<p>In Arabic, the form of a number depends on what it counts. «ثلاثة كتب» (three books) and «ثلاث سيارات» (three cars) use different forms of three. A number also changes with its grammatical case, and it has its own rules for 11 to 19, for 200 and for 2000. <code>NumberToWords::convert($n, 'ar', $options)</code> handles these. Without options, it gives the plain counting form, the same text as in earlier releases.</p>
+<p>The options are an <code>RtlyKit\Number\ArabicOptions</code> object, or an array with the same keys. <code>NumberToWords::ordinal()</code> writes the ordinals from 1 to 99. Persian has no options. Passing options with <code>fa</code> throws an exception.</p>
+
+<h2 id="quick">Quick start</h2>
+<pre><code class="language-php">&lt;?php
+require 'vendor/autoload.php';
+
+use RtlyKit\Number\ArabicOptions;
+use RtlyKit\Number\NumberToWords;
+
+echo NumberToWords::convert(3, 'ar'), "\n";                                       // ثلاثة
+echo NumberToWords::convert(1250, 'ar', ['mode' =&gt; 'noun', 'gender' =&gt; 'f']), "\n";   // ألف ومئتان وخمسون
+echo NumberToWords::convert(-5, 'ar', new ArabicOptions(negative: 'ناقص')), "\n";  // ناقص خمسة
+echo NumberToWords::ordinal(21), "\n";                                            // الحادي والعشرون
+echo NumberToWords::ordinal(21, 'ar', ['gender' =&gt; 'f']), "\n";                   // الحادية والعشرون</code></pre>
+<p>A wrong key, value or type in the options throws <code>InvalidNumberException</code> with the code <code>invalid_argument</code>. A raw <code>TypeError</code> or <code>ValueError</code> never escapes.</p>
+
+<h2 id="options">All options</h2>
+<table>
+<thead><tr><th>Option</th><th>Values</th><th>Default</th><th>What it does</th></tr></thead>
+<tbody>
+<tr><td><code>mode</code></td><td><code>count</code>, <code>noun</code></td><td><code>count</code></td><td><code>count</code> writes a bare number (answers, tables) and always uses the masculine forms. <code>noun</code> means a counted noun follows right after the number</td></tr>
+<tr><td><code>gender</code></td><td><code>m</code>, <code>f</code></td><td><code>m</code></td><td>The gender of the singular of the counted noun. Ignored in <code>count</code> mode</td></tr>
+<tr><td><code>case</code></td><td><code>nom</code>, <code>acc</code>, <code>gen</code></td><td><code>nom</code></td><td>The grammatical case of the whole number. It changes the letters of two, the tens, the hundreds-duals and the thousands-duals</td></tr>
+<tr><td><code>diacritics</code></td><td><code>none</code>, <code>case</code></td><td><code>none</code></td><td><code>case</code> adds the case endings (short vowels and tanwin)</td></tr>
+<tr><td><code>hundreds</code></td><td><code>mi_a</code>, <code>ma_i_a</code></td><td><code>mi_a</code></td><td>The spelling مئة or مائة</td></tr>
+<tr><td><code>joinHundreds</code></td><td><code>true</code>, <code>false</code></td><td><code>true</code></td><td>ثلاثمئة (joined) or ثلاث مئة (spaced)</td></tr>
+<tr><td><code>negative</code></td><td>one word, 1 to 64 bytes</td><td><code>سالب</code></td><td>The word before a negative number. No spaces or control characters</td></tr>
+<tr><td><code>billion</code></td><td><code>milyar</code>, <code>bilyon</code></td><td><code>milyar</code></td><td>The name of 10<sup>9</sup>: مليار or بليون</td></tr>
+<tr><td><code>definite</code></td><td><code>true</code>, <code>false</code></td><td><code>true</code></td><td>Ordinals only: with the article (الأول) or without it (أول)</td></tr>
+</tbody>
+</table>
+<p>Each value also has a constant on <code>ArabicOptions</code>, such as <code>ArabicOptions::MODE_NOUN</code>, <code>GENDER_FEMININE</code>, <code>CASE_GENITIVE</code>, <code>DIACRITICS_CASE</code>, <code>HUNDREDS_MA_I_A</code> and <code>BILLION_BILYON</code>. <code>ArabicOptions::fromArray()</code> builds the object from an array.</p>
+
+<h2 id="noun-mode">Gender and counted nouns</h2>
+<p>Set <code>mode</code> to <code>noun</code> when a counted noun follows the number, and give the gender of the singular of that noun. The numbers 3 to 10 take the opposite gender of the noun. The numbers 11 to 19 agree with it. The number 1, the number 2 and the units in 21 to 99 follow the noun's gender too.</p>
+<pre><code class="language-php">$m = ['mode' =&gt; 'noun', 'gender' =&gt; 'm'];   // masculine noun, for example كتاب
+$f = ['mode' =&gt; 'noun', 'gender' =&gt; 'f'];   // feminine noun, for example سيارة
+
+echo NumberToWords::convert(3, 'ar', $m), "\n";    // ثلاثة
+echo NumberToWords::convert(3, 'ar', $f), "\n";    // ثلاث
+echo NumberToWords::convert(13, 'ar', $m), "\n";   // ثلاثة عشر
+echo NumberToWords::convert(13, 'ar', $f), "\n";   // ثلاث عشرة
+echo NumberToWords::convert(11, 'ar', $m), "\n";   // أحد عشر
+echo NumberToWords::convert(11, 'ar', $f), "\n";   // إحدى عشرة
+echo NumberToWords::convert(21, 'ar', $f), "\n";   // واحدة وعشرون</code></pre>
+<p>In <code>noun</code> mode, the last word of the phrase is in construct with the noun. So 200 becomes «مئتا», 2000 becomes «ألفا» and two million becomes «مليونا». You decide the gender of a plural or collective noun, because the library does not guess it. The number words never contain the noun. The numbers 1 and 2 follow their noun in Arabic, so you place them yourself.</p>
+<pre><code class="language-php">echo NumberToWords::convert(200, 'ar'), "\n";                          // مئتان
+echo NumberToWords::convert(200, 'ar', ['mode' =&gt; 'noun']), "\n";      // مئتا
+echo NumberToWords::convert(2000, 'ar', ['mode' =&gt; 'noun']), "\n";     // ألفا</code></pre>
+
+<h2 id="case">Case</h2>
+<p>The case option changes the letters of the words that change with case, even without vowel marks: اثنان and اثنين, عشرون and عشرين, مئتان and مئتين, ألفان and ألفين, and اثنا عشر and اثني عشر.</p>
+<pre><code class="language-php">echo NumberToWords::convert(2, 'ar', ['case' =&gt; 'acc']), "\n";                         // اثنين
+echo NumberToWords::convert(20, 'ar', ['case' =&gt; 'gen']), "\n";                        // عشرين
+echo NumberToWords::convert(200, 'ar', ['case' =&gt; 'acc']), "\n";                       // مئتين
+echo NumberToWords::convert(2000, 'ar', ['case' =&gt; 'acc']), "\n";                      // ألفين
+echo NumberToWords::convert(12, 'ar', ['mode' =&gt; 'noun']), "\n";                       // اثنا عشر
+echo NumberToWords::convert(12, 'ar', ['mode' =&gt; 'noun', 'case' =&gt; 'gen']), "\n";      // اثني عشر</code></pre>
+
+<h2 id="diacritics">Vowel marks</h2>
+<p>With <code>diacritics</code> set to <code>case</code>, the library writes the case ending on the last letter of each word that has one. It writes nothing else: no inner vowels and no hamza changes. The marks come in the standard order, with the vowel before the shadda.</p>
+<pre><code class="language-php">echo NumberToWords::convert(125, 'ar', ['diacritics' =&gt; 'case']), "\n";
+// مئةٌ وخمسةٌ وعشرونَ
+echo NumberToWords::convert(125, 'ar', ['diacritics' =&gt; 'case', 'case' =&gt; 'acc']), "\n";
+// مئةً وخمسةً وعشرينَ
+echo NumberToWords::convert(125, 'ar', ['diacritics' =&gt; 'case', 'case' =&gt; 'gen', 'mode' =&gt; 'noun']), "\n";
+// مئةٍ وخمسةٍ وعشرينَ</code></pre>
+<p>A word that is joined to a following noun or number takes the short vowel (damma, fatha or kasra). A word that is not joined takes tanwin. The tens take the endings «ـُونَ» and «ـِينَ». Vowel marks are not defined for ordinals, so <code>ordinal()</code> with <code>diacritics: 'case'</code> throws.</p>
+
+<h2 id="hundreds">Hundreds and spelling</h2>
+<pre><code class="language-php">echo NumberToWords::convert(300, 'ar'), "\n";                                       // ثلاثمئة
+echo NumberToWords::convert(300, 'ar', ['hundreds' =&gt; 'ma_i_a']), "\n";             // ثلاثمائة
+echo NumberToWords::convert(300, 'ar', ['joinHundreds' =&gt; false]), "\n";            // ثلاث مئة
+echo NumberToWords::convert(800, 'ar', ['joinHundreds' =&gt; false]), "\n";            // ثماني مئة
+echo NumberToWords::convert(100, 'ar', ['hundreds' =&gt; 'ma_i_a']), "\n";             // مائة</code></pre>
+<p>Both مئة and مائة are in use, and so are the joined and spaced forms. We chose the shorter, original spelling مئة and the joined form as defaults. The options give you the others.</p>
+
+<h2 id="scales">Large numbers</h2>
+<p>The library uses the short scale. The names are ألف, مليون, مليار (or بليون with <code>billion: 'bilyon'</code>), تريليون, كوادريليون, كوينتيليون, سكستيليون (10<sup>21</sup>) and سبتيليون (10<sup>24</sup>). The limit is every integer below 10<sup>27</sup>. The numbers 3 to 10 of a scale use the plural (آلاف, ملايين, مليارات, تريليونات and so on). Two of a scale is the singular with ان or ين.</p>
+<pre><code class="language-php">echo NumberToWords::convert(5000, 'ar'), "\n";                                // خمسة آلاف
+echo NumberToWords::convert(11000, 'ar'), "\n";                               // أحد عشر ألف
+echo NumberToWords::convert(1000000000, 'ar'), "\n";                          // مليار
+echo NumberToWords::convert(1000000000, 'ar', ['billion' =&gt; 'bilyon']), "\n"; // بليون
+echo NumberToWords::convert(2000000000, 'ar'), "\n";                          // ملياران
+echo NumberToWords::convert('1000000000000', 'ar'), "\n";                     // تريليون
+echo NumberToWords::convert('1000000000000000000000000', 'ar'), "\n";         // سبتيليون
+echo NumberToWords::convert(102000, 'ar'), "\n";                              // مئة ألف وألفان</code></pre>
+<p>The last line shows a choice we made. A group of hundreds plus 1 to 10 in front of a scale word is split into two parts, as in «مئة ألف وألفان» for 102 000. The shorter «مئة وألفان» could also be read as 100 plus 2000, so we avoid it. Groups with 11 to 99, or none, stay together («مئة وأحد عشر ألف» for 111 000).</p>
+<p>A number of 10<sup>27</sup> or more throws <code>InvalidNumberException</code> with the code <code>number_too_large</code> and the context <code>limit</code> = <code>10^27 - 1</code>.</p>
+
+<h2 id="negative">Negative numbers</h2>
+<p>A negative number starts with «سالب». Use the <code>negative</code> option to change the word. Zero is never negative.</p>
+<pre><code class="language-php">echo NumberToWords::convert(-5, 'ar'), "\n";                              // سالب خمسة
+echo NumberToWords::convert(-5, 'ar', ['negative' =&gt; 'ناقص']), "\n";      // ناقص خمسة</code></pre>
+
+<h2 id="ordinals">Ordinals from 1 to 99</h2>
+<p><code>NumberToWords::ordinal($n, 'ar', $options)</code> returns the ordinal. Its default locale is <code>ar</code>. The options that count are <code>gender</code>, <code>case</code> and <code>definite</code>. The numbers 11 to 19 have both parts agree with the noun, and have no case.</p>
+<pre><code class="language-php">echo NumberToWords::ordinal(1), "\n";                                              // الأول
+echo NumberToWords::ordinal(1, 'ar', ['gender' =&gt; 'f']), "\n";                     // الأولى
+echo NumberToWords::ordinal(3), "\n";                                              // الثالث
+echo NumberToWords::ordinal(3, 'ar', ['gender' =&gt; 'f']), "\n";                     // الثالثة
+echo NumberToWords::ordinal(11), "\n";                                             // الحادي عشر
+echo NumberToWords::ordinal(11, 'ar', ['gender' =&gt; 'f']), "\n";                    // الحادية عشرة
+echo NumberToWords::ordinal(21, 'ar', ['case' =&gt; 'gen']), "\n";                    // الحادي والعشرين
+echo NumberToWords::ordinal(2, 'ar', ['definite' =&gt; false]), "\n";                 // ثان
+echo NumberToWords::ordinal(2, 'ar', ['definite' =&gt; false, 'case' =&gt; 'acc']), "\n"; // ثانيا
+echo NumberToWords::ordinal(99), "\n";                                             // التاسع والتسعون</code></pre>
+<p>Zero and negative numbers throw <code>invalid_number</code>. A number above 99 throws <code>number_too_large</code>. Another locale throws <code>UnsupportedLocaleException</code>. For Persian ordinals, use <code>Format::ordinal()</code> from <a href="digits-and-format.html#ordinal">Digits and number formatting</a>.</p>
+
+<h2 id="errors">Errors</h2>
+<table>
+<thead><tr><th>Situation</th><th>Exception</th><th>Code</th></tr></thead>
+<tbody>
+<tr><td>Unknown locale</td><td><code>UnsupportedLocaleException</code></td><td><code>unsupported_locale</code></td></tr>
+<tr><td>Option key, value or type invalid. Options with <code>fa</code>. <code>diacritics</code> on ordinals</td><td><code>InvalidNumberException</code></td><td><code>invalid_argument</code></td></tr>
+<tr><td>Not an integer, a fraction, <code>NaN</code> or <code>INF</code></td><td><code>InvalidNumberException</code></td><td><code>invalid_number</code>, <code>non_finite_number</code></td></tr>
+<tr><td>String over 4096 bytes</td><td><code>InvalidNumberException</code></td><td><code>input_too_long</code></td></tr>
+<tr><td><code>convert()</code> of 10<sup>27</sup> or more, ordinal above 99</td><td><code>InvalidNumberException</code></td><td><code>number_too_large</code></td></tr>
+<tr><td>Ordinal of 0 or less</td><td><code>InvalidNumberException</code></td><td><code>invalid_number</code></td></tr>
+</tbody>
+</table>
+<pre><code class="language-php">try {
+    NumberToWords::convert(5, 'ar', ['gender' =&gt; 'x']);
+} catch (\RtlyKit\Exceptions\InvalidNumberException $e) {
+    echo $e-&gt;getMessage(), ' [', $e-&gt;getErrorCode()-&gt;value, "]\n";
+    // Invalid option "gender": expected one of m, f. [invalid_argument]
+}</code></pre>
+
+<h2 id="sources">Where the rules come from</h2>
+<p>The forms follow Arabic grammar pages, a dictionary and one language-academy decision, all listed in the <a href="#sources">sources</a> section. Known-answer tests cover each rule. A few outputs, such as the split groups for 102 000 and the plural forms of the large scale names, still wait for review by a native speaker.</p>
+<p>Related: <a href="number-words.html">Number to words</a> for Persian and the reverse direction, and <a href="limits.html#numbers">Limits</a>.</p>

@@ -12,6 +12,11 @@ declare(strict_types=1);
  *  - bankavl.com "تشخیص بانک از روی پیش شماره کارت بانکی" (table)
  *  - pypi.org/project/ircards, pub.dev/packages/iranian_banks (spot checks)
  * Single-source or conflicting BINs are deliberately omitted.
+ *
+ * 585983 (Tejarat) is Tejarat's newer prefix: the bank announced the change from
+ * 627353 to 585983 on 3 Khordad 1395 (reported by way2pay.ir and asriran.com,
+ * read 2026-10-08), and masihgh/iranian-bank-list and pishkhanak.com list it.
+ * Both prefixes stay in the table. No official BIN registry was reachable.
  */
 
 return [

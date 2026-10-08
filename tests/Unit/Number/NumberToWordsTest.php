@@ -116,8 +116,11 @@ final class NumberToWordsTest extends TestCase
 
     public function test_arabic_too_large(): void
     {
+        // The former limit of 10^9 was lifted: Arabic now covers every integer below 10^27.
+        self::assertSame('مليار', NumberToWords::convert(1_000_000_000, 'ar'));
+
         $this->expectException(InvalidNumberException::class);
-        NumberToWords::convert(1_000_000_000, 'ar');
+        NumberToWords::convert('1'.str_repeat('0', 27), 'ar');
     }
 
     public function test_unsupported_locale(): void

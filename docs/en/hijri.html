@@ -4,34 +4,42 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Hijri calendar | RTLY-Kit User guide</title>
-<meta name="description" content="The immutable Hijri (Islamic) date class with the Umm al-Qura month table and an arithmetic Tabular variant: create, parse and format dates in Arabic, Persian or English, shift, compare and diff them.">
+<meta name="description" content="The immutable Hijri (Islamic) date class with the Umm al-Qura month table and an arithmetic Tabular variant. Create, parse and format dates in Arabic, Persian or English, shift them, compare them and measure the gap.">
 <meta name="color-scheme" content="light dark">
 <meta property="og:title" content="Hijri calendar | RTLY-Kit User guide">
-<meta property="og:description" content="The immutable Hijri (Islamic) date class with the Umm al-Qura month table and an arithmetic Tabular variant: create, parse and format dates in Arabic, Persian or English, shift, compare and diff them.">
+<meta property="og:description" content="The immutable Hijri (Islamic) date class with the Umm al-Qura month table and an arithmetic Tabular variant. Create, parse and format dates in Arabic, Persian or English, shift them, compare them and measure the gap.">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="fa_IR">
+<meta property="og:locale:alternate" content="ar_AR">
+<meta property="og:url" content="https://ehsanenaloo.github.io/RTLY-Kit/en/hijri.html">
 <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
-<link rel="alternate" hreflang="fa" href="../fa/hijri.html">
+<link rel="canonical" href="https://ehsanenaloo.github.io/RTLY-Kit/en/hijri.html">
+<link rel="alternate" hreflang="en" href="https://ehsanenaloo.github.io/RTLY-Kit/en/hijri.html">
+<link rel="alternate" hreflang="fa" href="https://ehsanenaloo.github.io/RTLY-Kit/fa/hijri.html">
+<link rel="alternate" hreflang="ar" href="https://ehsanenaloo.github.io/RTLY-Kit/ar/hijri.html">
+<link rel="alternate" hreflang="x-default" href="https://ehsanenaloo.github.io/RTLY-Kit/">
 <link rel="stylesheet" href="../styles.css">
 <script>try{var t=localStorage.getItem("rtly-docs-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <script defer src="../app.js"></script>
 </head>
 <body>
-<a class="skip" href="#main">Skip to content</a><header class="site-header"><div class="shell header-inner"><a class="brand" href="index.html"><img src="../assets/logo.svg" width="34" height="34" alt=""><span><span class="name">RTLY-Kit</span><small>User guide</small></span></a><nav class="top-nav" aria-label="Primary"><a href="index.html">Overview</a><a href="quick-start.html">Quick start</a><a href="all.html">All guides</a><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">GitHub &#8599;</a></nav><div class="header-tools"><span data-search-host></span><button type="button" class="icon-button" data-theme-toggle hidden>Theme</button><a class="icon-button" href="../fa/hijri.html" hreflang="fa" lang="fa" aria-label="تغییر به فارسی">فارسی</a></div></div></header>
+<a class="skip" href="#main">Skip to content</a><header class="site-header"><div class="shell header-inner"><a class="brand" href="index.html"><img src="../assets/logo.svg" width="34" height="34" alt=""><span><span class="name">RTLY-Kit</span><small>User guide</small></span></a><nav class="top-nav" aria-label="Primary"><a href="index.html">Overview</a><a href="quick-start.html">Quick start</a><a href="all.html">All guides</a><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">GitHub &#8599;</a></nav><div class="header-tools"><span data-search-host></span><button type="button" class="icon-button" data-theme-toggle hidden>Theme</button><div class="lang-switch" role="group" aria-label="Language"><a class="icon-button" href="../fa/hijri.html" hreflang="fa" lang="fa">فارسی</a><span class="icon-button is-current" lang="en" aria-current="true">English</span><a class="icon-button" href="../ar/hijri.html" hreflang="ar" lang="ar">العربية</a></div></div></div></header>
 <main id="main">
-<div class="shell page-intro"><nav class="breadcrumbs" aria-label="Breadcrumb"><ol><li><a href="index.html">Home</a></li><li><a href="all.html#group-calendars">Calendars</a></li><li aria-current="page">Hijri calendar</li></ol></nav><h1>Hijri calendar</h1><p class="lead">The immutable Hijri (Islamic) date class with the Umm al-Qura month table and an arithmetic Tabular variant: create, parse and format dates in Arabic, Persian or English, shift, compare and diff them.</p></div>
+<div class="shell page-intro"><nav class="breadcrumbs" aria-label="Breadcrumb"><ol><li><a href="index.html">Home</a></li><li><a href="all.html#group-calendars">Calendars</a></li><li aria-current="page">Hijri calendar</li></ol></nav><h1>Hijri calendar</h1><p class="lead">The immutable Hijri (Islamic) date class with the Umm al-Qura month table and an arithmetic Tabular variant. Create, parse and format dates in Arabic, Persian or English, shift them, compare them and measure the gap.</p></div>
 <div class="shell doc-layout has-toc">
-<aside class="sidebar"><details open><summary>Browse the guides</summary><nav aria-label="Guides"><a href="all.html">All guides</a><p>Getting started</p><a href="quick-start.html">Quick start</a><a href="installation.html">Installation</a><p>Calendars</p><a href="jalali.html">Jalali calendar</a><a href="hijri.html" aria-current="page">Hijri calendar</a><a href="hebrew.html">Hebrew calendar</a><a href="convert-and-compare.html">Convert and compare dates</a><a href="carbon-macros.html">Carbon macros</a><p>Validation</p><a href="validators-overview.html">Validators overview</a><a href="national-code.html">National code</a><a href="sheba-and-bank-card.html">Sheba and bank card</a><a href="mobile-postal-plate.html">Mobile, postal code and plate</a><p>Numbers and text</p><a href="digits-and-format.html">Digits and number formatting</a><a href="number-words.html">Number to words</a><a href="text-tools.html">Text tools</a><p>Holidays and prayer times</p><a href="holidays.html">Iranian holidays</a><a href="prayer-times.html">Prayer times</a><p>Laravel</p><a href="laravel-setup.html">Laravel setup</a><a href="laravel-validation-and-cast.html">Validation rules and Eloquent cast</a><p>Reference</p><a href="helpers-and-globals.html">Helpers and globals</a><a href="error-handling.html">Error handling</a><a href="api-stability.html">API stability</a><a href="accuracy-and-data.html">Accuracy and data</a><a href="benchmarks.html">Benchmarks</a><a href="limits.html">Limits</a><a href="troubleshooting-faq.html">Troubleshooting and FAQ</a><a href="upgrade.html">Upgrade guide</a></nav></details></aside>
+<aside class="sidebar"><details open><summary>Browse the guides</summary><nav aria-label="Guides"><a href="all.html">All guides</a><p>Getting started</p><a href="quick-start.html">Quick start</a><a href="installation.html">Installation</a><p>Calendars</p><a href="jalali.html">Jalali calendar</a><a href="hijri.html" aria-current="page">Hijri calendar</a><a href="hebrew.html">Hebrew calendar</a><a href="convert-and-compare.html">Convert and compare dates</a><a href="carbon-macros.html">Carbon macros</a><p>Validation</p><a href="validators-overview.html">Validators overview</a><a href="national-code.html">National code</a><a href="sheba-and-bank-card.html">Sheba and bank card</a><a href="mobile-postal-plate.html">Mobile, postal code and plate</a><p>Numbers and text</p><a href="digits-and-format.html">Digits and number formatting</a><a href="number-words.html">Number to words</a><a href="arabic-number-words.html">Arabic number words</a><a href="text-tools.html">Text tools</a><p>Holidays and prayer times</p><a href="holidays.html">Iranian holidays</a><a href="holiday-calendar.html">Holiday calendar</a><a href="prayer-times.html">Prayer times</a><p>Laravel</p><a href="laravel-setup.html">Laravel setup</a><a href="laravel-validation-and-cast.html">Validation rules and Eloquent cast</a><p>Reference</p><a href="helpers-and-globals.html">Helpers and globals</a><a href="error-handling.html">Error handling</a><a href="api-stability.html">API stability</a><a href="accuracy-and-data.html">Accuracy and data</a><a href="benchmarks.html">Benchmarks</a><a href="limits.html">Limits</a><a href="troubleshooting-faq.html">Troubleshooting and FAQ</a><a href="upgrade.html">Upgrade guide</a><a href="verifying-releases.html">Verifying releases</a></nav></details></aside>
 <article class="prose">
 <details class="toc-inline"><summary>On this page</summary><ol><li><a href="#overview">What the class does</a></li><li><a href="#variants">Variants: Umm al-Qura and Tabular</a><ol><li><a href="#table-coverage">Table coverage</a></li></ol></li><li><a href="#make">Creating dates</a><ol><li><a href="#create">create()</a></li><li><a href="#make-values">make() and the helper</a></li><li><a href="#string-rules">String semantics</a></li></ol></li><li><a href="#range">Supported range and errors</a></li><li><a href="#getters">Reading values</a><ol><li><a href="#weekdays">Weekday numbering</a></li></ol></li><li><a href="#format">Formatting</a></li><li><a href="#modify">Shifting and snapping</a></li><li><a href="#compare-diff">Comparing and measuring</a></li><li><a href="#static">Calendar arithmetic</a></li><li><a href="#notes">Practical notes</a></li></ol></details>
 <h2 id="overview">What the class does<a class="anchor" href="#overview" aria-label="Link to this section">#</a></h2>
-<p><code>RtlyKit\Calendar\Hijri</code> is an immutable date-time value in the Islamic (Hijri) calendar. Like the other calendar classes it wraps one <code>DateTimeImmutable</code> instant and implements the shared <code>CalendarDate</code> contract (see <a href="convert-and-compare.html">Convert and compare dates</a>). What is specific to Hijri is the <strong>variant</strong>: the rule set that decides how long each month is. Every instance carries its variant, and every modifier keeps it.</p>
-<p>All examples assume this header (see <a href="installation.html">Installation</a>):</p>
+<p><code>RtlyKit\Calendar\Hijri</code> is an immutable date-time value in the Islamic (Hijri) calendar. Like the other calendar classes, it holds one <code>DateTimeImmutable</code> and implements the shared <code>CalendarDate</code> contract (see <a href="convert-and-compare.html">Convert and compare dates</a>). What is special about Hijri is the <strong>variant</strong>: the rule set that decides how long each month is. Every instance carries its variant, and every modifier keeps it.</p>
+<p>The examples assume this header (see <a href="installation.html">Installation</a>):</p>
 <pre tabindex="0"><code class="language-php"><span class="tok-k">&lt;?php
 require</span> <span class="tok-s">'vendor/autoload.php'</span>;
 
 <span class="tok-k">use</span> RtlyKit\Calendar\Hijri;
 <span class="tok-k">use</span> RtlyKit\Calendar\HijriVariant;
+<span class="tok-k">use</span> RtlyKit\Calendar\Jalali;
 <span class="tok-k">use</span> RtlyKit\Exceptions\InvalidDateException;
 <span class="tok-k">use</span> <span class="tok-k">function</span> RtlyKit\hdate;   <span class="tok-c">// namespaced helper, same as Hijri::make()</span>
 
@@ -41,8 +49,8 @@ require</span> <span class="tok-s">'vendor/autoload.php'</span>;
 <div class="table-wrap" tabindex="0" role="region" aria-label="Table"><table>
 <thead><tr><th scope="col">Variant</th><th scope="col">How month lengths are decided</th></tr></thead>
 <tbody>
-<tr><td><code>HijriVariant::UmmAlQura</code> (default)</td><td>An embedded month-length table for AH 1300 to 1500 (1882-11-12 to 2077-11-16). Outside it the Tabular rules are used as a fallback.</td></tr>
-<tr><td><code>HijriVariant::Tabular</code></td><td>The arithmetic civil calendar: a 30-year cycle with 11 leap years. Deterministic for every year, but it can differ from Umm al-Qura by one or two days.</td></tr>
+<tr><td><code>HijriVariant::UmmAlQura</code> (default)</td><td>An embedded month-length table for AH 1300 to 1500 (1882-11-12 to 2077-11-16). Outside it, the Tabular rules are used.</td></tr>
+<tr><td><code>HijriVariant::Tabular</code></td><td>The arithmetic civil calendar: a 30-year cycle with 11 leap years. It works for every year. It can differ from Umm al-Qura by one or two days.</td></tr>
 </tbody>
 </table></div>
 <pre tabindex="0"><code class="language-php"><span class="tok-v">$uq</span>  = Hijri::create(<span class="tok-n">1446</span>, <span class="tok-n">10</span>, <span class="tok-n">1</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-v">$utc</span>);                       <span class="tok-c">// Umm al-Qura</span>
@@ -51,14 +59,18 @@ require</span> <span class="tok-s">'vendor/autoload.php'</span>;
 <span class="tok-k">echo</span> <span class="tok-v">$uq</span>-&gt;toGregorian()-&gt;format(<span class="tok-s">'Y-m-d'</span>);   <span class="tok-c">// 2025-03-30</span>
 <span class="tok-k">echo</span> <span class="tok-v">$tab</span>-&gt;toGregorian()-&gt;format(<span class="tok-s">'Y-m-d'</span>);  <span class="tok-c">// 2025-03-31</span>
 <span class="tok-k">echo</span> <span class="tok-v">$uq</span>-&gt;getVariant()-&gt;name;               <span class="tok-c">// UmmAlQura</span></code></pre>
-<p>Two further anchors: 1 Ramadan 1446 is 2025-03-01 and 1 Muharram 1447 is 2025-06-26 (Umm al-Qura).</p>
-<div class="callout known" role="note"><strong>Known limitation.</strong> The Umm al-Qura table (AH 1300 to 1500) was generated from the ICU/CLDR <code>islamic-umalqura</code> calendar data and spot-checked against known dates. It has <em>not</em> been verified month by month against the official KACST publication. Neither variant reproduces moon-sighting calendars (used in Iran, Morocco and elsewhere), which can differ by a day. Day boundaries follow civil midnight, not sunset. Do not use the result for religious observance dates that are announced by an authority.</div>
+<p>Two more anchors: 1 Ramadan 1446 is 2025-03-01 and 1 Muharram 1447 is 2025-06-26 (Umm al-Qura).</p>
+<div class="callout note" role="note"><strong>Good to know.</strong> The Umm al-Qura table was built from the ICU/CLDR <code>islamic-umalqura</code> data. On 2026-10-08 we compared every month start from AH 1318 to AH 1500 (2196 months) with the official KACST Umm Al-Qura calendar and found no difference. The official site does not offer AH 1300 to 1317, so those years rest on the ICU/CLDR data alone. Neither variant follows moon sighting, which some countries use and which can differ by a day. Day boundaries follow civil midnight, not sunset. For religious dates that an authority announces, use the announcement.</div>
 <h3 id="table-coverage">Table coverage<a class="anchor" href="#table-coverage" aria-label="Link to this section">#</a></h3>
-<p>Outside AH 1300 to 1500, <code>create()</code> and <code>make()</code> do <strong>not</strong> throw: they extrapolate with the Tabular rules, and the two rule sets may not join seamlessly at the border. Use <code>Hijri::hasUmmAlQuraData($year)</code> and <code>$date-&gt;usesUmmAlQuraTable()</code> to find out which rule actually applied.</p>
+<p>Outside AH 1300 to 1500, <code>create()</code> and <code>make()</code> do not throw. They continue with the Tabular rules, and the two rule sets may not join smoothly at the border. Use <code>Hijri::hasUmmAlQuraData($year)</code> and <code>$date-&gt;usesUmmAlQuraTable()</code> to see which rule applied. <code>Hijri::ummAlQuraVerifiedRange()</code> returns <code>[1318, 1500]</code>, the years checked against KACST, and <code>Hijri::isUmmAlQuraVerified($year)</code> tells you if one year is inside it.</p>
 <pre tabindex="0"><code class="language-php"><span class="tok-k">echo</span> Hijri::hasUmmAlQuraData(<span class="tok-n">1299</span>) ? <span class="tok-n">1</span> : <span class="tok-n">0</span>;   <span class="tok-c">// 0</span>
 <span class="tok-k">echo</span> Hijri::hasUmmAlQuraData(<span class="tok-n">1300</span>) ? <span class="tok-n">1</span> : <span class="tok-n">0</span>;   <span class="tok-c">// 1</span>
 <span class="tok-k">echo</span> Hijri::hasUmmAlQuraData(<span class="tok-n">1500</span>) ? <span class="tok-n">1</span> : <span class="tok-n">0</span>;   <span class="tok-c">// 1</span>
 <span class="tok-k">echo</span> Hijri::hasUmmAlQuraData(<span class="tok-n">1501</span>) ? <span class="tok-n">1</span> : <span class="tok-n">0</span>;   <span class="tok-c">// 0</span>
+
+<span class="tok-k">echo</span> json_encode(Hijri::ummAlQuraVerifiedRange());          <span class="tok-c">// [1318,1500]</span>
+var_dump(Hijri::isUmmAlQuraVerified(<span class="tok-n">1317</span>));                 <span class="tok-c">// bool(false)</span>
+var_dump(Hijri::isUmmAlQuraVerified(<span class="tok-n">1447</span>));                 <span class="tok-c">// bool(true)</span>
 
 <span class="tok-v">$o</span> = Hijri::create(<span class="tok-n">1600</span>, <span class="tok-n">1</span>, <span class="tok-n">1</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-v">$utc</span>);
 <span class="tok-k">echo</span> <span class="tok-v">$o</span>-&gt;toGregorian()-&gt;format(<span class="tok-s">'Y-m-d'</span>);     <span class="tok-c">// 2173-12-06</span>
@@ -67,7 +79,7 @@ var_dump(Hijri::create(<span class="tok-n">1446</span>, <span class="tok-n">9</s
 
 <h2 id="make">Creating dates<a class="anchor" href="#make" aria-label="Link to this section">#</a></h2>
 <h3 id="create"><code>create()</code><a class="anchor" href="#create" aria-label="Link to this section">#</a></h3>
-<p><code>Hijri::create($year, $month, $day, $hour = 0, $minute = 0, $second = 0, $timezone = null, $variant = HijriVariant::UmmAlQura)</code> validates the date against the real month length in the chosen variant.</p>
+<p><code>Hijri::create($year, $month, $day, $hour = 0, $minute = 0, $second = 0, $timezone = null, $variant = HijriVariant::UmmAlQura)</code> checks the date against the real month length in the chosen variant.</p>
 <pre tabindex="0"><code class="language-php"><span class="tok-v">$h</span> = Hijri::create(<span class="tok-n">1446</span>, <span class="tok-n">9</span>, <span class="tok-n">1</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-v">$utc</span>);
 
 <span class="tok-k">echo</span> <span class="tok-v">$h</span>;                                  <span class="tok-c">// 1446/09/01 00:00:00</span>
@@ -81,22 +93,21 @@ var_dump(<span class="tok-v">$h</span>-&gt;usesUmmAlQuraTable());       <span cl
 <span class="tok-k">echo</span> Hijri::make(Jalali::create(<span class="tok-n">1404</span>, <span class="tok-n">1</span>, <span class="tok-n">1</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-v">$utc</span>)); <span class="tok-c">// 1446/09/21 00:00:00</span>
 <span class="tok-k">echo</span> Hijri::make(<span class="tok-s">'2025-03-31'</span>, <span class="tok-v">$utc</span>)-&gt;format(<span class="tok-s">'Y/m/d'</span>);    <span class="tok-c">// 1446/10/02</span>
 <span class="tok-k">echo</span> Hijri::make(<span class="tok-s">'2025-03-31'</span>, <span class="tok-v">$utc</span>, HijriVariant::Tabular)-&gt;format(<span class="tok-s">'Y/m/d'</span>); <span class="tok-c">// 1446/10/01</span></code></pre>
-<p>(The Jalali line needs <code>use RtlyKit\Calendar\Jalali;</code>.)</p>
 <h3 id="string-rules">String semantics<a class="anchor" href="#string-rules" aria-label="Link to this section">#</a></h3>
 <ol>
-<li>Persian and Arabic digits become English digits and the string is trimmed; empty strings throw <code>InvalidDateException</code>.</li>
-<li>A string of the form <code>Y/m/d</code> or <code>Y-m-d</code> (3 or 4 digit year, optional <code>H:i[:s]</code>) with a year <strong>below 1700</strong> is read as a Hijri date in the chosen variant.</li>
-<li>Everything else, including years of 1700 or later, is parsed as Gregorian or free-form text.</li>
+<li>Persian and Arabic digits become English digits and the string is trimmed. An empty string throws <code>InvalidDateException</code>.</li>
+<li>A string like <code>Y/m/d</code> or <code>Y-m-d</code> (3 or 4 digit year, optional <code>H:i[:s]</code>) with a year below 1700 is read as a Hijri date in the chosen variant.</li>
+<li>Everything else, including years from 1700 on, is read as Gregorian or free text.</li>
 </ol>
 <pre tabindex="0"><code class="language-php"><span class="tok-k">echo</span> Hijri::make(<span class="tok-s">'1446/09/01'</span>, <span class="tok-v">$utc</span>);   <span class="tok-c">// 1446/09/01 00:00:00   (Hijri)</span>
 <span class="tok-k">echo</span> Hijri::make(<span class="tok-s">'1700/01/01'</span>, <span class="tok-v">$utc</span>);   <span class="tok-c">// 1111/07/10 00:00:00   (Gregorian 1700-01-01)</span>
 
 <span class="tok-k">try</span> { Hijri::make(<span class="tok-s">'1446/02/31'</span>); }
 <span class="tok-k">catch</span> (InvalidDateException <span class="tok-v">$e</span>) { <span class="tok-k">echo</span> <span class="tok-v">$e</span>-&gt;getMessage(); }  <span class="tok-c">// Invalid Hijri date: 1446/2/31</span></code></pre>
-<div class="callout warn" role="note"><strong>Variant of a Hijri argument.</strong> <code>Hijri::make($hijriInstance)</code> returns that very instance unchanged and ignores the <code>$variant</code> argument. To re-express a date in another variant, go through the instant: <code>Hijri::make($h-&gt;toGregorian(), null, HijriVariant::Tabular)</code>.</div>
+<div class="callout note" role="note"><strong>Good to know.</strong> <code>Hijri::make($hijriInstance)</code> returns that same instance and ignores the <code>$variant</code> argument. To show a date in another variant, go through the moment: <code>Hijri::make($h-&gt;toGregorian(), null, HijriVariant::Tabular)</code>.</div>
 
 <h2 id="range">Supported range and errors<a class="anchor" href="#range" aria-label="Link to this section">#</a></h2>
-<p>Hijri years <code>Hijri::MIN_YEAR</code> = <strong>1</strong> to <code>Hijri::MAX_YEAR</code> = <strong>9665</strong> are supported: the first day is 1/1/1 (0622-07-19) and the last is 9665/12/last (9999-10-01), i.e. Gregorian years 622 to 9999. Anything outside throws <code>InvalidDateException</code> from <code>create()</code>, <code>make()</code>, integer timestamps, <code>add*()</code>/<code>sub*()</code> and the converters; never a <code>TypeError</code> or <code>ValueError</code>.</p>
+<p>Hijri years <code>Hijri::MIN_YEAR</code> = <strong>1</strong> to <code>Hijri::MAX_YEAR</code> = <strong>9665</strong> are supported. The first day is 1/1/1 (0622-07-19) and the last is 9665/12/last (9999-10-01), so Gregorian years 622 to 9999. Anything outside throws <code>InvalidDateException</code> from <code>create()</code>, <code>make()</code>, integer timestamps, <code>add*()</code>, <code>sub*()</code> and the converters. You never get a <code>TypeError</code> or <code>ValueError</code>.</p>
 <pre tabindex="0"><code class="language-php"><span class="tok-k">foreach</span> ([[<span class="tok-n">0</span>, <span class="tok-n">1</span>, <span class="tok-n">1</span>], [<span class="tok-n">9666</span>, <span class="tok-n">1</span>, <span class="tok-n">1</span>], [<span class="tok-n">1446</span>, <span class="tok-n">1</span>, <span class="tok-n">31</span>], [<span class="tok-n">1446</span>, <span class="tok-n">13</span>, <span class="tok-n">1</span>]] <span class="tok-k">as</span> [<span class="tok-v">$y</span>, <span class="tok-v">$m</span>, <span class="tok-v">$d</span>]) {
     <span class="tok-k">try</span> { Hijri::create(<span class="tok-v">$y</span>, <span class="tok-v">$m</span>, <span class="tok-v">$d</span>); }
     <span class="tok-k">catch</span> (InvalidDateException <span class="tok-v">$e</span>) { <span class="tok-k">echo</span> <span class="tok-v">$e</span>-&gt;getMessage(), <span class="tok-s">"\n"</span>; }
@@ -115,15 +126,15 @@ var_dump(<span class="tok-v">$h</span>-&gt;usesUmmAlQuraTable());       <span cl
 <span class="tok-c">// Hijri year out of the supported range: 9666</span></code></pre>
 
 <h2 id="getters">Reading values<a class="anchor" href="#getters" aria-label="Link to this section">#</a></h2>
-<p>The getters are those of the contract: <code>getYear()</code>, <code>getMonth()</code>, <code>getDay()</code>, <code>getHour()</code>, <code>getMinute()</code>, <code>getSecond()</code>, <code>getTimestamp()</code>, <code>getTimezone()</code>, <code>toGregorian()</code>, <code>toDateString()</code> (<code>Y/m/d</code>) and <code>toDateTimeString()</code>. Hijri adds <code>getVariant()</code> and <code>usesUmmAlQuraTable()</code>.</p>
+<p>The getters are the ones in the contract: <code>getYear()</code>, <code>getMonth()</code>, <code>getDay()</code>, <code>getHour()</code>, <code>getMinute()</code>, <code>getSecond()</code>, <code>getTimestamp()</code>, <code>getTimezone()</code>, <code>toGregorian()</code>, <code>toDateString()</code> (<code>Y/m/d</code>) and <code>toDateTimeString()</code>. Hijri adds <code>getVariant()</code> and <code>usesUmmAlQuraTable()</code>.</p>
 <h3 id="weekdays">Weekday numbering<a class="anchor" href="#weekdays" aria-label="Link to this section">#</a></h3>
-<p><code>getDayOfWeek()</code> and the <code>w</code> token are <strong>Sunday-first</strong>: 0 = Sunday to 6 = Saturday (the same as PHP). Jalali is Saturday-first. The <code>N</code> token is the ISO number, 1 = Monday to 7 = Sunday.</p>
+<p><code>getDayOfWeek()</code> and the <code>w</code> token start on Sunday: 0 = Sunday to 6 = Saturday, the same as PHP. Jalali starts on Saturday. The <code>N</code> token is the ISO number, 1 = Monday to 7 = Sunday.</p>
 <pre tabindex="0"><code class="language-php"><span class="tok-v">$h</span> = Hijri::create(<span class="tok-n">1446</span>, <span class="tok-n">9</span>, <span class="tok-n">1</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-v">$utc</span>);   <span class="tok-c">// a Saturday</span>
 <span class="tok-k">echo</span> <span class="tok-v">$h</span>-&gt;getDayOfWeek();                         <span class="tok-c">// 6</span>
 <span class="tok-k">foreach</span> (range(<span class="tok-n">0</span>, <span class="tok-n">6</span>) <span class="tok-k">as</span> <span class="tok-v">$i</span>) { <span class="tok-k">echo</span> <span class="tok-v">$h</span>-&gt;addDays(<span class="tok-v">$i</span>)-&gt;getDayOfWeek(); }  <span class="tok-c">// 6012345</span></code></pre>
 
 <h2 id="format">Formatting<a class="anchor" href="#format" aria-label="Link to this section">#</a></h2>
-<p><code>format($pattern = 'Y/m/d H:i:s', $locale = 'ar', $digits = 'latin')</code>. <code>$locale</code> is <code>ar</code>, <code>fa</code> or <code>en</code> (an unknown value falls back to <code>en</code>) and controls month names, weekday names and the AM/PM markers. <code>$digits</code> is <code>latin</code>, <code>persian</code> or <code>arabic</code>. A backslash escapes the next character. Note the default locale is Arabic.</p>
+<p><code>format($pattern = 'Y/m/d H:i:s', $locale = 'ar', $digits = 'latin')</code>. <code>$locale</code> is <code>ar</code>, <code>fa</code> or <code>en</code> (an unknown value falls back to <code>en</code>). It sets the month names, weekday names and AM/PM markers. <code>$digits</code> is <code>latin</code>, <code>persian</code> or <code>arabic</code>. A backslash escapes the next character, and a trailing backslash is dropped. A pattern longer than <code>Hijri::MAX_FORMAT_LENGTH</code> (256 bytes) throws <code>InvalidDateException</code> with the code <code>input_too_long</code>. The default locale is Arabic.</p>
 <pre tabindex="0"><code class="language-php"><span class="tok-k">echo</span> <span class="tok-v">$h</span>-&gt;format(<span class="tok-s">'l j F Y'</span>);                 <span class="tok-c">// السبت 1 رمضان 1446</span>
 <span class="tok-k">echo</span> <span class="tok-v">$h</span>-&gt;format(<span class="tok-s">'l j F Y'</span>, <span class="tok-s">'fa'</span>);           <span class="tok-c">// شنبه 1 رمضان 1446</span>
 <span class="tok-k">echo</span> <span class="tok-v">$h</span>-&gt;format(<span class="tok-s">'l j F Y'</span>, <span class="tok-s">'en'</span>);           <span class="tok-c">// Saturday 1 Ramadan 1446</span>
@@ -141,21 +152,21 @@ var_dump(<span class="tok-v">$h</span>-&gt;usesUmmAlQuraTable());       <span cl
 <tr><td><code>H</code> <code>G</code> <code>h</code> <code>g</code> <code>i</code> <code>s</code></td><td>24-hour and 12-hour clock, minutes, seconds</td></tr>
 <tr><td><code>F</code> <code>M</code></td><td>Month name in the locale</td></tr>
 <tr><td><code>l</code></td><td>Weekday name in the locale</td></tr>
-<tr><td><code>w</code> <code>N</code></td><td>Weekday number, Sunday = 0; ISO number Monday = 1</td></tr>
-<tr><td><code>z</code> <code>t</code> <code>L</code></td><td>Zero-based day of the year; days in the month; 1 for a leap year (355 days)</td></tr>
-<tr><td><code>a</code> <code>A</code></td><td>AM/PM, locale aware (<code>ص/م</code>, <code>ق.ظ/ب.ظ</code>, <code>am/pm</code>)</td></tr>
-<tr><td><code>S</code> <code>W</code></td><td>Always empty; ISO week of the Gregorian instant</td></tr>
-<tr><td><code>c</code> <code>r</code></td><td><code>Y-m-d\TH:i:sP</code> with the Hijri date; RFC 2822 of the Gregorian instant</td></tr>
-<tr><td><code>U e T P p O Z I u v</code></td><td>Delegated to the underlying instant</td></tr>
+<tr><td><code>w</code> <code>N</code></td><td>Weekday number with Sunday = 0. ISO number with Monday = 1</td></tr>
+<tr><td><code>z</code> <code>t</code> <code>L</code></td><td>Zero-based day of the year. Days in the month. 1 for a leap year (355 days)</td></tr>
+<tr><td><code>a</code> <code>A</code></td><td>AM/PM for the locale (<code>ص/م</code>, <code>ق.ظ/ب.ظ</code>, <code>am/pm</code>)</td></tr>
+<tr><td><code>S</code> <code>W</code></td><td>Always empty. ISO week of the Gregorian moment</td></tr>
+<tr><td><code>c</code> <code>r</code></td><td><code>Y-m-d\TH:i:sP</code> with the Hijri date. RFC 2822 of the Gregorian moment</td></tr>
+<tr><td><code>U e T P p O Z I u v</code></td><td>Taken from the inner moment</td></tr>
 </tbody>
 </table></div>
-<p>The static <code>Hijri::monthName($month, $locale = 'ar')</code> returns a month name and throws <code>InvalidDateException</code> for a month outside 1 to 12:</p>
+<p>The static <code>Hijri::monthName($month, $locale = 'ar')</code> returns a month name. It throws <code>InvalidDateException</code> for a month outside 1 to 12:</p>
 <pre tabindex="0"><code class="language-php"><span class="tok-k">echo</span> Hijri::monthName(<span class="tok-n">9</span>), <span class="tok-s">' | '</span>, Hijri::monthName(<span class="tok-n">9</span>, <span class="tok-s">'fa'</span>), <span class="tok-s">' | '</span>, Hijri::monthName(<span class="tok-n">9</span>, <span class="tok-s">'en'</span>);
 <span class="tok-c">// رمضان | رمضان | Ramadan</span>
 <span class="tok-c">// Hijri::monthName(13) throws: Invalid Hijri month: 13</span></code></pre>
 
 <h2 id="modify">Shifting and snapping<a class="anchor" href="#modify" aria-label="Link to this section">#</a></h2>
-<p>The method set is that of <a href="jalali.html#modify">Jalali</a>: <code>addDays/Hours/Minutes/Seconds</code>, <code>addMonths</code>, <code>addYears</code>, the <code>sub*</code> forms and <code>startOf/endOf</code> for Day, Month and Year. Months are Hijri months of the instance's variant, and the day is clamped to the target month's length.</p>
+<p>The methods are the same as in <a href="jalali.html#modify">Jalali</a>: <code>addDays/Hours/Minutes/Seconds</code>, <code>addMonths</code>, <code>addYears</code>, the <code>sub*</code> forms and <code>startOf/endOf</code> for Day, Month and Year. Months are Hijri months of the instance's variant, and the day is clamped to the length of the target month.</p>
 <pre tabindex="0"><code class="language-php"><span class="tok-k">echo</span> Hijri::create(<span class="tok-n">1446</span>, <span class="tok-n">4</span>, <span class="tok-n">30</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-v">$utc</span>)-&gt;addMonths(<span class="tok-n">1</span>);  <span class="tok-c">// 1446/05/29 00:00:00  (clamped)</span>
 <span class="tok-k">echo</span> <span class="tok-v">$h</span>-&gt;addYears(<span class="tok-n">1</span>);                                          <span class="tok-c">// 1447/09/01 00:00:00</span>
 <span class="tok-k">echo</span> <span class="tok-v">$h</span>-&gt;subMonths(<span class="tok-n">9</span>);                                         <span class="tok-c">// 1445/12/01 00:00:00</span>
@@ -164,10 +175,10 @@ var_dump(<span class="tok-v">$h</span>-&gt;usesUmmAlQuraTable());       <span cl
 <span class="tok-k">echo</span> <span class="tok-v">$h</span>-&gt;endOfYear();                                          <span class="tok-c">// 1446/12/29 23:59:59</span>
 <span class="tok-k">echo</span> <span class="tok-v">$h</span>-&gt;startOfYear();                                        <span class="tok-c">// 1446/01/01 00:00:00</span>
 <span class="tok-k">echo</span> <span class="tok-v">$tab</span>-&gt;addMonths(<span class="tok-n">1</span>)-&gt;getVariant()-&gt;name;                  <span class="tok-c">// Tabular  (variant is kept)</span></code></pre>
-<p>Shifting beyond year 1 or 9665, or by an absurd delta, throws <code>InvalidDateException</code>.</p>
+<p>Shifting beyond year 1 or 9665, or by a huge amount, throws <code>InvalidDateException</code>.</p>
 
 <h2 id="compare-diff">Comparing and measuring<a class="anchor" href="#compare-diff" aria-label="Link to this section">#</a></h2>
-<p>Comparison (<code>eq ne gt gte lt lte equals isBefore isAfter between isPast isFuture isToday</code>) works on instants and accepts any calendar. <code>diffInDays()</code> counts whole days; <code>diffInMonths()</code> and <code>diffInYears()</code> count whole <em>Hijri</em> months and years in this instance's variant (the other date is re-expressed in that variant first). The <code>$absolute</code> flag works as in Jalali.</p>
+<p>The comparison methods (<code>eq ne gt gte lt lte equals isBefore isAfter between isPast isFuture isToday</code>) compare moments and accept any calendar. <code>diffInDays()</code> counts whole days. <code>diffInMonths()</code> and <code>diffInYears()</code> count whole Hijri months and years in the variant of this instance (the other date is first shown in that variant). The <code>$absolute</code> flag works as in Jalali.</p>
 <pre tabindex="0"><code class="language-php"><span class="tok-k">echo</span> Hijri::create(<span class="tok-n">1446</span>, <span class="tok-n">1</span>, <span class="tok-n">1</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-v">$utc</span>)-&gt;diffInMonths(Hijri::create(<span class="tok-n">1447</span>, <span class="tok-n">3</span>, <span class="tok-n">1</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-v">$utc</span>)); <span class="tok-c">// 14</span>
 <span class="tok-k">echo</span> Hijri::create(<span class="tok-n">1440</span>, <span class="tok-n">1</span>, <span class="tok-n">1</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-v">$utc</span>)-&gt;diffInYears(Hijri::create(<span class="tok-n">1446</span>, <span class="tok-n">1</span>, <span class="tok-n">1</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-v">$utc</span>));  <span class="tok-c">// 6</span>
 <span class="tok-k">echo</span> <span class="tok-v">$h</span>-&gt;diffInDays(Hijri::create(<span class="tok-n">1446</span>, <span class="tok-n">10</span>, <span class="tok-n">1</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-v">$utc</span>));                                        <span class="tok-c">// 29</span></code></pre>
@@ -176,11 +187,12 @@ var_dump(<span class="tok-v">$h</span>-&gt;usesUmmAlQuraTable());       <span cl
 <div class="table-wrap" tabindex="0" role="region" aria-label="Table"><table>
 <thead><tr><th scope="col">Method</th><th scope="col">Returns</th></tr></thead>
 <tbody>
-<tr><td><code>Hijri::isValid($y, $m, $d, $variant)</code></td><td><code>bool</code>; false for out-of-range values</td></tr>
-<tr><td><code>Hijri::daysInMonth($y, $m, $variant)</code></td><td>29 or 30; throws <code>InvalidDateException</code> for a month outside 1 to 12</td></tr>
+<tr><td><code>Hijri::isValid($y, $m, $d, $variant)</code></td><td><code>bool</code>. False for out-of-range values</td></tr>
+<tr><td><code>Hijri::daysInMonth($y, $m, $variant)</code></td><td>29 or 30. Throws <code>InvalidDateException</code> for a month outside 1 to 12</td></tr>
 <tr><td><code>Hijri::daysInYear($y, $variant)</code></td><td>Sum of the 12 month lengths (354 or 355 in practice)</td></tr>
 <tr><td><code>Hijri::isLeapYear($y, $variant)</code></td><td>True when the year has 355 days</td></tr>
 <tr><td><code>Hijri::hasUmmAlQuraData($y)</code></td><td>True for AH 1300 to 1500</td></tr>
+<tr><td><code>Hijri::isUmmAlQuraVerified($y)</code></td><td>True for AH 1318 to 1500</td></tr>
 <tr><td><code>Hijri::gregorianToHijri($gy, $gm, $gd, $variant)</code></td><td><code>[year, month, day]</code></td></tr>
 <tr><td><code>Hijri::hijriToGregorian($hy, $hm, $hd, $variant)</code></td><td><code>[year, month, day]</code></td></tr>
 </tbody>
@@ -194,9 +206,9 @@ var_dump(<span class="tok-v">$h</span>-&gt;usesUmmAlQuraTable());       <span cl
 
 <h2 id="notes">Practical notes<a class="anchor" href="#notes" aria-label="Link to this section">#</a></h2>
 <ul>
-<li>Choose the variant once per application and pass it everywhere; do not mix variants in one comparison unless you want to see the day-level differences.</li>
-<li>For dates within AH 1300 to 1500 the Umm al-Qura table is authoritative inside this library; outside it, results are arithmetic extrapolations.</li>
-<li>Convert from and to the other calendars in <a href="convert-and-compare.html">Convert and compare dates</a>; Carbon helpers (<code>toHijri()</code>, <code>createFromHijri()</code>) are in <a href="carbon-macros.html">Carbon macros</a>.</li>
+<li>Pick the variant once for your application and pass it everywhere. Mix variants in one comparison only if you want to see the day-level differences.</li>
+<li>Inside AH 1300 to 1500, the embedded Umm al-Qura table decides. Outside it, results come from the arithmetic rule.</li>
+<li>To convert to and from the other calendars, see <a href="convert-and-compare.html">Convert and compare dates</a>. The Carbon helpers (<code>toHijri()</code>, <code>createFromHijri()</code>) are in <a href="carbon-macros.html">Carbon macros</a>.</li>
 </ul>
 <nav class="reading-footer" aria-label="Previous and next page"><a class="prev" rel="prev" href="jalali.html"><small>Previous</small>Jalali calendar</a><a class="next" rel="next" href="hebrew.html"><small>Next</small>Hebrew calendar</a></nav>
 </article>

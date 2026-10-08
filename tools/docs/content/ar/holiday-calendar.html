@@ -1,0 +1,136 @@
+<!--
+title: تقويم العطل القابل للتعديل
+description: استخدم التواريخ الرسمية للعطل الإيرانية، واعرف مصدر كل تاريخ، وصحّح فروق رؤية الهلال بإزاحاتك وبدايات الأشهر وأيام تضيفها أو تحذفها.
+group: dates-and-times
+order: 15
+-->
+<h2 id="overview">ما هو</h2>
+<p>تحدد إيران عطلها الدينية برؤية الهلال، والجدول لا يستطيع إلا تقديرها، وقد يخطئ التقدير بيوم أو يومين. يعالج <code>RtlyKit\Holiday\HolidayCalendar</code> ذلك بطريقتين: فهو يضم التواريخ الرسمية المنشورة لعدد من السنوات الجلالية، ويتيح لك تصحيح ما سواها بإعدادات صغيرة.</p>
+<p>الصنف <code>HolidayCalendar</code> لا يتغير بعد إنشائه ولا يحمل حالة عامة؛ كل دالة <code>with*()</code> تُرجع تقويمًا جديدًا. وله دوال البحث نفسها التي في الصنف الساكن <a href="holidays.html">IranHolidays</a> (<code>isHoliday()</code> و<code>getTitles()</code> و<code>all()</code> و<code>isBusinessDay()</code> وغيرها). أما <code>IranHolidays</code> فيستعمل التقويم الافتراضي، وهو <code>HolidayCalendar::default()</code>.</p>
+
+<h2 id="sources">من أين تأتي التواريخ</h2>
+<p>لكل سنة جلالية أحد ثلاثة مصادر. اسأل التقويم بـ <code>sourceOf($year)</code>، وهي تُرجع قيمة من <code>HolidaySource</code>.</p>
+<table>
+<thead><tr><th>المصدر</th><th>السنوات</th><th>المعنى</th></tr></thead>
+<tbody>
+<tr><td><code>Official</code></td><td>1394 و1396 إلى 1405</td><td>تواريخ التقويم السنوي الرسمي لمركز التقويم في جامعة طهران، وقد قورنت بمصدر ثانٍ (time.ir)</td></tr>
+<tr><td><code>Reported</code></td><td>1380 إلى 1393 و1395</td><td>تواريخ مأخوذة من قائمة منشورة. وللسنة 1395 استعملنا أرقام ملف PDF وقائمة إخبارية بالعطل الرسمية. وقد تكون مجموعة العطل في هذه السنوات ناقصة، فيوم الإمام الرضا مثلًا غير موجود في بعضها</td></tr>
+<tr><td><code>Estimated</code></td><td>كل سنة أخرى</td><td>تُحسب من جدول أم القرى، وتُعرض داخل السنوات الهجرية 1300 إلى 1500 فقط</td></tr>
+</tbody>
+</table>
+<p>العطل الثابتة، مثل النوروز و22 بهمن، تقع في التاريخ الجلالي نفسه كل سنة. هي دقيقة ولا تدخل في هذا السؤال.</p>
+<pre><code class="language-php">&lt;?php
+require 'vendor/autoload.php';
+
+use RtlyKit\Holiday\HolidayCalendar;
+use RtlyKit\Holiday\IranHolidays;
+
+$cal = HolidayCalendar::default();    // IranHolidays::calendar() هو التقويم نفسه
+
+echo $cal-&gt;sourceOf(1405)-&gt;value;     // official
+echo $cal-&gt;sourceOf(1395)-&gt;value;     // reported
+echo $cal-&gt;sourceOf(1406)-&gt;value;     // estimated
+
+echo implode(', ', IranHolidays::getTitles(1405, 1, 1));   // جشن نوروز, عید فطر</code></pre>
+<p>في سنة 1405 يقع عيد الفطر 1447 هـ في 1405/01/01، أي مع النوروز، وهذا هو التاريخ الرسمي. أما تقدير الجدول فيضعه في 1404/12/29.</p>
+
+<h2 id="tutorial">شرح عملي: تصحيح سنة خطوة بخطوة</h2>
+<p>ليست للسنة 1406 بيانات رسمية بعد، فهي تقديرية. سنصححها في أربع خطوات.</p>
+
+<h3 id="step-offset">1. إزاحة كل التواريخ التقديرية</h3>
+<p>إذا لاحظت أن التقدير أبكر بيوم طوال السنة، فأزح كل العطل الإسلامية التقديرية بـ <code>withIslamicOffset()</code>. تقبل من -3 إلى +3 أيام، وتؤثر في السنوات التقديرية فقط؛ فالسنوات الرسمية والعطل الثابتة لا تتحرك.</p>
+<pre><code class="language-php">$later = $cal-&gt;withIslamicOffset(1);
+
+echo implode(', ', $cal-&gt;getTitles(1406, 3, 25));     // عاشورای حسینی
+echo implode(', ', $later-&gt;getTitles(1406, 3, 26));   // عاشورای حسینی</code></pre>
+
+<h3 id="step-month-start">2. تحديد البداية الفعلية لشهر هجري</h3>
+<p>الإزاحة الواحدة لا تتبع القمر شهرًا بعد شهر. فإذا عرفت اليوم الأول الفعلي للشهر، فأعطِه لـ <code>withHijriMonthStart($hijriYear, $hijriMonth, $firstDay)</code>. والتاريخ ميلادي: نص مثل <code>'2027-06-08'</code> (الأرقام الفارسية والعربية مقبولة) أو أي <code>DateTimeInterface</code>. تُشتق من هذا اليوم كل العطل الإسلامية لذلك الشهر. وهذا يعمل في السنوات الرسمية أيضًا، ويغلب البيانات الرسمية.</p>
+<pre><code class="language-php">// يُحسب أن محرم 1449 يبدأ في 2027-06-06. ورُئي الهلال بعد يومين:
+$moved = $cal-&gt;withHijriMonthStart(1449, 1, '2027-06-08');
+
+echo implode(', ', $moved-&gt;getTitles(1406, 3, 25));   // (لا شيء)
+echo implode(', ', $moved-&gt;getTitles(1406, 3, 26));   // تاسوعای حسینی
+echo implode(', ', $moved-&gt;getTitles(1406, 3, 27));   // عاشورای حسینی</code></pre>
+<p>يجب أن يكون التاريخ ضمن 3 أيام من البداية المحسوبة. وإذا أعطيت أيضًا بداية شهر مجاور، فيجب أن يفصل بين البدايتين 29 أو 30 يومًا. وإلا أثارت الدالة <code>InvalidDateException</code>.</p>
+
+<h3 id="step-add-remove">3. إضافة يوم أو حذفه</h3>
+<p>تضيف <code>withHoliday($date, $title)</code> عنوانًا إلى يوم. وتحذف <code>withoutHoliday($date)</code> اليوم كله، وتحذف <code>withoutHoliday($date, $title)</code> عنوانًا واحدًا. والتاريخ كائن <code>Jalali</code> أو نص مثل <code>'1406/02/03'</code>.</p>
+<pre><code class="language-php">$mine = $moved
+    -&gt;withHoliday('1406/02/03', 'Company day')
+    -&gt;withoutHoliday('1406/01/13');            // حذف يوم الطبيعة
+
+var_dump($mine-&gt;isHoliday(1406, 2, 3));        // bool(true)
+var_dump($mine-&gt;isHoliday(1406, 1, 13));       // bool(false)</code></pre>
+
+<h3 id="step-origin">4. معرفة سبب كون اليوم عطلة</h3>
+<p>تُرجع <code>statusOf()</code> كل عنوان في اليوم مع أصله. والأصل قيمة من <code>HolidayOrigin</code>: <code>Fixed</code> أو <code>Official</code> أو <code>Reported</code> أو <code>Estimated</code> أو <code>User</code>.</p>
+<pre><code class="language-php">foreach ($mine-&gt;statusOf(1406, 2, 3) as $entry) {
+    echo $entry-&gt;title, ' ', $entry-&gt;origin-&gt;value, "\n";   // Company day user
+}
+foreach ($mine-&gt;statusOf(1406, 3, 27) as $entry) {
+    echo $entry-&gt;title, ' ', $entry-&gt;origin-&gt;value, "\n";   // عاشورای حسینی user
+}
+foreach ($cal-&gt;statusOf(1405, 1, 1) as $entry) {
+    echo $entry-&gt;title, ' ', $entry-&gt;origin-&gt;value, "\n";
+}
+// جشن نوروز fixed
+// عید فطر official</code></pre>
+<p>يمكنك بهذا أن تعرض ملاحظة صغيرة بجانب التواريخ التي هي تقدير فقط.</p>
+
+<h2 id="options">كل الخيارات</h2>
+<table>
+<thead><tr><th>الدالة</th><th>ما تفعله</th></tr></thead>
+<tbody>
+<tr><td><code>HolidayCalendar::default()</code></td><td>البيانات الرسمية مفعّلة، والإزاحة 0، ولا تعديلات</td></tr>
+<tr><td><code>HolidayCalendar::fromArray($config)</code></td><td>تبني تقويمًا من مصفوفة بشكل إعدادات Laravel (انظر <a href="#laravel">أدناه</a>). المفتاح غير المعروف والقيمة الخاطئة يُثيران استثناءً</td></tr>
+<tr><td><code>withIslamicOffset(int $days)</code></td><td>تزيح العطل الإسلامية التقديرية من -3 إلى +3 أيام</td></tr>
+<tr><td><code>withHijriMonthStart($year, $month, $day)</code></td><td>تحدد اليوم الأول الفعلي لشهر هجري، وتتبعه عطل ذلك الشهر</td></tr>
+<tr><td><code>withHoliday($date, $title)</code></td><td>تضيف عنوانًا إلى يوم</td></tr>
+<tr><td><code>withoutHoliday($date, $title = null)</code></td><td>تحذف عنوانًا أو اليوم كله</td></tr>
+<tr><td><code>withOfficialData(bool $use)</code></td><td>القيمة <code>false</code> تجعل كل سنة تقديرية، كما كانت الإصدارات قبل 0.2.0</td></tr>
+<tr><td><code>sourceOf($jalaliYear)</code></td><td>قيمة <code>HolidaySource</code> للسنة، قبل تعديلاتك</td></tr>
+<tr><td><code>statusOf($year, $month, $day)</code></td><td>عناوين اليوم مع <code>HolidayOrigin</code> لكل منها</td></tr>
+<tr><td><code>getTitles()</code> و<code>getTitle()</code> و<code>isHoliday()</code> و<code>all()</code> و<code>allTitles()</code> و<code>allFixed()</code> و<code>isWeekend()</code> و<code>isBusinessDay()</code> و<code>nextBusinessDay()</code></td><td>دوال البحث نفسها في <a href="holidays.html">IranHolidays</a> مع تطبيق تعديلاتك. أما <code>allFixed()</code> فتعرض الجدول الثابت فقط دائمًا</td></tr>
+</tbody>
+</table>
+
+<h2 id="precedence">أي قاعدة تغلب</h2>
+<p>لكل يوم ولكل عنوان الترتيب نفسه:</p>
+<ol>
+<li>تعديلاتك: <code>withHoliday()</code> و<code>withoutHoliday()</code> و<code>withHijriMonthStart()</code>.</li>
+<li>الجدول الرسمي، للسنوات التي يغطيها، ما دامت <code>withOfficialData(true)</code> مفعّلة.</li>
+<li>تقدير أم القرى، مع إزاحة <code>withIslamicOffset()</code>.</li>
+</ol>
+<p>العطل الجلالية الثابتة لا تحركها إزاحة ولا بداية شهر. ويمكنك مع ذلك حذف واحدة منها بـ <code>withoutHoliday()</code>.</p>
+
+<h2 id="laravel">إعدادات Laravel</h2>
+<p>انشر ملف الإعدادات:</p>
+<pre><code class="language-bash">php artisan vendor:publish --tag=rtly-kit-config</code></pre>
+<p>ينشئ هذا الأمر الملف <code>config/rtly-kit.php</code>، وفي قسم <code>holidays</code> منه هذه المفاتيح:</p>
+<pre><code class="language-php">'holidays' =&gt; [
+    'islamic_offset' =&gt; 0,           // من -3 إلى 3، للسنوات التقديرية فقط
+    'hijri_month_starts' =&gt; [],      // '1447-10' =&gt; '2026-03-21'
+    'extra' =&gt; [],                   // '1405/02/03' =&gt; 'Title' أو ['Title 1', 'Title 2']
+    'removed' =&gt; [],                 // '1405/02/03' أو '1405/02/03' =&gt; 'Title'
+    'use_official_data' =&gt; true,
+],</code></pre>
+<p>يبني مزوّد الخدمة <code>HolidayCalendar</code> واحدًا من هذا القسم ويربطه في الحاوية. احصل عليه بـ <code>app(HolidayCalendar::class)</code>. يُنشأ عند أول طلب، فالقيمة الخاطئة تفشل عندئذ. والمفاتيح الناقصة تأخذ قيمها الافتراضية.</p>
+<pre><code class="language-php">use RtlyKit\Holiday\HolidayCalendar;
+
+$calendar = app(HolidayCalendar::class);
+$calendar-&gt;isHoliday(1406, 3, 27);</code></pre>
+<div class="note"><strong>من المفيد أن تعرف.</strong> الصنف الساكن <code>IranHolidays</code> والدالة المساعدة <code>is_iran_holiday()</code> يستعملان دائمًا التقويم الافتراضي، لا تقويم إعداداتك. استعمل <code>app(HolidayCalendar::class)</code> حين تريد تطبيق إعداداتك.</div>
+
+<h2 id="changes">ما الذي تغيّر في 0.2.0</h2>
+<p>في السنوات الجلالية من 1380 إلى 1405 صارت الدوال الساكنة تُرجع التواريخ الرسمية أو المنقولة، بعد أن كانت تُرجع تقدير الجدول. أما السنوات خارج 1380 إلى 1405 والتقاويم المبنية بـ <code>withOfficialData(false)</code> فتُرجع ما كانت تُرجعه الإصدارات السابقة. بعض الأمثلة:</p>
+<ul>
+<li>1405/01/01 هو عيد الفطر 1447 هـ، ولم يعد 1404/12/29 يومًا له.</li>
+<li>عيد الفطر 1446 هـ في 1404/01/11 وليس في 1404/01/10.</li>
+<li>في السنوات الرسمية لا تظهر إلا العناوين الواردة في الجدول الرسمي. فيوم 8 ربيع الأول (الإمام الحسن العسكري) مثلًا غير موجود في بيانات 1394 و1395.</li>
+</ul>
+<p>القائمة المقارنة في <a href="upgrade.html">الترقية</a>.</p>
+
+<h2 id="limits">من المفيد أن تعرف</h2>
+<div class="note"><strong>من المفيد أن تعرف.</strong> لا توجد بيانات رسمية للسنة 1406 بعد. وعند نشرها ستضاف إلى ملف البيانات دون أن يتغير شيء آخر. وفي السنوات التقديرية تعالج الإزاحة الواحدة تأخرًا ثابتًا، ولا تعالج رؤية الهلال شهرًا بشهر؛ فاستعمل <code>withHijriMonthStart()</code> للأشهر الدقيقة. ومصدر البيانات موصوف في <a href="accuracy-and-data.html">الدقة والبيانات</a>.</div>
+<p>ذو صلة: <a href="holidays.html">العطل الرسمية الإيرانية</a> و<a href="hijri.html">التقويم الهجري</a> و<a href="laravel-setup.html">إعداد Laravel</a>.</p>

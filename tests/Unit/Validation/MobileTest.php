@@ -42,6 +42,9 @@ final class MobileTest extends TestCase
         $this->assertSame('رایتل', Mobile::getOperator('09211234567'));
         $this->assertSame('شاتل موبایل', Mobile::getOperator('09981234567'));
         $this->assertSame('آپتل', Mobile::getOperator('09991012345'));
+        foreach (['0990', '0991', '0992', '0993', '0994'] as $prefix) {
+            $this->assertSame('همراه اول', Mobile::getOperator($prefix.'1234567'), $prefix);
+        }
         // Valid shape, but prefix not in the conservative table.
         $this->assertTrue(Mobile::isValid('09951234567'));
         $this->assertNull(Mobile::getOperator('09951234567'));

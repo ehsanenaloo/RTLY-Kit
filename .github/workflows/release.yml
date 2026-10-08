@@ -1,40 +1,261 @@
 name: Release
 
+# Pushing a tag `vX.Y.Z` (or `vX.Y.Z-rc.1`) builds the release archive, attests
+# its provenance and publishes the GitHub Release. Packagist picks the tag up
+# through its own webhook.
+#
+# `workflow_dispatch` is a dry run: it runs every check and builds the archive
+# and checksums from an existing tag, uploads them as a workflow artifact, and
+# never attests or publishes anything.
+
 on:
   push:
     tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Existing tag to dry-run (for example v0.1.2). Nothing is published.'
+        required: true
+        type: string
 
-permissions:
-  contents: write
+# Nothing by default; every job asks for exactly what it needs.
+permissions: {}
+
+concurrency:
+  group: release-${{ github.event.inputs.tag || github.ref_name }}
+  cancel-in-progress: false
+
+env:
+  TAG: ${{ github.event.inputs.tag || github.ref_name }}
 
 jobs:
-  release:
+  # ---------------------------------------------------------------------------
+  # Refuse to release anything that is not a clean, green, changelogged tag.
+  # ---------------------------------------------------------------------------
+  verify:
+    name: Verify tag
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      actions: read
+    outputs:
+      version: ${{ steps.meta.outputs.version }}
+      sha: ${{ steps.meta.outputs.sha }}
+      prerelease: ${{ steps.meta.outputs.prerelease }}
     steps:
-      # Same SHA-pinned checkout as ci.yml.
+      # Third-party actions are pinned to full commit SHAs (verified against the
+      # official repositories' tags with `git ls-remote`). Bump deliberately.
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          ref: refs/tags/${{ env.TAG }}
+          fetch-depth: 0
           persist-credentials: false
-      - name: Extract release notes from CHANGELOG.md
-        env:
-          TAG: ${{ github.ref_name }}
+
+      - name: Check tag format, CHANGELOG and branch
+        id: meta
         run: |
+          set -eu
+          case "$TAG" in
+            v[0-9]*.[0-9]*.[0-9]*) ;;
+            *) echo "::error::Tag '$TAG' is not of the form vX.Y.Z[-suffix]"; exit 1 ;;
+          esac
+          if ! printf '%s' "$TAG" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$'; then
+            echo "::error::Tag '$TAG' is not valid SemVer"
+            exit 1
+          fi
           version="${TAG#v}"
-          awk -v v="$version" '
+
+          # The newest released section of CHANGELOG.md must be the tagged version.
+          top=$(awk 'index($0, "## [") == 1 && index($0, "## [Unreleased]") != 1 { print; exit }' CHANGELOG.md)
+          top="${top#\#\# [}"
+          top="${top%%]*}"
+          if [ "$top" != "$version" ]; then
+            echo "::error::Tag is $version but the newest CHANGELOG.md release section is '$top'"
+            exit 1
+          fi
+
+          # The tagged commit must be part of main.
+          sha=$(git rev-parse "refs/tags/$TAG^{commit}")
+          git fetch --no-tags origin main:refs/remotes/origin/main
+          if ! git merge-base --is-ancestor "$sha" refs/remotes/origin/main; then
+            echo "::error::Tagged commit $sha is not contained in main"
+            exit 1
+          fi
+
+          prerelease=false
+          case "$TAG" in *-*) prerelease=true ;; esac
+          {
+            echo "version=$version"
+            echo "sha=$sha"
+            echo "prerelease=$prerelease"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Require green CI for the tagged commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SHA: ${{ steps.meta.outputs.sha }}
+        run: |
+          set -eu
+          # CI runs on the push to main that produced this commit. Wait for it
+          # (up to ~20 minutes) instead of failing a tag pushed right after the merge.
+          attempt=0
+          while :; do
+            runs=$(gh run list --workflow ci.yml --commit "$SHA" --repo "$GITHUB_REPOSITORY" \
+              --json status,conclusion --jq '.[] | "\(.status):\(.conclusion)"')
+            if [ -z "$runs" ]; then
+              echo "::error::No CI run found for $SHA"
+              exit 1
+            fi
+            if printf '%s\n' "$runs" | grep -Eq '^completed:(failure|cancelled|timed_out|startup_failure|action_required)$'; then
+              echo "::error::CI is not green for $SHA:"
+              printf '%s\n' "$runs"
+              exit 1
+            fi
+            if printf '%s\n' "$runs" | grep -q '^completed:success$' \
+              && ! printf '%s\n' "$runs" | grep -Eq '^(queued|in_progress|waiting|pending|requested):'; then
+              echo "CI is green for $SHA"
+              exit 0
+            fi
+            attempt=$((attempt + 1))
+            if [ "$attempt" -ge 40 ]; then
+              echo "::error::CI for $SHA did not finish in time"
+              exit 1
+            fi
+            echo "Waiting for CI ($attempt/40)..."
+            sleep 30
+          done
+
+  # ---------------------------------------------------------------------------
+  # Build the archive Composer will install, plus checksums and release notes.
+  # ---------------------------------------------------------------------------
+  build:
+    name: Build release archive
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    env:
+      VERSION: ${{ needs.verify.outputs.version }}
+      SHA: ${{ needs.verify.outputs.sha }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.verify.outputs.sha }}
+          persist-credentials: false
+
+      - name: Extract release notes from CHANGELOG.md
+        run: |
+          set -eu
+          awk -v v="$VERSION" '
             index($0, "## [" v "]") == 1 { found = 1; next }
             found && index($0, "## [") == 1 { exit }
             found { print }
           ' CHANGELOG.md > release-notes.md
-          if [ ! -s release-notes.md ]; then
-            echo "No CHANGELOG.md section found for $version" >&2
+          if ! grep -q '[^[:space:]]' release-notes.md; then
+            echo "::error::No CHANGELOG.md section found for $VERSION"
             exit 1
           fi
+
+      - name: Create archives with git archive (honours export-ignore)
+        run: |
+          set -eu
+          mkdir dist
+          prefix="rtly-kit-$VERSION/"
+          git archive --format=tar --prefix="$prefix" "$SHA" | gzip -n -9 > "dist/rtly-kit-$VERSION.tar.gz"
+          git archive --format=zip --prefix="$prefix" -9 -o "dist/rtly-kit-$VERSION.zip" "$SHA"
+
+      - name: Verify archive contents
+        run: |
+          set -eu
+          list=$(tar -tzf "dist/rtly-kit-$VERSION.tar.gz")
+          for required in composer.json LICENSE README.md CHANGELOG.md src/; do
+            if ! printf '%s\n' "$list" | grep -q "^rtly-kit-$VERSION/$required"; then
+              echo "::error::Archive is missing $required"
+              exit 1
+            fi
+          done
+          for forbidden in tests/ docs/ tools/ .github/ .gitattributes composer.lock; do
+            if printf '%s\n' "$list" | grep -q "^rtly-kit-$VERSION/$forbidden"; then
+              echo "::error::Archive must not contain $forbidden"
+              exit 1
+            fi
+          done
+          echo "Archive has $(printf '%s\n' "$list" | wc -l) entries."
+
+      - name: Checksums
+        run: |
+          set -eu
+          cd dist
+          sha256sum "rtly-kit-$VERSION.tar.gz" "rtly-kit-$VERSION.zip" > SHA256SUMS
+          sha256sum --check SHA256SUMS
+          cd ..
+          cp release-notes.md dist/release-notes.md
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: release-dist
+          path: dist/
+          if-no-files-found: error
+          retention-days: 14
+
+  # ---------------------------------------------------------------------------
+  # Signed build provenance (GitHub artifact attestation). Tags only.
+  # ---------------------------------------------------------------------------
+  provenance:
+    name: Attest build provenance
+    needs: build
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    steps:
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: release-dist
+          path: dist
+      - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-path: |
+            dist/rtly-kit-*.tar.gz
+            dist/rtly-kit-*.zip
+
+  # ---------------------------------------------------------------------------
+  # Publish the GitHub Release. Tags only.
+  # ---------------------------------------------------------------------------
+  publish:
+    name: Publish GitHub release
+    needs: [verify, build, provenance]
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: release-dist
+          path: dist
       - name: Create GitHub release
         env:
           GH_TOKEN: ${{ github.token }}
-          TAG: ${{ github.ref_name }}
+          VERSION: ${{ needs.verify.outputs.version }}
+          PRERELEASE: ${{ needs.verify.outputs.prerelease }}
         run: |
-          prerelease=""
-          case "$TAG" in *-*) prerelease="--prerelease" ;; esac
-          gh release create "$TAG" --title "$TAG" --notes-file release-notes.md --verify-tag $prerelease
+          set -eu
+          flag=""
+          if [ "$PRERELEASE" = "true" ]; then flag="--prerelease"; fi
+          # shellcheck disable=SC2086
+          gh release create "$TAG" \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "$TAG" \
+            --notes-file dist/release-notes.md \
+            --verify-tag \
+            $flag \
+            "dist/rtly-kit-$VERSION.tar.gz" \
+            "dist/rtly-kit-$VERSION.zip" \
+            dist/SHA256SUMS

@@ -1,0 +1,40 @@
+<!--
+title: التحقق من الإصدارات
+description: كيف تتحقق بالمجموع الاختباري وبشهادة مصدر البناء من أن أرشيف الإصدار هو الملف الذي بناه سير عمل الإصدار، وما علاقة ذلك بالتثبيت عبر Composer.
+group: reference
+order: 90
+-->
+<h2 id="what-you-get">ما الذي يتضمنه الإصدار</h2>
+<p>يؤدي دفع وسم إصدار مثل <code>v0.2.0</code> إلى تشغيل سير عمل الإصدار في مستودع GitHub. وقبل أن يبني أي شيء يفحص أربعة أمور: أن الوسم إصدار صالح، وأن أحدث قسم في <code>CHANGELOG.md</code> يحمل الإصدار نفسه، وأن الإيداع الموسوم ضمن الفرع <code>main</code>، وأن تشغيل CI لذلك الإيداع ناجح. وإذا فشل أي فحص فلا يُنشر شيء.</p>
+<p>ثم يبني الأرشيفين بالأمر <code>git archive</code>، فتُستبعد الملفات الموسومة بـ <code>export-ignore</code> (الاختبارات ومصادر الدليل وملفات الأدوات وCI و<code>composer.lock</code>). ويحتوي إصدار GitHub لذلك الوسم على الملفات الآتية:</p>
+<ul>
+<li><code>rtly-kit-X.Y.Z.tar.gz</code> و<code>rtly-kit-X.Y.Z.zip</code>، وهما الإيداع نفسه بصيغتين.</li>
+<li><code>SHA256SUMS</code>، وفيه المجموع الاختباري SHA-256 للأرشيفين.</li>
+<li>شهادة موقَّعة لمصدر البناء لكلا الأرشيفين، يحتفظ بها GitHub. وهي ليست ملفًا في صفحة الإصدار.</li>
+</ul>
+<div class="note"><strong>ملاحظة.</strong> هذه الملفات موجودة فقط في الإصدارات التي نشرها سير العمل هذا. وقد لا تحتوي إصدارات أقدم على أي منها. استبدل <code>X.Y.Z</code> بالإصدار الذي نزّلته.</div>
+
+<h2 id="checksum">فحص المجموع الاختباري</h2>
+<p>نزّل الأرشيف و<code>SHA256SUMS</code> في مجلد واحد ثم شغّل:</p>
+<pre><code class="language-bash">sha256sum --check SHA256SUMS</code></pre>
+<p>يجب أن ينتهي كل سطر بـ <code>OK</code>. وإذا نزّلت <code>.tar.gz</code> وحده فسيعدّ الأمر غياب <code>.zip</code> خطأً؛ فاستخدم <code>sha256sum --check --ignore-missing SHA256SUMS</code>. وفي macOS استخدم <code>shasum -a 256 -c SHA256SUMS</code>.</p>
+<p>يثبت المجموع الاختباري أن تنزيلك غير تالف وأنه الملف المسمّى في <code>SHA256SUMS</code>. لكن الملفين من صفحة الإصدار نفسها، فلا يحميك المجموع الاختباري وحده ممن يستطيع تغيير تلك الصفحة. ولهذا استخدم الشهادة.</p>
+
+<h2 id="attestation">فحص مصدر البناء</h2>
+<p>مع تثبيت <a href="https://cli.github.com/">GitHub CLI</a>:</p>
+<pre><code class="language-bash">gh attestation verify rtly-kit-X.Y.Z.tar.gz --repo ehsanenaloo/RTLY-Kit</code></pre>
+<p>يبحث الأمر عن الشهادة التي وقّعتها GitHub Actions لهذا الملف بعينه ويفحصها. وتعني رسالة النجاح أن الأرشيف أنتجه تشغيل لسير عمل في المستودع <code>ehsanenaloo/RTLY-Kit</code>، وأن الملف لم يتغير منذ ذلك الحين. شغّل الأمر نفسه على ملف <code>.zip</code> إن كنت تستخدمه.</p>
+
+<h2 id="composer">التثبيت عبر Packagist وComposer</h2>
+<p>تعلم Packagist بالوسم الجديد عبر webhook خاص بها، فيثبّت <code>composer require enaxon/rtly-kit</code> شيفرة الوسم نفسه. ولا يعمل سير عمل الإصدار إلا لإيداع موسوم يقع ضمن <code>main</code>.</p>
+<p>الأرشيف الذي ينزّله Composer تولّده GitHub للوسم؛ وليس هو الملف المشهود له أعلاه. ولمعرفة أي إيداع حصلت عليه، انظر في <code>composer.lock</code> تحت <code>enaxon/rtly-kit</code>: القيمة <code>source.reference</code> هي تجزئة الإيداع. وقارنها بالوسم:</p>
+<pre><code class="language-bash">git ls-remote https://github.com/ehsanenaloo/RTLY-Kit refs/tags/vX.Y.Z</code></pre>
+<p>وفي وسم يشير إلى إيداع، تكون التجزئة المطبوعة هي نفسها الموجودة في ملف القفل لديك. (الوسم المشروح يطبع سطرًا ثانيًا ينتهي بـ <code>^{}</code>؛ وهذا السطر هو الإيداع.)</p>
+
+<h2 id="limits">ما لا يثبته هذا</h2>
+<ul>
+<li>لا يراجع الشيفرة. فهو يبيّن من أين جاء الأرشيف، لا أن الشيفرة خالية من الأخطاء. وللثغرات المعروفة في بيانات المرجع راجع <a href="accuracy-and-data.html">الدقة والبيانات</a>.</li>
+<li>وسوم git غير موقَّعة. وتعتمد الفحوص أعلاه على المستودع وسير عمله وخدمة الشهادات في GitHub.</li>
+<li>لا توجد قائمة مواد برمجية (SBOM) منفصلة. فالحزمة بلا اعتمادات إلزامية (راجع <a href="installation.html">التثبيت</a>).</li>
+</ul>
+<p>للإبلاغ عن مشكلة أمنية في إصدار، راجع الملف <code>SECURITY.md</code> في المستودع.</p>

@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en" dir="ltr" data-i18n="{&quot;dark&quot;:&quot;Dark mode&quot;,&quot;light&quot;:&quot;Light mode&quot;,&quot;to_dark&quot;:&quot;Switch to dark theme&quot;,&quot;to_light&quot;:&quot;Switch to light theme&quot;,&quot;copy&quot;:&quot;Copy&quot;,&quot;copied&quot;:&quot;Copied&quot;,&quot;copy_failed&quot;:&quot;Selected. Press copy.&quot;,&quot;copy_label&quot;:&quot;Copy the code example above&quot;,&quot;no_results&quot;:&quot;No guide matches. Try a shorter word.&quot;,&quot;loading&quot;:&quot;The search index is still loading. Try again in a moment.&quot;,&quot;results&quot;:&quot;Search results&quot;,&quot;status&quot;:&quot;%d of %d guides shown&quot;,&quot;suggest&quot;:&quot;English version&quot;,&quot;search_label&quot;:&quot;Search the guide&quot;,&quot;search_placeholder&quot;:&quot;Search the guide&quot;}" data-search-index="search-index.js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Verifying releases | RTLY-Kit User guide</title>
+<meta name="description" content="How to check that a release archive is the file the release workflow built, with a checksum and a build provenance attestation, and how this relates to a Composer install.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="Verifying releases | RTLY-Kit User guide">
+<meta property="og:description" content="How to check that a release archive is the file the release workflow built, with a checksum and a build provenance attestation, and how this relates to a Composer install.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="fa_IR">
+<meta property="og:locale:alternate" content="ar_AR">
+<meta property="og:url" content="https://ehsanenaloo.github.io/RTLY-Kit/en/verifying-releases.html">
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+<link rel="canonical" href="https://ehsanenaloo.github.io/RTLY-Kit/en/verifying-releases.html">
+<link rel="alternate" hreflang="en" href="https://ehsanenaloo.github.io/RTLY-Kit/en/verifying-releases.html">
+<link rel="alternate" hreflang="fa" href="https://ehsanenaloo.github.io/RTLY-Kit/fa/verifying-releases.html">
+<link rel="alternate" hreflang="ar" href="https://ehsanenaloo.github.io/RTLY-Kit/ar/verifying-releases.html">
+<link rel="alternate" hreflang="x-default" href="https://ehsanenaloo.github.io/RTLY-Kit/">
+<link rel="stylesheet" href="../styles.css">
+<script>try{var t=localStorage.getItem("rtly-docs-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<script defer src="../app.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a><header class="site-header"><div class="shell header-inner"><a class="brand" href="index.html"><img src="../assets/logo.svg" width="34" height="34" alt=""><span><span class="name">RTLY-Kit</span><small>User guide</small></span></a><nav class="top-nav" aria-label="Primary"><a href="index.html">Overview</a><a href="quick-start.html">Quick start</a><a href="all.html">All guides</a><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">GitHub &#8599;</a></nav><div class="header-tools"><span data-search-host></span><button type="button" class="icon-button" data-theme-toggle hidden>Theme</button><div class="lang-switch" role="group" aria-label="Language"><a class="icon-button" href="../fa/verifying-releases.html" hreflang="fa" lang="fa">فارسی</a><span class="icon-button is-current" lang="en" aria-current="true">English</span><a class="icon-button" href="../ar/verifying-releases.html" hreflang="ar" lang="ar">العربية</a></div></div></div></header>
+<main id="main">
+<div class="shell page-intro"><nav class="breadcrumbs" aria-label="Breadcrumb"><ol><li><a href="index.html">Home</a></li><li><a href="all.html#group-reference">Reference</a></li><li aria-current="page">Verifying releases</li></ol></nav><h1>Verifying releases</h1><p class="lead">How to check that a release archive is the file the release workflow built, with a checksum and a build provenance attestation, and how this relates to a Composer install.</p></div>
+<div class="shell doc-layout has-toc">
+<aside class="sidebar"><details open><summary>Browse the guides</summary><nav aria-label="Guides"><a href="all.html">All guides</a><p>Getting started</p><a href="quick-start.html">Quick start</a><a href="installation.html">Installation</a><p>Calendars</p><a href="jalali.html">Jalali calendar</a><a href="hijri.html">Hijri calendar</a><a href="hebrew.html">Hebrew calendar</a><a href="convert-and-compare.html">Convert and compare dates</a><a href="carbon-macros.html">Carbon macros</a><p>Validation</p><a href="validators-overview.html">Validators overview</a><a href="national-code.html">National code</a><a href="sheba-and-bank-card.html">Sheba and bank card</a><a href="mobile-postal-plate.html">Mobile, postal code and plate</a><p>Numbers and text</p><a href="digits-and-format.html">Digits and number formatting</a><a href="number-words.html">Number to words</a><a href="arabic-number-words.html">Arabic number words</a><a href="text-tools.html">Text tools</a><p>Holidays and prayer times</p><a href="holidays.html">Iranian holidays</a><a href="holiday-calendar.html">Holiday calendar</a><a href="prayer-times.html">Prayer times</a><p>Laravel</p><a href="laravel-setup.html">Laravel setup</a><a href="laravel-validation-and-cast.html">Validation rules and Eloquent cast</a><p>Reference</p><a href="helpers-and-globals.html">Helpers and globals</a><a href="error-handling.html">Error handling</a><a href="api-stability.html">API stability</a><a href="accuracy-and-data.html">Accuracy and data</a><a href="benchmarks.html">Benchmarks</a><a href="limits.html">Limits</a><a href="troubleshooting-faq.html">Troubleshooting and FAQ</a><a href="upgrade.html">Upgrade guide</a><a href="verifying-releases.html" aria-current="page">Verifying releases</a></nav></details></aside>
+<article class="prose">
+<details class="toc-inline"><summary>On this page</summary><ol><li><a href="#what-you-get">What a release contains</a></li><li><a href="#checksum">Check the checksum</a></li><li><a href="#attestation">Check the build provenance</a></li><li><a href="#composer">Packagist and Composer installs</a></li><li><a href="#limits">What this does not cover</a></li></ol></details>
+<h2 id="what-you-get">What a release contains<a class="anchor" href="#what-you-get" aria-label="Link to this section">#</a></h2>
+<p>Pushing a version tag such as <code>v0.2.0</code> starts the release workflow in the GitHub repository. Before it builds anything, it checks four things. The tag is a valid version. The newest section of <code>CHANGELOG.md</code> has the same version. The tagged commit is part of the <code>main</code> branch. The CI run for that commit is green. If one check fails, nothing is published.</p>
+<p>Then it builds the archives with <code>git archive</code>. Files marked <code>export-ignore</code> (tests, the guide sources, tool and CI files, <code>composer.lock</code>) are left out. The GitHub Release for that tag has these files:</p>
+<ul>
+<li><code>rtly-kit-X.Y.Z.tar.gz</code> and <code>rtly-kit-X.Y.Z.zip</code>, the same commit in two formats.</li>
+<li><code>SHA256SUMS</code>, the SHA-256 checksum of both archives.</li>
+<li>A signed build provenance attestation for both archives, stored by GitHub. It is not a file on the release page.</li>
+</ul>
+<div class="callout note" role="note"><strong>Note.</strong> Only releases published by this workflow have these files. An older release may have none of them. Replace <code>X.Y.Z</code> with the version you downloaded.</div>
+
+<h2 id="checksum">Check the checksum<a class="anchor" href="#checksum" aria-label="Link to this section">#</a></h2>
+<p>Download the archive and <code>SHA256SUMS</code> into one folder, then run:</p>
+<pre tabindex="0"><code class="language-bash">sha256sum --check SHA256SUMS</code></pre>
+<p>Each line must end with <code>OK</code>. If you downloaded only the <code>.tar.gz</code>, the command reports the missing <code>.zip</code> as an error. Use <code>sha256sum --check --ignore-missing SHA256SUMS</code> in that case. On macOS use <code>shasum -a 256 -c SHA256SUMS</code>.</p>
+<p>A checksum shows that your download is not damaged and is the file named in <code>SHA256SUMS</code>. Both files come from the same release page, so the checksum alone does not protect you from someone who can change that page. For that, use the attestation.</p>
+
+<h2 id="attestation">Check the build provenance<a class="anchor" href="#attestation" aria-label="Link to this section">#</a></h2>
+<p>With the <a href="https://cli.github.com/" rel="noopener noreferrer">GitHub CLI</a> installed:</p>
+<pre tabindex="0"><code class="language-bash">gh attestation verify rtly-kit-X.Y.Z.tar.gz --repo ehsanenaloo/RTLY-Kit</code></pre>
+<p>The command looks up the attestation that GitHub Actions signed for this exact file and checks it. A success message means a workflow run in the <code>ehsanenaloo/RTLY-Kit</code> repository produced the archive, and the file has not changed since. Run the same command for the <code>.zip</code> if you use it.</p>
+
+<h2 id="composer">Packagist and Composer installs<a class="anchor" href="#composer" aria-label="Link to this section">#</a></h2>
+<p>Packagist learns about a new tag through its own webhook, so <code>composer require enaxon/rtly-kit</code> installs the code of the same tag. The release workflow runs only for a tagged commit that is on <code>main</code>.</p>
+<p>The archive that Composer downloads is generated by GitHub for the tag. It is not the file attested above. To see which commit you got, look in your <code>composer.lock</code> under <code>enaxon/rtly-kit</code>. The <code>source.reference</code> value is the commit hash. Compare it with the tag:</p>
+<pre tabindex="0"><code class="language-bash">git ls-remote https://github.com/ehsanenaloo/RTLY-Kit refs/tags/vX.Y.Z</code></pre>
+<p>For a tag that points to a commit, the hash printed there is the one in your lock file. An annotated tag also prints a second line ending in <code>^{}</code>. That line is the commit.</p>
+
+<h2 id="limits">What this does not cover<a class="anchor" href="#limits" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>It does not review the code. It shows where an archive came from. See <a href="accuracy-and-data.html">Accuracy and data</a> for what we checked in the reference data.</li>
+<li>Git tags are not signed. The checks above rely on the repository, its workflow and the GitHub attestation service.</li>
+<li>There is no separate software bill of materials. The package has no required dependencies (see <a href="installation.html">Installation</a>).</li>
+</ul>
+<p>To report a security problem in a release, see <code>SECURITY.md</code> in the repository.</p>
+<nav class="reading-footer" aria-label="Previous and next page"><a class="prev" rel="prev" href="upgrade.html"><small>Previous</small>Upgrade guide</a><span></span></nav>
+</article>
+<nav class="toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#what-you-get">What a release contains</a></li><li><a href="#checksum">Check the checksum</a></li><li><a href="#attestation">Check the build provenance</a></li><li><a href="#composer">Packagist and Composer installs</a></li><li><a href="#limits">What this does not cover</a></li></ol></nav>
+</div>
+</main>
+<footer class="footer"><div class="shell footer-inner"><p>RTLY-Kit user guide · MIT licensed</p><div><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">Repository on GitHub &#8599;</a><a href="https://github.com/ehsanenaloo/RTLY-Kit/issues" rel="noopener noreferrer">Report an issue &#8599;</a></div></div></footer>
+</body>
+</html>

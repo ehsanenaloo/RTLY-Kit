@@ -1,15 +1,92 @@
 <!--
 title: Upgrade guide
-description: Breaking changes before 1.0 with the exact steps to migrate, plus the highlights of the changelog for the 0.x series.
+description: Changes that can affect your code before 1.0, with before and after examples and the steps to migrate, plus the highlights of the changelog for the 0.x series.
 group: reference
 order: 80
 -->
-<p>Before 1.0.0, a minor release may contain breaking changes. Each one is listed here with the steps to migrate. The policy is on <a href="api-stability.html#versioning">API stability</a>. The rest of this page covers the changes that are currently <strong>unreleased</strong>, that is, everything since the first pre-release builds; no version has been tagged yet.</p>
+<p>Before 1.0.0, a minor release may contain breaking changes. Each one is listed here with the steps to migrate. The policy is on <a href="api-stability.html#versioning">API stability</a>. This page starts with the newest version. The last section covers the early pre-release builds, from before 0.1.0.</p>
 
-<h2 id="helpers">From the pre-release helpers to the namespaced helpers</h2>
+<h2 id="to-0-2-0">From 0.1.x to 0.2.0</h2>
+<p>Most applications need no change. Check the items below. Items 9 to 12 change what the library returns for some inputs.</p>
+<ol>
+<li><strong><code>ext-mbstring</code> is no longer required.</strong> <code>composer.json</code> used to ask for the extension. Now it needs only PHP. There is nothing to do. If you added <code>ext-mbstring</code> to your own <code>composer.json</code> only for this package, you can remove it.</li>
+<li><strong>Float formatting.</strong> <code>Format::withSeparator()</code> and <code>format_number()</code> now print a float as the shortest decimal that reads back as the same float, cut to 15 significant digits. Binary noise is gone. Strings are unchanged and stay exact. Pass a string when you need more digits.</li>
+</ol>
+<table>
+<thead><tr><th>Call</th><th>Before</th><th>After</th></tr></thead>
+<tbody>
+<tr><td><code>withSeparator(-1234567.891)</code></td><td><code>-۱٬۲۳۴٬۵۶۷٫۸۹۱۰۰۰۰۰۰۰۶۱۴۶۷</code></td><td><code>-۱٬۲۳۴٬۵۶۷٫۸۹۱</code></td></tr>
+<tr><td><code>withSeparator(0.1 + 0.2)</code></td><td><code>۰٫۳</code></td><td><code>۰٫۳</code> (unchanged)</td></tr>
+<tr><td><code>withSeparator(-0.0)</code></td><td><code>۰</code></td><td><code>۰</code></td></tr>
+</tbody>
+</table>
+<p>If you format the result of float arithmetic, round first (<code>round($x, 2)</code>) or pass a string.</p>
+<ol start="3">
+<li><strong><code>NumberToWords::fromWords()</code> is strict.</strong> It used to add the words up in any order.</li>
+</ol>
+<table>
+<thead><tr><th>Input</th><th>Before</th><th>After</th></tr></thead>
+<tbody>
+<tr><td><code>دو صد</code></td><td><code>102</code></td><td><code>InvalidNumberException</code> (<code>invalid_number_words</code>)</td></tr>
+<tr><td><code>بیست یک</code></td><td><code>21</code></td><td><code>InvalidNumberException</code></td></tr>
+<tr><td><code>صد و بیست و</code></td><td><code>120</code></td><td><code>InvalidNumberException</code></td></tr>
+<tr><td><code>پنج و بیست</code></td><td><code>25</code></td><td><code>InvalidNumberException</code></td></tr>
+<tr><td><code>سی و پنج</code></td><td><code>35</code></td><td><code>35</code></td></tr>
+</tbody>
+</table>
+<p>Write <code>و</code> between parts and keep the order hundreds, tens, units. Everything <code>convert()</code> returns still parses.</p>
+<ol start="4">
+<li><strong><code>Slugify::make()</code></strong> throws <code>RtlyKitException</code> (<code>invalid_argument</code>, <code>argument</code> = <code>text</code>) for text that is not valid UTF-8. Before, only the separator was checked. Catch <code>RtlyKitThrowable</code> or clean the input first.</li>
+<li><strong><code>Hijri::format()</code> and <code>Hebrew::format()</code></strong> reject a pattern longer than 256 bytes with <code>InvalidDateException</code> (<code>input_too_long</code>, <code>argument</code> = <code>format</code>, <code>limit</code> = 256). <code>Jalali::format()</code> already did. The limit is in <code>Hijri::MAX_FORMAT_LENGTH</code> and <code>Hebrew::MAX_FORMAT_LENGTH</code>.</li>
+<li><strong>A trailing backslash in a format pattern</strong> is dropped in all three calendars. <code>format('Y\')</code> returns just the year.</li>
+<li><strong><code>IranHolidays::all()</code>, <code>allTitles()</code> and <code>allFixed()</code></strong> work for every Jalali year from -620 to 9377. Before, years before the Hijri epoch and the last day of 9377 threw <code>invalid_date</code>. Where Islamic holidays cannot be derived, only the fixed holidays are returned. For a year outside the range they throw <code>InvalidDateException</code> (<code>date_out_of_range</code>, context <code>year</code>, <code>min</code>, <code>max</code>).</li>
+<li><strong>Error messages</strong> that repeat your input cut it to 40 characters and stay valid UTF-8. If you match on message text, match on <code>getErrorCode()</code> instead.</li>
+<li><strong>Official holiday dates for 1380 to 1405.</strong> In these Jalali years the static methods (<code>IranHolidays</code>, <code>is_iran_holiday()</code>) now return the published dates instead of the Umm al-Qura estimate. Other years are unchanged.</li>
+</ol>
+<table>
+<thead><tr><th>Day</th><th>Before (estimate)</th><th>After (official)</th></tr></thead>
+<tbody>
+<tr><td>1404/01/10</td><td>عید فطر</td><td>no holiday</td></tr>
+<tr><td>1404/01/11</td><td>تعطیل عید فطر</td><td>عید فطر</td></tr>
+<tr><td>1404/01/01</td><td>جشن نوروز + شهادت امام علی</td><td>جشن نوروز</td></tr>
+<tr><td>1404/12/29</td><td>ملی شدن صنعت نفت + عید فطر</td><td>ملی شدن صنعت نفت</td></tr>
+<tr><td>1405/01/01</td><td>جشن نوروز + تعطیل عید فطر</td><td>جشن نوروز + عید فطر</td></tr>
+</tbody>
+</table>
+<p>In official years only the titles in the official table appear. Years 1380 to 1393 and 1395 are <em>reported</em>: the dates come from one source, and the list of days may be incomplete. To get the old behaviour for all years, use <code>HolidayCalendar::default()-&gt;withOfficialData(false)</code>. To see where a year comes from, use <code>IranHolidays::sourceOf($year)</code>. More in <a href="holiday-calendar.html">Holiday calendar</a>.</p>
+<ol start="9">
+<li><strong>High-latitude prayer times.</strong> <code>PrayerTimes</code> has a new <code>HighLatitudeRule</code>. The default is <code>AngleBased</code>. It acts only where a Fajr or Isha time would be missing, or farther from sunrise or sunset than the rule allows. Below about 44 degrees north nothing changes. North of about 44 to 46 degrees, around the June solstice, some values differ. A time that was <code>null</code> now has a value.</li>
+</ol>
+<table>
+<thead><tr><th>Place and day (MWL)</th><th>Before (same as <code>None</code>)</th><th>After (default)</th></tr></thead>
+<tbody>
+<tr><td>Stockholm, 2026-06-21</td><td>Fajr <code>null</code>, Isha <code>null</code></td><td>Fajr <code>01:54</code>, Isha <code>23:40</code></td></tr>
+<tr><td>Munich, 2026-06-21</td><td>Fajr <code>01:50</code>, Isha <code>00:12</code></td><td>Fajr <code>02:51</code>, Isha <code>23:32</code></td></tr>
+</tbody>
+</table>
+<p>To get the old output, call <code>$prayer-&gt;withHighLatitudeRule(HighLatitudeRule::None)</code>. <code>nextPrayer()</code> now also finds a prayer that falls after midnight. See <a href="prayer-times.html#high-latitude">High latitudes</a>.</p>
+<ol start="10">
+<li><strong>Mobile validation.</strong> The shape check is the same, so no input changes validity. Two things are new. Every result has an <code>allocated</code> detail and <code>Mobile::isAllocated()</code> returns it as a bool. The operator table follows the numbering plan more closely: the Shatel Mobile key <code>998</code> is narrowed to <code>09981</code> and <code>09982</code>, the Aptel key is widened from <code>99910</code> to <code>9991</code>, and <code>0923</code>, <code>0931</code>, <code>0932</code> and <code>0934</code> are added.</li>
+</ol>
+<table>
+<thead><tr><th>Number</th><th>Operator before</th><th>Operator after</th></tr></thead>
+<tbody>
+<tr><td><code>09981234567</code></td><td>شاتل موبایل</td><td>شاتل موبایل</td></tr>
+<tr><td><code>09983112345</code></td><td>شاتل موبایل</td><td><code>null</code> (allocated, holder not confirmed)</td></tr>
+<tr><td><code>09231234567</code></td><td><code>null</code></td><td>رایتل</td></tr>
+<tr><td><code>09321234567</code></td><td><code>null</code></td><td>تالیا</td></tr>
+</tbody>
+</table>
+<p>If you compare the whole <code>details()</code> array, expect the extra key <code>allocated</code>.</p>
+<ol start="11">
+<li><strong>Arabic number words.</strong> <code>convert($n, 'ar')</code> without options gives the same text as before for every number below 10<sup>9</sup>. It now also accepts numbers up to 10<sup>27</sup>, where it used to throw <code>number_too_large</code>. New options and ordinals are on the <a href="arabic-number-words.html">Arabic number words</a> page.</li>
+<li><strong>Platforms.</strong> PHP 8.2 to 8.5, Laravel 11, 12 and 13, and Carbon 3 are supported. See <a href="api-stability.html#platforms">API stability</a>.</li>
+</ol>
+
+<h2 id="helpers">From the early pre-release builds (before 0.1.0): namespaced helpers</h2>
 
 <h3 id="no-globals">1. Global helper functions are no longer defined by default</h3>
-<div class="warn"><strong>Breaking.</strong> Earlier pre-release builds defined <code>jdate()</code>, <code>to_persian()</code>, <code>is_national_code()</code> and the other helpers as global functions the moment Composer loaded the package. That could collide with your code or another package, so it is gone. The helpers now live in the <code>RtlyKit</code> namespace and nothing is defined globally.</div>
+<div class="note"><strong>Breaking change.</strong> Earlier pre-release builds defined <code>jdate()</code>, <code>to_persian()</code>, <code>is_national_code()</code> and the other helpers as global functions as soon as Composer loaded the package. That could clash with your code or another package, so it was removed. The helpers now live in the <code>RtlyKit</code> namespace and nothing is defined globally.</div>
 <p>The 27 helpers: <code>jdate</code>, <code>hdate</code>, <code>hebrew_date</code>, <code>to_persian_digits</code>, <code>to_english_digits</code>, <code>to_persian</code>, <code>to_english</code>, <code>is_national_code</code>, <code>is_sheba</code>, <code>is_bank_card</code>, <code>is_mobile</code>, <code>is_postal_code</code>, <code>is_vehicle_plate</code>, <code>validate_national_code</code>, <code>validate_sheba</code>, <code>validate_bank_card</code>, <code>validate_mobile</code>, <code>validate_postal_code</code>, <code>validate_vehicle_plate</code>, <code>number_to_words</code>, <code>normalize_text</code>, <code>contains_rtl</code>, <code>text_direction</code>, <code>is_iran_holiday</code>, <code>prayer_times</code>, <code>format_number</code> and <code>ordinal</code>.</p>
 <p><strong>Option A: import what you use (recommended).</strong></p>
 <pre><code class="language-php">use function RtlyKit\jdate;
@@ -17,11 +94,11 @@ use function RtlyKit\is_national_code;
 
 echo jdate('2026-03-21')-&gt;format('Y/m/d');   // 1405/01/01</code></pre>
 <p>Or call the fully qualified name: <code>\RtlyKit\jdate('2026-03-21')</code>.</p>
-<p><strong>Option B: restore the old short global names.</strong> Call <code>Globals::register()</code> once, for example in your bootstrap file:</p>
+<p><strong>Option B: bring back the old short global names.</strong> Call <code>Globals::register()</code> once, for example in your bootstrap file:</p>
 <pre><code class="language-php">\RtlyKit\Globals::register();
 
 echo jdate('2026-03-21')-&gt;format('Y/m/d');   // 1405/01/01, works as before</code></pre>
-<p><code>register()</code> defines only the names that are still free. It never overwrites an existing function and never throws. It returns the list of names it skipped because something else already uses them, and it is safe to call more than once:</p>
+<p><code>register()</code> defines only the names that are still free. It never replaces an existing function and never throws. It returns the names it skipped because something else already uses them. You can call it more than once:</p>
 <pre><code class="language-php">$skipped = \RtlyKit\Globals::register();
 if ($skipped !== []) {
     error_log('RTLY-Kit globals skipped: '.implode(', ', $skipped));   // use \RtlyKit\name() for those
@@ -32,15 +109,15 @@ if ($skipped !== []) {
 <table>
 <thead><tr><th>Change</th><th>What to do</th></tr></thead>
 <tbody>
-<tr><td><strong>Validators take any value.</strong> All six implement <code>RtlyKit\Contracts\Validator</code> (<code>validate(mixed): Result</code>, <code>isValid(mixed): bool</code>). Non-string input (null, arrays, objects) returns an invalid <code>Result</code> with error <code>invalid_type</code>; input over 4096 bytes returns <code>input_too_long</code>. They never throw for bad input.</td><td>Remove defensive <code>try</code> blocks and type checks around validators. See <a href="validators-overview.html">Validators overview</a>.</td></tr>
-<tr><td><strong>Exceptions carry codes.</strong> <code>getErrorCode()</code> (an <code>ErrorCode</code> enum) and <code>getContext()</code> exist on every library exception.</td><td>Nothing to change. Prefer matching on the code over the message text. See <a href="error-handling.html">Error handling</a>.</td></tr>
-<tr><td><strong><code>Slugify::make()</code> throws</strong> <code>RtlyKitException</code> (<code>input_too_long</code> or <code>invalid_argument</code>) for an invalid UTF-8 separator or one longer than 64 bytes.</td><td>Only matters if you pass a user-controlled separator. Catch <code>RtlyKitThrowable</code>.</td></tr>
+<tr><td><strong>Validators take any value.</strong> All six implement <code>RtlyKit\Contracts\Validator</code> (<code>validate(mixed): Result</code>, <code>isValid(mixed): bool</code>). Non-string input (null, arrays, objects) returns an invalid <code>Result</code> with error <code>invalid_type</code>. Input over 4096 bytes returns <code>input_too_long</code>. They never throw for bad input.</td><td>Remove defensive <code>try</code> blocks and type checks around validators. See <a href="validators-overview.html">Validators overview</a>.</td></tr>
+<tr><td><strong>Exceptions carry codes.</strong> <code>getErrorCode()</code> (an <code>ErrorCode</code> enum) and <code>getContext()</code> exist on every library exception.</td><td>Nothing to change. Match on the code and not on the message text. See <a href="error-handling.html">Error handling</a>.</td></tr>
+<tr><td><strong><code>Slugify::make()</code> throws</strong> <code>RtlyKitException</code> (<code>input_too_long</code> or <code>invalid_argument</code>) for an invalid UTF-8 separator or one longer than 64 bytes.</td><td>This matters only if you pass a separator that users control. Catch <code>RtlyKitThrowable</code>.</td></tr>
 <tr><td><strong>Calendars share a contract.</strong> <code>Jalali</code>, <code>Hijri</code> and <code>Hebrew</code> implement <code>RtlyKit\Contracts\CalendarDate</code>. Comparisons and <code>diffIn*()</code> accept a <code>CalendarDate</code> or any <code>DateTimeInterface</code>, <code>make()</code> accepts a <code>CalendarDate</code>, and <code>equals()</code>, <code>isBefore()</code>, <code>isAfter()</code> are new aliases.</td><td>Existing calls keep working. See <a href="convert-and-compare.html">Convert and compare</a>.</td></tr>
 <tr><td><strong>Reference data moved</strong> to <code>resources/data/*.php</code>.</td><td>If you read the old table classes directly (they were never public API), switch to public classes such as <code>Hijri</code>, <code>Sheba::getBankName()</code> or <code>NationalCode::getLocation()</code>.</td></tr>
-<tr><td><strong>Makkah Isha in Ramadan changed.</strong> <code>PrayerTimes::METHOD_MAKKAH</code> now returns Isha as Maghrib + 120 minutes during Ramadan (Umm al-Qura practice) and + 90 minutes otherwise. The previous build always used 90.</td><td>Ramadan Isha moves 30 minutes later. This is a bug fix; update any stored expected values. See the example below.</td></tr>
+<tr><td><strong>Makkah Isha in Ramadan changed.</strong> <code>PrayerTimes::METHOD_MAKKAH</code> now returns Isha as Maghrib + 120 minutes during Ramadan (Umm al-Qura practice) and + 90 minutes otherwise. The previous build always used 90.</td><td>Ramadan Isha moves 30 minutes later. This is a bug fix. Update any stored expected values. See the example below.</td></tr>
 </tbody>
 </table>
-<p>A check of the new Makkah behaviour (2026-03-01 is in Ramadan, 2026-03-21 is not):</p>
+<p>A check of the Makkah behaviour (2026-03-01 is in Ramadan, 2026-03-21 is not):</p>
 <pre><code class="language-php">use RtlyKit\Prayer\PrayerTimes;
 
 $mecca = PrayerTimes::forCity('mecca', PrayerTimes::METHOD_MAKKAH);
@@ -52,27 +129,26 @@ foreach (['2026-03-01', '2026-03-21'] as $d) {
 // 2026-03-21 maghrib 18:32 isha 20:02</code></pre>
 
 <h2 id="changelog-highlights">Changelog highlights for the 0.x series</h2>
-<p>These are the user-visible points of the changelog, grouped; the repository's <code>CHANGELOG.md</code> has the full list.</p>
+<p>These are the points of the changelog that users see. The repository's <code>CHANGELOG.md</code> has the full list.</p>
 
 <h3 id="highlights-breaking">Behaviour that changed</h3>
 <ul>
-<li><strong>Out-of-range calendar input throws.</strong> Years, timestamps and huge <code>add*()</code> / <code>sub*()</code> deltas outside the supported ranges raise <code>InvalidDateException</code> instead of a <code>TypeError</code> or a wrapped-around date. Ranges: Jalali -620 to 9377, Hijri 1 to 9665, Hebrew 3762 to 13759 (<a href="limits.html#calendars">Limits</a>).</li>
-<li><strong><code>make()</code> string rules are specified.</strong> A year below 1700 (Hebrew: 3000 or more) is read in the class's own calendar, everything else as Gregorian; blank strings throw; <code>null</code> is now. A Gregorian ISO string with a year below 1700 is therefore read as Jalali or Hijri: pass a <code>DateTimeImmutable</code> for such dates (<a href="troubleshooting-faq.html#string-year">FAQ</a>).</li>
-<li><strong>Holidays.</strong> <code>IranHolidays</code> reports Islamic holidays only for AH 1300 to 1500. Outside it, only the fixed Jalali holidays are returned, and a year outside the Jalali range throws <code>InvalidDateException</code>.</li>
-<li><strong>Number input.</strong> <code>NumberToWords::convert()</code> and <code>Format::ordinal()</code> accept integral floats (<code>3.0</code>) and throw <code>InvalidNumberException</code> for fractional floats, <code>NaN</code> and <code>INF</code>.</li>
-<li><strong>Input caps</strong> (security hardening): strings over 4096 bytes are rejected by <code>NumberToWords</code> and <code>Format</code>, and <code>Format::withSeparator()</code> rejects numbers over 1000 characters. They throw <code>InvalidNumberException</code> (<code>input_too_long</code>).</li>
-<li><strong>Data tables trimmed to confirmed entries.</strong> <code>NationalCode::getLocation()</code> covers 547 prefixes and returns <code>null</code> for the rest; bank BIN (39), Sheba code (38) and operator tables keep only entries confirmed by two sources. A name that was returned before may now be <code>null</code>. <code>BankCard</code> rejects numbers made of one repeated digit.</li>
-<li><strong>Prayer times core rewritten</strong> from standard astronomical equations; the difference from the earlier implementation was at most 2 minutes on evening events (mean 0.5 minute or less) across the comparison grid. DST is applied per event, and the <code>$elevation</code> constructor argument is new.</li>
-<li><strong>Islamic holidays</strong> are derived from the Hijri calendar and may differ from the official announcement by 1 to 2 days.</li>
+<li><strong>Out-of-range calendar input throws.</strong> Years, timestamps and huge <code>add*()</code> and <code>sub*()</code> amounts outside the supported ranges raise <code>InvalidDateException</code> and not a <code>TypeError</code> or a wrapped-around date. Ranges: Jalali -620 to 9377, Hijri 1 to 9665, Hebrew 3762 to 13759 (<a href="limits.html#calendars">Limits</a>).</li>
+<li><strong><code>make()</code> string rules are fixed.</strong> A year below 1700 (Hebrew: 3000 or more) is read in the calendar of the class. Everything else is read as Gregorian. Blank strings throw, and <code>null</code> is now. A Gregorian ISO string with a year below 1700 is read as Jalali or Hijri, so pass a <code>DateTimeImmutable</code> for such dates (<a href="troubleshooting-faq.html#string-year">FAQ</a>).</li>
+<li><strong>Holidays.</strong> Official dates for Jalali 1380 to 1405 (see above). For other years, Islamic holidays are reported only for AH 1300 to 1500, and a year outside the Jalali range throws <code>InvalidDateException</code>.</li>
+<li><strong>Number input.</strong> <code>NumberToWords::convert()</code> and <code>Format::ordinal()</code> accept whole floats (<code>3.0</code>) and throw <code>InvalidNumberException</code> for fractional floats, <code>NaN</code> and <code>INF</code>.</li>
+<li><strong>Input caps</strong> (security): strings over 4096 bytes are rejected by <code>NumberToWords</code> and <code>Format</code>, and <code>Format::withSeparator()</code> rejects numbers over 1000 characters. They throw <code>InvalidNumberException</code> (<code>input_too_long</code>).</li>
+<li><strong>Data tables keep confirmed entries.</strong> <code>NationalCode::getLocation()</code> covers 547 prefixes and returns <code>null</code> for the rest. The bank BIN (39), Sheba code (38) and operator tables keep only entries confirmed by two sources. A name that was returned before may now be <code>null</code>. <code>BankCard</code> rejects numbers made of one repeated digit.</li>
+<li><strong>Prayer-time core rewritten</strong> from standard astronomical equations. The difference from the earlier implementation was at most 2 minutes on evening events (mean 0.5 minute or less) across the comparison grid. Daylight saving is applied per event, and the <code>$elevation</code> constructor argument is new.</li>
 </ul>
 
 <h3 id="highlights-added">Added</h3>
 <ul>
-<li>A pure-PHP Hebrew calendar (<code>Hebrew</code>) with no <code>ext-calendar</code> needed; the Hijri calendar rewritten around the Umm al-Qura table for AH 1300 to 1500, with a <code>HijriVariant::Tabular</code> fallback.</li>
+<li>A pure-PHP Hebrew calendar (<code>Hebrew</code>) with no <code>ext-calendar</code> needed. The Hijri calendar was rebuilt around the Umm al-Qura table for AH 1300 to 1500, with a <code>HijriVariant::Tabular</code> fallback.</li>
 <li>Structured validation: <code>Result</code> (<code>isValid()</code>, <code>errors()</code>, <code>details()</code>) and <code>validate_*()</code> helpers with stable error codes.</li>
-<li><code>NumberToWords::fromWords()</code>, numbers up to 21 digits, negatives, and Arabic number words below 10^9 (<code>number_to_words($n, 'ar')</code>).</li>
-<li><code>Normalizer::fixHalfSpace()</code> / <code>clean()</code>, <code>Detector::isRtlLocale()</code> / <code>isHebrew()</code>, <code>IranHolidays::getTitles()</code> / <code>isBusinessDay()</code> / <code>nextBusinessDay()</code>, and <code>PrayerTimes::nextPrayer()</code>.</li>
-<li>Laravel: the <code>Jalali</code> facade and container-resolved factory, auto-discovery, the six validation rules with fa / en / ar messages, and <code>JalaliCast</code>.</li>
+<li><code>NumberToWords::fromWords()</code>, numbers up to 21 digits, negatives, and Arabic number words (<code>number_to_words($n, 'ar')</code>).</li>
+<li><code>Normalizer::fixHalfSpace()</code> and <code>clean()</code>, <code>Detector::isRtlLocale()</code> and <code>isHebrew()</code>, <code>IranHolidays::getTitles()</code>, <code>isBusinessDay()</code> and <code>nextBusinessDay()</code>, and <code>PrayerTimes::nextPrayer()</code>.</li>
+<li>Laravel: the <code>Jalali</code> facade and the factory in the container, auto-discovery, six validation rules with fa, en and ar messages, and <code>JalaliCast</code>.</li>
 <li>Carbon macros <code>toJalali</code>, <code>jformat</code>, <code>createFromJalali</code>, <code>toHijri</code>, <code>toHebrew</code>, <code>createFromHijri</code>, <code>createFromHebrew</code>.</li>
 <li>The exception hierarchy under <code>RtlyKitThrowable</code>, the <code>ErrorCode</code> enum, <code>Globals::register()</code>, and the <code>CalendarDate</code> and <code>Validator</code> contracts.</li>
 </ul>
@@ -80,9 +156,9 @@ foreach (['2026-03-01', '2026-03-21'] as $d) {
 <h3 id="highlights-fixed">Fixed</h3>
 <ul>
 <li>Makkah-method Isha in Ramadan (described above).</li>
-<li><code>Format::ordinal()</code> for 30 and 23; <code>Format::withSeparator()</code> accepts Persian and Arabic digits without rounding; <code>Mobile</code> normalises the <code>0098</code>, <code>98</code> and bare <code>9xxxxxxxxx</code> forms; <code>Sheba</code> accepts the bare 24-digit form.</li>
-<li>Prayer-time time-zone handling around DST, and error handling for an unknown method or Asr factor.</li>
+<li><code>Format::ordinal()</code> for 30 and 23. <code>Format::withSeparator()</code> accepts Persian and Arabic digits without rounding. <code>Mobile</code> accepts the <code>0098</code>, <code>98</code> and bare <code>9xxxxxxxxx</code> forms. <code>Sheba</code> accepts the bare 24-digit form.</li>
+<li>Prayer-time handling of time zones around daylight saving, and errors for an unknown method or Asr factor.</li>
 <li>The duplicate <code>hdate()</code> helper declaration.</li>
 </ul>
 
-<div class="note"><strong>Note.</strong> Pin a minor range (for example <code>~0.1.0</code>) while the library is below 1.0.0, read this page before each minor upgrade, and run your own tests against date and prayer-time outputs you store.</div>
+<div class="note"><strong>Note.</strong> While the library is below 1.0.0, pin a minor range (for example <code>~0.2.0</code>), read this page before each minor upgrade, and run your own tests against any date and prayer-time outputs that you store.</div>

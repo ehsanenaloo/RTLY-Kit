@@ -15,7 +15,20 @@ body:
       label: Proposed API
       description: Show example calls. RTLY-Kit stays zero-dependency; say if your idea needs one.
       render: php
+    validations:
+      required: true
+  - type: textarea
+    id: sources
+    attributes:
+      label: Rules or data sources
+      description: For calendar, holiday, validation or prayer-time features, link the authoritative specification or table.
   - type: textarea
     id: alternatives
     attributes:
       label: Alternatives considered
+  - type: checkboxes
+    id: contribute
+    attributes:
+      label: Contribution
+      options:
+        - label: I am willing to open a pull request for this.

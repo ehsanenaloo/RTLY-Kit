@@ -1,32 +1,32 @@
 <!--
 title: Laravel setup
-description: How RTLY-Kit plugs into Laravel: package auto-discovery, what the service provider registers, the Jalali facade, and the fa/en/ar validation messages you can override.
+description: How RTLY-Kit plugs into Laravel. Package auto-discovery, what the service provider registers, the Jalali facade, the optional config file and the fa, en and ar validation messages.
 group: laravel
 order: 10
 -->
 <h2 id="install">Install and auto-discovery</h2>
-<p>Nothing is needed beyond Composer. The package declares its provider and facade alias in <code>composer.json</code> under <code>extra.laravel</code>, so Laravel's package discovery registers them on the next <code>composer install</code> or <code>composer update</code>.</p>
+<p>You need nothing beyond Composer. The package lists its provider and facade alias in <code>composer.json</code> under <code>extra.laravel</code>. Laravel's package discovery registers them on the next <code>composer install</code> or <code>composer update</code>.</p>
 <pre><code class="language-bash">composer require enaxon/rtly-kit</code></pre>
-<p>The integration uses the Laravel components <code>illuminate/support</code>, <code>illuminate/translation</code>, <code>illuminate/validation</code> and <code>illuminate/database</code>, which a Laravel application already has. The test suite runs against these components at version 11 and 12 (the development constraint is <code>^11.0||^12.0</code>); the library itself needs only PHP 8.2 and works without Laravel.</p>
-<div class="note"><strong>Note.</strong> The integration tests exercise the real container, translator, validation factory and Eloquent model classes, not a full application skeleton. The code samples on these pages were run the same way.</div>
-<p>If your application disables discovery for this package (<code>"dont-discover": ["enaxon/rtly-kit"]</code>), register the provider yourself. In Laravel 11 and later add it to <code>bootstrap/providers.php</code>:</p>
+<p>The integration uses the Laravel components <code>illuminate/support</code>, <code>illuminate/translation</code>, <code>illuminate/validation</code> and <code>illuminate/database</code>, which a Laravel application already has. The test suite runs against these components in versions 11, 12 and 13 (Laravel 13 needs PHP 8.3 or newer). The library itself needs only PHP 8.2 and works without Laravel.</p>
+<div class="note"><strong>Note.</strong> The integration tests use the real container, translator, validation factory and Eloquent model classes, not a full application skeleton. The code samples on these pages were run the same way.</div>
+<p>If your application turns discovery off for this package (<code>"dont-discover": ["enaxon/rtly-kit"]</code>), register the provider yourself. In Laravel 11 and later, add it to <code>bootstrap/providers.php</code>:</p>
 <pre><code class="language-php">return [
     App\Providers\AppServiceProvider::class,
     RtlyKit\Laravel\RtlyKitServiceProvider::class,
 ];</code></pre>
-<p>On older application layouts add the same class to the <code>providers</code> array in <code>config/app.php</code>. There is no configuration file to publish and no migration.</p>
+<p>On older application layouts, add the same class to the <code>providers</code> array in <code>config/app.php</code>. The config file is optional (see <a href="#config">Configuration</a>), and there is no migration.</p>
 
 <h2 id="provider">What the service provider does</h2>
-<p><code>RtlyKit\Laravel\RtlyKitServiceProvider</code> has one job in each phase:</p>
+<p><code>RtlyKit\Laravel\RtlyKitServiceProvider</code> has these jobs:</p>
 <ul>
-<li><strong><code>register()</code></strong> binds a singleton under the container key <code>rtly-kit.jalali</code>, a <code>RtlyKit\Laravel\JalaliFactory</code>. This is the object behind the facade.</li>
-<li><strong><code>boot()</code></strong> does three things: it installs the Carbon macros (see <a href="carbon-macros.html">Carbon macros</a>), loads the package translations under the <code>rtly-kit</code> namespace, and registers the validation rules when the container has a validation factory (see <a href="laravel-validation-and-cast.html">Validation and the cast</a>).</li>
+<li><strong><code>register()</code></strong> binds a singleton under the container key <code>rtly-kit.jalali</code>, a <code>RtlyKit\Laravel\JalaliFactory</code>. This object stands behind the facade. It also merges the default <code>rtly-kit</code> config and binds <code>RtlyKit\Holiday\HolidayCalendar</code> as a singleton, built from <code>rtly-kit.holidays</code> the first time it is requested.</li>
+<li><strong><code>boot()</code></strong> installs the Carbon macros (see <a href="carbon-macros.html">Carbon macros</a>), loads the package translations under the <code>rtly-kit</code> namespace, offers the config file for publishing, and registers the validation rules when the container has a validation factory (see <a href="laravel-validation-and-cast.html">Validation and the cast</a>).</li>
 </ul>
-<div class="note"><strong>Note.</strong> The provider registers <strong>no global functions</strong>. A test boots it and asserts that none of the 27 short helper names exists afterwards. If you want the short global names, call <code>\RtlyKit\Globals::register()</code> yourself; see <a href="helpers-and-globals.html">helpers and globals</a>.</div>
-<p>If the container's <code>validator</code> is not an <code>Illuminate\Validation\Factory</code> (a custom replacement), the provider leaves it untouched and skips the rules instead of failing.</p>
+<div class="note"><strong>Note.</strong> The provider registers no global functions. A test boots it and checks that none of the 27 short helper names exists afterwards. If you want the short global names, call <code>\RtlyKit\Globals::register()</code> yourself. See <a href="helpers-and-globals.html">Helpers and globals</a>.</div>
+<p>If the container's <code>validator</code> is not an <code>Illuminate\Validation\Factory</code> (a custom replacement), the provider leaves it alone and skips the rules.</p>
 
 <h2 id="facade">The Jalali facade</h2>
-<p>The alias <code>Jalali</code> (class <code>RtlyKit\Laravel\Facades\Jalali</code>) forwards to the factory. It offers four methods that mirror the static constructors of <code>RtlyKit\Calendar\Jalali</code>:</p>
+<p>The alias <code>Jalali</code> (class <code>RtlyKit\Laravel\Facades\Jalali</code>) forwards to the factory. It has four methods that mirror the static constructors of <code>RtlyKit\Calendar\Jalali</code>:</p>
 <pre><code class="language-php">use RtlyKit\Laravel\Facades\Jalali;
 
 echo Jalali::create(1404, 1, 1)->format('Y/m/d l');   // 1404/01/01 جمعه
@@ -34,19 +34,19 @@ echo Jalali::make('2025-03-21')->toDateString();       // 1404/01/01
 echo get_class(Jalali::now());                         // RtlyKit\Calendar\Jalali
 // Jalali::today() is also available</code></pre>
 <p>Every call returns an ordinary immutable <code>Jalali</code> object, so everything on the <a href="jalali.html">Jalali calendar page</a> applies. The factory is a singleton, so a repeated <code>app('rtly-kit.jalali')</code> returns the same instance.</p>
-<p>The facade is optional. In classes you can import the class directly or use the namespaced helper <code>\RtlyKit\jdate()</code>; in tests there is nothing to fake because the factory is stateless.</p>
+<p>The facade is optional. In classes you can import the class directly or use the namespaced helper <code>\RtlyKit\jdate()</code>. In tests there is nothing to fake, because the factory keeps no state.</p>
 
 <h2 id="translations">Translations: fa, en, ar</h2>
-<p>The provider calls <code>loadTranslationsFrom()</code> with the <code>rtly-kit</code> namespace, so the messages live in <code>rtly-kit::validation.*</code> and follow the application locale. There are three complete sets, one line per rule:</p>
+<p>The provider calls <code>loadTranslationsFrom()</code> with the <code>rtly-kit</code> namespace. The messages live in <code>rtly-kit::validation.*</code> and follow the application locale. There are three complete sets, one line per rule:</p>
 <table>
-<thead><tr><th>Key</th><th>fa</th><th>en</th></tr></thead>
+<thead><tr><th>Key</th><th>fa</th><th>en</th><th>ar</th></tr></thead>
 <tbody>
-<tr><td><code>national_code</code></td><td>:attribute کد ملی معتبر نیست.</td><td>The :attribute is not a valid Iranian national code.</td></tr>
-<tr><td><code>sheba</code></td><td>:attribute شماره شبا معتبر نیست.</td><td>The :attribute is not a valid Iranian Sheba (IBAN).</td></tr>
-<tr><td><code>bank_card</code></td><td>:attribute شماره کارت بانکی معتبر نیست.</td><td>The :attribute is not a valid Iranian bank card.</td></tr>
-<tr><td><code>iran_mobile</code>, <code>mobile</code></td><td>:attribute شماره موبایل معتبر نیست.</td><td>The :attribute is not a valid Iranian mobile number.</td></tr>
-<tr><td><code>postal_code</code></td><td>:attribute کد پستی معتبر نیست.</td><td>The :attribute is not a valid Iranian postal code.</td></tr>
-<tr><td><code>vehicle_plate</code></td><td>:attribute پلاک خودرو معتبر نیست.</td><td>The :attribute is not a valid Iranian vehicle plate.</td></tr>
+<tr><td><code>national_code</code></td><td>:attribute کد ملی معتبر نیست.</td><td>The :attribute is not a valid Iranian national code.</td><td>:attribute ليس رقماً وطنياً إيرانياً صالحاً.</td></tr>
+<tr><td><code>sheba</code></td><td>:attribute شماره شبا معتبر نیست.</td><td>The :attribute is not a valid Iranian Sheba (IBAN).</td><td>:attribute ليس رقم شبا (IBAN) إيرانياً صالحاً.</td></tr>
+<tr><td><code>bank_card</code></td><td>:attribute شماره کارت بانکی معتبر نیست.</td><td>The :attribute is not a valid Iranian bank card.</td><td>:attribute ليس رقم بطاقة مصرفية إيرانية صالحاً.</td></tr>
+<tr><td><code>iran_mobile</code>, <code>mobile</code></td><td>:attribute شماره موبایل معتبر نیست.</td><td>The :attribute is not a valid Iranian mobile number.</td><td>:attribute ليس رقم هاتف محمول إيرانياً صالحاً.</td></tr>
+<tr><td><code>postal_code</code></td><td>:attribute کد پستی معتبر نیست.</td><td>The :attribute is not a valid Iranian postal code.</td><td>:attribute ليس رمزاً بريدياً إيرانياً صالحاً.</td></tr>
+<tr><td><code>vehicle_plate</code></td><td>:attribute پلاک خودرو معتبر نیست.</td><td>The :attribute is not a valid Iranian vehicle plate.</td><td>:attribute ليست لوحة مركبة إيرانية صالحة.</td></tr>
 </tbody>
 </table>
 <p>The Arabic file is <code>resources/lang/ar/validation.php</code> in the package, with the same keys. The same rule in three locales:</p>
@@ -54,17 +54,17 @@ echo get_class(Jalali::now());                         // RtlyKit\Calendar\Jalal
 // locale fa: national code کد ملی معتبر نیست.
 // locale en: The national code is not a valid Iranian national code.
 // locale ar: national code ليس رقماً وطنياً إيرانياً صالحاً.</code></pre>
-<p>(Laravel turns the field name <code>national_code</code> into the attribute label "national code"; give the field a proper label through the <code>attributes</code> translations to get a natural sentence.)</p>
-<p>If the active locale has no line, Laravel's normal fallback locale (<code>app.fallback_locale</code>) is used. If no translation can be found at all, the built-in English text is the last resort.</p>
+<p>Laravel turns the field name <code>national_code</code> into the label "national code". Give the field a proper label in the <code>attributes</code> translations to get a natural sentence.</p>
+<p>If the active locale has no line, Laravel's normal fallback locale (<code>app.fallback_locale</code>) is used. If no translation is found at all, the built-in English text is the last resort.</p>
 
 <h2 id="override">Overriding a message</h2>
-<p>You do not publish anything. Choose whichever fits, from the narrowest to the widest:</p>
+<p>You do not need to publish anything. Choose the way that fits, from the narrowest to the widest:</p>
 <ol>
-<li><strong>Per validation call:</strong> pass custom messages to the validator or to <code>$request->validate()</code> in the usual way, for example key <code>postal_code</code> or <code>zip.postal_code</code>. A custom message always wins.</li>
-<li><strong>Application-wide:</strong> add the rule's line to your own <code>lang/fa/validation.php</code> (the key is the rule name, for example <code>'sheba' => 'شبای :attribute اشتباه است.'</code>). The application's <code>validation.&lt;rule&gt;</code> line is preferred over the package's.</li>
-<li><strong>Replace the package texts:</strong> create <code>lang/vendor/rtly-kit/fa/validation.php</code> (or <code>en</code>, <code>ar</code>). Laravel's standard vendor-override mechanism loads it over the package file; you only need the keys you change.</li>
+<li><strong>Per validation call.</strong> Pass custom messages to the validator or to <code>$request->validate()</code> in the usual way, for example the key <code>postal_code</code> or <code>zip.postal_code</code>. A custom message always wins.</li>
+<li><strong>For the whole application.</strong> Add the line of the rule to your own <code>lang/fa/validation.php</code>. The key is the rule name, for example <code>'sheba' => 'شبای :attribute اشتباه است.'</code>. The <code>validation.&lt;rule&gt;</code> line of the application is preferred over the package line.</li>
+<li><strong>Replace the package texts.</strong> Create <code>lang/vendor/rtly-kit/fa/validation.php</code> (or <code>en</code>, <code>ar</code>). Laravel's standard vendor override loads it over the package file. You need only the keys you change.</li>
 </ol>
-<p>Verified output for options 2 and 3 with the locale <code>fa</code>:</p>
+<p>Output of options 2 and 3 with the locale <code>fa</code>:</p>
 <pre><code class="language-php">// lang/vendor/rtly-kit/fa/validation.php  ->  ['national_code' => 'کد ملی :attribute درست نیست.']
 // lang/fa/validation.php                  ->  ['sheba' => 'شبای :attribute اشتباه است.']
 // custom message on the call              ->  ['postal_code' => 'کد پستی :attribute نادرست']
@@ -75,6 +75,9 @@ echo get_class(Jalali::now());                         // RtlyKit\Calendar\Jalal
 <p>The field in these examples is named <code>x</code>, which is why <code>x</code> appears in the sentences. In a real form, set readable labels in the <code>attributes</code> array of your <code>validation.php</code>.</p>
 
 <h2 id="config">Configuration</h2>
-<p>There is no config file. Behaviour is fixed by design and by the locale of the application. The library reads the default time zone from PHP (<code>date_default_timezone_get()</code>), which Laravel sets from <code>config('app.timezone')</code>, so <code>Jalali::now()</code> follows your application time zone.</p>
-<div class="known"><strong>Known limitation.</strong> If the validation factory is not bound when the provider boots, the rules are not registered; they are not registered lazily later. This only happens in unusual bootstraps (for example a console-only container without the validation service).</div>
+<p>The config file is optional. Without it, everything works with the defaults. Publish it when you want to adjust holidays:</p>
+<pre><code class="language-bash">php artisan vendor:publish --tag=rtly-kit-config</code></pre>
+<p>This creates <code>config/rtly-kit.php</code>. Today it has one block, <code>holidays</code>: an Islamic-date offset, real Hijri month starts, extra and removed holidays, and a switch for the official data. The options are explained, with a short tutorial, on the <a href="holiday-calendar.html#laravel">Holiday calendar</a> page.</p>
+<p>Apart from that, behaviour is set by the library and the locale of the application. The library reads the default time zone from PHP (<code>date_default_timezone_get()</code>). Laravel sets it from <code>config('app.timezone')</code>, so <code>Jalali::now()</code> follows your application time zone.</p>
+<div class="note"><strong>Good to know.</strong> If the validation factory is not bound when the provider boots, the rules are not registered, and they are not added later. This only happens in unusual bootstraps, for example a console-only container without the validation service.</div>
 <p>Next: <a href="laravel-validation-and-cast.html">validation rules and the Eloquent cast</a>.</p>

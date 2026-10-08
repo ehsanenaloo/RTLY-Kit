@@ -1,13 +1,13 @@
 <!--
 title: Benchmarks
-description: A small, honest micro-benchmark of RTLY-Kit against morilog/jalali, with the full method, the caveats and a one-line command to reproduce it on your machine.
+description: A small micro-benchmark of RTLY-Kit against morilog/jalali, with the full method, the caveats and a one-line command to reproduce it on your machine.
 group: reference
 order: 50
 -->
-<div class="warn"><strong>Read this first.</strong> These are micro-benchmarks of three small scenarios, run once on one machine. They show relative cost on this workload, not a general verdict. Re-run them yourself with the command below before you quote any number.</div>
+<div class="note"><strong>Good to know.</strong> These are micro-benchmarks of three small scenarios, run once on one machine. They show relative cost for this workload and are not a general verdict. Run them yourself with the command below before you quote a number.</div>
 
 <h2 id="what">What is compared</h2>
-<p><a href="https://github.com/morilog/jalali">morilog/jalali</a> v3.5.0 (the most widely used Jalali package) against RTLY-Kit, on three operations:</p>
+<p><a href="https://github.com/morilog/jalali">morilog/jalali</a> v3.5.0, the most widely used Jalali package, against RTLY-Kit. Three operations:</p>
 <table>
 <thead><tr><th>Scenario</th><th>RTLY-Kit</th><th>morilog/jalali</th></tr></thead>
 <tbody>
@@ -37,23 +37,23 @@ echo Jalali::create(1404, 1, 1)-&gt;addDays(100)-&gt;format('Y/m/d'), "\n";     
 </tbody>
 </table>
 <p>Peak memory for the whole process, with both libraries loaded, was 4 MiB.</p>
-<p>An earlier ad-hoc run, without opcache and with a different scenario mix, showed a larger gap (roughly 25x). The spread between runs is itself the lesson: the ratio depends on the scenario and on the PHP configuration.</p>
+<p>An earlier ad-hoc run, without opcache and with a different mix of scenarios, showed a larger gap (roughly 25x). The spread between runs shows that the ratio depends on the scenario and on the PHP settings.</p>
 
 <h2 id="correctness">Correctness cross-check</h2>
-<p>For every day from 1900-01-01 to 2099-12-27 (73,000 consecutive days) the Jalali date from RTLY-Kit is identical to the one from morilog's <code>CalendarUtils::toJalali</code>: 0 mismatches. Both implement the arithmetic 33-year leap rule, so agreement means that the two are consistent with each other. It does <strong>not</strong> mean that either matches the official astronomical Iranian calendar far from the present (see <a href="accuracy-and-data.html">Accuracy and data</a>).</p>
+<p>For every day from 1900-01-01 to 2099-12-27 (73,000 days in a row), the Jalali date from RTLY-Kit is the same as the one from morilog's <code>CalendarUtils::toJalali</code>. There are no mismatches. Both use the arithmetic 33-year leap rule, so this shows that the two agree with each other. For the match with the official calendar, see <a href="accuracy-and-data.html">Accuracy and data</a>.</p>
 
 <h2 id="why">Why the difference?</h2>
-<p>We have not profiled this, so treat the following as likely, not proven. RTLY-Kit wraps a plain <code>DateTimeImmutable</code> and converts with integer arithmetic. morilog builds and manipulates Carbon objects, which are much larger (parsing and locale machinery), so part of the gap is an architectural choice and not only the conversion algorithm. If you already use Carbon everywhere, the gap that matters to you may be smaller.</p>
+<p>We have not profiled this, so read the following as likely and not proven. RTLY-Kit wraps a plain <code>DateTimeImmutable</code> and converts with integer arithmetic. morilog builds and changes Carbon objects, which are much larger (parsing and locale code). So part of the gap comes from that design choice and not only from the conversion algorithm. If you already use Carbon everywhere, the gap that matters to you may be smaller.</p>
 
 <h2 id="reproduce">Reproduce</h2>
-<p>The benchmark lives in <code>tools/benchmark</code> in the repository. Its <code>composer.json</code> installs RTLY-Kit from the working tree plus <code>morilog/jalali</code> in its own <code>vendor/</code> directory (which is not part of the package). The script prints the PHP version, the opcache and JIT settings and the median of the repeats.</p>
+<p>The benchmark is in <code>tools/benchmark</code> in the repository. Its <code>composer.json</code> installs RTLY-Kit from the working tree plus <code>morilog/jalali</code> in its own <code>vendor/</code> folder, which is not part of the package. The script prints the PHP version, the opcache and JIT settings and the median of the repeats.</p>
 <pre><code class="language-bash">docker compose -f tools/docker-compose.yml run --rm php sh -c 'cd tools/benchmark &amp;&amp; composer install -n &amp;&amp; php -d opcache.enable_cli=1 run.php 20000 5'</code></pre>
-<p>Numbers from different machines are not comparable.</p>
+<p>Numbers from different machines cannot be compared.</p>
 
-<h2 id="limitations">Limitations</h2>
+<h2 id="limitations">What the benchmark does not cover</h2>
 <ul>
-<li>Three scenarios; no formatting-heavy, parsing-heavy or bulk-array workloads.</li>
-<li>One machine and one PHP build; Docker on Windows adds noise.</li>
-<li>No memory-per-object measurement beyond the total peak.</li>
-<li>Only morilog/jalali was measured; other packages were not.</li>
+<li>Three scenarios. No formatting-heavy, parsing-heavy or bulk-array workloads.</li>
+<li>One machine and one PHP build. Docker on Windows adds noise.</li>
+<li>No memory-per-object measurement, only the total peak.</li>
+<li>Only morilog/jalali was measured. Other packages were not.</li>
 </ul>

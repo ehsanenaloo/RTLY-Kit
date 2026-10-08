@@ -7,7 +7,10 @@ namespace RtlyKit\Tests\Unit;
 use ErrorException;
 use PHPUnit\Framework\TestCase;
 use RtlyKit\Contracts\Validator;
+use RtlyKit\Exceptions\ErrorCode;
+use RtlyKit\Exceptions\RtlyKitException;
 use RtlyKit\Exceptions\RtlyKitThrowable;
+use RtlyKit\Number\ArabicOptions;
 use RtlyKit\Number\Digits;
 use RtlyKit\Number\Format;
 use RtlyKit\Number\NumberToWords;
@@ -319,6 +322,52 @@ final class PublicApiFuzzTest extends TestCase
         }
     }
 
+    public function test_arabic_number_words_options_and_ordinals_survive_awkward_input(): void
+    {
+        $optionSets = [
+            null,
+            [],
+            new ArabicOptions(),
+            new ArabicOptions(mode: 'noun', gender: 'f', case: 'gen', diacritics: 'case', hundreds: 'ma_i_a', joinHundreds: false, billion: 'bilyon'),
+            ['mode' => 'noun', 'gender' => 'f', 'case' => 'acc', 'diacritics' => 'case'],
+            ['bogus' => 1],
+            [0 => 'x'],
+            ['mode' => 5],
+            ['mode' => ['noun']],
+            ['mode' => "\0"],
+            ['gender' => null],
+            ['joinHundreds' => 'yes'],
+            ['negative' => "\xff"],
+            ['negative' => str_repeat('x', 5000)],
+            [str_repeat('k', 5000) => 1],
+        ];
+        $locales = ['ar', 'AR', 'ar_SA', 'fa', 'xx', '', "\xff", str_repeat('a', 5000)];
+
+        foreach ($optionSets as $k => $options) {
+            foreach (self::strings() as $i => $s) {
+                $this->guard('convert ar options #' . $k . ' string #' . $i, fn () => NumberToWords::convert($s, 'ar', $options));
+                $this->guard('ordinal options #' . $k . ' string #' . $i, fn () => NumberToWords::ordinal($s, 'ar', $options));
+            }
+
+            foreach (self::numbers() as $i => $n) {
+                $this->guard('convert ar options #' . $k . ' number #' . $i, fn () => NumberToWords::convert($n, 'ar', $options));
+
+                if (is_int($n)) {
+                    $this->guard('ordinal options #' . $k . ' number #' . $i, fn () => NumberToWords::ordinal($n, 'ar', $options));
+                }
+            }
+
+            foreach ($locales as $j => $locale) {
+                $this->guard('convert options #' . $k . ' locale #' . $j, fn () => NumberToWords::convert(5, $locale, $options));
+                $this->guard('ordinal options #' . $k . ' locale #' . $j, fn () => NumberToWords::ordinal(5, $locale, $options));
+            }
+        }
+
+        for ($n = 0; $n <= 120; $n++) {
+            $this->guard('ordinal ' . $n, fn () => NumberToWords::ordinal($n));
+        }
+    }
+
     /* ---------------- text ---------------- */
 
     public function test_text_functions_survive_awkward_input(): void
@@ -350,7 +399,21 @@ final class PublicApiFuzzTest extends TestCase
         foreach (self::strings() as $s) {
             self::assertContains(Detector::direction($s), ['rtl', 'ltr']);
             self::assertIsString(Normalizer::clean($s));
-            self::assertIsString(Slugify::make($s));
+            if (preg_match('//u', $s) === 1) {
+                self::assertIsString(Slugify::make($s));
+            } else {
+                $this->expectInvalidSlugText($s);
+            }
+        }
+    }
+
+    private function expectInvalidSlugText(string $s): void
+    {
+        try {
+            Slugify::make($s);
+            self::fail('invalid UTF-8 must be rejected');
+        } catch (RtlyKitException $e) {
+            self::assertSame(ErrorCode::InvalidArgument, $e->getErrorCode());
         }
     }
 

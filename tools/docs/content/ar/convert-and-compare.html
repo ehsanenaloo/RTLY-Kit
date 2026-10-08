@@ -1,0 +1,146 @@
+<!--
+title: التحويل والمقارنة بين التواريخ
+description: العقد المشترك CalendarDate بين Jalali وHijri وHebrew، وكيفية تحويل التاريخ بين التقويمات، وكيف تعمل المقارنة وحساب الفروق عبر التقويمات والمناطق الزمنية.
+group: calendars
+order: 40
+-->
+<h2 id="idea">لحظة واحدة وثلاثة تقويمات</h2>
+<p>تشترك فئات التقويم الثلاث (<a href="jalali.html">Jalali</a> و<a href="hijri.html">Hijri</a> و<a href="hebrew.html">Hebrew</a>) في تصميم واحد: كل منها يغلّف لحظة واحدة من النوع <code>DateTimeImmutable</code> و<em>يعرضها</em> فقط بحسب تقويمه. لذلك لا يمرّ التحويل بين التقويمات عبر نص أبدًا؛ فهو اللحظة نفسها مقروءة بمجموعة أخرى من القواعد. وينتج عن ذلك أمران:</p>
+<ul>
+<li>تحويل التاريخ ثم إعادته يعطي اللحظة نفسها.</li>
+<li>مقارنة تواريخ من تقويمات مختلفة أو طرحها أمر معرَّف جيدًا دائمًا، لأنها تُقارن بوصفها لحظات.</li>
+</ul>
+<p>تستخدم كل الأمثلة الترويسة التالية:</p>
+<pre><code class="language-php">&lt;?php
+require 'vendor/autoload.php';
+
+use RtlyKit\Calendar\Hebrew;
+use RtlyKit\Calendar\Hijri;
+use RtlyKit\Calendar\Jalali;
+use RtlyKit\Contracts\CalendarDate;
+use RtlyKit\Exceptions\InvalidDateException;
+
+$utc = new DateTimeZone('UTC');</code></pre>
+
+<h2 id="convert">التحويل بين التقويمات</h2>
+<h3 id="make-from-calendar">مرّر التاريخ إلى <code>make()</code> في الفئة الأخرى</h3>
+<p>تقبل كل دالة <code>make()</code> كائنًا من <code>CalendarDate</code> (إضافة إلى <code>DateTimeInterface</code> وطابع زمني من النوع <code>int</code> وسلسلة نصية و<code>null</code>). مرّر التاريخ الذي لديك إلى الفئة التي تريدها:</p>
+<pre><code class="language-php">$j = Jalali::create(1405, 1, 1, 12, 0, 0, $utc);
+
+echo Hijri::make($j)-&gt;format('Y/m/d F', 'en');    // 1447/10/02 Shawwal
+echo Hebrew::make($j)-&gt;format('Y/m/d F');          // 5786/07/03 Nisan
+echo Jalali::make(Hijri::make($j));                 // 1405/01/01 12:00:00</code></pre>
+<p>يُنقل وقت اليوم والمنطقة الزمنية معًا. وللتعبير عن النتيجة في منطقة أخرى مرّر <code>DateTimeZone</code> وسيطًا ثانيًا إلى <code>make()</code>:</p>
+<pre><code class="language-php">$tehran = new DateTimeZone('Asia/Tehran');
+
+$h = Hijri::make($j, $tehran);
+echo $h-&gt;getTimezone()-&gt;getName();      // Asia/Tehran
+echo $h-&gt;getHour(), ':', $h-&gt;getMinute();   // 15:30   (12:00 UTC)</code></pre>
+<div class="note"><strong>اختصار الفئة نفسها.</strong> تُرجع <code>Hijri::make($hijri)</code> و<code>Hebrew::make($hebrew)</code> النسخة نفسها التي مررتها (ويُتجاهل أي وسيط للمنطقة الزمنية أو النمط). وتُرجعها <code>Jalali::make($jalali)</code> كذلك ما لم تمرر منطقة زمنية، فتحصل حينئذ على نسخة في تلك المنطقة. ولتغيير نمط تاريخ Hijri مرّ عبر اللحظة: <code>Hijri::make($h-&gt;toGregorian(), null, HijriVariant::Tabular)</code>.</div>
+
+<h3 id="gregorian">من الميلادي وإليه</h3>
+<p>تُرجع <code>toGregorian()</code> الكائن الأساسي <code>DateTimeImmutable</code>؛ وتمرير <code>DateTimeInterface</code> إلى <code>make()</code> يسلك الاتجاه المعاكس. وتعمل دوال التحويل الساكنة على أعداد صحيحة مجردة:</p>
+<pre><code class="language-php">$g = new DateTimeImmutable('2026-03-21 12:00', $utc);
+
+echo json_encode([
+    Jalali::gregorianToJalali(2026, 3, 21),
+    Hijri::gregorianToHijri(2026, 3, 21),
+    Hebrew::gregorianToHebrew(2026, 3, 21),
+]);
+// [[1405,1,1],[1447,10,2],[5786,7,3]]
+
+echo json_encode(Jalali::jalaliToGregorian(1405, 1, 1));   // [2026,3,21]
+echo get_class($j-&gt;toGregorian());                         // DateTimeImmutable</code></pre>
+<p>يجب أن تكون السنة الميلادية من 1 إلى 9999. ونطاق كل تقويم (Jalali من -620 إلى 9377، وHijri من 1 إلى 9665، وHebrew من 3762 إلى 13759) هو الجزء من هذا المدى الذي يستطيع التقويم تمثيله، ولذلك فتحويل تاريخ ميلادي مبكر إلى Hebrew أو Hijri قد يُطلق <code>InvalidDateException</code> مع أن التاريخ الميلادي نفسه صالح:</p>
+<pre><code class="language-php">try { Hebrew::make(new DateTimeImmutable('0001-01-01', $utc)); }
+catch (InvalidDateException $e) { echo $e-&gt;getMessage(); }
+// Date out of the supported Hebrew range (3762..13759): 3761</code></pre>
+
+<h3 id="time-zones">المناطق الزمنية تحدد التاريخ</h3>
+<p>يعتمد التاريخ التقويمي للحظة على المنطقة التي تنظر منها. فاللحظة نفسها لا تزال 1 Farvardin 1405 (21 مارس) بتوقيت UTC لكنها صارت 2 Farvardin في طهران التي تتقدم بـ 3.5 ساعة:</p>
+<pre><code class="language-php">$instant = new DateTimeImmutable('2026-03-21 22:30', $utc);
+
+echo Jalali::make($instant);            // 1405/01/01 22:30:00   (UTC)
+echo Jalali::make($instant, $tehran);   // 1405/01/02 02:00:00   (Tehran, +03:30)</code></pre>
+<p>مرّر منطقة زمنية صريحة كلما كان اليوم التقويمي مهمًّا؛ ولا تعتمد على الإعداد الافتراضي للخادم.</p>
+
+<h2 id="contract">عقد <code>CalendarDate</code></h2>
+<p><code>RtlyKit\Contracts\CalendarDate</code> واجهة (interface) ترث <code>Stringable</code> وتنفّذها <code>Jalali</code> و<code>Hijri</code> و<code>Hebrew</code>. استخدمها في تلميحات الأنواع لكتابة شيفرة تعمل مع كل التقويمات:</p>
+<pre><code class="language-php">function describe(CalendarDate $d): string
+{
+    return sprintf('%s %d/%02d/%02d', (new ReflectionClass($d))-&gt;getShortName(),
+        $d-&gt;getYear(), $d-&gt;getMonth(), $d-&gt;getDay());
+}
+
+foreach ([Jalali::class, Hijri::class, Hebrew::class] as $class) {
+    echo describe($class::make($g)), "\n";
+}
+// Jalali 1405/01/01
+// Hijri 1447/10/02
+// Hebrew 5786/07/03</code></pre>
+<table>
+<thead><tr><th>المجموعة</th><th>الأعضاء</th></tr></thead>
+<tbody>
+<tr><td>الإنشاء</td><td><code>make()</code>, <code>now()</code>, <code>today()</code>, <code>create()</code></td></tr>
+<tr><td>الحساب التقويمي (ساكن)</td><td><code>isValid()</code>, <code>isLeapYear()</code>, <code>daysInYear()</code>, <code>daysInMonth()</code></td></tr>
+<tr><td>دوال القراءة</td><td><code>getYear()</code>, <code>getMonth()</code>, <code>getDay()</code>, <code>getHour()</code>, <code>getMinute()</code>, <code>getSecond()</code>, <code>getDayOfWeek()</code>, <code>getTimestamp()</code>, <code>getTimezone()</code>, <code>toGregorian()</code></td></tr>
+<tr><td>التنسيق</td><td><code>format()</code>, <code>toDateString()</code>, <code>toDateTimeString()</code>, <code>__toString()</code></td></tr>
+<tr><td>التعديل</td><td><code>add</code>/<code>sub</code> لـ <code>Days</code> و<code>Hours</code> و<code>Minutes</code> و<code>Seconds</code> و<code>Months</code> و<code>Years</code>؛ و<code>startOf</code>/<code>endOf</code> لـ <code>Day</code> و<code>Month</code> و<code>Year</code></td></tr>
+<tr><td>المقارنة</td><td><code>eq</code>, <code>ne</code>, <code>gt</code>, <code>gte</code>, <code>lt</code>, <code>lte</code>, <code>equals</code>, <code>isBefore</code>, <code>isAfter</code>, <code>between</code>, <code>isPast</code>, <code>isFuture</code>, <code>isToday</code></td></tr>
+<tr><td>الفرق</td><td><code>diffInDays()</code>, <code>diffInMonths()</code>, <code>diffInYears()</code></td></tr>
+</tbody>
+</table>
+<p>ضمانات تسري على كل تنفيذ:</p>
+<ul>
+<li>النسخ <code>final</code> وغير قابلة للتغيير؛ ودوال التعديل تُرجع كائنًا جديدًا.</li>
+<li>كل دالة تأخذ تاريخًا أو طابعًا زمنيًا أو فرقًا لا تُطلق إلا <code>InvalidDateException</code> للمدخلات الخارجة عن النطاق، ولا تُطلق أبدًا <code>TypeError</code> أو <code>ValueError</code>.</li>
+<li>تُعلَن <code>format()</code> بوسيط النمط وحده؛ وتضيف كل فئة وسائطها الاختيارية الأخيرة الخاصة بها (<code>$persianDigits</code> في Jalali؛ و<code>$locale</code> و<code>$digits</code> في Hijri؛ و<code>$locale</code> في Hebrew). ومن خلال الواجهة لا يمكنك استدعاء غير <code>format($pattern)</code>.</li>
+<li>ترقيم أيام الأسبوع <em>ليس</em> موحدًا: Jalali يبدأ من السبت، وHijri وHebrew يبدآن من الأحد.</li>
+</ul>
+<pre><code class="language-php">$i = new DateTimeImmutable('2025-10-07', $utc);   // يوم ثلاثاء
+echo Jalali::make($i)-&gt;getDayOfWeek(), ' ', Hijri::make($i)-&gt;getDayOfWeek(), ' ', Hebrew::make($i)-&gt;getDayOfWeek();
+// 3 2 2   (Jalali: Saturday = 0; the others: Sunday = 0)</code></pre>
+
+<h2 id="compare">المقارنة عبر التقويمات</h2>
+<p>تقبل كل دوال المقارنة <code>CalendarDate|DateTimeInterface</code> وتقارن الطوابع الزمنية. ولا حاجة إلى تحويل مسبق:</p>
+<pre><code class="language-php">$nowruz = Jalali::create(1405, 1, 1, 12, 0, 0, $utc);
+
+var_dump($nowruz-&gt;eq(Hijri::make($nowruz)));                     // bool(true)
+var_dump($nowruz-&gt;eq($nowruz-&gt;toGregorian()));                   // bool(true)
+var_dump($nowruz-&gt;gt(Hebrew::create(5785, 1, 1, 0, 0, 0, $utc)));  // bool(true)
+var_dump($nowruz-&gt;between(Hijri::create(1447, 8, 1, 0, 0, 0, $utc),
+                          Hebrew::create(5787, 1, 1, 0, 0, 0, $utc))); // bool(true)</code></pre>
+<p>تقبل <code>between($a, $b, $equal = true)</code> الحدّين بأي ترتيب وتُدخلهما في النتيجة ما لم تمرر <code>false</code>. والمساواة هي مساواة اللحظات: فالتاريخ <code>Jalali::create(1405, 1, 1)</code> المبني بتوقيت UTC لا يساوي التاريخ المدني نفسه المبني بتوقيت طهران، لأن بينهما 3.5 ساعة.</p>
+<p>لترتيب قائمة مختلطة، رتّب بحسب <code>getTimestamp()</code>:</p>
+<pre><code class="language-php">$list = [
+    Hebrew::create(5786, 1, 1, 0, 0, 0, $utc),
+    Jalali::create(1405, 1, 1, 0, 0, 0, $utc),
+    Hijri::create(1447, 1, 1, 0, 0, 0, $utc),
+];
+usort($list, fn (CalendarDate $a, CalendarDate $b) =&gt; $a-&gt;getTimestamp() &lt;=&gt; $b-&gt;getTimestamp());
+
+foreach ($list as $d) { echo $d::class, ' ', $d-&gt;toGregorian()-&gt;format('Y-m-d'), "\n"; }
+// RtlyKit\Calendar\Hijri 2025-06-26
+// RtlyKit\Calendar\Hebrew 2025-09-23
+// RtlyKit\Calendar\Jalali 2026-03-21</code></pre>
+
+<h2 id="diff">الفروق عبر التقويمات</h2>
+<p>تحسب <code>diffInDays()</code> الأيام الكاملة بين اللحظتين ولا تبالي بالتقويمات. أما <code>diffInMonths()</code> و<code>diffInYears()</code> فتحسبان الأشهر والسنوات الكاملة <em>في تقويم الكائن الذي تستدعيهما عليه</em>؛ ويُعاد أولًا التعبير عن التاريخ الآخر بذلك التقويم. ومع <code>$absolute = false</code> تكون الإشارة إشارة <code>$this - $other</code>.</p>
+<pre><code class="language-php">$target = Hijri::create(1447, 9, 1, 0, 0, 0, $utc);   // 1 رمضان 1447
+
+echo $nowruz-&gt;diffInDays($target);          // 31
+echo $nowruz-&gt;diffInDays($target, false);   // 31   ($nowruz أحدث من $target)
+echo $target-&gt;diffInDays($nowruz, false);   // -31
+
+echo $nowruz-&gt;diffInMonths($target);        // 1    (أشهر جلالية)
+echo Hijri::make($nowruz)-&gt;diffInMonths($nowruz-&gt;addMonths(3));  // 3  (أشهر هجرية)
+echo $nowruz-&gt;diffInYears(Hijri::create(1450, 1, 1, 0, 0, 0, $utc)); // 2</code></pre>
+<p>ولذلك يتوقف جواب «كم شهرًا حتى X» على التقويم الذي تسأل به؛ فاختر التقويم الذي يفكر به مستخدموك. وجداول الوحدات لكل تقويم في <a href="jalali.html#compare-diff">Jalali</a> و<a href="hijri.html#compare-diff">Hijri</a> و<a href="hebrew.html#compare-diff">Hebrew</a>.</p>
+
+<h2 id="limits">الحالات الحدية والقيود</h2>
+<ul>
+<li><strong>النطاقات.</strong> Jalali من -620 إلى 9377، وHijri من 1 إلى 9665، وHebrew من 3762 إلى 13759. والتحويل إلى تقويم لا يحتوي نطاقه على اللحظة يُطلق <code>InvalidDateException</code>.</li>
+<li><strong>نمط Hijri.</strong> قيمة Hijri المحوَّلة إلى تقويم آخر ثم المعادة تحافظ على اللحظة، لكن النمط هو نمط استدعاء <code>make()</code> الهدف (أم القرى افتراضيًا).</li>
+<li><strong>الدقة.</strong> Jalali هو القاعدة الحسابية ذات الـ 33 سنة، لا التقويم الفلكي الرسمي. وبيانات أم القرى في Hijri للسنوات 1300 إلى 1500 هـ مأخوذة من ICU/CLDR؛ وتطابق بدايات أشهرها تقويم KACST الرسمي للسنوات 1318 إلى 1500 هـ (فُحص في 2026-10-08)، أما 1300 إلى 1317 هـ فغير متحقَّق منها؛ وخارج 1300 إلى 1500 هـ تُطبَّق قواعد النمط الجدولي (Tabular) الحسابية. راجع ملاحظات <em>قيد معروف</em> في صفحات التقويمات.</li>
+<li><strong>الأخطاء.</strong> اِلتقط <code>InvalidDateException</code> لمشكلات التقويم، أو <code>RtlyKit\Exceptions\RtlyKitException</code> لأي خطأ في المكتبة (<a href="error-handling.html">معالجة الأخطاء</a>).</li>
+</ul>

@@ -1,0 +1,72 @@
+<!--
+title: التثبيت
+description: المتطلبات والتثبيت عبر Composer أو Docker، وتكامل Carbon وLaravel الاختياري، والإصدارات المدعومة، وكيفية التحقق من التثبيت وإزالة الحزمة بشكل نظيف.
+group: start
+order: 20
+-->
+<h2 id="requirements">المتطلبات</h2>
+<table>
+<thead><tr><th>المتطلب</th><th>الحالة</th><th>ملاحظات</th></tr></thead>
+<tbody>
+<tr><td>PHP <code>^8.2</code></td><td>إلزامي</td><td>يُختبر في CI على PHP 8.2 و8.3 و8.4 و8.5. هذا هو المطلوب الوحيد، ولا يلزم أي امتداد إضافي (حتى mbstring)</td></tr>
+<tr><td>Composer 2</td><td>مطلوب للتثبيت</td><td>يتولى التحميل التلقائي؛ ولا تعتمد الحزمة على أي اعتماد إلزامي في Composer</td></tr>
+<tr><td><code>nesbot/carbon</code> ^3.0</td><td>اختياري</td><td>يفعّل <a href="carbon-macros.html">ماكروات Carbon</a></td></tr>
+<tr><td><code>illuminate/support</code> ^11 أو ^12 أو ^13</td><td>اختياري</td><td>الاكتشاف التلقائي في Laravel، والواجهة (Facade)، وقواعد التحقق، وتحويل Eloquent (<a href="laravel-setup.html">إعداد Laravel</a>)</td></tr>
+</tbody>
+</table>
+<p>هذا كل شيء. لا تحتاج إلى <code>ext-mbstring</code> ولا <code>ext-calendar</code> ولا <code>ext-intl</code> ولا إلى أي قاعدة بيانات: التقاويم الثلاثة مكتوبة بـ PHP الخالص، وجدول أم القرى مضمَّن داخل الحزمة.</p>
+
+<h2 id="composer">التثبيت عبر Composer</h2>
+<pre><code class="language-bash">composer require enaxon/rtly-kit</code></pre>
+<p>تأكد من أن سكربت الدخول لديك يحمّل المحمّل التلقائي لـ Composer مرة واحدة:</p>
+<pre><code class="language-php">&lt;?php
+require __DIR__.'/vendor/autoload.php';</code></pre>
+<p>يربط المحمّل التلقائي النطاق <code>RtlyKit\</code> بالمجلد <code>src/</code> في الحزمة، ويحمّل أيضًا ملف مساعدة واحدًا يعرّف الدوال المساعدة ذات النطاق (<code>RtlyKit\jdate()</code> وغيرها). لا يعرّف هذا الملف أي دالة عامة؛ راجع <a href="helpers-and-globals.html">الدوال المساعدة والعامة</a> لمعرفة الأسماء القصيرة الاختيارية.</p>
+<h3 id="optional">الحزم الاختيارية</h3>
+<pre><code class="language-bash">composer require nesbot/carbon          # ماكروات Carbon: toJalali() وcreateFromJalali() وغيرهما
+composer require illuminate/support     # فقط في المشاريع غير المبنية على Laravel التي تريد مكوّنات Laravel</code></pre>
+<p>يعمل كلا التكاملين من تلقاء نفسه. تُسجَّل ماكروات Carbon عندما يعثر المحمّل التلقائي على Carbon. أما في تطبيق Laravel فيُعثر على مزوّد الخدمة (Service Provider) والاسم المستعار للواجهة <code>Jalali</code> عبر الاكتشاف التلقائي للحزم، فلا يُضاف شيء إلى <code>config/app.php</code>. بعد التثبيت في مشروع Laravel قائم، نفّذ <code>php artisan package:discover</code> إذا كان نشرك يخزّن الاكتشاف مؤقتًا.</p>
+
+<h2 id="docker">التثبيت دون PHP على جهازك (Docker)</h2>
+<p>إذا لم يكن PHP وComposer مثبّتين محليًا، فشغّلهما من الصور الرسمية. من مجلد مشروعك:</p>
+<pre><code class="language-bash">docker run --rm -v "$PWD":/app -w /app composer:2 require enaxon/rtly-kit
+docker run --rm -v "$PWD":/app -w /app php:8.3-cli php quick.php</code></pre>
+<p>يثبّت الأمر الأول الحزمة في <code>vendor/</code>؛ ويشغّل الثاني سكربتًا مثل الموجود في <a href="quick-start.html">البدء السريع</a> على PHP 8.3. وللعمل على المكتبة نفسها، استنسخ المستودع واستخدم الملف <code>docker-compose.yml</code> فيه:</p>
+<pre><code class="language-bash">docker compose -f tools/docker-compose.yml run --rm php composer install
+docker compose -f tools/docker-compose.yml run --rm php composer test
+docker compose -f tools/docker-compose.yml run --rm php php -r 'require "vendor/autoload.php"; echo RtlyKit\jdate("2026-03-21")-&gt;format("Y/m/d");'</code></pre>
+
+<h2 id="versions">الإصدارات المدعومة</h2>
+<ul>
+<li><strong>PHP</strong> 8.2 و8.3 و8.4 و8.5 (مصفوفة CI).</li>
+<li><strong>Laravel</strong> 11 و12 و13 (يتطلب Laravel 13 نفسه PHP 8.3 أو أحدث).</li>
+<li><strong>Carbon</strong> 3.</li>
+<li><strong>الإصدارات.</strong> قبل 1.0.0 قد يتضمن الإصدار الفرعي (minor) تغييرات غير متوافقة مع السابق. يرد كل تغيير منها في دليل الترقية مع خطوات الانتقال (<a href="upgrade.html">الترقية</a>)، ويرد وعد التوافق وقائمة الفئات الداخلية في <a href="api-stability.html">استقرار واجهة API</a>. حتى 1.0.0، ثبّت الإصدار الفرعي في قيد <code>composer.json</code> (قيد tilde مثل <code>~0.x.y</code> مع الإصدار الذي اختبرته)، واقرأ دليل الترقية قبل رفعه.</li>
+</ul>
+
+<h2 id="verify">التحقق من التثبيت</h2>
+<p>أنشئ الملف <code>verify.php</code> في جذر مشروعك:</p>
+<pre><code class="language-php">&lt;?php
+require __DIR__.'/vendor/autoload.php';
+
+echo PHP_VERSION, "\n";
+echo \RtlyKit\jdate('2026-03-21')-&gt;format('Y/m/d'), "\n";   // 1405/01/01</code></pre>
+<p>شغّل <code>php verify.php</code>. يجب أن يطبع السطر الأخير <code>1405/01/01</code>؛ أما إصدار PHP أقل من 8.2 فيعني أن البيئة لا تستوفي المتطلبات. ويفيد أيضًا أمران من Composer:</p>
+<pre><code class="language-bash">composer show enaxon/rtly-kit            # الإصدار المثبّت والبيانات الوصفية
+composer check-platform-reqs          # يفحص PHP والامتدادات مقابل كل حزمة مثبّتة</code></pre>
+<h3 id="problems">إذا فشل شيء ما</h3>
+<ul>
+<li><code>Class "RtlyKit\..." not found</code> أو <code>Call to undefined function RtlyKit\jdate()</code>: لم يُحمَّل <code>vendor/autoload.php</code>، أو أن المحمّل التلقائي في Composer قديم؛ نفّذ <code>composer dump-autoload</code>.</li>
+<li><code>Call to undefined function jdate()</code> (دون النطاق): الأسماء العامة القصيرة اختيارية. استخدم <code>use function RtlyKit\jdate;</code> أو استدعِ <code>\RtlyKit\Globals::register()</code>.</li>
+<li>يرفض Composer التثبيت ويذكر إصدار PHP: ثبّت PHP 8.2 أو أحدث.</li>
+<li>حالات أخرى: <a href="troubleshooting-faq.html">استكشاف الأخطاء والأسئلة الشائعة</a>.</li>
+</ul>
+
+<h2 id="uninstall">إلغاء التثبيت</h2>
+<ol>
+<li>أزل الحزمة: <code>composer remove enaxon/rtly-kit</code>. وهذا يعيد إنشاء المحمّل التلقائي أيضًا.</li>
+<li>احذف استخداماتك الخاصة: أسطر <code>use RtlyKit\...</code> و<code>use function RtlyKit\...</code>، واستدعاءات <code>\RtlyKit\Globals::register()</code>، وأي كتل catch لـ <code>RtlyKit\Exceptions\*</code>. ابحث في شيفرتك عن <code>RtlyKit</code> للعثور عليها كلها.</li>
+<li>مشاريع Carbon: تختفي الماكروات (<code>toJalali</code> و<code>jformat</code> و<code>toHijri</code> و<code>toHebrew</code> و<code>createFromJalali</code> و<code>createFromHijri</code> و<code>createFromHebrew</code>) مع الحزمة؛ فاستبدل استدعاءاتها أولًا.</li>
+<li>مشاريع Laravel: أزل قواعد التحقق <code>national_code</code> و<code>sheba</code> و<code>bank_card</code> و<code>iran_mobile</code> و<code>mobile</code> و<code>postal_code</code> و<code>vehicle_plate</code> من طلبات النماذج (form requests)، وأزل <code>JalaliCast</code> من نماذجك، وأي استخدام للواجهة <code>Jalali</code>، وأي ملفات ترجمة نسختها من الحزمة. ثم نفّذ <code>php artisan optimize:clear</code>. إن إزالة الحزمة لا تمسّ البيانات التي كتبها تطبيقك في قاعدة البيانات، فتحقق من طريقة تخزين التحويل (Cast) لها قبل أن تحذفه.</li>
+</ol>
+<p>لا تثبّت الحزمة شيئًا خارج <code>vendor/</code> (سوى ملف القفل وبيانات التحميل التلقائي الخاصة بـ Composer)، فلا يوجد ما يلزم تنظيفه بعد ذلك.</p>

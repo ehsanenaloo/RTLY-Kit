@@ -14,7 +14,14 @@ use RtlyKit\Exceptions\RtlyKitException;
  * separator; existing hyphens and underscores are preserved (repeats are
  * collapsed); everything else is dropped.
  *
- * @throws RtlyKitException when the separator is not valid UTF-8 or longer than 64 bytes
+ * Invalid UTF-8: both the text and the separator must be valid UTF-8; otherwise
+ * an exception with {@see ErrorCode::InvalidArgument} is thrown (a slug is an
+ * identifier, so garbage is rejected instead of passed through, unlike the
+ * best-effort {@see Normalizer}). Dots are not letters, digits, hyphens or
+ * underscores, so they are dropped ("v1.2" becomes "v12"). Lower-casing uses the
+ * Unicode simple case mapping.
+ *
+ * @throws RtlyKitException when the text or separator is not valid UTF-8, or the separator is longer than 64 bytes
  */
 final class Slugify
 {
@@ -27,8 +34,12 @@ final class Slugify
             throw new RtlyKitException('The slug separator is too long.', errorCode: ErrorCode::InputTooLong, context: ['argument' => 'separator', 'limit' => self::MAX_SEPARATOR_BYTES]);
         }
 
-        if (! mb_check_encoding($separator, 'UTF-8')) {
+        if (! Utf8::isValid($separator)) {
             throw new RtlyKitException('The slug separator must be valid UTF-8.', errorCode: ErrorCode::InvalidArgument, context: ['argument' => 'separator']);
+        }
+
+        if (! Utf8::isValid($text)) {
+            throw new RtlyKitException('The text to slugify must be valid UTF-8.', errorCode: ErrorCode::InvalidArgument, context: ['argument' => 'text']);
         }
 
         $text = Normalizer::normalize($text);
@@ -49,6 +60,6 @@ final class Slugify
             $text = preg_replace('/^('.$q.')+|('.$q.')+$/u', '', $text) ?? $text;
         }
 
-        return mb_strtolower($text, 'UTF-8');
+        return Utf8::lower($text);
     }
 }

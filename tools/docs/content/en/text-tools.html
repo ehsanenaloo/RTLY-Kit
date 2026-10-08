@@ -1,20 +1,20 @@
 <!--
 title: Text tools
-description: Normalize Persian and Arabic text, repair half-spaces, detect language and direction, and build URL-safe slugs, with the exact behavior and edge cases of each tool.
+description: Normalize Persian and Arabic text, repair half-spaces, detect language and direction, and build URL-safe slugs. Each tool is described with its exact behavior and edge cases.
 group: numbers-text
 order: 30
 -->
 <h2 id="normalizer">Normalizer</h2>
-<p><code>RtlyKit\Text\Normalizer</code> makes Persian text comparable and storable. User input mixes Arabic and Persian letterforms (an Arabic keyboard types «ي» and «ك»), diacritics, tatweel and stray whitespace; the same word then looks identical on screen but fails a string comparison or a database search.</p>
+<p><code>RtlyKit\Text\Normalizer</code> makes Persian text comparable and storable. User input mixes Arabic and Persian letter shapes (an Arabic keyboard types «ي» and «ك»), vowel marks, tatweel and stray whitespace. The same word then looks identical on screen but fails a string comparison or a database search.</p>
 
 <h3 id="normalize">normalize()</h3>
 <p><code>Normalizer::normalize($text, $removeDiacritics = true)</code> does the following:</p>
 <ul>
 <li>Arabic letters become their Persian counterparts: «ك» to «ک», «ي» «ى» «ے» to «ی», «ة» «ۀ» to «ه», «ؤ» to «و», «إ» «أ» «ٱ» to «ا».</li>
-<li>Arabic-Indic digits (<code>٠-٩</code>) become Persian digits (<code>۰-۹</code>). English digits are left alone.</li>
+<li>Arabic-Indic digits (<code>٠-٩</code>) become Persian digits (<code>۰-۹</code>). English digits stay.</li>
 <li>Tatweel (the stretching character U+0640) is removed.</li>
-<li>Harakat, the short-vowel marks (U+064B to U+065F and U+0670), are removed unless you pass <code>false</code> as the second argument.</li>
-<li>Runs of whitespace (spaces, tabs, newlines) collapse to a single space, and the ends are trimmed.</li>
+<li>Harakat, the short-vowel marks (U+064B to U+065F and U+0670), are removed. Pass <code>false</code> as the second argument to keep them.</li>
+<li>Runs of whitespace (spaces, tabs, newlines) become a single space, and the ends are trimmed.</li>
 </ul>
 <pre><code class="language-php">&lt;?php
 require 'vendor/autoload.php';
@@ -29,39 +29,39 @@ echo Normalizer::normalize("أحمد إبراهيم مؤمن ة"), "\n";    // �
 echo Normalizer::normalize("ثَبْت  ١٢٣ 456"), "\n";         // ثبت ۱۲۳ 456
 echo Normalizer::normalize("ثَبْت", false), "\n";           // ثَبْت (diacritics kept)
 echo normalize_text('كتاب'), "\n";                          // کتاب</code></pre>
-<div class="note"><strong>What it leaves alone.</strong> Standalone hamza «ء» and «ئ» are intentionally untouched, because they are meaningful in Persian and Arabic words. The half-space (ZWNJ) is preserved: «می‌خواهم» comes out byte-identical. English letters are unchanged.</div>
+<div class="note"><strong>What it leaves alone.</strong> The standalone hamza «ء» and «ئ» are not touched, because they carry meaning in Persian and Arabic words. The half-space (ZWNJ) is kept: «می‌خواهم» comes out byte for byte the same. English letters are unchanged.</div>
 <p>The helper <code>normalize_text()</code> calls <code>Normalizer::normalize()</code> with the defaults.</p>
 
 <h3 id="half-space">fixHalfSpace()</h3>
-<p>The half-space (ZWNJ, U+200C) is what makes «می‌خواهم» look right. Copy and paste often leaves several of them in a row, or one hanging next to a space or at the end of the text. <code>fixHalfSpace()</code> cleans that up:</p>
+<p>The half-space (ZWNJ, U+200C) is what makes «می‌خواهم» look right. Copy and paste often leaves several in a row, or one next to a space or at the end of the text. <code>fixHalfSpace()</code> cleans that up:</p>
 <ul>
 <li>Soft hyphens (U+00AD) are removed.</li>
-<li>A run of ZWNJs collapses to one.</li>
-<li>A ZWNJ directly before or after whitespace is removed.</li>
+<li>A run of ZWNJs becomes one.</li>
+<li>A ZWNJ right before or after whitespace is removed.</li>
 <li>ZWNJs at the very start and end of the text are removed.</li>
 </ul>
 <pre><code class="language-php">$a = "می\u{200C}\u{200C}\u{200C}خواهم";
-echo mb_strlen($a), ' ', mb_strlen(Normalizer::fixHalfSpace($a)), "\n";   // 10 8
+echo preg_match_all('/./u', $a), ' ', preg_match_all('/./u', Normalizer::fixHalfSpace($a)), "\n";   // 10 8
 
 $b = "\u{200C}سلام \u{200C}دنیا\u{200C}";
-echo mb_strlen($b), ' ', mb_strlen(Normalizer::fixHalfSpace($b)), "\n";   // 12 9
+echo preg_match_all('/./u', $b), ' ', preg_match_all('/./u', Normalizer::fixHalfSpace($b)), "\n";   // 12 9
 echo Normalizer::fixHalfSpace($b), "\n";                                  // سلام دنیا</code></pre>
-<p>It does not insert missing half-spaces and does not collapse ordinary spaces.</p>
+<p>It does not add missing half-spaces and does not merge ordinary spaces.</p>
 
 <h3 id="clean">clean()</h3>
-<p><code>Normalizer::clean()</code> is the all-in-one version for storage and search: <code>normalize()</code>, then <code>fixHalfSpace()</code>, then removal of the invisible characters zero-width space (U+200B), zero-width joiner (U+200D) and the byte order mark (U+FEFF). ZWNJ is the only zero-width character kept.</p>
+<p><code>Normalizer::clean()</code> is the all-in-one version for storage and search. It runs <code>normalize()</code>, then <code>fixHalfSpace()</code>, then removes the invisible characters zero-width space (U+200B), zero-width joiner (U+200D) and the byte order mark (U+FEFF). ZWNJ is the only zero-width character it keeps.</p>
 <pre><code class="language-php">$c = "كتاب\u{200B}ي  ١٢٣";
 echo Normalizer::clean($c), "\n";   // کتابی ۱۲۳</code></pre>
-<p>Applying <code>normalize()</code> alone to the same text would leave the invisible zero-width space inside the word, which is why <code>clean()</code> exists. Use it before storing or indexing user-supplied text.</p>
+<p><code>normalize()</code> alone would leave the invisible zero-width space inside the word. That is why <code>clean()</code> exists. Use it before you store or index user text.</p>
 
 <h2 id="detector">Detector</h2>
 <p><code>RtlyKit\Text\Detector</code> answers questions about script, language and direction. All methods are static and never throw.</p>
 
 <h3 id="persian-arabic">isPersian() and isArabic()</h3>
-<p>Both are heuristics for Arabic-script text. Persian is recognised by letters that exist only in Persian (<code>پ چ ژ گ</code>, the Persian forms <code>ک</code> and <code>ی</code>, and Persian digits). Arabic is recognised by <code>ي ك ى ة</code> and Arabic-Indic digits. Letters shared by both languages, including «ه» and the hamza forms, are not counted. The text is Persian when Persian-only letters are at least as frequent as Arabic-only letters, so ties and text with no distinguishing letters count as Persian.</p>
+<p>Both are heuristics for Arabic-script text. Persian is recognised by letters that exist only in Persian (<code>پ چ ژ گ</code>, the Persian forms <code>ک</code> and <code>ی</code>, and Persian digits). Arabic is recognised by <code>ي ك ى ة</code> and Arabic-Indic digits. Letters that both languages share, including «ه» and the hamza forms, are not counted. The text counts as Persian when Persian-only letters are at least as frequent as Arabic-only letters. So ties, and text with no telling letters, count as Persian.</p>
 <pre><code class="language-php">use RtlyKit\Text\Detector;
 
-var_dump(Detector::isPersian('سلام'));        // bool(true), no distinguishing letters, Persian by default
+var_dump(Detector::isPersian('سلام'));        // bool(true), no telling letters, Persian by default
 var_dump(Detector::isPersian('گچپژ'));        // bool(true)
 var_dump(Detector::isArabic('مرحبا بكم'));    // bool(true)
 var_dump(Detector::isArabic('كتاب ي'));       // bool(true)
@@ -69,23 +69,23 @@ var_dump(Detector::isPersian('hello'));       // bool(false), no Arabic script a
 var_dump(Detector::isPersian('۱۲۳'));         // bool(true), Persian digits
 var_dump(Detector::isArabic('٣٤٥'));          // bool(true), Arabic-Indic digits
 var_dump(Detector::isPersian(''));            // bool(false)</code></pre>
-<div class="known"><strong>Known limitation.</strong> This is a letter-frequency heuristic, not a language identifier. Very short text, names and Arabic words written in Persian are ambiguous. Text mixing Arabic and Persian can go either way. Do not use it for decisions that must be right; use it to choose a sensible default.</div>
+<div class="note"><strong>Good to know.</strong> This is a letter-count heuristic and not a language identifier. Very short text, names and Arabic words written in Persian can be ambiguous, and text that mixes both can go either way. Use it to choose a sensible default, not for decisions that must be exact.</div>
 
 <h3 id="direction">Direction and RTL</h3>
 <ul>
-<li><code>containsRtl($text)</code>: whether the text contains any character from a right-to-left script (Hebrew, Arabic and its supplements, Syriac, Thaana, N'Ko and others, Arabic presentation forms) or the RLM mark.</li>
-<li><code>direction($text)</code>: <code>'rtl'</code> or <code>'ltr'</code> from the <strong>first strong letter</strong>, following the Unicode bidirectional rule. Digits, punctuation and spaces are neutral. Text with no letters returns <code>'ltr'</code>.</li>
-<li><code>isHebrew($text)</code>: whether the text contains Hebrew letters.</li>
+<li><code>containsRtl($text)</code>: whether the text has any character from a right-to-left script (Hebrew, Arabic and its supplements, Syriac, Thaana, N'Ko and others, Arabic presentation forms) or the RLM mark.</li>
+<li><code>direction($text)</code>: <code>'rtl'</code> or <code>'ltr'</code>, taken from the first strong letter, following the Unicode bidirectional rule. Digits, punctuation and spaces are neutral. Text with no letters returns <code>'ltr'</code>.</li>
+<li><code>isHebrew($text)</code>: whether the text has Hebrew letters.</li>
 </ul>
 <pre><code class="language-php">var_dump(Detector::containsRtl('abc'));           // bool(false)
 echo Detector::direction('سلام hello'), "\n";    // rtl
 echo Detector::direction('Hello مرحبا'), "\n";   // ltr (the first letter is Latin)
 echo Detector::direction('۱۲۳'), "\n";           // ltr (digits are neutral, there is no letter)
 var_dump(Detector::isHebrew('שלום'));            // bool(true)</code></pre>
-<p>The helpers <code>contains_rtl()</code> and <code>text_direction()</code> wrap <code>containsRtl()</code> and <code>direction()</code>. Use <code>direction()</code> for an HTML <code>dir</code> attribute on user-generated text.</p>
+<p>The helpers <code>contains_rtl()</code> and <code>text_direction()</code> wrap <code>containsRtl()</code> and <code>direction()</code>. Use <code>direction()</code> for an HTML <code>dir</code> attribute on user-written text.</p>
 
 <h3 id="rtl-locale">isRtlLocale()</h3>
-<p><code>isRtlLocale($locale)</code> says whether a locale tag is written right-to-left. It splits on <code>-</code>, <code>_</code>, <code>.</code> and <code>@</code>, ignores case and surrounding spaces, and returns true when the language is a right-to-left one (<code>fa</code>, <code>ar</code>, <code>he</code>, <code>ur</code>, <code>ps</code>, <code>ug</code>, <code>dv</code>, <code>ckb</code>, <code>azb</code> and others) or when a script subtag such as <code>Arab</code> or <code>Hebr</code> is present.</p>
+<p><code>isRtlLocale($locale)</code> tells you if a locale tag is written right to left. It splits on <code>-</code>, <code>_</code>, <code>.</code> and <code>@</code>, ignores case and surrounding spaces, and returns true when the language is a right-to-left one (<code>fa</code>, <code>ar</code>, <code>he</code>, <code>ur</code>, <code>ps</code>, <code>ug</code>, <code>dv</code>, <code>ckb</code>, <code>azb</code> and others) or when a script subtag such as <code>Arab</code> or <code>Hebr</code> is present.</p>
 <pre><code class="language-php">var_dump(Detector::isRtlLocale('fa_IR'));     // bool(true)
 var_dump(Detector::isRtlLocale('ar-SA'));     // bool(true)
 var_dump(Detector::isRtlLocale('ckb-IQ'));    // bool(true)
@@ -95,12 +95,12 @@ var_dump(Detector::isRtlLocale('en'));        // bool(false)
 var_dump(Detector::isRtlLocale(''));          // bool(false)</code></pre>
 
 <h2 id="slugify">Slugify</h2>
-<p><code>Slugify::make($text, $separator = '-')</code> turns a title into a URL-friendly slug while keeping Persian and Arabic letters readable. It never transliterates.</p>
+<p><code>Slugify::make($text, $separator = '-')</code> turns a title into a URL-friendly slug and keeps Persian and Arabic letters readable. It does not transliterate.</p>
 <ol>
-<li>The text is normalized with <code>Normalizer::normalize()</code>.</li>
+<li>The text is cleaned with <code>Normalizer::normalize()</code>.</li>
 <li>Whitespace and half-spaces become the separator.</li>
 <li>Everything except letters (any script), combining marks, digits (any set), hyphens and underscores is dropped. Punctuation and emoji disappear.</li>
-<li>Repeated hyphens, underscores and separators collapse to one, and separators are trimmed from both ends.</li>
+<li>Repeated hyphens, underscores and separators become one, and separators are trimmed from both ends.</li>
 <li>The result is lower-cased as UTF-8.</li>
 </ol>
 <pre><code class="language-php">use RtlyKit\Text\Slugify;
@@ -115,19 +115,19 @@ echo Slugify::make('كتاب ي'), "\n";                  // کتاب-ی
 echo Slugify::make('سلام 😀 دنیا'), "\n";            // سلام-دنیا
 echo Slugify::make('عکس.jpg'), "\n";                 // عکسjpg
 var_dump(Slugify::make('$%^&amp;'));                    // string(0) ""</code></pre>
-<p>Two things to keep in mind. Digits keep the set they were typed in (<code>۱۲۳</code> stays Persian), so run <code>Digits::toEnglish()</code> first if you want ASCII digits in URLs. And a dot is dropped, not treated as a separator, so file extensions fuse with the name (<code>عکسjpg</code>); slugify the name and extension separately.</p>
+<p>Two things to keep in mind. Digits keep the set they were typed in (<code>۱۲۳</code> stays Persian), so run <code>Digits::toEnglish()</code> first if you want ASCII digits in URLs. A dot is dropped and not treated as a separator, so a file extension joins the name (<code>عکسjpg</code>). Slugify the name and the extension separately.</p>
 
 <h3 id="slug-separator">The separator</h3>
-<p>Pass any string as the second argument: <code>'_'</code>, a longer string, or an empty string to join words without any separator.</p>
+<p>Pass any string as the second argument: <code>'_'</code>, a longer string, or an empty string to join the words with nothing between them.</p>
 <pre><code class="language-php">echo Slugify::make('سلام دنیا', '_'), "\n";        // سلام_دنیا
 echo Slugify::make('سلام دنیا', ''), "\n";         // سلامدنیا
 echo Slugify::make('Hello World', '--'), "\n";     // hello--world</code></pre>
-<p>The separator is limited to <strong>64 bytes</strong> and must be valid UTF-8. A longer one throws <code>RtlyKitException</code> with the code <code>input_too_long</code>; an invalid one throws it with <code>invalid_argument</code>:</p>
+<p>The separator is limited to 64 bytes and must be valid UTF-8. A longer one throws <code>RtlyKitException</code> with the code <code>input_too_long</code>. An invalid one throws it with <code>invalid_argument</code>:</p>
 <pre><code class="language-php">try {
     Slugify::make('Hello World', str_repeat('x', 65));
 } catch (\RtlyKit\Exceptions\RtlyKitException $e) {
     echo $e-&gt;getMessage(), ' [', $e-&gt;getErrorCode()-&gt;value, "]\n";
     // The slug separator is too long. [input_too_long]
 }</code></pre>
-<div class="warn"><strong>Empty slugs and uniqueness.</strong> A title made only of punctuation produces an empty string, and different titles can produce the same slug. Handle the empty case (for example fall back to an id) and enforce uniqueness in your own storage layer.</div>
-<div class="note"><strong>Encoding.</strong> Slugify expects UTF-8 text. It does not validate the text itself, and invalid bytes in the input are not reported. Validate or convert the encoding of untrusted input first.</div>
+<div class="note"><strong>Good to know.</strong> A title made only of punctuation gives an empty string, and different titles can give the same slug. Handle the empty case yourself (for example, fall back to an id) and enforce uniqueness in your storage layer.</div>
+<div class="note"><strong>Encoding.</strong> Slugify needs valid UTF-8 for both the text and the separator. Invalid bytes in the text throw <code>RtlyKitException</code> with the code <code>invalid_argument</code>, because a slug is an identifier and bad bytes should not pass through. <code>Normalizer</code> is more forgiving. It works on a best-effort basis and returns input it cannot process as it was. Lower-casing uses the Unicode simple case mapping and needs no PHP extension.</div>

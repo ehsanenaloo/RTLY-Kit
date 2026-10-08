@@ -1,0 +1,136 @@
+<!--
+title: Holiday calendar
+description: Use official Iranian holiday dates, see where each date comes from, and fix moon-sighting differences with your own offsets, month starts and extra or removed days.
+group: dates-and-times
+order: 15
+-->
+<h2 id="overview">What it is</h2>
+<p>Iran sets its religious holidays by moon sighting. A table can only estimate them, and an estimate is sometimes a day or two off. <code>RtlyKit\Holiday\HolidayCalendar</code> solves this in two ways. It ships the published official dates for many Jalali years. And it lets you correct everything else with a few small settings.</p>
+<p>A <code>HolidayCalendar</code> is immutable and has no global state. Each <code>with*()</code> method returns a new calendar. It has the same lookup methods as the static <a href="holidays.html">IranHolidays</a> class (<code>isHoliday()</code>, <code>getTitles()</code>, <code>all()</code>, <code>isBusinessDay()</code> and more). <code>IranHolidays</code> uses the default calendar, which is <code>HolidayCalendar::default()</code>.</p>
+
+<h2 id="sources">Where the dates come from</h2>
+<p>Every Jalali year has one of three sources. Ask the calendar with <code>sourceOf($year)</code>, which returns a <code>HolidaySource</code>.</p>
+<table>
+<thead><tr><th>Source</th><th>Years</th><th>What it means</th></tr></thead>
+<tbody>
+<tr><td><code>Official</code></td><td>1394 and 1396 to 1405</td><td>The dates of the official yearly calendar of the Calendar Center at the University of Tehran, checked against a second source (time.ir)</td></tr>
+<tr><td><code>Reported</code></td><td>1380 to 1393 and 1395</td><td>Dates taken from a published list. For 1395 we used PDF digits and a news list of the official holidays. The set of holidays in these years may be incomplete, for example the Imam Reza day is missing in some of them</td></tr>
+<tr><td><code>Estimated</code></td><td>every other year</td><td>Calculated from the Umm al-Qura table, and reported only inside AH 1300 to 1500</td></tr>
+</tbody>
+</table>
+<p>Fixed holidays, such as Nowruz or 22 Bahman, fall on the same Jalali date every year. They are exact and are not part of this question.</p>
+<pre><code class="language-php">&lt;?php
+require 'vendor/autoload.php';
+
+use RtlyKit\Holiday\HolidayCalendar;
+use RtlyKit\Holiday\IranHolidays;
+
+$cal = HolidayCalendar::default();    // IranHolidays::calendar() is the same calendar
+
+echo $cal-&gt;sourceOf(1405)-&gt;value;     // official
+echo $cal-&gt;sourceOf(1395)-&gt;value;     // reported
+echo $cal-&gt;sourceOf(1406)-&gt;value;     // estimated
+
+echo implode(', ', IranHolidays::getTitles(1405, 1, 1));   // جشن نوروز, عید فطر</code></pre>
+<p>In the year 1405, Eid al-Fitr 1447 AH falls on 1405/01/01, the same day as Nowruz. That is the official date. The table estimate puts it on 1404/12/29.</p>
+
+<h2 id="tutorial">Tutorial: correct a year step by step</h2>
+<p>The year 1406 has no official data yet, so it is estimated. We will fix it in four steps.</p>
+
+<h3 id="step-offset">1. Shift all estimated dates with an offset</h3>
+<p>If you see that the estimate is one day early all year, move every estimated Islamic holiday with <code>withIslamicOffset()</code>. It accepts -3 to +3 days. It changes estimated years only. Official years and fixed holidays do not move.</p>
+<pre><code class="language-php">$later = $cal-&gt;withIslamicOffset(1);
+
+echo implode(', ', $cal-&gt;getTitles(1406, 3, 25));     // عاشورای حسینی
+echo implode(', ', $later-&gt;getTitles(1406, 3, 26));   // عاشورای حسینی</code></pre>
+
+<h3 id="step-month-start">2. State the real start of a Hijri month</h3>
+<p>One flat offset cannot follow the moon month by month. When you know the real first day of a month, give it to <code>withHijriMonthStart($hijriYear, $hijriMonth, $firstDay)</code>. The date is Gregorian: a <code>'2027-06-08'</code> string (Persian and Arabic digits are fine) or any <code>DateTimeInterface</code>. Every Islamic holiday of that month is worked out from this day. This works in official years too, and it wins over official data.</p>
+<pre><code class="language-php">// Muharram 1449 is computed to start on 2027-06-06. The moon is seen two days later:
+$moved = $cal-&gt;withHijriMonthStart(1449, 1, '2027-06-08');
+
+echo implode(', ', $moved-&gt;getTitles(1406, 3, 25));   // (nothing)
+echo implode(', ', $moved-&gt;getTitles(1406, 3, 26));   // تاسوعای حسینی
+echo implode(', ', $moved-&gt;getTitles(1406, 3, 27));   // عاشورای حسینی</code></pre>
+<p>The date must be within 3 days of the computed start. If you also gave a neighbouring month, the two starts must be 29 or 30 days apart. Otherwise the call throws <code>InvalidDateException</code>.</p>
+
+<h3 id="step-add-remove">3. Add or remove a day</h3>
+<p><code>withHoliday($date, $title)</code> adds a title to a day. <code>withoutHoliday($date)</code> removes the whole day, and <code>withoutHoliday($date, $title)</code> removes one title. A date is a <code>Jalali</code> object or a string such as <code>'1406/02/03'</code>.</p>
+<pre><code class="language-php">$mine = $moved
+    -&gt;withHoliday('1406/02/03', 'Company day')
+    -&gt;withoutHoliday('1406/01/13');            // remove Nature Day
+
+var_dump($mine-&gt;isHoliday(1406, 2, 3));        // bool(true)
+var_dump($mine-&gt;isHoliday(1406, 1, 13));       // bool(false)</code></pre>
+
+<h3 id="step-origin">4. See why a day is a holiday</h3>
+<p><code>statusOf()</code> returns each title of a day together with its origin. The origin is a <code>HolidayOrigin</code>: <code>Fixed</code>, <code>Official</code>, <code>Reported</code>, <code>Estimated</code> or <code>User</code>.</p>
+<pre><code class="language-php">foreach ($mine-&gt;statusOf(1406, 2, 3) as $entry) {
+    echo $entry-&gt;title, ' ', $entry-&gt;origin-&gt;value, "\n";   // Company day user
+}
+foreach ($mine-&gt;statusOf(1406, 3, 27) as $entry) {
+    echo $entry-&gt;title, ' ', $entry-&gt;origin-&gt;value, "\n";   // عاشورای حسینی user
+}
+foreach ($cal-&gt;statusOf(1405, 1, 1) as $entry) {
+    echo $entry-&gt;title, ' ', $entry-&gt;origin-&gt;value, "\n";
+}
+// جشن نوروز fixed
+// عید فطر official</code></pre>
+<p>You can use this to show a small note next to dates that are only estimates.</p>
+
+<h2 id="options">All options</h2>
+<table>
+<thead><tr><th>Method</th><th>What it does</th></tr></thead>
+<tbody>
+<tr><td><code>HolidayCalendar::default()</code></td><td>Official data on, offset 0, no changes</td></tr>
+<tr><td><code>HolidayCalendar::fromArray($config)</code></td><td>Builds a calendar from an array in the shape of the Laravel config (see <a href="#laravel">below</a>). Unknown keys and bad values throw</td></tr>
+<tr><td><code>withIslamicOffset(int $days)</code></td><td>Moves estimated Islamic holidays by -3 to +3 days</td></tr>
+<tr><td><code>withHijriMonthStart($year, $month, $day)</code></td><td>Sets the real first day of a Hijri month. Holidays of that month follow it</td></tr>
+<tr><td><code>withHoliday($date, $title)</code></td><td>Adds a title to a day</td></tr>
+<tr><td><code>withoutHoliday($date, $title = null)</code></td><td>Removes one title, or the whole day</td></tr>
+<tr><td><code>withOfficialData(bool $use)</code></td><td><code>false</code> treats every year as an estimate, as releases before 0.2.0 did</td></tr>
+<tr><td><code>sourceOf($jalaliYear)</code></td><td>The <code>HolidaySource</code> of a year, before your changes</td></tr>
+<tr><td><code>statusOf($year, $month, $day)</code></td><td>The titles of a day with their <code>HolidayOrigin</code></td></tr>
+<tr><td><code>getTitles()</code>, <code>getTitle()</code>, <code>isHoliday()</code>, <code>all()</code>, <code>allTitles()</code>, <code>allFixed()</code>, <code>isWeekend()</code>, <code>isBusinessDay()</code>, <code>nextBusinessDay()</code></td><td>The same lookups as <a href="holidays.html">IranHolidays</a>, with your changes applied. <code>allFixed()</code> always lists the fixed table only</td></tr>
+</tbody>
+</table>
+
+<h2 id="precedence">Which rule wins</h2>
+<p>For every day and every title the order is the same:</p>
+<ol>
+<li>Your changes: <code>withHoliday()</code>, <code>withoutHoliday()</code> and <code>withHijriMonthStart()</code>.</li>
+<li>The official table, for the years it covers, while <code>withOfficialData(true)</code> is on.</li>
+<li>The Umm al-Qura estimate, moved by <code>withIslamicOffset()</code>.</li>
+</ol>
+<p>Fixed Jalali holidays are never moved by an offset or a month start. You can still remove one with <code>withoutHoliday()</code>.</p>
+
+<h2 id="laravel">Laravel config</h2>
+<p>Publish the config file with:</p>
+<pre><code class="language-bash">php artisan vendor:publish --tag=rtly-kit-config</code></pre>
+<p>It creates <code>config/rtly-kit.php</code>. The <code>holidays</code> block has these keys:</p>
+<pre><code class="language-php">'holidays' =&gt; [
+    'islamic_offset' =&gt; 0,           // -3..3, estimated years only
+    'hijri_month_starts' =&gt; [],      // '1447-10' =&gt; '2026-03-21'
+    'extra' =&gt; [],                   // '1405/02/03' =&gt; 'Title' or ['Title 1', 'Title 2']
+    'removed' =&gt; [],                 // '1405/02/03' or '1405/02/03' =&gt; 'Title'
+    'use_official_data' =&gt; true,
+],</code></pre>
+<p>The service provider builds one <code>HolidayCalendar</code> from this block and binds it in the container. Get it with <code>app(HolidayCalendar::class)</code>. It is created the first time you ask for it, so a bad value fails at that point. Missing keys use their defaults.</p>
+<pre><code class="language-php">use RtlyKit\Holiday\HolidayCalendar;
+
+$calendar = app(HolidayCalendar::class);
+$calendar-&gt;isHoliday(1406, 3, 27);</code></pre>
+<div class="note"><strong>Good to know.</strong> The static <code>IranHolidays</code> class and the helper <code>is_iran_holiday()</code> always use the default calendar, not the one from your config. Use <code>app(HolidayCalendar::class)</code> when you want your settings applied.</div>
+
+<h2 id="changes">What changed in 0.2.0</h2>
+<p>In the Jalali years 1380 to 1405 the static methods now return the official or reported dates. They used to return the table estimate. Years outside 1380 to 1405, and calendars built with <code>withOfficialData(false)</code>, return what earlier releases returned. Some examples:</p>
+<ul>
+<li>1405/01/01 is Eid al-Fitr 1447 AH. 1404/12/29 is no longer a day for it.</li>
+<li>Eid al-Fitr 1446 AH is on 1404/01/11, not 1404/01/10.</li>
+<li>In official years, only the titles in the official table appear. For example, the 8 Rabi I day (Imam Hasan Askari) is not in the 1394 and 1395 data.</li>
+</ul>
+<p>The side-by-side list is in <a href="upgrade.html">Upgrade</a>.</p>
+
+<h2 id="limits">Good to know</h2>
+<div class="note"><strong>Good to know.</strong> There is no official data for 1406 yet. When it is published, it will be added to the data file and nothing else changes. For estimated years, a flat offset fixes a steady shift but not month-by-month moon sighting. Use <code>withHijriMonthStart()</code> for exact months. Where the data came from is described in <a href="accuracy-and-data.html">Accuracy and data</a>.</div>
+<p>Related: <a href="holidays.html">Iranian holidays</a>, <a href="hijri.html">Hijri calendar</a>, <a href="laravel-setup.html">Laravel setup</a>.</p>

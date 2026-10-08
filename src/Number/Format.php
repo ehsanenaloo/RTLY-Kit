@@ -6,6 +6,7 @@ namespace RtlyKit\Number;
 
 use RtlyKit\Exceptions\ErrorCode;
 use RtlyKit\Exceptions\InvalidNumberException;
+use RtlyKit\Text\Utf8;
 
 /**
  * Number formatting utilities for Persian locale.
@@ -24,7 +25,11 @@ final class Format
      * Format a number with Persian digits and thousand separators, preserving decimals.
      *
      * Accepts English/Persian/Arabic digits and common separators in strings
-     * ("1,234.5", "۱٬۲۳۴٫۵"). Never rounds.
+     * ("1,234.5", "۱٬۲۳۴٫۵"). Never rounds a string. A float is written with its
+     * shortest round-trip decimal form (-1234567.891 gives "-۱٬۲۳۴٬۵۶۷٫۸۹۱", not
+     * binary noise), limited to 15 significant digits so that 0.1 + 0.2 reads
+     * "۰٫۳", and without an exponent; negative zero is "۰". Pass a string when
+     * you need more digits than a float holds.
      *
      * Size caps: a string input longer than 4096 bytes, or a normalised number
      * with more than 1000 characters (integer and fraction digits together), is
@@ -44,7 +49,7 @@ final class Format
         }
 
         if (preg_match('/^([+-]?)(\d+)(?:\.(\d+))?$/', $plain, $m) !== 1) {
-            throw new InvalidNumberException(sprintf("'%s' is not a valid number.", mb_substr((string) (is_string($number) ? $number : $plain), 0, 40)));
+            throw new InvalidNumberException(sprintf("'%s' is not a valid number.", Utf8::truncate(is_string($number) ? $number : $plain, 40)));
         }
 
         $int = ltrim($m[2], '0');
@@ -81,17 +86,66 @@ final class Format
 
         $words = NumberToWords::convert($number);
 
-        if (mb_substr($words, -2) === 'سه') {
+        if (str_ends_with($words, 'سه')) {
             // سه → سوم (also 23 → بیست و سوم)
-            return mb_substr($words, 0, mb_strlen($words) - 2).'سوم';
+            return substr($words, 0, -strlen('سه')).'سوم';
         }
 
-        if (mb_substr($words, -1) === 'ی') {
+        if (str_ends_with($words, 'ی')) {
             // سی → سی‌ام (ends in a non-joining vowel letter)
             return $words.self::ZWNJ.'ام';
         }
 
         return $words.'م';
+    }
+
+    /**
+     * Shortest decimal text that parses back to the same float (like
+     * serialize_precision = -1) but never more than 15 significant digits (the
+     * most a float holds reliably), written without an exponent.
+     * Negative zero is "0".
+     */
+    private static function floatToPlain(float $number): string
+    {
+        if ($number == 0.0) {
+            return '0';
+        }
+
+        // Fewest significant digits (at most 15) that parse back to the same float (independent of the serialize_precision ini).
+        $repr = '';
+        for ($p = 0; $p <= 14; $p++) {
+            $repr = sprintf('%.'.$p.'e', $number); // e.g. -1.234567891e+6
+            if ((float) $repr === $number) {
+                break;
+            }
+        }
+        $sign = '';
+        if ($repr[0] === '-') {
+            $sign = '-';
+            $repr = substr($repr, 1);
+        }
+
+        $exponent = 0;
+        if (preg_match('/^([0-9.]+)e([+-]\d+)$/', $repr, $m) === 1) {
+            $repr = $m[1];
+            $exponent = (int) $m[2];
+        }
+
+        [$int, $frac] = array_pad(explode('.', $repr, 2), 2, '');
+        $digits = $int.$frac;
+        $point = strlen($int) + $exponent; // position of the decimal point within $digits
+
+        if ($point <= 0) {
+            $digits = str_repeat('0', 1 - $point).$digits;
+            $point = 1;
+        } elseif ($point > strlen($digits)) {
+            $digits = str_pad($digits, $point, '0');
+        }
+
+        $whole = substr($digits, 0, $point);
+        $fraction = rtrim(substr($digits, $point), '0');
+
+        return $sign.$whole.($fraction === '' ? '' : '.'.$fraction);
     }
 
     private static function toPlainDecimal(int|float|string $number): string
@@ -104,9 +158,8 @@ final class Format
             if (! is_finite($number)) {
                 throw new InvalidNumberException('Non-finite numbers cannot be formatted.', errorCode: ErrorCode::NonFiniteNumber);
             }
-            $s = rtrim(sprintf('%.15F', $number), '0');
 
-            return rtrim($s, '.');
+            return self::floatToPlain($number);
         }
 
         if (strlen($number) > self::MAX_INPUT_BYTES) {

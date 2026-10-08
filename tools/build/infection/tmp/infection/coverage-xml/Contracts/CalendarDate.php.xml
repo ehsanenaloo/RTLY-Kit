@@ -1,0 +1,1417 @@
+<?xml version="1.0"?>
+<phpunit xmlns="https://schema.phpunit.de/coverage/1.0">
+  <file name="CalendarDate.php" path="/Contracts">
+    <totals>
+      <lines total="195" comments="54" code="141" executable="0" executed="0" percent="0"/>
+      <methods count="0" tested="0" percent="0"/>
+      <functions count="0" tested="0" percent="0"/>
+      <classes count="0" tested="0" percent="0"/>
+      <traits count="0" tested="0" percent="0"/>
+    </totals>
+    <source>
+      <line no="1">
+        <token name="T_OPEN_TAG">&lt;?php</token>
+      </line>
+      <line no="2"/>
+      <line no="3">
+        <token name="T_DECLARE">declare</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">strict_types</token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_LNUMBER">1</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="4"/>
+      <line no="5">
+        <token name="T_NAMESPACE">namespace</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_NAME_QUALIFIED">RtlyKit\Contracts</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="6"/>
+      <line no="7">
+        <token name="T_USE">use</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">DateTimeImmutable</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="8">
+        <token name="T_USE">use</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">DateTimeInterface</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="9">
+        <token name="T_USE">use</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">DateTimeZone</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="10">
+        <token name="T_USE">use</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">JsonSerializable</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="11">
+        <token name="T_USE">use</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_NAME_QUALIFIED">RtlyKit\Exceptions\InvalidDateException</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="12">
+        <token name="T_USE">use</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">Stringable</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="13"/>
+      <line no="14">
+        <token name="T_DOC_COMMENT">/**</token>
+      </line>
+      <line no="15">
+        <token name="T_DOC_COMMENT"> * Common contract of the immutable calendar date classes</token>
+      </line>
+      <line no="16">
+        <token name="T_DOC_COMMENT"> * ({@see \RtlyKit\Calendar\Jalali}, {@see \RtlyKit\Calendar\Hijri},</token>
+      </line>
+      <line no="17">
+        <token name="T_DOC_COMMENT"> * {@see \RtlyKit\Calendar\Hebrew}).</token>
+      </line>
+      <line no="18">
+        <token name="T_DOC_COMMENT"> *</token>
+      </line>
+      <line no="19">
+        <token name="T_DOC_COMMENT"> * Every implementation wraps one instant (a DateTimeImmutable) and exposes it</token>
+      </line>
+      <line no="20">
+        <token name="T_DOC_COMMENT"> * in its own calendar. Comparison and difference methods accept any other</token>
+      </line>
+      <line no="21">
+        <token name="T_DOC_COMMENT"> * CalendarDate or any DateTimeInterface, so dates of different calendars can</token>
+      </line>
+      <line no="22">
+        <token name="T_DOC_COMMENT"> * be compared directly (they are compared as instants).</token>
+      </line>
+      <line no="23">
+        <token name="T_DOC_COMMENT"> *</token>
+      </line>
+      <line no="24">
+        <token name="T_DOC_COMMENT"> * All methods that take a date, timestamp or delta throw only</token>
+      </line>
+      <line no="25">
+        <token name="T_DOC_COMMENT"> * {@see InvalidDateException} for out-of-range input, never TypeError or</token>
+      </line>
+      <line no="26">
+        <token name="T_DOC_COMMENT"> * ValueError. Implementations are final and immutable: every modifier returns</token>
+      </line>
+      <line no="27">
+        <token name="T_DOC_COMMENT"> * a new instance.</token>
+      </line>
+      <line no="28">
+        <token name="T_DOC_COMMENT"> *</token>
+      </line>
+      <line no="29">
+        <token name="T_DOC_COMMENT"> * Weekday numbering differs per calendar and is documented on each class:</token>
+      </line>
+      <line no="30">
+        <token name="T_DOC_COMMENT"> * Jalali is Saturday-first (0 = Saturday), Hijri and Hebrew are Sunday-first.</token>
+      </line>
+      <line no="31">
+        <token name="T_DOC_COMMENT"> *</token>
+      </line>
+      <line no="32">
+        <token name="T_DOC_COMMENT"> * `format()` is declared with the pattern only; each class adds its own</token>
+      </line>
+      <line no="33">
+        <token name="T_DOC_COMMENT"> * optional trailing parameters (digits, locale).</token>
+      </line>
+      <line no="34">
+        <token name="T_DOC_COMMENT"> */</token>
+      </line>
+      <line no="35">
+        <token name="T_INTERFACE">interface</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">CalendarDate</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EXTENDS">extends</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">Stringable</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">JsonSerializable</token>
+      </line>
+      <line no="36">
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="37">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_COMMENT">/* ----- construction ----- */</token>
+      </line>
+      <line no="38"/>
+      <line no="39">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_DOC_COMMENT">/**</token>
+      </line>
+      <line no="40">
+        <token name="T_DOC_COMMENT">     * @param static|DateTimeInterface|CalendarDate|string|int|null $time null = now; int = Unix timestamp</token>
+      </line>
+      <line no="41">
+        <token name="T_DOC_COMMENT">     *</token>
+      </line>
+      <line no="42">
+        <token name="T_DOC_COMMENT">     * @throws InvalidDateException</token>
+      </line>
+      <line no="43">
+        <token name="T_DOC_COMMENT">     */</token>
+      </line>
+      <line no="44">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STATIC">static</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">make</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">DateTimeInterface</token>
+        <token name="T_PIPE">|</token>
+        <token name="T_STRING">CalendarDate</token>
+        <token name="T_PIPE">|</token>
+        <token name="T_STRING">string</token>
+        <token name="T_PIPE">|</token>
+        <token name="T_STRING">int</token>
+        <token name="T_PIPE">|</token>
+        <token name="T_STRING">null</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$time</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">null</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_QUESTION_MARK">?</token>
+        <token name="T_STRING">DateTimeZone</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$timezone</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">null</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STATIC">static</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="45"/>
+      <line no="46">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STATIC">static</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">now</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_QUESTION_MARK">?</token>
+        <token name="T_STRING">DateTimeZone</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$timezone</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">null</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STATIC">static</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="47"/>
+      <line no="48">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STATIC">static</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">today</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_QUESTION_MARK">?</token>
+        <token name="T_STRING">DateTimeZone</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$timezone</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">null</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STATIC">static</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="49"/>
+      <line no="50">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_DOC_COMMENT">/** @throws InvalidDateException */</token>
+      </line>
+      <line no="51">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STATIC">static</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">create</token>
+        <token name="T_OPEN_BRACKET">(</token>
+      </line>
+      <line no="52">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_STRING">int</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$year</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="53">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_STRING">int</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$month</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="54">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_STRING">int</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$day</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="55">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_STRING">int</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$hour</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_LNUMBER">0</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="56">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_STRING">int</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$minute</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_LNUMBER">0</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="57">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_STRING">int</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$second</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_LNUMBER">0</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="58">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_QUESTION_MARK">?</token>
+        <token name="T_STRING">DateTimeZone</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$timezone</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">null</token>
+        <token name="T_COMMA">,</token>
+      </line>
+      <line no="59">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STATIC">static</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="60"/>
+      <line no="61">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_COMMENT">/* ----- calendar arithmetic ----- */</token>
+      </line>
+      <line no="62"/>
+      <line no="63">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STATIC">static</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">isValid</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">int</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$year</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">int</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$month</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">int</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$day</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">bool</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="64"/>
+      <line no="65">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STATIC">static</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">isLeapYear</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">int</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$year</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">bool</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="66"/>
+      <line no="67">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STATIC">static</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">daysInYear</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">int</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$year</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">int</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="68"/>
+      <line no="69">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STATIC">static</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">daysInMonth</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">int</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$year</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">int</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$month</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">int</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="70"/>
+      <line no="71">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_COMMENT">/* ----- getters ----- */</token>
+      </line>
+      <line no="72"/>
+      <line no="73">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">getYear</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">int</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="74"/>
+      <line no="75">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">getMonth</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">int</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="76"/>
+      <line no="77">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">getDay</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">int</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="78"/>
+      <line no="79">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">getHour</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">int</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="80"/>
+      <line no="81">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">getMinute</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">int</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="82"/>
+      <line no="83">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">getSecond</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">int</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="84"/>
+      <line no="85">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_DOC_COMMENT">/** Per-calendar numbering, see the class docblocks. */</token>
+      </line>
+      <line no="86">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">getDayOfWeek</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">int</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="87"/>
+      <line no="88">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">getTimestamp</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">int</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="89"/>
+      <line no="90">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">getTimezone</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">DateTimeZone</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="91"/>
+      <line no="92">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_DOC_COMMENT">/** The underlying instant (proleptic Gregorian). */</token>
+      </line>
+      <line no="93">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">toGregorian</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">DateTimeImmutable</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="94"/>
+      <line no="95">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_COMMENT">/* ----- formatting ----- */</token>
+      </line>
+      <line no="96"/>
+      <line no="97">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">format</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">string</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$format</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'Y/m/d H:i:s'</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">string</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="98"/>
+      <line no="99">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">toDateString</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">string</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="100"/>
+      <line no="101">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">toDateTimeString</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">string</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="102"/>
+      <line no="103">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_COMMENT">/* ----- modification (immutable) ----- */</token>
+      </line>
+      <line no="104"/>
+      <line no="105">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_DOC_COMMENT">/** @throws InvalidDateException */</token>
+      </line>
+      <line no="106">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">addDays</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">int</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$days</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STATIC">static</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="107"/>
+      <line no="108">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_DOC_COMMENT">/** @throws InvalidDateException */</token>
+      </line>
+      <line no="109">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">subDays</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">int</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$days</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STATIC">static</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="110"/>
+      <line no="111">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_DOC_COMMENT">/** @throws InvalidDateException */</token>
+      </line>
+      <line no="112">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">addHours</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">int</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$hours</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STATIC">static</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="113"/>
+      <line no="114">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_DOC_COMMENT">/** @throws InvalidDateException */</token>
+      </line>
+      <line no="115">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">subHours</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">int</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$hours</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STATIC">static</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="116"/>
+      <line no="117">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_DOC_COMMENT">/** @throws InvalidDateException */</token>
+      </line>
+      <line no="118">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">addMinutes</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">int</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$minutes</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STATIC">static</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="119"/>
+      <line no="120">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_DOC_COMMENT">/** @throws InvalidDateException */</token>
+      </line>
+      <line no="121">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">subMinutes</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">int</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$minutes</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STATIC">static</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="122"/>
+      <line no="123">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_DOC_COMMENT">/** @throws InvalidDateException */</token>
+      </line>
+      <line no="124">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">addSeconds</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">int</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$seconds</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STATIC">static</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="125"/>
+      <line no="126">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_DOC_COMMENT">/** @throws InvalidDateException */</token>
+      </line>
+      <line no="127">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">subSeconds</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">int</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$seconds</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STATIC">static</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="128"/>
+      <line no="129">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_DOC_COMMENT">/** @throws InvalidDateException */</token>
+      </line>
+      <line no="130">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">addMonths</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">int</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$months</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STATIC">static</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="131"/>
+      <line no="132">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_DOC_COMMENT">/** @throws InvalidDateException */</token>
+      </line>
+      <line no="133">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">subMonths</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">int</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$months</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STATIC">static</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="134"/>
+      <line no="135">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_DOC_COMMENT">/** @throws InvalidDateException */</token>
+      </line>
+      <line no="136">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">addYears</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">int</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$years</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STATIC">static</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="137"/>
+      <line no="138">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_DOC_COMMENT">/** @throws InvalidDateException */</token>
+      </line>
+      <line no="139">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">subYears</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">int</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$years</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STATIC">static</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="140"/>
+      <line no="141">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">startOfDay</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STATIC">static</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="142"/>
+      <line no="143">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">endOfDay</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STATIC">static</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="144"/>
+      <line no="145">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">startOfMonth</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STATIC">static</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="146"/>
+      <line no="147">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">endOfMonth</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STATIC">static</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="148"/>
+      <line no="149">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">startOfYear</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STATIC">static</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="150"/>
+      <line no="151">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">endOfYear</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STATIC">static</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="152"/>
+      <line no="153">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_COMMENT">/* ----- comparison (as instants; any calendar or DateTimeInterface) ----- */</token>
+      </line>
+      <line no="154"/>
+      <line no="155">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">eq</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">CalendarDate</token>
+        <token name="T_PIPE">|</token>
+        <token name="T_STRING">DateTimeInterface</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$other</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">bool</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="156"/>
+      <line no="157">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">ne</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">CalendarDate</token>
+        <token name="T_PIPE">|</token>
+        <token name="T_STRING">DateTimeInterface</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$other</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">bool</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="158"/>
+      <line no="159">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">gt</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">CalendarDate</token>
+        <token name="T_PIPE">|</token>
+        <token name="T_STRING">DateTimeInterface</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$other</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">bool</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="160"/>
+      <line no="161">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">gte</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">CalendarDate</token>
+        <token name="T_PIPE">|</token>
+        <token name="T_STRING">DateTimeInterface</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$other</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">bool</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="162"/>
+      <line no="163">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">lt</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">CalendarDate</token>
+        <token name="T_PIPE">|</token>
+        <token name="T_STRING">DateTimeInterface</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$other</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">bool</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="164"/>
+      <line no="165">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">lte</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">CalendarDate</token>
+        <token name="T_PIPE">|</token>
+        <token name="T_STRING">DateTimeInterface</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$other</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">bool</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="166"/>
+      <line no="167">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_DOC_COMMENT">/** Alias of {@see self::eq()}. */</token>
+      </line>
+      <line no="168">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">equals</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">CalendarDate</token>
+        <token name="T_PIPE">|</token>
+        <token name="T_STRING">DateTimeInterface</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$other</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">bool</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="169"/>
+      <line no="170">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_DOC_COMMENT">/** Alias of {@see self::lt()}. */</token>
+      </line>
+      <line no="171">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">isBefore</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">CalendarDate</token>
+        <token name="T_PIPE">|</token>
+        <token name="T_STRING">DateTimeInterface</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$other</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">bool</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="172"/>
+      <line no="173">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_DOC_COMMENT">/** Alias of {@see self::gt()}. */</token>
+      </line>
+      <line no="174">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">isAfter</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">CalendarDate</token>
+        <token name="T_PIPE">|</token>
+        <token name="T_STRING">DateTimeInterface</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$other</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">bool</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="175"/>
+      <line no="176">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">between</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">CalendarDate</token>
+        <token name="T_PIPE">|</token>
+        <token name="T_STRING">DateTimeInterface</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$first</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">CalendarDate</token>
+        <token name="T_PIPE">|</token>
+        <token name="T_STRING">DateTimeInterface</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$second</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">bool</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$equal</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">true</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">bool</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="177"/>
+      <line no="178">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">isPast</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">bool</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="179"/>
+      <line no="180">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">isFuture</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">bool</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="181"/>
+      <line no="182">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">isToday</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">bool</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="183"/>
+      <line no="184">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_COMMENT">/* ----- difference ----- */</token>
+      </line>
+      <line no="185"/>
+      <line no="186">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_DOC_COMMENT">/** Whole days between two instants (truncated toward zero); signed when $absolute is false. */</token>
+      </line>
+      <line no="187">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">diffInDays</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">CalendarDate</token>
+        <token name="T_PIPE">|</token>
+        <token name="T_STRING">DateTimeInterface</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$other</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">bool</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$absolute</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">true</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">int</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="188"/>
+      <line no="189">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_DOC_COMMENT">/** Whole months of THIS calendar between two instants. */</token>
+      </line>
+      <line no="190">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">diffInMonths</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">CalendarDate</token>
+        <token name="T_PIPE">|</token>
+        <token name="T_STRING">DateTimeInterface</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$other</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">bool</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$absolute</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">true</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">int</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="191"/>
+      <line no="192">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_DOC_COMMENT">/** Whole years of THIS calendar between two instants. */</token>
+      </line>
+      <line no="193">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">diffInYears</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">CalendarDate</token>
+        <token name="T_PIPE">|</token>
+        <token name="T_STRING">DateTimeInterface</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$other</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">bool</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$absolute</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EQUAL">=</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">true</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">int</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="194">
+        <token name="T_CLOSE_CURLY">}</token>
+      </line>
+      <line no="195"/>
+    </source>
+  </file>
+</phpunit>

@@ -7,6 +7,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-10-08
+
+### Added
+
+- `HolidayCalendar` (`RtlyKit\Holiday`): official Iranian holiday dates for the Jalali years 1394 and 1396 to 1405 (checked against two sources) and published dates for 1380 to 1393 and 1395. Years without data are estimated from the Umm al-Qura table. You can correct a calendar with `withIslamicOffset()` (-3 to +3 days), `withHijriMonthStart()`, `withHoliday()`, `withoutHoliday()` and `withOfficialData()`. Your changes win over official data, and official data wins over the estimate. `sourceOf()` and `statusOf()` show where a date comes from. New enums `HolidaySource` and `HolidayOrigin` and the value type `HolidayEntry`. `IranHolidays::calendar()` and `IranHolidays::sourceOf()` give access to the default calendar.
+- Laravel config file `rtly-kit.php` (publish tag `rtly-kit-config`) with a `holidays` block. The service provider binds a `HolidayCalendar` built from it.
+- Arabic number words: `ArabicOptions` for gender, grammatical case, counted-noun mode, vowel marks, the spelling of hundreds, the negative word and the name of 10^9. `convert($n, 'ar')` now reaches every integer below 10^27. `NumberToWords::ordinal()` writes Arabic ordinals from 1 to 99. Without options the output is the same as before for every number below 10^9.
+- Prayer times: `HighLatitudeRule` (`None`, `NightMiddle`, `OneSeventh`, `AngleBased`) with `PrayerTimes::withHighLatitudeRule()`, and `PrayerTimes::withTune()` for manual adjustments of -30 to +30 minutes.
+- `Mobile::isAllocated()` and the `allocated` detail in `Mobile::validate()`, based on the national numbering plan that the Communications Regulatory Authority filed with the ITU on 2026-08-24.
+- `Hijri::ummAlQuraVerifiedRange()` (`[1318, 1500]`) and `Hijri::isUmmAlQuraVerified()`.
+- Arabic guide (`docs/ar`, right to left) with a language switcher, `sitemap.xml`, `robots.txt` and `hreflang` links between the three languages. New guide pages: Holiday calendar, Arabic number words and Verifying releases.
+- Release workflow: builds the archives with `git archive`, writes `SHA256SUMS`, attests build provenance (`gh attestation verify`) and publishes the GitHub Release.
+- CI: PHP 8.5, Windows and macOS runs, a lowest-dependency job, the Laravel integration tests on Laravel 11, 12 and 13, Scorecard and dependency review workflows. Mutation testing with `composer mutation`.
+
+### Changed
+
+- `ext-mbstring` is no longer required. The only runtime requirement is `php: ^8.2`.
+- In the Jalali years 1380 to 1405, `IranHolidays` and `is_iran_holiday()` return the official or reported dates instead of the Umm al-Qura estimate. For example, Eid al-Fitr 1447 AH is on 1405/01/01 and no longer on 1404/12/29, and Eid al-Fitr 1446 AH is on 1404/01/11. Other years are unchanged. `HolidayCalendar::default()->withOfficialData(false)` gives the old behaviour.
+- `PrayerTimes` applies `HighLatitudeRule::AngleBased` by default. It acts only where a Fajr or Isha time would be missing or farther from sunrise or sunset than the rule allows. Below about 44 degrees north nothing changes. North of about 44 to 46 degrees, around the June solstice, some values differ from 0.1.x, and a time that was `null` now has a value. `withHighLatitudeRule(HighLatitudeRule::None)` gives the old output. `nextPrayer()` now finds a prayer that falls after midnight.
+- `Mobile`: the Shatel Mobile key is narrowed to 09981 and 09982, the Aptel key is widened to 9991, and the prefixes 0923, 0931, 0932 and 0934 are added. Validity is unchanged.
+- `Format::withSeparator()` and `format_number()` write a float as its shortest round-trip decimal, cut to 15 significant digits, with no exponent. `-1234567.891` gives `-۱٬۲۳۴٬۵۶۷٫۸۹۱` (it used to give `-۱٬۲۳۴٬۵۶۷٫۸۹۱۰۰۰۰۰۰۰۶۱۴۶۷`), `0.1 + 0.2` still gives `۰٫۳`, and negative zero gives `۰`. Pass a string when you need more digits.
+- `NumberToWords::fromWords()` is strict. It rejects a missing `و` between parts («دو صد», «بیست یک»), a trailing `و` and parts out of order, with error code `invalid_number_words`. Every text that `convert()` produces still parses.
+- `Slugify::make()` throws `RtlyKitException` (`invalid_argument`, context `argument` = `text`) when the text is not valid UTF-8.
+- `Hijri::format()` and `Hebrew::format()` reject patterns longer than 256 bytes with `InvalidDateException` (`input_too_long`), as `Jalali::format()` already did. New constants `Hijri::MAX_FORMAT_LENGTH` and `Hebrew::MAX_FORMAT_LENGTH`.
+- A trailing backslash in a `format()` pattern is dropped in all three calendars.
+- `IranHolidays::all()`, `allTitles()` and `allFixed()` throw `InvalidDateException` (`date_out_of_range`, context `year`, `min`, `max`) for a Jalali year outside -620 to 9377.
+- Error messages that repeat user input cut it to 40 characters and always stay valid UTF-8.
+- Supported platforms: PHP 8.2 to 8.5, Laravel 11, 12 and 13 (Laravel 13 needs PHP 8.3 or newer), Carbon 3.
+- Accuracy statements follow the data checks of 2026-10-08. The Jalali conversion matches the official calendar of the University of Tehran for every year from 1206 to 1497 and the astronomical definition for 1178 to 1502. Umm al-Qura month starts match the official KACST calendar for AH 1318 to 1500. Prayer times agree within 1 to 2 minutes with published tables for Tehran, Makkah, Egypt and Karachi (Hanafi Asr), and Turkey's Fajr and Isha fit the MWL angles. The 19 Sheba codes of the Central Bank specification match the table, and the mobile prefixes lie inside the mobile blocks of the numbering plan. Details are in `resources/data/SOURCES.md`.
+
+### Fixed
+
+- `IranHolidays::all()` and `allTitles()` work for every supported Jalali year, -620 to 9377. Before, years before the Hijri epoch and the last day of 9377 threw `invalid_date`. Where Islamic holidays cannot be derived, only the fixed holidays are returned.
+- PHP 8.5 raised a warning when `Digits` turned `NAN` or `INF` into a string. They are now written without implicit coercion.
+
 ## [0.1.1] - 2026-10-08
 
 ### Changed

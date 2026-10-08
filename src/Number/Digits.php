@@ -17,12 +17,24 @@ final class Digits
 
     public static function toPersian(string|int|float $value): string
     {
-        return str_replace(self::ENGLISH, self::PERSIAN, (string) $value);
+        return str_replace(self::ENGLISH, self::PERSIAN, self::stringify($value));
     }
 
     public static function toArabic(string|int|float $value): string
     {
-        return str_replace(self::ENGLISH, self::ARABIC, (string) $value);
+        return str_replace(self::ENGLISH, self::ARABIC, self::stringify($value));
+    }
+
+    /**
+     * Stringify without relying on implicit float coercion: PHP 8.5 raises a warning for NAN and INF.
+     */
+    private static function stringify(string|int|float $value): string
+    {
+        if (is_float($value) && ! is_finite($value)) {
+            return is_nan($value) ? 'NAN' : ($value > 0 ? 'INF' : '-INF');
+        }
+
+        return (string) $value;
     }
 
     public static function toEnglish(string $value): string

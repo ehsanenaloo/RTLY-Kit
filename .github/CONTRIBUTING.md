@@ -1,6 +1,6 @@
 # Contributing to RTLY-Kit
 
-Thanks for helping. This guide gets you from clone to pull request. Contributions in English or Persian are welcome. Please follow the [Code of Conduct](CODE_OF_CONDUCT.md).
+Thanks for helping. This guide gets you from clone to pull request. Contributions in English, Persian or Arabic are welcome. Please follow the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Set up (Docker)
 
@@ -40,12 +40,12 @@ If you have PHP 8.2+ and Composer locally, the same `composer` scripts work with
 
 ## Rules of the project
 
-1. **Zero required dependencies.** `require` in `composer.json` contains only `php` (and `ext-mbstring`). Optional integrations (Carbon, Laravel) go under `suggest` and `require-dev`, and must be loaded defensively.
+1. **Zero required dependencies.** `require` in `composer.json` contains only `php`. Optional integrations (Carbon, Laravel) go under `suggest` and `require-dev`, and must be loaded defensively.
 2. **Modern, strict PHP.** Every file has `declare(strict_types=1);`. Classes are `final` and immutable. PHPStan must pass at level max.
 3. **Do not copy the digit maps.** Convert Persian/Arabic digits with `RtlyKit\Number\Digits::toEnglish()`.
 4. **Every bug fix ships with a test**, and every feature ships with tests and documentation.
 5. **Known-answer tests only.** Test data must come from an independent source (official examples, published tables, values you verified by hand). Do not write tests that call the code under test to compute the expected value.
-6. **Be honest about accuracy.** If data is unverified, say so in the docblock and in the docs, and prefer returning `null` over a guess. Wrong data is worse than none.
+6. **Be accurate about accuracy.** State what a table was compared with and when. If data is not verified, say so in the docblock and in the docs, and prefer returning `null` over a guess. Wrong data is worse than none.
 7. **Year-range rule.** Every calendar entry point (`make`, `create`, `createFromFormat`, timestamps, `add*` / `sub*`, helpers, Carbon macros) must throw only a `RtlyKitException` (in practice `InvalidDateException`) for out-of-range or overflowing input, never a `TypeError`, `ValueError` or `DateMalformed*` exception. Supported years: Jalali -620..9377, Hijri 1..9665, Hebrew 3762..13759 (each class exposes `MIN_YEAR` / `MAX_YEAR`; they correspond to Gregorian years 1..9999). Every new exception must extend `RtlyKitException`.
 8. **Input caps.** Keep the existing limits on numeric input (4096 bytes for strings, 1000 characters for `Format::withSeparator`).
 
@@ -75,13 +75,13 @@ Reference data (holidays, bank BINs, Sheba codes, national-code prefixes, mobile
 
 - Branch from `main`, keep a PR focused on one change.
 - Make sure `composer check` passes.
-- Update the guide: edit the fragments in `tools/docs/content/{fa,en}/` and run `composer docs` (never edit `docs/` by hand; maintainers will help translate) and add a line under **Unreleased** in `CHANGELOG.md`.
+- Update the guide: edit the fragments in `tools/docs/content/{fa,en,ar}/` (the same page and the same ids in all three languages; maintainers will help translate) and run `composer docs` (never edit `docs/` by hand) and add a line under **Unreleased** in `CHANGELOG.md`.
 - Describe what changed and why. For data changes link your sources.
 
 ## Documentation
 
 - Code samples in the docs must run. Run them through Docker before you submit.
-- Voice: second person, present tense, active.
+- Voice: second person, present tense, active. Use short sentences and everyday words. Say what was checked, how and when, in a calm tone, and keep the few limits in one short "Good to know" note.
 - Primary language is Persian for the project, with English and Arabic translations; English docs are the reference for code samples.
 - Write the project name as **RTLY-Kit** (not `RTLY-KIT` or `Rtly Kit`). Namespaces and package names (`RtlyKit`, `enaxon/rtly-kit`) keep their code spelling.
 

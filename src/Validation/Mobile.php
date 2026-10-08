@@ -19,15 +19,22 @@ use RtlyKit\Number\Digits;
  * prefixes below and returns null for anything else — the number portability
  * scheme means a prefix never guarantees the current operator anyway.
  *
- * Uncertain / deliberately omitted: 0994x-0999x (other than 0998 and 09991),
- * 0940-0949 and 0931/0932/0934 (Irancell family allocations vary between
- * sources).
+ * 0990-0994 are listed as Hamrah-e Aval (0994 is its "Anarestan" youth SIM
+ * line); public tables agree on this (see resources/data/SOURCES.md).
+ *
+ * Every prefix below lies inside a block that the Communications Regulatory
+ * Authority (CRA) lists as "Mobile services" in the national numbering plan it
+ * communicated to the ITU on 24.VIII.2026. That plan does not name operators;
+ * the operator names come from the public tables in SOURCES.md. Deliberately
+ * omitted: 0940-0949 (CRA lists the 94 block as non-geographical fixed numbers,
+ * not mobile), the other 0995x-0999x blocks and 09983x/09988x (allocated, but
+ * the holder is not confirmed by two sources).
  */
 final class Mobile implements Validator
 {
     /**
      * Longest-prefix table (digits after the leading 0): [prefix => operator].
-     * Keys are 3-digit blocks, plus the 5-digit Aptel block.
+     * Keys are 3-digit blocks, plus the 4-digit Shatel Mobile (9981, 9982) and Aptel (9991) blocks.
      *
      * @var array<int, string>
      */
@@ -54,7 +61,10 @@ final class Mobile implements Validator
         904 => 'ایرانسل',
         905 => 'ایرانسل',
         930 => 'ایرانسل',
+        931 => 'اسپادان',
+        932 => 'تالیا',
         933 => 'ایرانسل',
+        934 => 'تله‌کیش',
         935 => 'ایرانسل',
         936 => 'ایرانسل',
         937 => 'ایرانسل',
@@ -63,8 +73,25 @@ final class Mobile implements Validator
         920 => 'رایتل',
         921 => 'رایتل',
         922 => 'رایتل',
-        998 => 'شاتل موبایل',
-        99910 => 'آپتل',
+        923 => 'رایتل',
+        9981 => 'شاتل موبایل',
+        9982 => 'شاتل موبایل',
+        9991 => 'آپتل',
+    ];
+
+    /**
+     * National destination codes (digits after the leading 0) that the CRA numbering plan
+     * (communicated to the ITU on 24.VIII.2026) lists as "Mobile services". A prefix of a
+     * number is allocated when its digits start with one of these entries.
+     *
+     * @var list<string>
+     */
+    private const ALLOCATED_NDC = [
+        '900', '901', '902', '903', '904', '905', '91', '920', '921', '922', '923', '93',
+        '990', '991', '992', '993', '994', '99510', '99550', '996', '9981', '9982',
+        '99830', '99831', '99832', '99888', '99900', '99901', '99902', '99903', '9991',
+        '99921', '99930', '99931', '99932', '99933', '99934', '9995', '99969', '99977',
+        '9998', '9999',
     ];
 
     public static function isValid(mixed $value): bool
@@ -73,14 +100,31 @@ final class Mobile implements Validator
     }
 
     /**
+     * True when the number is well-formed AND its prefix lies in a block that the published
+     * national numbering plan lists for mobile services.
+     *
+     * `false` for a well-formed number means "not in the published plan" (the prefix may be
+     * newer than the data), not "invalid"; use {@see self::isValid()} for the shape check.
+     */
+    public static function isAllocated(mixed $value): bool
+    {
+        return (self::validate($value)->details()['allocated'] ?? false) === true;
+    }
+
+    /**
      * Validate with structured errors. Error codes: invalid_format, invalid_type, input_too_long.
-     * Details: normalized, operator (null when unknown).
+     * Details: normalized, operator (null when unknown), allocated (bool).
+     *
+     * `allocated` is true when the prefix lies in the mobile blocks of the published national
+     * numbering plan. `allocated=false` on a valid result means the prefix is not in that plan
+     * (it may be new), not that the number is invalid: validity is still the shape check only.
+     *
      * Accepts strings, ints and integral floats; any other type or a string over 4096 bytes yields
      * `invalid_type` / `input_too_long`.
      */
     public static function validate(mixed $value): Result
     {
-        $details = ['normalized' => '', 'operator' => null];
+        $details = ['normalized' => '', 'operator' => null, 'allocated' => false];
         $input = Input::coerce($value, $details);
 
         if ($input instanceof Result) {
@@ -95,6 +139,7 @@ final class Mobile implements Validator
         }
 
         $details['operator'] = self::lookup($mobile);
+        $details['allocated'] = self::inAllocatedBlock($mobile);
 
         return Result::valid($details);
     }
@@ -129,9 +174,21 @@ final class Mobile implements Validator
         return $digits;
     }
 
+    private static function inAllocatedBlock(string $normalized): bool
+    {
+        $ndc = substr($normalized, 1);
+        foreach (self::ALLOCATED_NDC as $allocated) {
+            if (str_starts_with($ndc, $allocated)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private static function lookup(string $normalized): ?string
     {
-        return self::$operators[(int) substr($normalized, 1, 5)]
+        return self::$operators[(int) substr($normalized, 1, 4)]
             ?? self::$operators[(int) substr($normalized, 1, 3)]
             ?? null;
     }

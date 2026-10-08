@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="ar" dir="rtl" data-i18n="{&quot;dark&quot;:&quot;الوضع الداكن&quot;,&quot;light&quot;:&quot;الوضع الفاتح&quot;,&quot;to_dark&quot;:&quot;التبديل إلى السمة الداكنة&quot;,&quot;to_light&quot;:&quot;التبديل إلى السمة الفاتحة&quot;,&quot;copy&quot;:&quot;نسخ&quot;,&quot;copied&quot;:&quot;تم النسخ&quot;,&quot;copy_failed&quot;:&quot;تم التحديد؛ انسخ يدويًا&quot;,&quot;copy_label&quot;:&quot;نسخ مثال الشيفرة أعلاه&quot;,&quot;no_results&quot;:&quot;لا يوجد دليل مطابق. جرّب كلمة أقصر.&quot;,&quot;loading&quot;:&quot;ما زال فهرس البحث قيد التحميل. حاول مرة أخرى بعد قليل.&quot;,&quot;results&quot;:&quot;نتائج البحث&quot;,&quot;status&quot;:&quot;يُعرض %d من %d دليلًا&quot;,&quot;suggest&quot;:&quot;النسخة العربية&quot;,&quot;search_label&quot;:&quot;البحث في الدليل&quot;,&quot;search_placeholder&quot;:&quot;البحث في الدليل&quot;}" data-search-index="search-index.js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>الأرقام وتنسيق الأعداد | RTLY-Kit دليل المستخدم</title>
+<meta name="description" content="التحويل بين الأرقام الإنجليزية والفارسية والعربية الهندية، وتنسيق الأعداد بالفواصل الفارسية، وبناء الأعداد الترتيبية الفارسية، مع توضيح كل حد وحالة حافة.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="الأرقام وتنسيق الأعداد | RTLY-Kit دليل المستخدم">
+<meta property="og:description" content="التحويل بين الأرقام الإنجليزية والفارسية والعربية الهندية، وتنسيق الأعداد بالفواصل الفارسية، وبناء الأعداد الترتيبية الفارسية، مع توضيح كل حد وحالة حافة.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ar_AR">
+<meta property="og:locale:alternate" content="fa_IR">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:url" content="https://ehsanenaloo.github.io/RTLY-Kit/ar/digits-and-format.html">
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+<link rel="canonical" href="https://ehsanenaloo.github.io/RTLY-Kit/ar/digits-and-format.html">
+<link rel="alternate" hreflang="ar" href="https://ehsanenaloo.github.io/RTLY-Kit/ar/digits-and-format.html">
+<link rel="alternate" hreflang="fa" href="https://ehsanenaloo.github.io/RTLY-Kit/fa/digits-and-format.html">
+<link rel="alternate" hreflang="en" href="https://ehsanenaloo.github.io/RTLY-Kit/en/digits-and-format.html">
+<link rel="alternate" hreflang="x-default" href="https://ehsanenaloo.github.io/RTLY-Kit/">
+<link rel="stylesheet" href="../styles.css">
+<script>try{var t=localStorage.getItem("rtly-docs-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<script defer src="../app.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">انتقل إلى المحتوى</a><header class="site-header"><div class="shell header-inner"><a class="brand" href="index.html"><img src="../assets/logo.svg" width="34" height="34" alt=""><span><span class="name">RTLY-Kit</span><small>دليل المستخدم</small></span></a><nav class="top-nav" aria-label="التنقل الرئيسي"><a href="index.html">نظرة عامة</a><a href="quick-start.html">بدء سريع</a><a href="all.html">كل الأدلة</a><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">جيت هب &#8599;</a></nav><div class="header-tools"><span data-search-host></span><button type="button" class="icon-button" data-theme-toggle hidden>Theme</button><div class="lang-switch" role="group" aria-label="اللغة"><a class="icon-button" href="../fa/digits-and-format.html" hreflang="fa" lang="fa">فارسی</a><a class="icon-button" href="../en/digits-and-format.html" hreflang="en" lang="en">English</a><span class="icon-button is-current" lang="ar" aria-current="true">العربية</span></div></div></div></header>
+<main id="main">
+<div class="shell page-intro"><nav class="breadcrumbs" aria-label="مسار الصفحة"><ol><li><a href="index.html">الرئيسية</a></li><li><a href="all.html#group-numbers-text">الأرقام والنصوص</a></li><li aria-current="page">الأرقام وتنسيق الأعداد</li></ol></nav><h1>الأرقام وتنسيق الأعداد</h1><p class="lead">التحويل بين الأرقام الإنجليزية والفارسية والعربية الهندية، وتنسيق الأعداد بالفواصل الفارسية، وبناء الأعداد الترتيبية الفارسية، مع توضيح كل حد وحالة حافة.</p></div>
+<div class="shell doc-layout has-toc">
+<aside class="sidebar"><details open><summary>تصفح الأدلة</summary><nav aria-label="الأدلة"><a href="all.html">كل الأدلة</a><p>البدء</p><a href="quick-start.html">البدء السريع</a><a href="installation.html">التثبيت</a><p>التقاويم</p><a href="jalali.html">التقويم الجلالي</a><a href="hijri.html">التقويم الهجري</a><a href="hebrew.html">التقويم العبري</a><a href="convert-and-compare.html">التحويل والمقارنة بين التواريخ</a><a href="carbon-macros.html">ماكروات Carbon</a><p>التحقق من الصحة</p><a href="validators-overview.html">نظرة عامة على أدوات التحقق</a><a href="national-code.html">الرقم الوطني</a><a href="sheba-and-bank-card.html">شبا والبطاقة المصرفية</a><a href="mobile-postal-plate.html">الجوال والرمز البريدي ولوحة المركبة</a><p>الأرقام والنصوص</p><a href="digits-and-format.html" aria-current="page">الأرقام وتنسيق الأعداد</a><a href="number-words.html">تحويل الأعداد إلى كلمات</a><a href="arabic-number-words.html">الأعداد بالحروف العربية</a><a href="text-tools.html">أدوات النصوص</a><p>العطل وأوقات الصلاة</p><a href="holidays.html">العطل الرسمية الإيرانية</a><a href="holiday-calendar.html">تقويم العطل القابل للتعديل</a><a href="prayer-times.html">أوقات الصلاة</a><p>لارافيل</p><a href="laravel-setup.html">إعداد Laravel</a><a href="laravel-validation-and-cast.html">قواعد التحقق وتحويل Eloquent</a><p>المرجع</p><a href="helpers-and-globals.html">الدوال المساعدة والدوال العامة</a><a href="error-handling.html">معالجة الأخطاء</a><a href="api-stability.html">استقرار واجهة API</a><a href="accuracy-and-data.html">الدقة والبيانات</a><a href="benchmarks.html">قياس الأداء</a><a href="limits.html">الحدود</a><a href="troubleshooting-faq.html">استكشاف الأخطاء والأسئلة الشائعة</a><a href="upgrade.html">دليل الترقية</a><a href="verifying-releases.html">التحقق من الإصدارات</a></nav></details></aside>
+<article class="prose">
+<details class="toc-inline"><summary>في هذه الصفحة</summary><ol><li><a href="#digits">الأرقام</a><ol><li><a href="#convert">convert()</a></li></ol></li><li><a href="#separators">تنسيق الأعداد</a><ol><li><a href="#separator-input">ما تقبله</a></li><li><a href="#custom-separators">فواصل مخصصة</a></li><li><a href="#float-precision">الأعداد العشرية والدقة</a></li><li><a href="#limits">حدود الحجم</a></li></ol></li><li><a href="#ordinal">الأعداد الترتيبية</a></li></ol></details>
+<h2 id="digits">الأرقام<a class="anchor" href="#digits" aria-label="رابط إلى هذا القسم">#</a></h2>
+<p>يحوّل الصنف <code>RtlyKit\Number\Digits</code> بين مجموعات الأرقام الثلاث المستخدمة في البرمجيات الإيرانية: الإنجليزية (<code>0-9</code>) والفارسية (<code>۰-۹</code>، من U+06F0 إلى U+06F9) والعربية الهندية (<code>٠-٩</code>، من U+0660 إلى U+0669). الصنف مجرد استبدال في السلاسل: لا يُطلق استثناءً أبداً، ولا يمسّ المحارف الأخرى، ولا يغيّر الفاصلة العشرية ولا فواصل الآلاف.</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">&lt;?php
+require</span> <span class="tok-s">'vendor/autoload.php'</span>;
+
+<span class="tok-k">use</span> RtlyKit\Number\Digits;
+
+<span class="tok-k">echo</span> Digits::toPersian(<span class="tok-s">'Tel 0912 / 2024'</span>), <span class="tok-s">"\n"</span>;   <span class="tok-c">// Tel ۰۹۱۲ / ۲۰۲۴</span>
+<span class="tok-k">echo</span> Digits::toPersian(<span class="tok-n">1234.5</span>), <span class="tok-s">"\n"</span>;              <span class="tok-c">// ۱۲۳۴.۵</span>
+<span class="tok-k">echo</span> Digits::toArabic(<span class="tok-n">2026</span>), <span class="tok-s">"\n"</span>;                 <span class="tok-c">// ٢٠٢٦</span>
+<span class="tok-k">echo</span> Digits::toEnglish(<span class="tok-s">'۱۲۳ ٤٥٦ abc'</span>), <span class="tok-s">"\n"</span>;        <span class="tok-c">// 123 456 abc</span>
+<span class="tok-k">echo</span> Digits::arabicToPersian(<span class="tok-s">'٠١٢ 345'</span>), <span class="tok-s">"\n"</span>;      <span class="tok-c">// ۰۱۲ 345</span></code></pre>
+
+<div class="table-wrap" tabindex="0" role="region" aria-label="جدول"><table>
+<thead><tr><th scope="col">الدالة</th><th scope="col">المدخل</th><th scope="col">ما تفعله</th></tr></thead>
+<tbody>
+<tr><td><code>toPersian($value)</code></td><td>string وint وfloat</td><td>تتحول الأرقام الإنجليزية إلى فارسية. أما الأرقام الفارسية والعربية الهندية الموجودة أصلًا في السلسلة فتبقى كما هي</td></tr>
+<tr><td><code>toArabic($value)</code></td><td>string وint وfloat</td><td>تتحول الأرقام الإنجليزية إلى عربية هندية</td></tr>
+<tr><td><code>toEnglish($value)</code></td><td>string</td><td>تتحول الأرقام الفارسية والعربية الهندية معًا إلى إنجليزية</td></tr>
+<tr><td><code>arabicToPersian($value)</code></td><td>string</td><td>تتحول الأرقام العربية الهندية وحدها إلى فارسية؛ وتبقى الإنجليزية</td></tr>
+<tr><td><code>convert($value, $to)</code></td><td>string</td><td>أي مجموعة أرقام إلى الإنجليزية أولاً، ثم إلى المجموعة المطلوبة</td></tr>
+</tbody>
+</table></div>
+
+<h3 id="convert">convert()<a class="anchor" href="#convert" aria-label="رابط إلى هذا القسم">#</a></h3>
+<p>تطبّع <code>convert()</code> إلى الإنجليزية أولًا ثم تعرض المجموعة المطلوبة. اسم الهدف لا يميّز بين الأحرف الكبيرة والصغيرة: <code>persian</code> و<code>fa</code> و<code>farsi</code> تعطي أرقامًا فارسية؛ و<code>arabic</code> و<code>ar</code> تعطي أرقامًا عربية هندية؛ وأي شيء آخر، بما فيه الخطأ الإملائي، يعطي الإنجليزية.</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">echo</span> Digits::convert(<span class="tok-s">'۱۲۳'</span>, <span class="tok-s">'ar'</span>), <span class="tok-s">"\n"</span>;        <span class="tok-c">// ١٢٣</span>
+<span class="tok-k">echo</span> Digits::convert(<span class="tok-s">'123'</span>, <span class="tok-s">'fa'</span>), <span class="tok-s">"\n"</span>;        <span class="tok-c">// ۱۲۳</span>
+<span class="tok-k">echo</span> Digits::convert(<span class="tok-s">'٣٤٥'</span>, <span class="tok-s">'FARSI'</span>), <span class="tok-s">"\n"</span>;     <span class="tok-c">// ۳۴۵</span>
+<span class="tok-k">echo</span> Digits::convert(<span class="tok-s">'۱۲۳'</span>, <span class="tok-s">'x'</span>), <span class="tok-s">"\n"</span>;         <span class="tok-c">// 123</span></code></pre>
+<div class="callout note" role="note"><strong>الأعداد كمدخلات.</strong> تقبل <code>toPersian()</code> و<code>toArabic()</code> القيم <code>int</code> و<code>float</code> وتحوّلها بتحويل <code>(string)</code> عادي، فتبقى الفاصلة العشرية نقطة لاتينية (<code>۱۲۳۴.۵</code>) ولا توجد فواصل آلاف. وللأعداد المعروضة للناس استخدم <code>Format::withSeparator()</code> أدناه. تغلّف الدوال المساعدة <code>to_persian_digits()</code> و<code>to_english_digits()</code> و<code>to_persian()</code> و<code>to_english()</code> هذه الدوال؛ راجع <a href="helpers-and-globals.html">الدوال المساعدة والأسماء العامة</a>.</div>
+<p>تستخدم أدوات التحقق <code>Digits::toEnglish()</code> في التطبيع، فيمكن للمستخدمين الكتابة بأي مجموعة أرقام؛ راجع <a href="validators-overview.html#normalization">التطبيع</a>.</p>
+
+<h2 id="separators">تنسيق الأعداد<a class="anchor" href="#separators" aria-label="رابط إلى هذا القسم">#</a></h2>
+<p>تنسّق <code>Format::withSeparator()</code> العدد بفواصل الآلاف والأرقام الفارسية. تستخدم افتراضيًا فاصل الآلاف العربي <code>٬</code> (U+066C) والفاصلة العشرية <code>٫</code> (U+066B)، وهما المحرفان اللذان تقضي بهما الطباعة الفارسية. ولا تقرّب أبدًا.</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">use</span> RtlyKit\Number\Format;
+
+<span class="tok-k">echo</span> Format::withSeparator(<span class="tok-n">1234567</span>), <span class="tok-s">"\n"</span>;            <span class="tok-c">// ۱٬۲۳۴٬۵۶۷</span>
+<span class="tok-k">echo</span> Format::withSeparator(<span class="tok-s">'1,234,567.5'</span>), <span class="tok-s">"\n"</span>;      <span class="tok-c">// ۱٬۲۳۴٬۵۶۷٫۵</span>
+<span class="tok-k">echo</span> Format::withSeparator(<span class="tok-s">'۱٬۲۳۴٫۵'</span>), <span class="tok-s">"\n"</span>;          <span class="tok-c">// ۱٬۲۳۴٫۵</span>
+<span class="tok-k">echo</span> Format::withSeparator(<span class="tok-s">'0001234'</span>), <span class="tok-s">"\n"</span>;          <span class="tok-c">// ۱٬۲۳۴</span>
+<span class="tok-k">echo</span> Format::withSeparator(<span class="tok-s">'+12345'</span>), <span class="tok-s">"\n"</span>;           <span class="tok-c">// ۱۲٬۳۴۵</span>
+<span class="tok-k">echo</span> Format::withSeparator(<span class="tok-n">1.0</span>), <span class="tok-s">"\n"</span>;                <span class="tok-c">// ۱</span></code></pre>
+
+<h3 id="separator-input">ما تقبله<a class="anchor" href="#separator-input" aria-label="رابط إلى هذا القسم">#</a></h3>
+<ul>
+<li>عدد <code>int</code>، أو <code>float</code> منتهٍ، أو سلسلة رقمية بإشارة اختيارية وأرقام من أي مجموعة من المجموعات الثلاث وكسر اختياري.</li>
+<li>في السلاسل النصية، تُهمل هذه المحارف بوصفها علامات تجميع: <code>,</code> و<code>٬</code> (U+066C) والمسافات العادية والمسافة غير القابلة للكسر. وتُقرأ الفاصلة العشرية العربية <code>٫</code> (U+066B) نقطةً عشرية. والنقطة <code>.</code> العادية نقطة عشرية أيضًا.</li>
+<li>تُحذف الأصفار البادئة من الجزء الصحيح، وتُحذف <code>+</code> البادئة، وتبقى <code>-</code> البادئة.</li>
+</ul>
+<p>أي شيء ليس عددًا عشريًا عاديًا بعد هذا التنظيف يُطلق <code>InvalidNumberException</code>: <code>'abc'</code> والسلسلة الفارغة والتدوين العلمي في السلسلة (<code>'1e5'</code>) و<code>NaN</code> أو <code>INF</code>. يحمل الاستثناء رمز خطأ ثابتًا (<code>invalid_number</code> أو <code>non_finite_number</code> أو <code>input_too_long</code>) يمكنك قراءته بـ <code>getErrorCode()</code>؛ راجع <a href="error-handling.html">معالجة الأخطاء</a>.</p>
+
+<h3 id="custom-separators">فواصل مخصصة<a class="anchor" href="#custom-separators" aria-label="رابط إلى هذا القسم">#</a></h3>
+<p>يستبدل الوسيطان الثاني والثالث فاصلَي الآلاف والكسر العشري. وتظل الأرقام تتحول إلى فارسية:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">echo</span> Format::withSeparator(<span class="tok-n">1234567</span>, <span class="tok-s">','</span>), <span class="tok-s">"\n"</span>;            <span class="tok-c">// ۱,۲۳۴,۵۶۷</span>
+<span class="tok-k">echo</span> Format::withSeparator(<span class="tok-n">1234567.5</span>, <span class="tok-s">','</span>, <span class="tok-s">'.'</span>), <span class="tok-s">"\n"</span>;     <span class="tok-c">// ۱,۲۳۴,۵۶۷.۵</span></code></pre>
+<p>للحصول على أرقام إنجليزية، حوّل النتيجة بـ <code>Digits::toEnglish()</code>.</p>
+
+<h3 id="float-precision">الأعداد العشرية والدقة<a class="anchor" href="#float-precision" aria-label="رابط إلى هذا القسم">#</a></h3>
+<p>يُكتب <code>float</code> بأقصر نص عشري يعيد القراءة إلى القيمة نفسها بشرط ألا يتجاوز 15 رقمًا معنوياً، ولا يظهر أبدًا بصيغة أسّية ولا يتأثر بإعدادات <code>php.ini</code>. يُطبع الصفر السالب <code>۰</code>. يزيل حدّ 15 رقمًا ضجيج التمثيل الثنائي، فتُطبع <code>0.1 + 0.2</code> على صورة <code>۰٫۳</code>. ولا يحمل <code>float</code> أكثر من نحو 15 إلى 17 رقمًا معنوياً، لذلك مرّر <strong>سلسلة نصية</strong> عندما تحتاج أرقامًا أكثر لأن النص يبقى دقيقًا:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">echo</span> Format::withSeparator(<span class="tok-n">0.1</span> + <span class="tok-n">0.2</span>), <span class="tok-s">"\n"</span>;       <span class="tok-c">// ۰٫۳</span>
+<span class="tok-k">echo</span> Format::withSeparator(-<span class="tok-n">1234567.891</span>), <span class="tok-s">"\n"</span>;    <span class="tok-c">// -۱٬۲۳۴٬۵۶۷٫۸۹۱</span>
+<span class="tok-k">echo</span> Format::withSeparator(<span class="tok-n">1</span> / <span class="tok-n">3</span>), <span class="tok-s">"\n"</span>;           <span class="tok-c">// ۰٫۳۳۳۳۳۳۳۳۳۳۳۳۳۳۳ (15 رقماً)</span>
+<span class="tok-k">echo</span> Format::withSeparator(<span class="tok-n">123456789.123456789</span>), <span class="tok-s">"\n"</span>;     <span class="tok-c">// ۱۲۳٬۴۵۶٬۷۸۹٫۱۲۳۴۵۷ (float)</span>
+<span class="tok-k">echo</span> Format::withSeparator(<span class="tok-s">'123456789.123456789'</span>), <span class="tok-s">"\n"</span>;   <span class="tok-c">// ۱۲۳٬۴۵۶٬۷۸۹٫۱۲۳۴۵۶۷۸۹ (نص، دقيق)</span></code></pre>
+<div class="callout note" role="note"><strong>من المفيد أن تعرف.</strong> للمبالغ المالية، أبقِ القيمة سلسلة نصية أو عددًا صحيحًا (بالريال) من البداية إلى النهاية. فالأعداد العشرية لا تخزّن معظم الكسور العشرية بدقة، كما يظهر في سطرَي <code>1 / 3</code> و<code>123456789.123456789</code> أعلاه. ويقصّ المنسِّق العدد العشري إلى 15 رقمًا معنويًا.</div>
+
+<h3 id="limits">حدود الحجم<a class="anchor" href="#limits" aria-label="رابط إلى هذا القسم">#</a></h3>
+<div class="table-wrap" tabindex="0" role="region" aria-label="جدول"><table>
+<thead><tr><th scope="col">الحد</th><th scope="col">يسري على</th><th scope="col">رمز الخطأ</th></tr></thead>
+<tbody>
+<tr><td>4096 بايت</td><td>مدخل سلسلة نصية خام (الأرقام الفارسية والعربية بايتان لكل رقم)</td><td><code>input_too_long</code></td></tr>
+<tr><td>1000 نويسة</td><td>العدد بعد التطبيع: أرقام الجزء الصحيح والكسر معًا</td><td><code>input_too_long</code></td></tr>
+</tbody>
+</table></div>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">try</span> {
+    Format::withSeparator(str_repeat(<span class="tok-s">'9'</span>, <span class="tok-n">1001</span>));
+} <span class="tok-k">catch</span> (\RtlyKit\Exceptions\InvalidNumberException <span class="tok-v">$e</span>) {
+    <span class="tok-k">echo</span> <span class="tok-v">$e</span>-&gt;getMessage(), <span class="tok-s">' ['</span>, <span class="tok-v">$e</span>-&gt;getErrorCode()-&gt;value, <span class="tok-s">"]\n"</span>;
+    <span class="tok-c">// Number exceeds the 1000 character limit. [input_too_long]</span>
+}</code></pre>
+<p>يُنسَّق عدد من 1000 رقم بالضبط تنسيقًا عاديًا. وكل الحدود في جدول واحد موجودة في <a href="limits.html">الحدود</a>. تستدعي الدالة المساعدة <code>format_number()</code> الدالة <code>Format::withSeparator()</code> بالقيم الافتراضية.</p>
+
+<h2 id="ordinal">الأعداد الترتيبية<a class="anchor" href="#ordinal" aria-label="رابط إلى هذا القسم">#</a></h2>
+<p>تُرجع <code>Format::ordinal()</code> الكلمة الترتيبية الفارسية لعدد صحيح غير سالب. تبني الكلمات الأصلية (الأعداد الأصلية) بـ <code>NumberToWords</code> (راجع <a href="number-words.html">تحويل الأعداد إلى كلمات</a>) ثم تطبّق قواعد اللاحقة:</p>
+<ul>
+<li>العدد 1 شاذّ وهو «اول».</li>
+<li>العدد الأصلي المنتهي بـ «سه» يصبح «سوم»؛ وهذا يشمل 23 و33 وهكذا.</li>
+<li>العدد الأصلي المنتهي بـ «ی» (كما في «سی») يأخذ نصف مسافة و«ام».</li>
+<li>وكل ما عدا ذلك يضاف إليه «م» فقط.</li>
+</ul>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">echo</span> Format::ordinal(<span class="tok-n">1</span>), <span class="tok-s">"\n"</span>;     <span class="tok-c">// اول</span>
+<span class="tok-k">echo</span> Format::ordinal(<span class="tok-n">2</span>), <span class="tok-s">"\n"</span>;     <span class="tok-c">// دوم</span>
+<span class="tok-k">echo</span> Format::ordinal(<span class="tok-n">3</span>), <span class="tok-s">"\n"</span>;     <span class="tok-c">// سوم</span>
+<span class="tok-k">echo</span> Format::ordinal(<span class="tok-n">21</span>), <span class="tok-s">"\n"</span>;    <span class="tok-c">// بیست و یکم</span>
+<span class="tok-k">echo</span> Format::ordinal(<span class="tok-n">23</span>), <span class="tok-s">"\n"</span>;    <span class="tok-c">// بیست و سوم</span>
+<span class="tok-k">echo</span> Format::ordinal(<span class="tok-n">30</span>), <span class="tok-s">"\n"</span>;    <span class="tok-c">// سی‌ام</span>
+<span class="tok-k">echo</span> Format::ordinal(<span class="tok-n">33</span>), <span class="tok-s">"\n"</span>;    <span class="tok-c">// سی و سوم</span>
+<span class="tok-k">echo</span> Format::ordinal(<span class="tok-n">100</span>), <span class="tok-s">"\n"</span>;   <span class="tok-c">// صدم</span>
+<span class="tok-k">echo</span> Format::ordinal(<span class="tok-n">1000</span>), <span class="tok-s">"\n"</span>;  <span class="tok-c">// یک هزارم</span>
+<span class="tok-k">echo</span> Format::ordinal(<span class="tok-n">0</span>), <span class="tok-s">"\n"</span>;     <span class="tok-c">// صفرم</span>
+<span class="tok-k">echo</span> Format::ordinal(<span class="tok-n">3.0</span>), <span class="tok-s">"\n"</span>;   <span class="tok-c">// سوم</span></code></pre>
+<p>تُقبل الأعداد العشرية الصحيحة مثل <code>3.0</code>. أما الأعداد السالبة والكسور (<code>2.5</code>) والأعداد العشرية غير المنتهية فتُطلق <code>InvalidNumberException</code> (<code>invalid_number</code>، أو <code>non_finite_number</code> للقيمتين <code>INF</code> و<code>NaN</code>). والدالة المساعدة هي <code>ordinal()</code>.</p>
+<div class="callout note" role="note"><strong>كلمات لا أرقام.</strong> تُرجع <code>ordinal()</code> الكلمة مكتوبة بالحروف. ولا تُنتج صيغًا رقمية مختصرة؛ ابنِها بنفسك بـ <code>Digits::toPersian()</code> إن احتجت إليها.</div>
+<nav class="reading-footer" aria-label="الصفحة السابقة والتالية"><a class="prev" rel="prev" href="mobile-postal-plate.html"><small>السابق</small>الجوال والرمز البريدي ولوحة المركبة</a><a class="next" rel="next" href="number-words.html"><small>التالي</small>تحويل الأعداد إلى كلمات</a></nav>
+</article>
+<nav class="toc" aria-label="في هذه الصفحة"><p>في هذه الصفحة</p><ol><li><a href="#digits">الأرقام</a><ol><li><a href="#convert">convert()</a></li></ol></li><li><a href="#separators">تنسيق الأعداد</a><ol><li><a href="#separator-input">ما تقبله</a></li><li><a href="#custom-separators">فواصل مخصصة</a></li><li><a href="#float-precision">الأعداد العشرية والدقة</a></li><li><a href="#limits">حدود الحجم</a></li></ol></li><li><a href="#ordinal">الأعداد الترتيبية</a></li></ol></nav>
+</div>
+</main>
+<footer class="footer"><div class="shell footer-inner"><p>دليل مستخدم RTLY-Kit · الترخيص: MIT</p><div><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">المستودع على جيت هب &#8599;</a><a href="https://github.com/ehsanenaloo/RTLY-Kit/issues" rel="noopener noreferrer">الإبلاغ عن مشكلة &#8599;</a></div></div></footer>
+</body>
+</html>

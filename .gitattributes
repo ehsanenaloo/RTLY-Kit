@@ -11,4 +11,3 @@
 /.gitignore                 export-ignore
 /composer.lock              export-ignore
 
-# Internal files: never part of any archive or public export.

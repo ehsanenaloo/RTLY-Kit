@@ -4,24 +4,31 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Number to words | RTLY-Kit User guide</title>
-<meta name="description" content="Spell integers out in Persian (up to 10^21) and Modern Standard Arabic (below 10^9), and read Persian number words back into numbers with fromWords().">
+<meta name="description" content="Spell integers out in Persian (up to 10^21) and Arabic (up to 10^27), and read Persian number words back into numbers with fromWords().">
 <meta name="color-scheme" content="light dark">
 <meta property="og:title" content="Number to words | RTLY-Kit User guide">
-<meta property="og:description" content="Spell integers out in Persian (up to 10^21) and Modern Standard Arabic (below 10^9), and read Persian number words back into numbers with fromWords().">
+<meta property="og:description" content="Spell integers out in Persian (up to 10^21) and Arabic (up to 10^27), and read Persian number words back into numbers with fromWords().">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="fa_IR">
+<meta property="og:locale:alternate" content="ar_AR">
+<meta property="og:url" content="https://ehsanenaloo.github.io/RTLY-Kit/en/number-words.html">
 <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
-<link rel="alternate" hreflang="fa" href="../fa/number-words.html">
+<link rel="canonical" href="https://ehsanenaloo.github.io/RTLY-Kit/en/number-words.html">
+<link rel="alternate" hreflang="en" href="https://ehsanenaloo.github.io/RTLY-Kit/en/number-words.html">
+<link rel="alternate" hreflang="fa" href="https://ehsanenaloo.github.io/RTLY-Kit/fa/number-words.html">
+<link rel="alternate" hreflang="ar" href="https://ehsanenaloo.github.io/RTLY-Kit/ar/number-words.html">
+<link rel="alternate" hreflang="x-default" href="https://ehsanenaloo.github.io/RTLY-Kit/">
 <link rel="stylesheet" href="../styles.css">
 <script>try{var t=localStorage.getItem("rtly-docs-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <script defer src="../app.js"></script>
 </head>
 <body>
-<a class="skip" href="#main">Skip to content</a><header class="site-header"><div class="shell header-inner"><a class="brand" href="index.html"><img src="../assets/logo.svg" width="34" height="34" alt=""><span><span class="name">RTLY-Kit</span><small>User guide</small></span></a><nav class="top-nav" aria-label="Primary"><a href="index.html">Overview</a><a href="quick-start.html">Quick start</a><a href="all.html">All guides</a><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">GitHub &#8599;</a></nav><div class="header-tools"><span data-search-host></span><button type="button" class="icon-button" data-theme-toggle hidden>Theme</button><a class="icon-button" href="../fa/number-words.html" hreflang="fa" lang="fa" aria-label="تغییر به فارسی">فارسی</a></div></div></header>
+<a class="skip" href="#main">Skip to content</a><header class="site-header"><div class="shell header-inner"><a class="brand" href="index.html"><img src="../assets/logo.svg" width="34" height="34" alt=""><span><span class="name">RTLY-Kit</span><small>User guide</small></span></a><nav class="top-nav" aria-label="Primary"><a href="index.html">Overview</a><a href="quick-start.html">Quick start</a><a href="all.html">All guides</a><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">GitHub &#8599;</a></nav><div class="header-tools"><span data-search-host></span><button type="button" class="icon-button" data-theme-toggle hidden>Theme</button><div class="lang-switch" role="group" aria-label="Language"><a class="icon-button" href="../fa/number-words.html" hreflang="fa" lang="fa">فارسی</a><span class="icon-button is-current" lang="en" aria-current="true">English</span><a class="icon-button" href="../ar/number-words.html" hreflang="ar" lang="ar">العربية</a></div></div></div></header>
 <main id="main">
-<div class="shell page-intro"><nav class="breadcrumbs" aria-label="Breadcrumb"><ol><li><a href="index.html">Home</a></li><li><a href="all.html#group-numbers-text">Numbers and text</a></li><li aria-current="page">Number to words</li></ol></nav><h1>Number to words</h1><p class="lead">Spell integers out in Persian (up to 10^21) and Modern Standard Arabic (below 10^9), and read Persian number words back into numbers with fromWords().</p></div>
+<div class="shell page-intro"><nav class="breadcrumbs" aria-label="Breadcrumb"><ol><li><a href="index.html">Home</a></li><li><a href="all.html#group-numbers-text">Numbers and text</a></li><li aria-current="page">Number to words</li></ol></nav><h1>Number to words</h1><p class="lead">Spell integers out in Persian (up to 10^21) and Arabic (up to 10^27), and read Persian number words back into numbers with fromWords().</p></div>
 <div class="shell doc-layout has-toc">
-<aside class="sidebar"><details open><summary>Browse the guides</summary><nav aria-label="Guides"><a href="all.html">All guides</a><p>Getting started</p><a href="quick-start.html">Quick start</a><a href="installation.html">Installation</a><p>Calendars</p><a href="jalali.html">Jalali calendar</a><a href="hijri.html">Hijri calendar</a><a href="hebrew.html">Hebrew calendar</a><a href="convert-and-compare.html">Convert and compare dates</a><a href="carbon-macros.html">Carbon macros</a><p>Validation</p><a href="validators-overview.html">Validators overview</a><a href="national-code.html">National code</a><a href="sheba-and-bank-card.html">Sheba and bank card</a><a href="mobile-postal-plate.html">Mobile, postal code and plate</a><p>Numbers and text</p><a href="digits-and-format.html">Digits and number formatting</a><a href="number-words.html" aria-current="page">Number to words</a><a href="text-tools.html">Text tools</a><p>Holidays and prayer times</p><a href="holidays.html">Iranian holidays</a><a href="prayer-times.html">Prayer times</a><p>Laravel</p><a href="laravel-setup.html">Laravel setup</a><a href="laravel-validation-and-cast.html">Validation rules and Eloquent cast</a><p>Reference</p><a href="helpers-and-globals.html">Helpers and globals</a><a href="error-handling.html">Error handling</a><a href="api-stability.html">API stability</a><a href="accuracy-and-data.html">Accuracy and data</a><a href="benchmarks.html">Benchmarks</a><a href="limits.html">Limits</a><a href="troubleshooting-faq.html">Troubleshooting and FAQ</a><a href="upgrade.html">Upgrade guide</a></nav></details></aside>
+<aside class="sidebar"><details open><summary>Browse the guides</summary><nav aria-label="Guides"><a href="all.html">All guides</a><p>Getting started</p><a href="quick-start.html">Quick start</a><a href="installation.html">Installation</a><p>Calendars</p><a href="jalali.html">Jalali calendar</a><a href="hijri.html">Hijri calendar</a><a href="hebrew.html">Hebrew calendar</a><a href="convert-and-compare.html">Convert and compare dates</a><a href="carbon-macros.html">Carbon macros</a><p>Validation</p><a href="validators-overview.html">Validators overview</a><a href="national-code.html">National code</a><a href="sheba-and-bank-card.html">Sheba and bank card</a><a href="mobile-postal-plate.html">Mobile, postal code and plate</a><p>Numbers and text</p><a href="digits-and-format.html">Digits and number formatting</a><a href="number-words.html" aria-current="page">Number to words</a><a href="arabic-number-words.html">Arabic number words</a><a href="text-tools.html">Text tools</a><p>Holidays and prayer times</p><a href="holidays.html">Iranian holidays</a><a href="holiday-calendar.html">Holiday calendar</a><a href="prayer-times.html">Prayer times</a><p>Laravel</p><a href="laravel-setup.html">Laravel setup</a><a href="laravel-validation-and-cast.html">Validation rules and Eloquent cast</a><p>Reference</p><a href="helpers-and-globals.html">Helpers and globals</a><a href="error-handling.html">Error handling</a><a href="api-stability.html">API stability</a><a href="accuracy-and-data.html">Accuracy and data</a><a href="benchmarks.html">Benchmarks</a><a href="limits.html">Limits</a><a href="troubleshooting-faq.html">Troubleshooting and FAQ</a><a href="upgrade.html">Upgrade guide</a><a href="verifying-releases.html">Verifying releases</a></nav></details></aside>
 <article class="prose">
 <details class="toc-inline"><summary>On this page</summary><ol><li><a href="#convert">Converting numbers to words</a><ol><li><a href="#accepted-input">Accepted input</a></li><li><a href="#errors">Errors</a></li></ol></li><li><a href="#arabic">Arabic</a></li><li><a href="#from-words">From words back to a number</a><ol><li><a href="#from-words-rules">How words are read</a></li></ol></li></ol></details>
 <h2 id="convert">Converting numbers to words<a class="anchor" href="#convert" aria-label="Link to this section">#</a></h2>
@@ -41,13 +48,13 @@ require</span> <span class="tok-s">'vendor/autoload.php'</span>;
 <span class="tok-k">echo</span> number_to_words(<span class="tok-n">2000000000</span>), <span class="tok-s">"\n"</span>;      <span class="tok-c">// دو میلیارد</span>
 <span class="tok-k">echo</span> NumberToWords::convert(<span class="tok-n">1234567</span>), <span class="tok-s">"\n"</span>;
 <span class="tok-c">// یک میلیون و دویست و سی و چهار هزار و پانصد و شصت و هفت</span></code></pre>
-<p>Words are joined with « و » (and) between every part, and each scale word follows its group: «هزار» (10<sup>3</sup>), «میلیون» (10<sup>6</sup>), «میلیارد» (10<sup>9</sup>), «تریلیون» (10<sup>12</sup>), «کوادریلیون» (10<sup>15</sup>) and «کوینتیلیون» (10<sup>18</sup>). A group equal to 1 keeps its «یک» (1000 is «یک هزار»; to read a bare «هزار» use <code>fromWords()</code>, below). Zero groups are skipped.</p>
+<p>Words are joined with « و » (and) between all parts. Each scale word follows its group: «هزار» (10<sup>3</sup>), «میلیون» (10<sup>6</sup>), «میلیارد» (10<sup>9</sup>), «تریلیون» (10<sup>12</sup>), «کوادریلیون» (10<sup>15</sup>) and «کوینتیلیون» (10<sup>18</sup>). A group equal to 1 keeps its «یک», so 1000 is «یک هزار». To read a bare «هزار», use <code>fromWords()</code> below. Zero groups are skipped.</p>
 
 <h3 id="accepted-input">Accepted input<a class="anchor" href="#accepted-input" aria-label="Link to this section">#</a></h3>
 <p>The parameter is typed <code>int|float|string</code>:</p>
 <ul>
 <li><strong>int:</strong> the whole PHP range works, including <code>PHP_INT_MAX</code>: «نه کوینتیلیون و دویست و بیست و سه کوادریلیون ...».</li>
-<li><strong>float:</strong> must be finite and integral. <code>3.0</code> gives «سه»; <code>1.5</code> throws instead of being silently truncated.</li>
+<li><strong>float:</strong> must be finite and whole. <code>3.0</code> gives «سه». <code>1.5</code> throws and is not silently cut.</li>
 <li><strong>string:</strong> an optional sign and digits in any digit set. Commas, <code>٬</code> and spaces are removed, so a number copied from a form works. Strings can be longer than a PHP int, up to 21 digits after leading zeros are dropped.</li>
 </ul>
 <pre tabindex="0"><code class="language-php"><span class="tok-k">echo</span> NumberToWords::convert(<span class="tok-s">'۱۲۳٬۴۵۶'</span>), <span class="tok-s">"\n"</span>;        <span class="tok-c">// صد و بیست و سه هزار و چهارصد و پنجاه و شش</span>
@@ -58,7 +65,7 @@ require</span> <span class="tok-s">'vendor/autoload.php'</span>;
 <span class="tok-c">// نهصد و نود و نه کوینتیلیون و نهصد و نود و نه کوادریلیون ... و نهصد و نود و نه</span></code></pre>
 
 <h3 id="errors">Errors<a class="anchor" href="#errors" aria-label="Link to this section">#</a></h3>
-<p>Invalid input throws <code>InvalidNumberException</code> (a subclass of <code>RtlyKitException</code>). Read the stable code with <code>getErrorCode()</code>:</p>
+<p>Invalid input throws <code>InvalidNumberException</code>, a subclass of <code>RtlyKitException</code>. Read the stable code with <code>getErrorCode()</code>:</p>
 <div class="table-wrap" tabindex="0" role="region" aria-label="Table"><table>
 <thead><tr><th scope="col">Input</th><th scope="col">Error code</th></tr></thead>
 <tbody>
@@ -74,10 +81,10 @@ require</span> <span class="tok-s">'vendor/autoload.php'</span>;
     <span class="tok-k">echo</span> <span class="tok-v">$e</span>-&gt;getMessage(), <span class="tok-s">' ['</span>, <span class="tok-v">$e</span>-&gt;getErrorCode()-&gt;value, <span class="tok-s">"]\n"</span>;
     <span class="tok-c">// Number is too large (limit is 10^21 - 1). [number_too_large]</span>
 }</code></pre>
-<p>See <a href="error-handling.html">Error handling</a> for how to catch every library exception with one type.</p>
+<p>See <a href="error-handling.html">Error handling</a> to catch every library exception with one type.</p>
 
 <h2 id="arabic">Arabic<a class="anchor" href="#arabic" aria-label="Link to this section">#</a></h2>
-<p>Pass <code>'ar'</code> as the second argument for Modern Standard Arabic. The locale is matched on its first two letters, case-insensitively, so <code>'ar_SA'</code> and <code>'AR'</code> work and so do <code>'fa_IR'</code> for Persian.</p>
+<p>Pass <code>'ar'</code> as the second argument for Modern Standard Arabic. The locale is matched on its first two letters, ignoring case. So <code>'ar_SA'</code> and <code>'AR'</code> work, and <code>'fa_IR'</code> works for Persian.</p>
 <pre tabindex="0"><code class="language-php"><span class="tok-k">echo</span> NumberToWords::convert(<span class="tok-n">11</span>, <span class="tok-s">'ar'</span>), <span class="tok-s">"\n"</span>;        <span class="tok-c">// أحد عشر</span>
 <span class="tok-k">echo</span> NumberToWords::convert(<span class="tok-n">21</span>, <span class="tok-s">'ar'</span>), <span class="tok-s">"\n"</span>;        <span class="tok-c">// واحد وعشرون</span>
 <span class="tok-k">echo</span> NumberToWords::convert(<span class="tok-n">200</span>, <span class="tok-s">'ar'</span>), <span class="tok-s">"\n"</span>;       <span class="tok-c">// مئتان</span>
@@ -85,14 +92,8 @@ require</span> <span class="tok-s">'vendor/autoload.php'</span>;
 <span class="tok-k">echo</span> NumberToWords::convert(<span class="tok-n">2000000</span>, <span class="tok-s">'ar'</span>), <span class="tok-s">"\n"</span>;   <span class="tok-c">// مليونان</span>
 <span class="tok-k">echo</span> NumberToWords::convert(<span class="tok-n">1002003</span>, <span class="tok-s">'ar'</span>), <span class="tok-s">"\n"</span>;   <span class="tok-c">// مليون وألفان وثلاثة</span>
 <span class="tok-k">echo</span> NumberToWords::convert(-<span class="tok-n">7</span>, <span class="tok-s">'ar'</span>), <span class="tok-s">"\n"</span>;        <span class="tok-c">// سالب سبعة</span></code></pre>
-<p>The Arabic output follows these rules, and its limits are real:</p>
-<ul>
-<li><strong>Range:</strong> the absolute value must be below 10<sup>9</sup> (up to 999,999,999). A larger number throws <code>number_too_large</code>. The converter is tested for 0 to 999,999,999 and for negatives.</li>
-<li><strong>Masculine counting form only.</strong> There is no gender agreement with the counted noun, no case endings and no tanwin.</li>
-<li><strong>Compound groups are plain.</strong> A group such as 102 in 102,000 uses the ordinary compound form («مئة واثنان ألف») without the special construct-state rules some style guides require.</li>
-<li>Negative numbers are prefixed with «سالب».</li>
-</ul>
-<div class="callout known" role="note"><strong>Known limitation.</strong> Treat the Arabic output as a readable spelled-out number, not as legal or typeset-quality text for a cheque. If the counted noun's gender or grammatical case matters, review the phrase by hand.</div>
+<p>Without options, the Arabic output is the bare counting form (masculine, nominative, no vowel marks). The range is every integer below 10<sup>27</sup>, and negative numbers start with «سالب». A larger number throws <code>number_too_large</code>.</p>
+<p>When a counted noun follows the number, you can ask for gender, grammatical case, vowel marks, other spellings of «مئة» and more. The new <code>ArabicOptions</code> and the Arabic ordinals (first to ninety-ninth) have their own page: <a href="arabic-number-words.html">Arabic number words</a>.</p>
 <p>An unsupported locale throws <code>UnsupportedLocaleException</code> with the code <code>unsupported_locale</code>:</p>
 <pre tabindex="0"><code class="language-php"><span class="tok-k">try</span> {
     NumberToWords::convert(<span class="tok-n">5</span>, <span class="tok-s">'en'</span>);
@@ -101,7 +102,7 @@ require</span> <span class="tok-s">'vendor/autoload.php'</span>;
 }</code></pre>
 
 <h2 id="from-words">From words back to a number<a class="anchor" href="#from-words" aria-label="Link to this section">#</a></h2>
-<p><code>NumberToWords::fromWords()</code> is the inverse of the Persian conversion for the forms <code>convert()</code> produces. It returns an <code>int</code> when the value fits in a PHP int and a digit <code>string</code> otherwise.</p>
+<p><code>NumberToWords::fromWords()</code> is the reverse of the Persian conversion for the forms <code>convert()</code> produces. It returns an <code>int</code> when the value fits in a PHP int, and a digit <code>string</code> otherwise.</p>
 <pre tabindex="0"><code class="language-php">var_dump(NumberToWords::fromWords(<span class="tok-s">'بیست و سه'</span>));                 <span class="tok-c">// int(23)</span>
 var_dump(NumberToWords::fromWords(<span class="tok-s">'منفی چهل و دو'</span>));             <span class="tok-c">// int(-42)</span>
 var_dump(NumberToWords::fromWords(<span class="tok-s">'هزار و یک'</span>));                 <span class="tok-c">// int(1001)</span>
@@ -115,12 +116,13 @@ var_dump(NumberToWords::fromWords(NumberToWords::convert(<span class="tok-s">'99
 
 <h3 id="from-words-rules">How words are read<a class="anchor" href="#from-words-rules" aria-label="Link to this section">#</a></h3>
 <ul>
-<li>Input is normalized first: Arabic letter variants become Persian («ك» to «ک», «ي» to «ی»), a ZWNJ counts as a space, and extra whitespace is ignored.</li>
-<li>A leading «منفی» makes the result negative; «منفی صفر» is <code>0</code>.</li>
-<li>A scale word without a preceding number means one, so «هزار» is 1000.</li>
-<li>Scales must be in descending order: «هزار هزار» or «هزار میلیون» throw.</li>
-<li>No group may exceed 999.</li>
-<li>The word «و» is skipped wherever it appears.</li>
+<li>The input is cleaned first. Arabic letter variants become Persian («ك» to «ک», «ي» to «ی»), a ZWNJ counts as a space, and extra whitespace is ignored.</li>
+<li>A leading «منفی» makes the result negative. «منفی صفر» is <code>0</code>.</li>
+<li>A scale word with no number before it means one, so «هزار» is 1000.</li>
+<li>Scales must go from large to small. «هزار هزار» and «هزار میلیون» throw.</li>
+<li>Inside a group the order is hundreds, then tens, then units. A single word from «ده» to «نوزده» can stand in for tens and units. «دو صد», «پنج و بیست» and «یازده و یک» throw.</li>
+<li>The word «و» is required between every two number words. The one pair written without it is a multiplier and its scale word, as in «دو هزار». A «و» at the start, at the end, doubled or next to a scale word is rejected.</li>
+<li>«صفر» is accepted only on its own, or after «منفی».</li>
 </ul>
 <pre tabindex="0"><code class="language-php"><span class="tok-k">try</span> {
     NumberToWords::fromWords(<span class="tok-s">'یکصد'</span>);
@@ -128,9 +130,9 @@ var_dump(NumberToWords::fromWords(NumberToWords::convert(<span class="tok-s">'99
     <span class="tok-k">echo</span> <span class="tok-v">$e</span>-&gt;getMessage(), <span class="tok-s">' ['</span>, <span class="tok-v">$e</span>-&gt;getErrorCode()-&gt;value, <span class="tok-s">"]\n"</span>;
     <span class="tok-c">// Unknown number word 'یکصد'. [invalid_number_words]</span>
 }</code></pre>
-<p>Errors carry the code <code>invalid_number_words</code> (unknown word, ill-formed sequence, scales out of order, empty text) or <code>input_too_long</code> for text over 4096 bytes.</p>
-<div class="callout warn" role="note"><strong>Lenient reader.</strong> <code>fromWords()</code> adds up the values inside each group without checking natural word order, so unusual phrases such as «دو صد» (102) or a stray trailing «و» are accepted. It is a reader for text produced by <code>convert()</code> and for ordinary hand-written numbers, not a grammar checker; validate untrusted wording yourself. Only the Persian form is read: Arabic words from <code>convert($n, 'ar')</code> and ordinals such as «سی‌ام» are not understood and throw. The compact spelling «یکصد» is also unknown.</div>
-<nav class="reading-footer" aria-label="Previous and next page"><a class="prev" rel="prev" href="digits-and-format.html"><small>Previous</small>Digits and number formatting</a><a class="next" rel="next" href="text-tools.html"><small>Next</small>Text tools</a></nav>
+<p>Errors carry the code <code>invalid_number_words</code> (unknown word, wrong sequence, scales out of order, empty text) or <code>input_too_long</code> for text over 4096 bytes.</p>
+<div class="callout note" role="note"><strong>Good to know.</strong> <code>fromWords()</code> reads only the canonical word order. A phrase like «دو صد» (which a lenient reader would turn into 102), «بیست یک» or a stray «و» at the end throws <code>InvalidNumberException</code> with the code <code>invalid_number_words</code>. Every string that <code>convert()</code> produces is read back unchanged, and a bare scale word at the start («هزار و یک») is allowed. Only the Persian form is read. Arabic words from <code>convert($n, 'ar')</code>, ordinals such as «سی‌ام» and the compact spelling «یکصد» are not understood and throw.</div>
+<nav class="reading-footer" aria-label="Previous and next page"><a class="prev" rel="prev" href="digits-and-format.html"><small>Previous</small>Digits and number formatting</a><a class="next" rel="next" href="arabic-number-words.html"><small>Next</small>Arabic number words</a></nav>
 </article>
 <nav class="toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#convert">Converting numbers to words</a><ol><li><a href="#accepted-input">Accepted input</a></li><li><a href="#errors">Errors</a></li></ol></li><li><a href="#arabic">Arabic</a></li><li><a href="#from-words">From words back to a number</a><ol><li><a href="#from-words-rules">How words are read</a></li></ol></li></ol></nav>
 </div>

@@ -4,7 +4,29 @@ updates:
     directory: /
     schedule:
       interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    labels: [dependencies, php]
+    commit-message:
+      prefix: "chore(deps)"
+      prefix-development: "chore(deps-dev)"
+    groups:
+      dev-dependencies:
+        dependency-type: development
+        update-types: [minor, patch]
+    # Runtime constraints (php, ext-mbstring) are a compatibility promise, not
+    # something to bump automatically.
+    ignore:
+      - dependency-name: php
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    labels: [dependencies, github-actions]
+    commit-message:
+      prefix: "chore(deps)"
+    groups:
+      github-actions:
+        patterns: ['*']

@@ -7,6 +7,7 @@ namespace RtlyKit\Laravel;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Factory as ValidationFactory;
 use Illuminate\Validation\Validator;
+use RtlyKit\Holiday\HolidayCalendar;
 use RtlyKit\Support\CarbonMacros;
 use RtlyKit\Validation\BankCard;
 use RtlyKit\Validation\Mobile;
@@ -33,15 +34,37 @@ class RtlyKitServiceProvider extends ServiceProvider
 {
     public const FACTORY_ABSTRACT = 'rtly-kit.jalali';
 
+    public const CONFIG_FILE = __DIR__.'/../../resources/config/rtly-kit.php';
+
+    public const CONFIG_TAG = 'rtly-kit-config';
+
     public function register(): void
     {
         $this->app->singleton(self::FACTORY_ABSTRACT, static fn (): JalaliFactory => new JalaliFactory());
+
+        // Defaults for the `rtly-kit` config (published with the `rtly-kit-config` tag), when the app has a config repository.
+        if ($this->app->bound('config')) {
+            $this->mergeConfigFrom(self::CONFIG_FILE, 'rtly-kit');
+        }
+
+        // One HolidayCalendar per app, built lazily from `rtly-kit.holidays`; a plain container gets the defaults.
+        $this->app->singleton(HolidayCalendar::class, function (): HolidayCalendar {
+            $config = $this->app->bound('config') ? $this->app->make('config') : null;
+            $holidays = is_object($config) && method_exists($config, 'get') ? $config->get('rtly-kit.holidays') : null;
+
+            return HolidayCalendar::fromArray(is_array($holidays) ? $holidays : []);
+        });
     }
 
     public function boot(): void
     {
         // Register Carbon macros
         CarbonMacros::register();
+
+        // `php artisan vendor:publish --tag=rtly-kit-config` (only an application knows where its config path is).
+        if (method_exists($this->app, 'runningInConsole') && method_exists($this->app, 'configPath') && $this->app->runningInConsole()) {
+            $this->publishes([self::CONFIG_FILE => $this->app->configPath('rtly-kit.php')], self::CONFIG_TAG);
+        }
 
         // Package messages (fa, en, ar) under the `rtly-kit` namespace; no publish step.
         // Override via lang/vendor/rtly-kit/{locale}/validation.php, the app's own

@@ -10,22 +10,29 @@
 <meta property="og:description" content="Use the Iranian validation rules in Laravel forms, store Jalali dates in Eloquent models with JalaliCast, and show them in Blade.">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="fa_IR">
+<meta property="og:locale:alternate" content="ar_AR">
+<meta property="og:url" content="https://ehsanenaloo.github.io/RTLY-Kit/en/laravel-validation-and-cast.html">
 <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
-<link rel="alternate" hreflang="fa" href="../fa/laravel-validation-and-cast.html">
+<link rel="canonical" href="https://ehsanenaloo.github.io/RTLY-Kit/en/laravel-validation-and-cast.html">
+<link rel="alternate" hreflang="en" href="https://ehsanenaloo.github.io/RTLY-Kit/en/laravel-validation-and-cast.html">
+<link rel="alternate" hreflang="fa" href="https://ehsanenaloo.github.io/RTLY-Kit/fa/laravel-validation-and-cast.html">
+<link rel="alternate" hreflang="ar" href="https://ehsanenaloo.github.io/RTLY-Kit/ar/laravel-validation-and-cast.html">
+<link rel="alternate" hreflang="x-default" href="https://ehsanenaloo.github.io/RTLY-Kit/">
 <link rel="stylesheet" href="../styles.css">
 <script>try{var t=localStorage.getItem("rtly-docs-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <script defer src="../app.js"></script>
 </head>
 <body>
-<a class="skip" href="#main">Skip to content</a><header class="site-header"><div class="shell header-inner"><a class="brand" href="index.html"><img src="../assets/logo.svg" width="34" height="34" alt=""><span><span class="name">RTLY-Kit</span><small>User guide</small></span></a><nav class="top-nav" aria-label="Primary"><a href="index.html">Overview</a><a href="quick-start.html">Quick start</a><a href="all.html">All guides</a><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">GitHub &#8599;</a></nav><div class="header-tools"><span data-search-host></span><button type="button" class="icon-button" data-theme-toggle hidden>Theme</button><a class="icon-button" href="../fa/laravel-validation-and-cast.html" hreflang="fa" lang="fa" aria-label="تغییر به فارسی">فارسی</a></div></div></header>
+<a class="skip" href="#main">Skip to content</a><header class="site-header"><div class="shell header-inner"><a class="brand" href="index.html"><img src="../assets/logo.svg" width="34" height="34" alt=""><span><span class="name">RTLY-Kit</span><small>User guide</small></span></a><nav class="top-nav" aria-label="Primary"><a href="index.html">Overview</a><a href="quick-start.html">Quick start</a><a href="all.html">All guides</a><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">GitHub &#8599;</a></nav><div class="header-tools"><span data-search-host></span><button type="button" class="icon-button" data-theme-toggle hidden>Theme</button><div class="lang-switch" role="group" aria-label="Language"><a class="icon-button" href="../fa/laravel-validation-and-cast.html" hreflang="fa" lang="fa">فارسی</a><span class="icon-button is-current" lang="en" aria-current="true">English</span><a class="icon-button" href="../ar/laravel-validation-and-cast.html" hreflang="ar" lang="ar">العربية</a></div></div></div></header>
 <main id="main">
 <div class="shell page-intro"><nav class="breadcrumbs" aria-label="Breadcrumb"><ol><li><a href="index.html">Home</a></li><li><a href="all.html#group-laravel">Laravel</a></li><li aria-current="page">Validation rules and Eloquent cast</li></ol></nav><h1>Validation rules and Eloquent cast</h1><p class="lead">Use the Iranian validation rules in Laravel forms, store Jalali dates in Eloquent models with JalaliCast, and show them in Blade.</p></div>
 <div class="shell doc-layout has-toc">
-<aside class="sidebar"><details open><summary>Browse the guides</summary><nav aria-label="Guides"><a href="all.html">All guides</a><p>Getting started</p><a href="quick-start.html">Quick start</a><a href="installation.html">Installation</a><p>Calendars</p><a href="jalali.html">Jalali calendar</a><a href="hijri.html">Hijri calendar</a><a href="hebrew.html">Hebrew calendar</a><a href="convert-and-compare.html">Convert and compare dates</a><a href="carbon-macros.html">Carbon macros</a><p>Validation</p><a href="validators-overview.html">Validators overview</a><a href="national-code.html">National code</a><a href="sheba-and-bank-card.html">Sheba and bank card</a><a href="mobile-postal-plate.html">Mobile, postal code and plate</a><p>Numbers and text</p><a href="digits-and-format.html">Digits and number formatting</a><a href="number-words.html">Number to words</a><a href="text-tools.html">Text tools</a><p>Holidays and prayer times</p><a href="holidays.html">Iranian holidays</a><a href="prayer-times.html">Prayer times</a><p>Laravel</p><a href="laravel-setup.html">Laravel setup</a><a href="laravel-validation-and-cast.html" aria-current="page">Validation rules and Eloquent cast</a><p>Reference</p><a href="helpers-and-globals.html">Helpers and globals</a><a href="error-handling.html">Error handling</a><a href="api-stability.html">API stability</a><a href="accuracy-and-data.html">Accuracy and data</a><a href="benchmarks.html">Benchmarks</a><a href="limits.html">Limits</a><a href="troubleshooting-faq.html">Troubleshooting and FAQ</a><a href="upgrade.html">Upgrade guide</a></nav></details></aside>
+<aside class="sidebar"><details open><summary>Browse the guides</summary><nav aria-label="Guides"><a href="all.html">All guides</a><p>Getting started</p><a href="quick-start.html">Quick start</a><a href="installation.html">Installation</a><p>Calendars</p><a href="jalali.html">Jalali calendar</a><a href="hijri.html">Hijri calendar</a><a href="hebrew.html">Hebrew calendar</a><a href="convert-and-compare.html">Convert and compare dates</a><a href="carbon-macros.html">Carbon macros</a><p>Validation</p><a href="validators-overview.html">Validators overview</a><a href="national-code.html">National code</a><a href="sheba-and-bank-card.html">Sheba and bank card</a><a href="mobile-postal-plate.html">Mobile, postal code and plate</a><p>Numbers and text</p><a href="digits-and-format.html">Digits and number formatting</a><a href="number-words.html">Number to words</a><a href="arabic-number-words.html">Arabic number words</a><a href="text-tools.html">Text tools</a><p>Holidays and prayer times</p><a href="holidays.html">Iranian holidays</a><a href="holiday-calendar.html">Holiday calendar</a><a href="prayer-times.html">Prayer times</a><p>Laravel</p><a href="laravel-setup.html">Laravel setup</a><a href="laravel-validation-and-cast.html" aria-current="page">Validation rules and Eloquent cast</a><p>Reference</p><a href="helpers-and-globals.html">Helpers and globals</a><a href="error-handling.html">Error handling</a><a href="api-stability.html">API stability</a><a href="accuracy-and-data.html">Accuracy and data</a><a href="benchmarks.html">Benchmarks</a><a href="limits.html">Limits</a><a href="troubleshooting-faq.html">Troubleshooting and FAQ</a><a href="upgrade.html">Upgrade guide</a><a href="verifying-releases.html">Verifying releases</a></nav></details></aside>
 <article class="prose">
 <details class="toc-inline"><summary>On this page</summary><ol><li><a href="#rules">Validation rules</a></li><li><a href="#usage">Using them</a></li><li><a href="#input">What input the rules accept</a></li><li><a href="#cast">The JalaliCast Eloquent cast</a><ol><li><a href="#cast-input">Accepted values on assignment</a></li><li><a href="#cast-errors">Errors</a></li><li><a href="#cast-json">Serialising a model</a></li></ol></li><li><a href="#request">Form requests</a></li><li><a href="#blade">Blade</a></li></ol></details>
 <h2 id="rules">Validation rules<a class="anchor" href="#rules" aria-label="Link to this section">#</a></h2>
-<p>Once the package is installed (<a href="laravel-setup.html">Laravel setup</a>), seven rules are available in any validator, form request or <code>$request->validate()</code> call. They wrap the validators documented on the validation pages.</p>
+<p>Once the package is installed (<a href="laravel-setup.html">Laravel setup</a>), six rules are available in any validator, form request or <code>$request-&gt;validate()</code> call. They have seven names, because <code>mobile</code> is a short alias of <code>iran_mobile</code>. They wrap the validators described on the validation pages.</p>
 <div class="table-wrap" tabindex="0" role="region" aria-label="Table"><table>
 <thead><tr><th scope="col">Rule</th><th scope="col">Accepts</th><th scope="col">Details</th></tr></thead>
 <tbody>
@@ -33,12 +40,12 @@
 <tr><td><code>sheba</code></td><td>Sheba / IBAN, with or without the <code>IR</code> prefix</td><td><a href="sheba-and-bank-card.html">Sheba and bank card</a></td></tr>
 <tr><td><code>bank_card</code></td><td>16-digit bank card number (Luhn check)</td><td><a href="sheba-and-bank-card.html">Sheba and bank card</a></td></tr>
 <tr><td><code>iran_mobile</code></td><td>Iranian mobile number</td><td><a href="mobile-postal-plate.html">Mobile, postal code, plate</a></td></tr>
-<tr><td><code>mobile</code></td><td>Short alias of <code>iran_mobile</code></td><td>identical behaviour</td></tr>
+<tr><td><code>mobile</code></td><td>Short alias of <code>iran_mobile</code></td><td>same behaviour</td></tr>
 <tr><td><code>postal_code</code></td><td>10-digit Iranian postal code</td><td><a href="mobile-postal-plate.html">Mobile, postal code, plate</a></td></tr>
 <tr><td><code>vehicle_plate</code></td><td>Iranian vehicle plate, for example <code>12ب345-67</code></td><td><a href="mobile-postal-plate.html">Mobile, postal code, plate</a></td></tr>
 </tbody>
 </table></div>
-<div class="callout warn" role="note"><strong>Name clash.</strong> <code>mobile</code> is a generic word. If another package or your own code registers a rule named <code>mobile</code>, use <code>iran_mobile</code> everywhere to stay unambiguous.</div>
+<div class="callout note" role="note"><strong>Good to know.</strong> <code>mobile</code> is a generic word. If another package or your own code registers a rule named <code>mobile</code>, use <code>iran_mobile</code> everywhere so there is no doubt which rule runs.</div>
 
 <h2 id="usage">Using them<a class="anchor" href="#usage" aria-label="Link to this section">#</a></h2>
 <pre tabindex="0"><code class="language-php"><span class="tok-k">use</span> Illuminate\Http\Request;
@@ -54,20 +61,20 @@
         <span class="tok-s">'plate'</span>         =&gt; <span class="tok-s">'nullable|vehicle_plate'</span>,
     ]);
 }</code></pre>
-<p>Run against bad data with the locale <code>fa</code>, a real validation run produced:</p>
+<p>A real validation run with bad data and the locale <code>fa</code> gave:</p>
 <pre tabindex="0"><code class="language-php"><span class="tok-c">// national_code = '1234567890', mobile = '0912', iban = 'IR000000000000000000000000'</span>
 <span class="tok-c">// card, postal and plate hold valid values and pass.</span>
 <span class="tok-c">//</span>
 <span class="tok-c">// national_code: national code کد ملی معتبر نیست.</span>
 <span class="tok-c">// mobile: mobile شماره موبایل معتبر نیست.</span>
 <span class="tok-c">// iban: iban شماره شبا معتبر نیست.</span></code></pre>
-<p>The English text is "The national code is not a valid Iranian national code." and the Arabic text is also available; see <a href="laravel-setup.html#translations">translations</a> and <a href="laravel-setup.html#override">overriding messages</a>.</p>
+<p>The English text is "The national code is not a valid Iranian national code." and an Arabic text is available too. See <a href="laravel-setup.html#translations">translations</a> and <a href="laravel-setup.html#override">overriding messages</a>.</p>
 
 <h2 id="input">What input the rules accept<a class="anchor" href="#input" aria-label="Link to this section">#</a></h2>
 <ul>
-<li><strong>Strings.</strong> Persian and Arabic digits are accepted: <code>۰۰۱۳۵۴۲۴۱۹</code> passes <code>national_code</code>.</li>
-<li><strong>Integers and floats</strong> are converted to a string first. Be careful with numbers that start with a zero: the JSON number <code>13542419</code> has lost the leading zeros of <code>0013542419</code> and <strong>fails</strong>. Send national codes, mobile numbers and postal codes as strings.</li>
-<li><strong>Arrays, objects and booleans</strong> never reach the validator and simply fail the rule.</li>
+<li><strong>Strings.</strong> Persian and Arabic digits are accepted. <code>۰۰۱۳۵۴۲۴۱۹</code> passes <code>national_code</code>.</li>
+<li><strong>Integers and floats</strong> are converted to a string first. Be careful with numbers that start with zero. The JSON number <code>13542419</code> has lost the leading zeros of <code>0013542419</code> and fails. Send national codes, mobile numbers and postal codes as strings.</li>
+<li><strong>Arrays, objects and booleans</strong> never reach the validator and fail the rule.</li>
 <li><strong>Empty values.</strong> As with Laravel's own rules, an empty string and a missing key are skipped unless the field is <code>required</code>. An explicit <code>null</code> fails unless the field is <code>nullable</code>. Say what you mean with <code>required</code> or <code>nullable</code>.</li>
 </ul>
 <pre tabindex="0"><code class="language-php"><span class="tok-v">$f</span>-&gt;make([<span class="tok-s">'n'</span> =&gt; <span class="tok-s">'۰۰۱۳۵۴۲۴۱۹'</span>], [<span class="tok-s">'n'</span> =&gt; <span class="tok-s">'national_code'</span>])-&gt;passes();          <span class="tok-c">// true</span>
@@ -77,10 +84,10 @@
 <span class="tok-v">$f</span>-&gt;make([<span class="tok-s">'n'</span> =&gt; <span class="tok-s">''</span>],            [<span class="tok-s">'n'</span> =&gt; <span class="tok-s">'national_code'</span>])-&gt;passes();          <span class="tok-c">// true  (skipped)</span>
 <span class="tok-v">$f</span>-&gt;make([<span class="tok-s">'n'</span> =&gt; <span class="tok-s">''</span>],            [<span class="tok-s">'n'</span> =&gt; <span class="tok-s">'required|national_code'</span>])-&gt;passes(); <span class="tok-c">// false</span>
 <span class="tok-v">$f</span>-&gt;make([],                     [<span class="tok-s">'n'</span> =&gt; <span class="tok-s">'national_code'</span>])-&gt;passes();          <span class="tok-c">// true  (key missing)</span></code></pre>
-<p>If you need the reason a value failed (wrong length, bad checksum, wrong type), call the standalone validators, which return a structured <code>Result</code>; see <a href="validators-overview.html">validators overview</a>.</p>
+<p>If you need the reason a value failed (wrong length, bad checksum, wrong type), call the standalone validators. They return a structured <code>Result</code>. See <a href="validators-overview.html">Validators overview</a>.</p>
 
 <h2 id="cast">The JalaliCast Eloquent cast<a class="anchor" href="#cast" aria-label="Link to this section">#</a></h2>
-<p><code>RtlyKit\Laravel\Casts\JalaliCast</code> keeps the database column in Gregorian (<code>Y-m-d H:i:s</code>), as every tool expects, and exposes the attribute on the model as an immutable <code>RtlyKit\Calendar\Jalali</code> object.</p>
+<p><code>RtlyKit\Laravel\Casts\JalaliCast</code> keeps the database column in Gregorian (<code>Y-m-d H:i:s</code>), as every tool expects. On the model, the attribute is an immutable <code>RtlyKit\Calendar\Jalali</code> object.</p>
 <pre tabindex="0"><code class="language-php"><span class="tok-k">use</span> Illuminate\Database\Eloquent\Model;
 <span class="tok-k">use</span> RtlyKit\Laravel\Casts\JalaliCast;
 
@@ -100,7 +107,7 @@
 <span class="tok-k">echo</span> <span class="tok-v">$post</span>-&gt;published_at-&gt;format(<span class="tok-s">'Y/m/d H:i'</span>);        <span class="tok-c">// 1404/01/15 10:30</span>
 <span class="tok-k">echo</span> get_class(<span class="tok-v">$post</span>-&gt;published_at);                  <span class="tok-c">// RtlyKit\Calendar\Jalali</span>
 <span class="tok-k">echo</span> <span class="tok-v">$post</span>-&gt;published_at-&gt;addDays(<span class="tok-n">20</span>)-&gt;format(<span class="tok-s">'Y/m/d'</span>); <span class="tok-c">// 1404/02/04</span></code></pre>
-<p>The column type stays <code>datetime</code> or <code>timestamp</code>; no migration change is needed.</p>
+<p>The column type stays <code>datetime</code> or <code>timestamp</code>. You need no migration change.</p>
 
 <h3 id="cast-input">Accepted values on assignment<a class="anchor" href="#cast-input" aria-label="Link to this section">#</a></h3>
 <div class="table-wrap" tabindex="0" role="region" aria-label="Table"><table>
@@ -110,7 +117,7 @@
 <tr><td>Jalali date only, Persian digits and dashes <code>'۱۴۰۴-۰۱-۱۵'</code></td><td><code>2025-04-04 00:00:00</code></td></tr>
 <tr><td>Gregorian string <code>'2025-04-04 08:00:00'</code></td><td><code>2025-04-04 08:00:00</code></td></tr>
 <tr><td>Unix timestamp (int) <code>1743753600</code></td><td><code>2025-04-04 08:00:00</code> (with a UTC default time zone)</td></tr>
-<tr><td>Any <code>DateTimeInterface</code> (Carbon included)</td><td>the same instant, <code>Y-m-d H:i:s</code></td></tr>
+<tr><td>Any <code>DateTimeInterface</code> (Carbon included)</td><td>the same moment, as <code>Y-m-d H:i:s</code></td></tr>
 <tr><td>A <code>Jalali</code> object</td><td>its Gregorian equivalent</td></tr>
 <tr><td><code>null</code> or <code>''</code></td><td><code>null</code></td></tr>
 </tbody>
@@ -124,30 +131,30 @@
 <span class="tok-v">$post</span>-&gt;published_at = <span class="tok-s">'not a date'</span>;   <span class="tok-c">// Unable to parse date: not a date</span>
 <span class="tok-v">$post</span>-&gt;published_at = <span class="tok-n">1.5</span>;            <span class="tok-c">// Cannot cast value for 'published_at' to a date.</span>
 <span class="tok-v">$post</span>-&gt;published_at = [<span class="tok-s">'x'</span>];          <span class="tok-c">// Cannot cast value for 'published_at' to a date.</span></code></pre>
-<p>Validate user input before it reaches the model (see the form-request example below), so a typo produces a form error, not an exception. Reading is lenient for <code>null</code> and the empty string (both give <code>null</code>), but an attribute holding unparseable text in the database throws <code>InvalidDateException</code> when read.</p>
+<p>Validate user input before it reaches the model (see the form request below), so a typo gives a form error and not an exception. Reading is relaxed for <code>null</code> and the empty string (both give <code>null</code>). An attribute that holds unreadable text in the database throws <code>InvalidDateException</code> when you read it.</p>
 
 <h3 id="cast-json">Serialising a model<a class="anchor" href="#cast-json" aria-label="Link to this section">#</a></h3>
-<p><code>Jalali</code>, <code>Hijri</code> and <code>Hebrew</code> implement <code>JsonSerializable</code>: <code>toJson()</code> on a model with a <code>JalaliCast</code> attribute gives the same text as <code>(string) $date</code>, for example <code>{"published_at":"1404/01/01 10:00:00"}</code>. <code>toArray()</code> keeps the <code>Jalali</code> object; format it yourself if you need another pattern.</p>
+<p><code>Jalali</code>, <code>Hijri</code> and <code>Hebrew</code> implement <code>JsonSerializable</code>. <code>toJson()</code> on a model with a <code>JalaliCast</code> attribute gives the same text as <code>(string) $date</code>, for example <code>{"published_at":"1404/01/01 10:00:00"}</code>. <code>toArray()</code> keeps the <code>Jalali</code> object. Format it yourself if you need another pattern.</p>
 
 <h2 id="request">Form requests<a class="anchor" href="#request" aria-label="Link to this section">#</a></h2>
-<p>There is no built-in rule for a Jalali date field, so validate the shape with Laravel's regex rule or a small custom rule, then let the cast do the conversion:</p>
+<p>There is no built-in rule for a Jalali date field. Check the shape with Laravel's regex rule or a small custom rule, then let the cast do the conversion:</p>
 <pre tabindex="0"><code class="language-php"><span class="tok-k">public</span> <span class="tok-k">function</span> rules(): <span class="tok-k">array</span>
 {
     <span class="tok-k">return</span> [
         <span class="tok-s">'published_at'</span> =&gt; [<span class="tok-s">'required'</span>, <span class="tok-s">'regex:/^1[2-5]\d\d[\/-]\d{1,2}[\/-]\d{1,2}$/u'</span>],
     ];
 }</code></pre>
-<p>A well-formed but impossible date such as <code>1404/07/31</code> still reaches the cast and throws there; catch <code>InvalidDateException</code> in a custom rule or in the controller if users type free text.</p>
+<p>A well-formed but impossible date such as <code>1404/07/31</code> still reaches the cast and throws there. Catch <code>InvalidDateException</code> in a custom rule or in the controller if users type free text.</p>
 
 <h2 id="blade">Blade<a class="anchor" href="#blade" aria-label="Link to this section">#</a></h2>
-<p>The cast gives you a <code>Jalali</code> object, so Blade needs no helper at all:</p>
+<p>The cast gives you a <code>Jalali</code> object, so Blade needs no helper:</p>
 <pre tabindex="0"><code class="language-php">{{ <span class="tok-v">$post</span>-&gt;published_at?-&gt;format(<span class="tok-s">'Y/m/d'</span>) }}            {{-- <span class="tok-n">1404</span>/<span class="tok-n">01</span>/<span class="tok-n">15</span> --}}
 {{ <span class="tok-v">$post</span>-&gt;published_at?-&gt;format(<span class="tok-s">'l j F Y'</span>) }}          {{-- جمعه <span class="tok-n">15</span> فروردین <span class="tok-n">1404</span> --}}
 {{ \RtlyKit\to_persian_digits(<span class="tok-v">$post</span>-&gt;published_at-&gt;format(<span class="tok-s">'Y/m/d'</span>)) }}  {{-- ۱۴۰۴/۰۱/۱۵ --}}</code></pre>
-<p>For a column that is <em>not</em> cast, such as the standard <code>created_at</code> (a Carbon instance), use the namespaced helper. Namespaced helpers are always loaded, so no registration is needed:</p>
+<p>For a column that is not cast, such as the standard <code>created_at</code> (a Carbon instance), use the namespaced helper. Namespaced helpers are always loaded, so you register nothing:</p>
 <pre tabindex="0"><code class="language-php">{{ \RtlyKit\jdate(<span class="tok-v">$post</span>-&gt;created_at)-&gt;format(<span class="tok-s">'Y/m/d H:i'</span>) }}   {{-- <span class="tok-n">1404</span>/<span class="tok-n">01</span>/<span class="tok-n">15</span> <span class="tok-n">08</span>:<span class="tok-n">00</span> --}}</code></pre>
-<p>Import the function at the top of a Blade file with <code>@php use function RtlyKit\jdate; @endphp</code> if you use it often. With the Carbon macros the same is <code>$post->created_at->jformat('Y/m/d')</code>; see <a href="carbon-macros.html">Carbon macros</a>.</p>
-<div class="callout note" role="note"><strong>Note.</strong> A null attribute is not formatted for you: use the nullsafe operator (<code>?-></code>) as shown, otherwise Blade throws on <code>null</code>. For the full list of format letters see the <a href="jalali.html">Jalali page</a>.</div>
+<p>If you use it often, import the function at the top of a Blade file with <code>@php use function RtlyKit\jdate; @endphp</code>. With the Carbon macros the same call is <code>$post-&gt;created_at-&gt;jformat('Y/m/d')</code>. See <a href="carbon-macros.html">Carbon macros</a>.</p>
+<div class="callout note" role="note"><strong>Note.</strong> A null attribute is not formatted for you. Use the nullsafe operator (<code>?-&gt;</code>) as shown, or Blade throws on <code>null</code>. For the full list of format letters, see the <a href="jalali.html">Jalali page</a>.</div>
 <nav class="reading-footer" aria-label="Previous and next page"><a class="prev" rel="prev" href="laravel-setup.html"><small>Previous</small>Laravel setup</a><a class="next" rel="next" href="helpers-and-globals.html"><small>Next</small>Helpers and globals</a></nav>
 </article>
 <nav class="toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#rules">Validation rules</a></li><li><a href="#usage">Using them</a></li><li><a href="#input">What input the rules accept</a></li><li><a href="#cast">The JalaliCast Eloquent cast</a><ol><li><a href="#cast-input">Accepted values on assignment</a></li><li><a href="#cast-errors">Errors</a></li><li><a href="#cast-json">Serialising a model</a></li></ol></li><li><a href="#request">Form requests</a></li><li><a href="#blade">Blade</a></li></ol></nav>

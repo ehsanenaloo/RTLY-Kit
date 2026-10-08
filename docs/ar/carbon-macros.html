@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="ar" dir="rtl" data-i18n="{&quot;dark&quot;:&quot;الوضع الداكن&quot;,&quot;light&quot;:&quot;الوضع الفاتح&quot;,&quot;to_dark&quot;:&quot;التبديل إلى السمة الداكنة&quot;,&quot;to_light&quot;:&quot;التبديل إلى السمة الفاتحة&quot;,&quot;copy&quot;:&quot;نسخ&quot;,&quot;copied&quot;:&quot;تم النسخ&quot;,&quot;copy_failed&quot;:&quot;تم التحديد؛ انسخ يدويًا&quot;,&quot;copy_label&quot;:&quot;نسخ مثال الشيفرة أعلاه&quot;,&quot;no_results&quot;:&quot;لا يوجد دليل مطابق. جرّب كلمة أقصر.&quot;,&quot;loading&quot;:&quot;ما زال فهرس البحث قيد التحميل. حاول مرة أخرى بعد قليل.&quot;,&quot;results&quot;:&quot;نتائج البحث&quot;,&quot;status&quot;:&quot;يُعرض %d من %d دليلًا&quot;,&quot;suggest&quot;:&quot;النسخة العربية&quot;,&quot;search_label&quot;:&quot;البحث في الدليل&quot;,&quot;search_placeholder&quot;:&quot;البحث في الدليل&quot;}" data-search-index="search-index.js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ماكروات Carbon | RTLY-Kit دليل المستخدم</title>
+<meta name="description" content="تكامل Carbon الاختياري: حوّل أي كائن Carbon إلى الجلالي أو الهجري أو العبري، وأنشئ تواريخ Carbon من مكوّنات التقويم، مع القائمة الدقيقة للماكروات وأنواع القيم المُرجعة والأخطاء.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="ماكروات Carbon | RTLY-Kit دليل المستخدم">
+<meta property="og:description" content="تكامل Carbon الاختياري: حوّل أي كائن Carbon إلى الجلالي أو الهجري أو العبري، وأنشئ تواريخ Carbon من مكوّنات التقويم، مع القائمة الدقيقة للماكروات وأنواع القيم المُرجعة والأخطاء.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ar_AR">
+<meta property="og:locale:alternate" content="fa_IR">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:url" content="https://ehsanenaloo.github.io/RTLY-Kit/ar/carbon-macros.html">
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+<link rel="canonical" href="https://ehsanenaloo.github.io/RTLY-Kit/ar/carbon-macros.html">
+<link rel="alternate" hreflang="ar" href="https://ehsanenaloo.github.io/RTLY-Kit/ar/carbon-macros.html">
+<link rel="alternate" hreflang="fa" href="https://ehsanenaloo.github.io/RTLY-Kit/fa/carbon-macros.html">
+<link rel="alternate" hreflang="en" href="https://ehsanenaloo.github.io/RTLY-Kit/en/carbon-macros.html">
+<link rel="alternate" hreflang="x-default" href="https://ehsanenaloo.github.io/RTLY-Kit/">
+<link rel="stylesheet" href="../styles.css">
+<script>try{var t=localStorage.getItem("rtly-docs-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<script defer src="../app.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">انتقل إلى المحتوى</a><header class="site-header"><div class="shell header-inner"><a class="brand" href="index.html"><img src="../assets/logo.svg" width="34" height="34" alt=""><span><span class="name">RTLY-Kit</span><small>دليل المستخدم</small></span></a><nav class="top-nav" aria-label="التنقل الرئيسي"><a href="index.html">نظرة عامة</a><a href="quick-start.html">بدء سريع</a><a href="all.html">كل الأدلة</a><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">جيت هب &#8599;</a></nav><div class="header-tools"><span data-search-host></span><button type="button" class="icon-button" data-theme-toggle hidden>Theme</button><div class="lang-switch" role="group" aria-label="اللغة"><a class="icon-button" href="../fa/carbon-macros.html" hreflang="fa" lang="fa">فارسی</a><a class="icon-button" href="../en/carbon-macros.html" hreflang="en" lang="en">English</a><span class="icon-button is-current" lang="ar" aria-current="true">العربية</span></div></div></div></header>
+<main id="main">
+<div class="shell page-intro"><nav class="breadcrumbs" aria-label="مسار الصفحة"><ol><li><a href="index.html">الرئيسية</a></li><li><a href="all.html#group-calendars">التقاويم</a></li><li aria-current="page">ماكروات Carbon</li></ol></nav><h1>ماكروات Carbon</h1><p class="lead">تكامل Carbon الاختياري: حوّل أي كائن Carbon إلى الجلالي أو الهجري أو العبري، وأنشئ تواريخ Carbon من مكوّنات التقويم، مع القائمة الدقيقة للماكروات وأنواع القيم المُرجعة والأخطاء.</p></div>
+<div class="shell doc-layout has-toc">
+<aside class="sidebar"><details open><summary>تصفح الأدلة</summary><nav aria-label="الأدلة"><a href="all.html">كل الأدلة</a><p>البدء</p><a href="quick-start.html">البدء السريع</a><a href="installation.html">التثبيت</a><p>التقاويم</p><a href="jalali.html">التقويم الجلالي</a><a href="hijri.html">التقويم الهجري</a><a href="hebrew.html">التقويم العبري</a><a href="convert-and-compare.html">التحويل والمقارنة بين التواريخ</a><a href="carbon-macros.html" aria-current="page">ماكروات Carbon</a><p>التحقق من الصحة</p><a href="validators-overview.html">نظرة عامة على أدوات التحقق</a><a href="national-code.html">الرقم الوطني</a><a href="sheba-and-bank-card.html">شبا والبطاقة المصرفية</a><a href="mobile-postal-plate.html">الجوال والرمز البريدي ولوحة المركبة</a><p>الأرقام والنصوص</p><a href="digits-and-format.html">الأرقام وتنسيق الأعداد</a><a href="number-words.html">تحويل الأعداد إلى كلمات</a><a href="arabic-number-words.html">الأعداد بالحروف العربية</a><a href="text-tools.html">أدوات النصوص</a><p>العطل وأوقات الصلاة</p><a href="holidays.html">العطل الرسمية الإيرانية</a><a href="holiday-calendar.html">تقويم العطل القابل للتعديل</a><a href="prayer-times.html">أوقات الصلاة</a><p>لارافيل</p><a href="laravel-setup.html">إعداد Laravel</a><a href="laravel-validation-and-cast.html">قواعد التحقق وتحويل Eloquent</a><p>المرجع</p><a href="helpers-and-globals.html">الدوال المساعدة والدوال العامة</a><a href="error-handling.html">معالجة الأخطاء</a><a href="api-stability.html">استقرار واجهة API</a><a href="accuracy-and-data.html">الدقة والبيانات</a><a href="benchmarks.html">قياس الأداء</a><a href="limits.html">الحدود</a><a href="troubleshooting-faq.html">استكشاف الأخطاء والأسئلة الشائعة</a><a href="upgrade.html">دليل الترقية</a><a href="verifying-releases.html">التحقق من الإصدارات</a></nav></details></aside>
+<article class="prose">
+<details class="toc-inline"><summary>في هذه الصفحة</summary><ol><li><a href="#overview">ما الذي يمنحك إياه هذا</a></li><li><a href="#registration">كيف يعمل التسجيل</a></li><li><a href="#list">مرجع الماكروات</a></li><li><a href="#to-calendar">من Carbon إلى تقويم</a></li><li><a href="#from-calendar">من مكوّنات التقويم إلى Carbon</a></li><li><a href="#errors">الأخطاء</a></li><li><a href="#known">الحدود وأمور تستوجب الحذر</a></li></ol></details>
+<h2 id="overview">ما الذي يمنحك إياه هذا<a class="anchor" href="#overview" aria-label="رابط إلى هذا القسم">#</a></h2>
+<p>إذا كانت الحزمة <code>nesbot/carbon</code> مثبّتة، يسجّل RTLY-Kit مجموعة صغيرة من الماكروات على <code>Carbon\Carbon</code> و<code>Carbon\CarbonImmutable</code>. بها تنتقل بين Carbon وفئات التقويم باستدعاء واحد، في الاتجاهين. Carbon <strong>اختياري</strong>: لا يشترطه RTLY-Kit، وبدونه لا يُسجَّل شيء ولا يتعطل شيء. وتأتي تطبيقات Laravel مع Carbon أصلًا، فالماكروات متاحة فيها دون أي خطوة إضافية (انظر أيضًا <a href="laravel-setup.html">إعداد Laravel</a>).</p>
+<p><strong>المتطلبات.</strong> تثبيت RTLY-Kit (<a href="installation.html">التثبيت</a>) وCarbon 3 (<code>composer require nesbot/carbon</code>؛ الإصدار 3 هو المدعوم).</p>
+
+<h2 id="registration">كيف يعمل التسجيل<a class="anchor" href="#registration" aria-label="رابط إلى هذا القسم">#</a></h2>
+<p>يحمّل Composer ملف المساعدة في الحزمة عند التحميل التلقائي. يُقلع هذا الملف التكامل، فيتحقق من وجود فئات Carbon وإن وُجدت سجّل الماكروات مرة واحدة. لا تستدعي أنت شيئًا:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">&lt;?php
+require</span> <span class="tok-s">'vendor/autoload.php'</span>;
+
+<span class="tok-k">use</span> Carbon\Carbon;
+<span class="tok-k">use</span> Carbon\CarbonImmutable;
+<span class="tok-k">use</span> RtlyKit\Calendar\HijriVariant;
+<span class="tok-k">use</span> RtlyKit\Calendar\Jalali;
+
+var_dump(Carbon::hasMacro(<span class="tok-s">'toJalali'</span>));   <span class="tok-c">// bool(true)</span></code></pre>
+<div class="callout note" role="note"><strong>ثبّت Carbon عبر Composer.</strong> تُسجَّل الماكروات عند بدء المحمّل التلقائي في Composer وإمكان العثور على فئات Carbon. أما نسخة Carbon غير الموجودة على المحمّل التلقائي نفسه (مثل phar مضمَّن) فلا يُكتشف. فئات التسجيل داخلية؛ فاعتمد على أسماء الماكروات، فهي جزء من واجهة API العامة.</div>
+
+<h2 id="list">مرجع الماكروات<a class="anchor" href="#list" aria-label="رابط إلى هذا القسم">#</a></h2>
+<div class="table-wrap" tabindex="0" role="region" aria-label="جدول"><table>
+<thead><tr><th scope="col">الماكرو</th><th scope="col">النوع</th><th scope="col">القيمة المُرجعة</th><th scope="col">ملاحظات</th></tr></thead>
+<tbody>
+<tr><td><code>toJalali()</code></td><td>على الكائن</td><td><code>Jalali</code></td><td>اللحظة والمنطقة الزمنية نفسهما لكائن Carbon</td></tr>
+<tr><td><code>jformat($format = 'Y/m/d H:i:s')</code></td><td>على الكائن</td><td><code>string</code></td><td>اختصار لـ <code>toJalali()-&gt;format($format)</code>؛ والرموز كما في <a href="jalali.html#format">تنسيق التاريخ الجلالي</a></td></tr>
+<tr><td><code>toHijri(?HijriVariant $variant = null)</code></td><td>على الكائن</td><td><code>Hijri</code></td><td>أم القرى ما لم تُعطَ صيغة أخرى</td></tr>
+<tr><td><code>toHebrew()</code></td><td>على الكائن</td><td><code>Hebrew</code></td><td></td></tr>
+<tr><td><code>createFromJalali($y, $m, $d, $h = 0, $i = 0, $s = 0, $tz = null)</code></td><td>ساكن (static)</td><td>الفئة التي استدعيته عليها</td><td>تُرجع <code>Carbon::</code> كائن <code>Carbon</code>؛ وتُرجع <code>CarbonImmutable::</code> كائن <code>CarbonImmutable</code></td></tr>
+<tr><td><code>createFromHijri($y, $m, $d, $h = 0, $i = 0, $s = 0, $tz = null, ?HijriVariant $variant = null)</code></td><td>ساكن (static)</td><td>الفئة التي استدعيته عليها</td><td>الصيغة الافتراضية هي أم القرى</td></tr>
+<tr><td><code>createFromHebrew($y, $m, $d, $h = 0, $i = 0, $s = 0, $tz = null)</code></td><td>ساكن (static)</td><td>الفئة التي استدعيته عليها</td><td>ترقيم الأشهر ترتيبي، راجع <a href="hebrew.html#months">الأشهر العبرية</a></td></tr>
+</tbody>
+</table></div>
+<p>يقبل الوسيط <code>$tz</code> كائن <code>DateTimeZone</code> أو سلسلة معرّف منطقة زمنية أو <code>null</code> (وعندها تُطبَّق المنطقة الافتراضية في PHP، لا منطقة أي كائن Carbon موجود).</p>
+
+<h2 id="to-calendar">من Carbon إلى تقويم<a class="anchor" href="#to-calendar" aria-label="رابط إلى هذا القسم">#</a></h2>
+<pre tabindex="0"><code class="language-php"><span class="tok-v">$c</span> = Carbon::create(<span class="tok-n">2026</span>, <span class="tok-n">3</span>, <span class="tok-n">21</span>, <span class="tok-n">12</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-s">'UTC'</span>);
+
+<span class="tok-k">echo</span> <span class="tok-v">$c</span>-&gt;toJalali();                           <span class="tok-c">// 1405/01/01 12:00:00</span>
+<span class="tok-k">echo</span> get_class(<span class="tok-v">$c</span>-&gt;toJalali());                <span class="tok-c">// RtlyKit\Calendar\Jalali</span>
+<span class="tok-k">echo</span> <span class="tok-v">$c</span>-&gt;jformat(<span class="tok-s">'l j F Y'</span>);                   <span class="tok-c">// شنبه 1 فروردین 1405</span>
+<span class="tok-k">echo</span> <span class="tok-v">$c</span>-&gt;jformat();                            <span class="tok-c">// 1405/01/01 12:00:00</span>
+<span class="tok-k">echo</span> <span class="tok-v">$c</span>-&gt;toHijri()-&gt;format(<span class="tok-s">'j F Y'</span>, <span class="tok-s">'en'</span>);     <span class="tok-c">// 2 Shawwal 1447</span>
+<span class="tok-k">echo</span> <span class="tok-v">$c</span>-&gt;toHebrew()-&gt;format(<span class="tok-s">'j F Y'</span>);          <span class="tok-c">// 3 Nisan 5786</span></code></pre>
+<p>النتيجة كائن تقويم لا كائن Carbon، فاستخدم واجهة التقويم من هنا فصاعدًا (الأرقام الفارسية مثلًا عبر <code>$c-&gt;toJalali()-&gt;format('Y/m/d', true)</code>). ولأن كائن التقويم قيمة عادية، يمكنك مواصلة العمل به والعودة في أي وقت بالدالة <code>toGregorian()</code>:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">echo</span> Carbon::now(<span class="tok-s">'UTC'</span>)-&gt;setDate(<span class="tok-n">2026</span>, <span class="tok-n">3</span>, <span class="tok-n">21</span>)-&gt;toJalali()-&gt;addMonths(<span class="tok-n">1</span>)-&gt;format(<span class="tok-s">'Y/m/d'</span>);  <span class="tok-c">// 1405/02/01</span></code></pre>
+<p>استدعاء <code>make()</code> الخاصة بالتقويم مباشرةً مع كائن Carbon يعادل ذلك، لأن Carbon يطبّق <code>DateTimeInterface</code>:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">echo</span> Jalali::make(<span class="tok-v">$c</span>)-&gt;format(<span class="tok-s">'Y/m/d H:i'</span>);                                   <span class="tok-c">// 1405/01/01 12:00</span>
+<span class="tok-k">echo</span> Jalali::make(Carbon::create(<span class="tok-n">2026</span>, <span class="tok-n">3</span>, <span class="tok-n">21</span>, <span class="tok-n">22</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-s">'UTC'</span>), <span class="tok-k">new</span> DateTimeZone(<span class="tok-s">'Asia/Tehran'</span>))-&gt;format(<span class="tok-s">'Y/m/d H:i'</span>);  <span class="tok-c">// 1405/01/02 01:30</span></code></pre>
+
+<h2 id="from-calendar">من مكوّنات التقويم إلى Carbon<a class="anchor" href="#from-calendar" aria-label="رابط إلى هذا القسم">#</a></h2>
+<pre tabindex="0"><code class="language-php"><span class="tok-v">$a</span> = Carbon::createFromJalali(<span class="tok-n">1405</span>, <span class="tok-n">1</span>, <span class="tok-n">1</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-s">'UTC'</span>);
+<span class="tok-k">echo</span> get_class(<span class="tok-v">$a</span>), <span class="tok-s">' '</span>, <span class="tok-v">$a</span>-&gt;toDateTimeString();      <span class="tok-c">// Carbon\Carbon 2026-03-21 00:00:00</span>
+
+<span class="tok-v">$b</span> = CarbonImmutable::createFromJalali(<span class="tok-n">1405</span>, <span class="tok-n">1</span>, <span class="tok-n">1</span>, <span class="tok-n">8</span>, <span class="tok-n">30</span>, <span class="tok-n">0</span>, <span class="tok-s">'Asia/Tehran'</span>);
+<span class="tok-k">echo</span> get_class(<span class="tok-v">$b</span>), <span class="tok-s">' '</span>, <span class="tok-v">$b</span>-&gt;toIso8601String();       <span class="tok-c">// Carbon\CarbonImmutable 2026-03-21T08:30:00+03:30</span>
+
+<span class="tok-k">echo</span> Carbon::createFromHijri(<span class="tok-n">1446</span>, <span class="tok-n">9</span>, <span class="tok-n">1</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-s">'UTC'</span>)-&gt;toDateString();   <span class="tok-c">// 2025-03-01</span>
+<span class="tok-k">echo</span> Carbon::createFromHebrew(<span class="tok-n">5786</span>, <span class="tok-n">1</span>, <span class="tok-n">1</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-s">'UTC'</span>)-&gt;toDateString();  <span class="tok-c">// 2025-09-23</span></code></pre>
+<p>مرّر صيغة التقويم الهجري الجدولي (Tabular) وسيطًا أخيرًا إلى <code>createFromHijri()</code>: <code>Carbon::createFromHijri(1446, 10, 1, 0, 0, 0, 'UTC', HijriVariant::Tabular)</code>.</p>
+
+<h2 id="errors">الأخطاء<a class="anchor" href="#errors" aria-label="رابط إلى هذا القسم">#</a></h2>
+<p>تتحقق الماكروات من الصحة عبر فئات التقويم، لذا يُلقي الإدخال غير الصالح أو الخارج عن النطاق الاستثناء <code>RtlyKit\Exceptions\InvalidDateException</code> (ولا يُلقي <code>InvalidFormatException</code> الخاص بـ Carbon في هذه الحالات)، وكذلك معرّف المنطقة الزمنية المجهول:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">use</span> RtlyKit\Exceptions\RtlyKitThrowable;
+
+<span class="tok-v">$cases</span> = [
+    <span class="tok-k">fn</span> () =&gt; Carbon::createFromJalali(<span class="tok-n">1404</span>, <span class="tok-n">12</span>, <span class="tok-n">30</span>),
+    <span class="tok-k">fn</span> () =&gt; Carbon::createFromJalali(<span class="tok-n">1404</span>, <span class="tok-n">1</span>, <span class="tok-n">1</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-s">'Nowhere/Land'</span>),
+    <span class="tok-k">fn</span> () =&gt; Carbon::createFromHijri(<span class="tok-n">9999</span>, <span class="tok-n">1</span>, <span class="tok-n">1</span>),
+    <span class="tok-k">fn</span> () =&gt; Carbon::createFromHebrew(<span class="tok-n">1</span>, <span class="tok-n">1</span>, <span class="tok-n">1</span>),
+];
+<span class="tok-k">foreach</span> (<span class="tok-v">$cases</span> <span class="tok-k">as</span> <span class="tok-v">$f</span>) {
+    <span class="tok-k">try</span> { <span class="tok-v">$f</span>(); }
+    <span class="tok-k">catch</span> (RtlyKitThrowable <span class="tok-v">$e</span>) { <span class="tok-k">echo</span> get_class(<span class="tok-v">$e</span>), <span class="tok-s">': '</span>, <span class="tok-v">$e</span>-&gt;getMessage(), <span class="tok-s">"\n"</span>; }
+}
+<span class="tok-c">// RtlyKit\Exceptions\InvalidDateException: Invalid Jalali date: 1404/12/30</span>
+<span class="tok-c">// RtlyKit\Exceptions\InvalidDateException: Unknown timezone: Nowhere/Land</span>
+<span class="tok-c">// RtlyKit\Exceptions\InvalidDateException: Invalid Hijri date: 9999/1/1</span>
+<span class="tok-c">// RtlyKit\Exceptions\InvalidDateException: Invalid Hebrew date: 1/1/1</span></code></pre>
+<p>النطاقات المدعومة هي نطاقات التقاويم: الجلالي -620..9377، والهجري 1..9665، والعبري 3762..13759.</p>
+
+<h2 id="known">الحدود وأمور تستوجب الحذر<a class="anchor" href="#known" aria-label="رابط إلى هذا القسم">#</a></h2>
+<div class="callout note" role="note"><strong>من المفيد أن تعرف.</strong> الماكروات تعطي النتائج نفسها التي تعطيها فئات التقويم. فالجلالي يعتمد القاعدة الحسابية ذات الدورة البالغة 33 سنة، وهي مطابقة للتقويم الرسمي في السنوات 1206 إلى 1497. وبيانات أم القرى الهجرية (1300 إلى 1500 هـ) مأخوذة من ICU/CLDR، وتطابق بدايات أشهرها تقويم KACST الرسمي للسنوات 1318 إلى 1500 هـ (فُحص في 2026-10-08). ويتغير اليوم عند منتصف الليل المدني.</div>
+<ul>
+<li>الماكروات عامة على مستوى الفئة: فإذا عرّفت حزمة أخرى ماكرو بالاسم نفسه (<code>toJalali</code> أو <code>toHijri</code> ...) فالغلبة لمن يسجّل آخرًا. استخدم فئات التقويم مباشرةً (<code>Jalali::make($carbon)</code>) عندما تحتاج إلى اليقين.</li>
+<li>تنتقل المناطق الزمنية مع الكائن: تستخدم <code>toJalali()</code> المنطقة الخاصة بكائن Carbon نفسه، فوحّد المنطقة قبل التحويل إذا كان يوم التقويم مهمًا.</li>
+<li>تختلف أرقام أيام الأسبوع بين التقاويم؛ فلا تمرّر ناتج <code>getDayOfWeek()</code> من تقويم إلى آخر. راجع <a href="convert-and-compare.html">تحويل التواريخ ومقارنتها</a>.</li>
+</ul>
+<nav class="reading-footer" aria-label="الصفحة السابقة والتالية"><a class="prev" rel="prev" href="convert-and-compare.html"><small>السابق</small>التحويل والمقارنة بين التواريخ</a><a class="next" rel="next" href="validators-overview.html"><small>التالي</small>نظرة عامة على أدوات التحقق</a></nav>
+</article>
+<nav class="toc" aria-label="في هذه الصفحة"><p>في هذه الصفحة</p><ol><li><a href="#overview">ما الذي يمنحك إياه هذا</a></li><li><a href="#registration">كيف يعمل التسجيل</a></li><li><a href="#list">مرجع الماكروات</a></li><li><a href="#to-calendar">من Carbon إلى تقويم</a></li><li><a href="#from-calendar">من مكوّنات التقويم إلى Carbon</a></li><li><a href="#errors">الأخطاء</a></li><li><a href="#known">الحدود وأمور تستوجب الحذر</a></li></ol></nav>
+</div>
+</main>
+<footer class="footer"><div class="shell footer-inner"><p>دليل مستخدم RTLY-Kit · الترخيص: MIT</p><div><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">المستودع على جيت هب &#8599;</a><a href="https://github.com/ehsanenaloo/RTLY-Kit/issues" rel="noopener noreferrer">الإبلاغ عن مشكلة &#8599;</a></div></div></footer>
+</body>
+</html>

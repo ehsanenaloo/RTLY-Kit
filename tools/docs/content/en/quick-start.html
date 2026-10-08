@@ -1,16 +1,16 @@
 <!--
 title: Quick start
-description: Install RTLY-Kit with Composer and, in about five minutes, convert a Jalali date, validate an Iranian national code and handle your first library exception.
+description: Install RTLY-Kit with Composer. In about five minutes you will convert a Jalali date, check an Iranian national code and catch your first library exception.
 group: start
 order: 10
 -->
 <h2 id="goal">What you will do</h2>
-<p>In this page you install the package, print your first Jalali date, run your first validation and catch your first library exception. Everything runs on plain PHP; no framework, no configuration file and no extra dependency is needed.</p>
-<p><strong>Prerequisites.</strong> PHP 8.2 or newer with the standard <code>mbstring</code> extension, and <a href="https://getcomposer.org/">Composer</a>. If you have neither PHP nor Composer on your machine, see the Docker route in <a href="installation.html#docker">Installation</a>.</p>
+<p>You will install the package, print a Jalali date, run a validation and catch an exception. It all runs on plain PHP. You need no framework, no config file and no extra package.</p>
+<p><strong>Before you start.</strong> You need PHP 8.2 or newer and <a href="https://getcomposer.org/">Composer</a>. If you have neither, use the Docker route in <a href="installation.html#docker">Installation</a>.</p>
 
 <h2 id="install">1. Install</h2>
 <pre><code class="language-bash">composer require enaxon/rtly-kit</code></pre>
-<p>Composer installs the package and generates <code>vendor/autoload.php</code>. RTLY-Kit has no required Composer dependencies. Optional integrations (Carbon macros, Laravel) switch on by themselves when Carbon or Laravel is present. More in <a href="installation.html">Installation</a>.</p>
+<p>Composer installs the package and creates <code>vendor/autoload.php</code>. RTLY-Kit has no required Composer packages. The Carbon macros and the Laravel pieces switch on by themselves when Carbon or Laravel is present. More in <a href="installation.html">Installation</a>.</p>
 
 <h2 id="first-date">2. Your first date</h2>
 <p>Create a file <code>quick.php</code> next to <code>vendor/</code>:</p>
@@ -27,18 +27,18 @@ echo hdate('2026-03-21')-&gt;format('j F Y', 'en'), "\n"; // 2 Shawwal 1447</cod
 <p>Run it with <code>php quick.php</code>. The first line prints the Jalali date of 21 March 2026, which is Nowruz 1405. The second line shows the same day in the Hijri calendar.</p>
 <p>Two things to notice:</p>
 <ul>
-<li>The helper functions live in the <code>RtlyKit</code> namespace and are imported with <code>use function</code>. They can never collide with a function of your own or of another package.</li>
-<li>The string <code>'2026-03-21'</code> is read as a Gregorian date. A string such as <code>'1405/01/01'</code> (a year below 1700 in the <code>Y/m/d</code> form) is read as Jalali. See <a href="jalali.html#string-rules">String semantics of make()</a>.</li>
+<li>The helper functions live in the <code>RtlyKit</code> namespace. You import them with <code>use function</code>. They cannot clash with your own functions or with another package.</li>
+<li>The string <code>'2026-03-21'</code> is read as a Gregorian date. A string like <code>'1405/01/01'</code> (a year below 1700 in <code>Y/m/d</code> form) is read as Jalali. See <a href="jalali.html#string-rules">String semantics of make()</a>.</li>
 </ul>
 <pre><code class="language-php">echo jdate('1405/01/01')-&gt;toGregorian()-&gt;format('Y-m-d'), "\n";   // 2026-03-21</code></pre>
-<p>The helper returns a <a href="jalali.html">Jalali</a> object (and <code>hdate()</code> a <a href="hijri.html">Hijri</a> one, <code>hebrew_date()</code> a <a href="hebrew.html">Hebrew</a> one). These objects are immutable: <code>addDays()</code>, <code>startOfMonth()</code> and the other modifiers return a new object.</p>
+<p>The helper returns a <a href="jalali.html">Jalali</a> object. <code>hdate()</code> returns a <a href="hijri.html">Hijri</a> object and <code>hebrew_date()</code> a <a href="hebrew.html">Hebrew</a> one. These objects are immutable. <code>addDays()</code>, <code>startOfMonth()</code> and the other modifiers give you a new object.</p>
 
 <h2 id="globals">3. Optional: short global names</h2>
-<p>By default no global function is defined. If you prefer plain <code>jdate()</code> and <code>is_national_code()</code>, opt in once, for example in your bootstrap file:</p>
+<p>By default no global function is defined. If you like plain <code>jdate()</code> and <code>is_national_code()</code>, switch them on once, for example in your bootstrap file:</p>
 <pre><code class="language-php">$skipped = \RtlyKit\Globals::register();   // array of names it could not define
 
 echo jdate('2026-03-21')-&gt;format('Y/m/d'), "\n";   // 1405/01/01</code></pre>
-<p><code>register()</code> defines the 27 helper names that are still free. It never overwrites an existing function and never throws; it returns the list of names it skipped (an empty array when everything was defined), and it is safe to call more than once. Use the namespaced form for any skipped name. Details: <a href="helpers-and-globals.html">Helpers and globals</a>.</p>
+<p><code>register()</code> defines the 27 helper names that are still free. It never replaces an existing function and never throws. It returns the names it skipped, or an empty array. You can call it more than once. Use the namespaced form for any skipped name. Details: <a href="helpers-and-globals.html">Helpers and globals</a>.</p>
 
 <h2 id="first-validation">4. Your first validation</h2>
 <pre><code class="language-php">use function RtlyKit\is_national_code;
@@ -54,10 +54,10 @@ print_r($result-&gt;errors());                    // [0] =&gt; invalid_checksum
 
 echo to_persian_digits('1405/01/01'), "\n";    // ۱۴۰۵/۰۱/۰۱
 echo number_to_words(1405), "\n";              // یک هزار و چهارصد و پنج</code></pre>
-<p><code>is_*()</code> functions return a plain <code>bool</code>. The <code>validate_*()</code> functions return a <code>Result</code> with <code>isValid()</code>, stable machine-readable <code>errors()</code> keys and <code>details()</code>. Validators never throw for bad user input; they report it. See <a href="validators-overview.html">Validators overview</a> and <a href="national-code.html">National code</a>.</p>
+<p>The <code>is_*()</code> functions return a plain <code>bool</code>. The <code>validate_*()</code> functions return a <code>Result</code> with <code>isValid()</code>, stable <code>errors()</code> keys and <code>details()</code>. Validators do not throw for bad user input. They report it. See <a href="validators-overview.html">Validators overview</a> and <a href="national-code.html">National code</a>.</p>
 
 <h2 id="first-exception">5. Your first exception</h2>
-<p>Calendar code is different from validation: building an impossible date is a programming or data error, so the calendar classes throw. 1404 is not a leap year, so 30 Esfand 1404 does not exist:</p>
+<p>Calendar code works differently. An impossible date is a programming or data error, so the calendar classes throw. 1404 is not a leap year, so 30 Esfand 1404 does not exist:</p>
 <pre><code class="language-php">use RtlyKit\Exceptions\InvalidDateException;
 use RtlyKit\Exceptions\RtlyKitThrowable;
 
@@ -73,19 +73,20 @@ try {
 } catch (RtlyKitThrowable $e) {
     echo 'library error: ', $e-&gt;getMessage(), "\n";   // library error: Unable to parse date: not a date
 }</code></pre>
-<p>Every exception of the library implements <code>RtlyKit\Exceptions\RtlyKitThrowable</code> and extends <code>\InvalidArgumentException</code>, so one <code>catch</code> handles them all, and <code>getErrorCode()</code> gives a stable value to branch on (do not parse the message text). Out-of-range input, including years outside the supported ranges (Jalali -620 to 9377, Hijri 1 to 9665, Hebrew 3762 to 13759), always raises <code>InvalidDateException</code>, never a <code>TypeError</code>. More in <a href="error-handling.html">Error handling</a>.</p>
+<p>Every exception of the library implements <code>RtlyKit\Exceptions\RtlyKitThrowable</code> and extends <code>\InvalidArgumentException</code>. One <code>catch</code> handles them all. Use <code>getErrorCode()</code> to branch, not the message text. A year outside the supported range (Jalali -620 to 9377, Hijri 1 to 9665, Hebrew 3762 to 13759) always raises <code>InvalidDateException</code>, never a <code>TypeError</code>. More in <a href="error-handling.html">Error handling</a>.</p>
 
-<h2 id="notes">Things to know early</h2>
-<div class="known"><strong>Known limitation.</strong> The Jalali calendar here is the arithmetic 33-year rule, not the astronomical official calendar. The Hijri Umm al-Qura table (AH 1300 to 1500) comes from ICU/CLDR data and is not verified month by month against the official publication. Check <a href="accuracy-and-data.html">Accuracy and data</a> before using dates for legal or religious deadlines.</div>
+<h2 id="notes">Good to know</h2>
+<div class="note"><strong>Good to know.</strong> <code>Jalali</code> follows the arithmetic 33-year rule. It matches the official Iranian calendar for every year from 1206 to 1497, and the astronomical definition for 1178 to 1502. The Hijri month table matches the official KACST calendar for AH 1318 to 1500 (checked 2026-10-08). Details are in <a href="accuracy-and-data.html">Accuracy and data</a>.</div>
 <ul>
-<li><strong>Time zones.</strong> Without an explicit <code>DateTimeZone</code>, the PHP default zone is used. Pass a zone (for example <code>new DateTimeZone('Asia/Tehran')</code>) when the calendar day matters.</li>
-<li><strong>Weekdays.</strong> Jalali numbers days from Saturday = 0; Hijri and Hebrew from Sunday = 0.</li>
+<li><strong>Time zones.</strong> Without a <code>DateTimeZone</code>, the PHP default zone is used. Pass a zone such as <code>new DateTimeZone('Asia/Tehran')</code> when the calendar day matters.</li>
+<li><strong>Weekdays.</strong> Jalali counts days from Saturday = 0. Hijri and Hebrew count from Sunday = 0.</li>
 </ul>
 
 <h2 id="next">Where to go next</h2>
 <ul>
 <li>Dates: <a href="jalali.html">Jalali</a>, <a href="hijri.html">Hijri</a>, <a href="hebrew.html">Hebrew</a>, <a href="convert-and-compare.html">Convert and compare</a>.</li>
 <li>Validation: <a href="validators-overview.html">Validators overview</a>.</li>
+<li>Holidays and prayer times: <a href="holidays.html">Holidays</a>, <a href="holiday-calendar.html">Holiday calendar</a>, <a href="prayer-times.html">Prayer times</a>.</li>
 <li>Laravel projects: <a href="laravel-setup.html">Laravel setup</a>.</li>
 <li>Problems: <a href="troubleshooting-faq.html">Troubleshooting and FAQ</a>.</li>
 </ul>

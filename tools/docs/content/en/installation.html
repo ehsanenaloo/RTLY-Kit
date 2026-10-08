@@ -1,6 +1,6 @@
 <!--
 title: Installation
-description: Requirements, installation with Composer or Docker, optional Carbon and Laravel integration, supported versions, how to verify the install and how to remove the package cleanly.
+description: Requirements, installation with Composer or Docker, optional Carbon and Laravel support, supported versions, how to check the install and how to remove the package.
 group: start
 order: 20
 -->
@@ -8,67 +8,65 @@ order: 20
 <table>
 <thead><tr><th>Requirement</th><th>Status</th><th>Notes</th></tr></thead>
 <tbody>
-<tr><td>PHP <code>^8.2</code></td><td>Required</td><td>Tested in CI on PHP 8.2, 8.3 and 8.4</td></tr>
-<tr><td><code>ext-mbstring</code></td><td>Required</td><td>Enabled in standard PHP builds; used by <code>ordinal()</code>, <code>Slugify</code> and the text tools</td></tr>
-<tr><td>Composer 2</td><td>Required to install</td><td>Handles autoloading; the package has no required Composer dependency</td></tr>
-<tr><td><code>nesbot/carbon</code> ^3.0</td><td>Optional</td><td>Enables the <a href="carbon-macros.html">Carbon macros</a></td></tr>
-<tr><td><code>illuminate/support</code> ^11 or ^12</td><td>Optional</td><td>Laravel auto-discovery, facade, validation rules and the Eloquent cast (<a href="laravel-setup.html">Laravel setup</a>)</td></tr>
+<tr><td>PHP <code>^8.2</code></td><td>Required</td><td>Tested in CI on PHP 8.2, 8.3, 8.4 and 8.5. This is all the package needs. No PHP extension beyond a standard build, and no <code>mbstring</code></td></tr>
+<tr><td>Composer 2</td><td>Needed to install</td><td>Handles autoloading. The package has no required Composer dependency</td></tr>
+<tr><td><code>nesbot/carbon</code> ^3.0</td><td>Optional</td><td>Turns on the <a href="carbon-macros.html">Carbon macros</a></td></tr>
+<tr><td><code>illuminate/support</code> ^11, ^12 or ^13</td><td>Optional</td><td>Laravel auto-discovery, facade, validation rules, config and the Eloquent cast (<a href="laravel-setup.html">Laravel setup</a>)</td></tr>
 </tbody>
 </table>
-<p>That is all. In particular, <code>ext-calendar</code>, <code>ext-intl</code> and any database are <strong>not</strong> needed: the three calendars are implemented in pure PHP, and the Umm al-Qura table ships inside the package.</p>
+<p>That is all. You do not need <code>ext-calendar</code>, <code>ext-intl</code>, <code>ext-mbstring</code> or a database. The three calendars are plain PHP, and the Umm al-Qura table ships inside the package.</p>
 
 <h2 id="composer">Install with Composer</h2>
 <pre><code class="language-bash">composer require enaxon/rtly-kit</code></pre>
-<p>Make sure your entry script loads Composer's autoloader, once:</p>
+<p>Make sure your entry script loads Composer's autoloader once:</p>
 <pre><code class="language-php">&lt;?php
 require __DIR__.'/vendor/autoload.php';</code></pre>
-<p>The autoloader maps the <code>RtlyKit\</code> namespace to the package's <code>src/</code> directory and also loads one helper file that defines the namespaced helper functions (<code>RtlyKit\jdate()</code> and the others). No global function is defined by that file; see <a href="helpers-and-globals.html">Helpers and globals</a> for the opt-in short names.</p>
+<p>The autoloader maps the <code>RtlyKit\</code> namespace to the package's <code>src/</code> directory. It also loads one file that defines the namespaced helpers (<code>RtlyKit\jdate()</code> and the others). That file defines no global function. See <a href="helpers-and-globals.html">Helpers and globals</a> for the opt-in short names.</p>
 <h3 id="optional">Optional packages</h3>
 <pre><code class="language-bash">composer require nesbot/carbon          # Carbon macros: toJalali(), createFromJalali(), ...
 composer require illuminate/support     # only in non-Laravel projects that want the Laravel pieces</code></pre>
-<p>Both integrations activate on their own. The Carbon macros register when the autoloader finds Carbon. In a Laravel application the service provider and the <code>Jalali</code> facade alias are found by package auto-discovery, so nothing is added to <code>config/app.php</code>. After installing into an existing Laravel project run <code>php artisan package:discover</code> if your deployment caches discovery.</p>
+<p>Both switch on by themselves. The Carbon macros register when the autoloader finds Carbon. In a Laravel app, package auto-discovery finds the service provider and the <code>Jalali</code> facade, so you add nothing to <code>config/app.php</code>. If your deployment caches discovery, run <code>php artisan package:discover</code> after installing.</p>
 
 <h2 id="docker">Install without PHP on your machine (Docker)</h2>
-<p>If PHP and Composer are not installed locally, run them from official images. From your project directory:</p>
+<p>If PHP and Composer are not installed, run them from the official images. From your project folder:</p>
 <pre><code class="language-bash">docker run --rm -v "$PWD":/app -w /app composer:2 require enaxon/rtly-kit
 docker run --rm -v "$PWD":/app -w /app php:8.3-cli php quick.php</code></pre>
-<p>The first command installs the package into <code>vendor/</code>; the second runs a script such as the one in <a href="quick-start.html">Quick start</a> with PHP 8.3 (the official CLI image includes <code>mbstring</code>). To work on the library itself, clone the repository and use its <code>docker-compose.yml</code>:</p>
+<p>The first command installs the package into <code>vendor/</code>. The second runs a script like the one in <a href="quick-start.html">Quick start</a> with PHP 8.3. To work on the library itself, clone the repository and use its compose file:</p>
 <pre><code class="language-bash">docker compose -f tools/docker-compose.yml run --rm php composer install
 docker compose -f tools/docker-compose.yml run --rm php composer test
 docker compose -f tools/docker-compose.yml run --rm php php -r 'require "vendor/autoload.php"; echo RtlyKit\jdate("2026-03-21")-&gt;format("Y/m/d");'</code></pre>
 
 <h2 id="versions">Supported versions</h2>
 <ul>
-<li><strong>PHP</strong> 8.2, 8.3 and 8.4 (CI matrix). Newer 8.x releases are expected to work but are not yet in the matrix.</li>
-<li><strong>Laravel</strong> 11 and 12.</li>
+<li><strong>PHP</strong> 8.2, 8.3, 8.4 and 8.5 (the CI matrix).</li>
+<li><strong>Laravel</strong> 11, 12 and 13. Laravel 13 itself needs PHP 8.3 or newer.</li>
 <li><strong>Carbon</strong> 3.</li>
-<li><strong>Versioning.</strong> Before 1.0.0 a minor release may contain breaking changes. Each one is listed in the upgrade guide with migration steps (<a href="upgrade.html">Upgrade</a>), and the compatibility promise and the list of internal classes are in <a href="api-stability.html">API stability</a>. Until 1.0.0, pin the minor version in your <code>composer.json</code> constraint (a tilde constraint such as <code>~0.x.y</code> with the version you tested) and read the upgrade guide before raising it.</li>
+<li><strong>Versioning.</strong> Before 1.0.0, a minor release may contain breaking changes. Each one is listed with migration steps in <a href="upgrade.html">Upgrade</a>. The compatibility promise and the list of internal classes are in <a href="api-stability.html">API stability</a>. Until 1.0.0, pin the minor version in <code>composer.json</code> (a tilde constraint such as <code>~0.2.0</code>) and read the upgrade guide before you raise it.</li>
 </ul>
 
-<h2 id="verify">Verify the installation</h2>
+<h2 id="verify">Check the installation</h2>
 <p>Create <code>verify.php</code> in your project root:</p>
 <pre><code class="language-php">&lt;?php
 require __DIR__.'/vendor/autoload.php';
 
 echo PHP_VERSION, "\n";
-echo extension_loaded('mbstring') ? "mbstring: yes\n" : "mbstring: NO\n";
 echo \RtlyKit\jdate('2026-03-21')-&gt;format('Y/m/d'), "\n";   // 1405/01/01</code></pre>
-<p>Run <code>php verify.php</code>. The last line must print <code>1405/01/01</code>; a PHP version below 8.2 or <code>mbstring: NO</code> means the environment does not meet the requirements. Two Composer commands help as well:</p>
+<p>Run <code>php verify.php</code>. The last line must print <code>1405/01/01</code>. A PHP version below 8.2 means the environment is too old. Two Composer commands also help:</p>
 <pre><code class="language-bash">composer show enaxon/rtly-kit            # installed version and metadata
 composer check-platform-reqs          # checks PHP and extensions against every installed package</code></pre>
 <h3 id="problems">If something fails</h3>
 <ul>
-<li><code>Class "RtlyKit\..." not found</code> or <code>Call to undefined function RtlyKit\jdate()</code>: <code>vendor/autoload.php</code> was not required, or Composer's autoloader is stale; run <code>composer dump-autoload</code>.</li>
-<li><code>Call to undefined function jdate()</code> (without the namespace): the short global names are opt-in. Use <code>use function RtlyKit\jdate;</code> or call <code>\RtlyKit\Globals::register()</code>.</li>
-<li>Composer refuses to install and mentions the PHP version or <code>ext-mbstring</code>: install PHP 8.2 or newer, or enable <code>mbstring</code> in <code>php.ini</code>.</li>
+<li><code>Class "RtlyKit\..." not found</code> or <code>Call to undefined function RtlyKit\jdate()</code>: <code>vendor/autoload.php</code> was not loaded, or the autoloader is stale. Run <code>composer dump-autoload</code>.</li>
+<li><code>Call to undefined function jdate()</code> (no namespace): the short global names are opt-in. Use <code>use function RtlyKit\jdate;</code> or call <code>\RtlyKit\Globals::register()</code>.</li>
+<li>Composer refuses to install and mentions the PHP version: install PHP 8.2 or newer.</li>
 <li>More cases: <a href="troubleshooting-faq.html">Troubleshooting and FAQ</a>.</li>
 </ul>
 
 <h2 id="uninstall">Uninstall</h2>
 <ol>
-<li>Remove the package: <code>composer remove enaxon/rtly-kit</code>. This also regenerates the autoloader.</li>
-<li>Delete your own usages: <code>use RtlyKit\...</code> and <code>use function RtlyKit\...</code> lines, calls to <code>\RtlyKit\Globals::register()</code>, and any catch blocks for <code>RtlyKit\Exceptions\*</code>. Search your code for <code>RtlyKit</code> to find them all.</li>
-<li>Carbon projects: the macros (<code>toJalali</code>, <code>jformat</code>, <code>toHijri</code>, <code>toHebrew</code>, <code>createFromJalali</code>, <code>createFromHijri</code>, <code>createFromHebrew</code>) disappear with the package; replace calls to them first.</li>
-<li>Laravel projects: remove the <code>national_code</code>, <code>sheba</code>, <code>bank_card</code>, <code>iran_mobile</code>, <code>mobile</code>, <code>postal_code</code> and <code>vehicle_plate</code> validation rules from your form requests, the <code>JalaliCast</code> from your models, any use of the <code>Jalali</code> facade, and any translation files you copied from the package. Then run <code>php artisan optimize:clear</code>. Data your application already wrote to the database is not touched by removing the package, so check how a cast stored it before you drop the cast.</li>
+<li>Remove the package with <code>composer remove enaxon/rtly-kit</code>. This also rebuilds the autoloader.</li>
+<li>Delete your own usages: the <code>use RtlyKit\...</code> and <code>use function RtlyKit\...</code> lines, calls to <code>\RtlyKit\Globals::register()</code> and catch blocks for <code>RtlyKit\Exceptions\*</code>. Search your code for <code>RtlyKit</code> to find them.</li>
+<li>Carbon projects: the macros (<code>toJalali</code>, <code>jformat</code>, <code>toHijri</code>, <code>toHebrew</code>, <code>createFromJalali</code>, <code>createFromHijri</code>, <code>createFromHebrew</code>) go away with the package. Replace calls to them first.</li>
+<li>Laravel projects: remove the <code>national_code</code>, <code>sheba</code>, <code>bank_card</code>, <code>iran_mobile</code>, <code>mobile</code>, <code>postal_code</code> and <code>vehicle_plate</code> rules from your form requests. Remove the <code>JalaliCast</code> from your models, any use of the <code>Jalali</code> facade, the published <code>config/rtly-kit.php</code> and any translation files you copied from the package. Then run <code>php artisan optimize:clear</code>. Data your app already wrote to the database stays as it is, so check how a cast stored it before you drop the cast.</li>
 </ol>
-<p>The package installs nothing outside <code>vendor/</code> (apart from the Composer lock and autoload metadata), so there is nothing else to clean up.</p>
+<p>The package installs nothing outside <code>vendor/</code> apart from the Composer lock and autoload files, so there is nothing else to clean up.</p>
