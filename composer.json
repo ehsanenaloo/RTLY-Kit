@@ -1,6 +1,6 @@
 {
     "name": "enaxon/rtly-kit",
-    "description": "RTLY-Kit: the definitive RTL kit for PHP — Jalali, Hijri, Hebrew calendars, Iranian validations, numbers, text, holidays and prayer times.",
+    "description": "Dates, numbers and checks for Persian and Arabic PHP apps: Jalali, Hijri and Hebrew calendars, Iranian validators, number words, holidays and prayer times. No required dependencies.",
     "type": "library",
     "keywords": [
         "rtl",
