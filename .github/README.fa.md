@@ -11,6 +11,10 @@
 تقویم جلالی، هجری و عبری. اعتبارسنج‌های ایرانی. اعداد به حروف، تعطیلات و اوقات شرعی.
 یک بستهٔ کوچک. بدون وابستگی اجباری.
 
+[![Install](https://img.shields.io/badge/Packagist-Install-F28D1A?logo=packagist&logoColor=white&style=for-the-badge)](https://packagist.org/packages/enaxon/rtly-kit)
+[![User guide](https://img.shields.io/badge/User%20guide-Read%20online-0f766e?logo=readthedocs&logoColor=white&style=for-the-badge)](https://ehsanenaloo.github.io/RTLY-Kit/fa/)
+[![Buy me a coffee](https://img.shields.io/badge/Buy%20me%20a%20coffee-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/enaloo)
+
 [![CI](https://github.com/ehsanenaloo/RTLY-Kit/actions/workflows/ci.yml/badge.svg)](https://github.com/ehsanenaloo/RTLY-Kit/actions/workflows/ci.yml)
 [![Packagist](https://img.shields.io/packagist/v/enaxon/rtly-kit.svg?label=packagist)](https://packagist.org/packages/enaxon/rtly-kit)
 [![Downloads](https://img.shields.io/packagist/dt/enaxon/rtly-kit.svg)](https://packagist.org/packages/enaxon/rtly-kit)
@@ -19,6 +23,7 @@
 [![Dependencies](https://img.shields.io/badge/dependencies-none-2ea44f.svg)](#نیازمندی‌ها)
 [![Docs](https://img.shields.io/badge/docs-fa%20%7C%20en-0f766e.svg)](https://ehsanenaloo.github.io/RTLY-Kit/fa/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](../LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/ehsanenaloo/RTLY-Kit?style=social)](https://github.com/ehsanenaloo/RTLY-Kit/stargazers)
 
 <a href="https://ehsanenaloo.github.io/RTLY-Kit/fa/"><img src="../docs/assets/screenshots/guide-validators-fa-dark.jpg" width="860" alt="صفحهٔ مرور اعتبارسنج‌ها در راهنمای فارسی، با پوستهٔ تیره و چیدمان راست‌به‌چپ"></a>
 
@@ -242,14 +247,23 @@ try {
 
 ---
 
-## کمک به پروژه
+## مشارکت
 
-- **به مخزن ستاره بدهید** اگر وقتتان را گرفته است. به پیداشدن پروژه کمک می‌کند.
+گزارش باگ، اصلاح داده، اصلاح ترجمه و pull requestهای کوچک خوش‌آمد است. اول [CONTRIBUTING.md](CONTRIBUTING.md) را بخوانید. روش کار با Docker، سبک کد و شیوهٔ برخورد با منبع داده‌ها در آن آمده است.
+
 - **نتیجهٔ اشتباه را گزارش کنید.** از فرم «اصلاح داده» استفاده کنید و منبع بگذارید. هر ردیف جدول دست‌کم دو منبع لازم دارد.
 - **متن‌ها را بهتر کنید.** اصلاح راهنمای فارسی و ترجمهٔ عربی بسیار خوش‌آمد است.
-- **pull request بفرستید.** اول [CONTRIBUTING.md](CONTRIBUTING.md) را بخوانید. روش کار با Docker، سبک کد و شیوهٔ برخورد با منبع داده‌ها در آن آمده است.
+- **به مخزن ستاره بدهید** اگر وقتتان را گرفته است. به پیداشدن پروژه کمک می‌کند.
+
+اگر RTLY-Kit وقتتان را گرفته است، می‌توانید [برای من یک قهوه بخرید](https://buymeacoffee.com/enaloo). هیچ انتظاری نیست و قدردانی می‌کنم.
 
 مشکل امنیتی را از مسیر [SECURITY.md](SECURITY.md) گزارش کنید، نه issue عمومی.
+
+### مشارکت‌کنندگان
+
+از همهٔ کسانی که کمک کرده‌اند ممنونیم. نام شما بعد از اولین مشارکتِ پذیرفته‌شده اینجا می‌آید.
+
+<a href="https://github.com/ehsanenaloo/RTLY-Kit/graphs/contributors"><img src="https://contrib.rocks/image?repo=ehsanenaloo/RTLY-Kit" alt="مشارکت‌کنندگان"></a>
 
 از نسخهٔ اولیه می‌آیید؟ [UPGRADE.md](../UPGRADE.md) را ببینید. تغییرات اخیر در [CHANGELOG.md](../CHANGELOG.md) است.
 
