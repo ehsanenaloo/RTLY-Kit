@@ -2,7 +2,7 @@
 
 **English** | [فارسی](.github/README.fa.md)
 
-<a href="docs/index.html"><img src="docs/assets/logo.svg" width="112" height="112" alt="RTLY-Kit logo"></a>
+<a href="https://ehsanenaloo.github.io/RTLY-Kit/"><img src="docs/assets/logo.svg" width="112" height="112" alt="RTLY-Kit logo"></a>
 
 # RTLY-Kit
 
@@ -12,12 +12,15 @@ Jalali, Hijri and Hebrew calendars. Iranian validators. Number words, holidays a
 One small package. No required dependencies.
 
 [![CI](https://github.com/ehsanenaloo/RTLY-Kit/actions/workflows/ci.yml/badge.svg)](https://github.com/ehsanenaloo/RTLY-Kit/actions/workflows/ci.yml)
+[![Packagist](https://img.shields.io/packagist/v/enaxon/rtly-kit.svg?label=packagist)](https://packagist.org/packages/enaxon/rtly-kit)
+[![Downloads](https://img.shields.io/packagist/dt/enaxon/rtly-kit.svg)](https://packagist.org/packages/enaxon/rtly-kit)
 [![PHP](https://img.shields.io/badge/php-%5E8.2-777bb4.svg)](https://www.php.net/)
-[![Laravel](https://img.shields.io/badge/laravel-11%20%7C%2012-ff2d20.svg)](docs/en/laravel-setup.html)
+[![Laravel](https://img.shields.io/badge/laravel-11%20%7C%2012-ff2d20.svg)](https://ehsanenaloo.github.io/RTLY-Kit/en/laravel-setup.html)
 [![Dependencies](https://img.shields.io/badge/dependencies-none-2ea44f.svg)](#requirements)
+[![Docs](https://img.shields.io/badge/docs-en%20%7C%20fa-0f766e.svg)](https://ehsanenaloo.github.io/RTLY-Kit/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
 
-<img src="docs/assets/social-preview.svg" width="720" alt="RTLY-Kit: the Persian and Arabic RTL toolkit for PHP. composer require enaxon/rtly-kit">
+<a href="https://ehsanenaloo.github.io/RTLY-Kit/en/"><img src="docs/assets/screenshots/guide-home-dark.jpg" width="860" alt="The RTLY-Kit guide home page: install command and a 30-second example"></a>
 
 </div>
 
@@ -27,7 +30,9 @@ Persian and Arabic PHP tools are spread over many packages. One handles Jalali d
 
 RTLY-Kit puts the common pieces in one place. It is plain PHP. You install it, import a function and use it. There is no config file and no setup step.
 
-## Quick start
+---
+
+## Install
 
 ```bash
 composer require enaxon/rtly-kit
@@ -44,13 +49,29 @@ echo number_to_words(1234);                    // یک هزار و دویست و
 var_dump(is_national_code('0499370899'));      // bool(true)
 ```
 
-The helpers are namespaced functions. They cannot clash with your own code. If you like short global names, you can [turn them on](#helpers-without-clashes).
+That is all. The helpers are namespaced functions, so they cannot clash with your own code. If you like short global names, you can [turn them on](#helpers-without-clashes).
+
+---
+
+## What is inside
+
+| Area | What you get |
+|---|---|
+| **Calendars** | Jalali, Hijri (Umm al-Qura) and Hebrew. Immutable, comparable with each other, pure PHP |
+| **Validators** | National code, Sheba, bank card, mobile, postal code, vehicle plate. Clear results with stable error codes |
+| **Numbers** | Persian, Arabic and English digits. Separators, ordinals. Number words in Persian and Arabic |
+| **Text** | Arabic to Persian letters, ZWNJ cleanup, direction and script detection, Persian slugs |
+| **Holidays** | Iranian public holidays, weekends and business days |
+| **Prayer times** | Tehran, MWL, ISNA, Egypt, Makkah and Karachi methods |
+| **Carbon and Laravel** | Carbon macros, six validation rules, a `Jalali` facade and an Eloquent cast |
+
+---
 
 ## What you can do
 
 ### Work with three calendars
 
-`Jalali`, `Hijri` and `Hebrew` are immutable objects. They share one contract, so you can compare dates from different calendars.
+`Jalali`, `Hijri` and `Hebrew` share one contract, so you can compare dates from different calendars.
 
 ```php
 use RtlyKit\Calendar\Jalali;
@@ -64,11 +85,11 @@ echo hdate('2026-03-21')->format('j F Y', 'en');            // 2 Shawwal 1447
 echo hebrew_date('2026-03-21')->format('j F Y', 'en');      // 3 Nisan 5786
 ```
 
-Hijri uses the Umm al-Qura table by default, with an arithmetic option. All three are pure PHP. You do not need `ext-calendar`. Read more in the [Jalali guide](docs/en/jalali.html) and the [compare guide](docs/en/convert-and-compare.html).
+All three are pure PHP. You do not need `ext-calendar`. See the [Jalali guide](https://ehsanenaloo.github.io/RTLY-Kit/en/jalali.html) and the [compare guide](https://ehsanenaloo.github.io/RTLY-Kit/en/convert-and-compare.html).
 
 ### Check Iranian data
 
-National code, Sheba, bank card, mobile number, postal code and vehicle plate. Each one gives you a clear result, not just true or false.
+Each validator gives you a clear result, not just true or false.
 
 ```php
 use function RtlyKit\{validate_sheba, validate_national_code};
@@ -108,8 +129,6 @@ $times = PrayerTimes::forCity('mecca', PrayerTimes::METHOD_MAKKAH)
 echo $times['fajr'];                     // 04:11
 ```
 
-Six methods are built in: Tehran, MWL, ISNA, Egypt, Makkah and Karachi. See [how well each one is checked](#how-accurate-is-it).
-
 ### Use it with Carbon and Laravel
 
 Carbon macros turn on by themselves when Carbon is installed.
@@ -134,7 +153,36 @@ $request->validate([
 protected $casts = ['published_at' => \RtlyKit\Laravel\Casts\JalaliCast::class];
 ```
 
-More in the [Laravel guide](docs/en/laravel-setup.html).
+More in the [Laravel guide](https://ehsanenaloo.github.io/RTLY-Kit/en/laravel-setup.html).
+
+---
+
+## A full guide, in two languages
+
+The guide has 26 pages in English and Persian. It has search, a light and a dark theme, and works without JavaScript. Persian pages are written right to left.
+
+<table>
+  <tr>
+    <td width="50%"><a href="https://ehsanenaloo.github.io/RTLY-Kit/en/jalali.html"><img src="docs/assets/screenshots/guide-jalali-light.jpg" alt="The Jalali calendar page in the English guide, light theme"></a></td>
+    <td width="50%"><a href="https://ehsanenaloo.github.io/RTLY-Kit/fa/validators-overview.html"><img src="docs/assets/screenshots/guide-validators-fa-dark.jpg" alt="The validators page in the Persian guide, dark theme, right to left"></a></td>
+  </tr>
+  <tr>
+    <td align="center"><sub>English, light theme</sub></td>
+    <td align="center"><sub>Persian, dark theme, right to left</sub></td>
+  </tr>
+</table>
+
+| Topic | Read |
+|---|---|
+| Start | [Quick start](https://ehsanenaloo.github.io/RTLY-Kit/en/quick-start.html) |
+| Calendars | [Jalali](https://ehsanenaloo.github.io/RTLY-Kit/en/jalali.html) · [Hijri](https://ehsanenaloo.github.io/RTLY-Kit/en/hijri.html) · [Hebrew](https://ehsanenaloo.github.io/RTLY-Kit/en/hebrew.html) · [Convert and compare](https://ehsanenaloo.github.io/RTLY-Kit/en/convert-and-compare.html) |
+| Validation | [Validators overview](https://ehsanenaloo.github.io/RTLY-Kit/en/validators-overview.html) |
+| Numbers and text | [Digits and format](https://ehsanenaloo.github.io/RTLY-Kit/en/digits-and-format.html) · [Number words](https://ehsanenaloo.github.io/RTLY-Kit/en/number-words.html) · [Text tools](https://ehsanenaloo.github.io/RTLY-Kit/en/text-tools.html) |
+| Holidays and prayer | [Holidays](https://ehsanenaloo.github.io/RTLY-Kit/en/holidays.html) · [Prayer times](https://ehsanenaloo.github.io/RTLY-Kit/en/prayer-times.html) |
+| Laravel | [Setup](https://ehsanenaloo.github.io/RTLY-Kit/en/laravel-setup.html) · [Validation and cast](https://ehsanenaloo.github.io/RTLY-Kit/en/laravel-validation-and-cast.html) |
+| Reference | [Helpers](https://ehsanenaloo.github.io/RTLY-Kit/en/helpers-and-globals.html) · [Errors](https://ehsanenaloo.github.io/RTLY-Kit/en/error-handling.html) · [API stability](https://ehsanenaloo.github.io/RTLY-Kit/en/api-stability.html) · [FAQ](https://ehsanenaloo.github.io/RTLY-Kit/en/troubleshooting-faq.html) |
+
+---
 
 ## Helpers without clashes
 
@@ -147,6 +195,8 @@ $skipped = \RtlyKit\Globals::register();   // names that were already taken
 ```
 
 It only adds names that are free. It never replaces your functions and never throws. You can call it twice. The return value lists any names it skipped.
+
+---
 
 ## When something goes wrong
 
@@ -164,7 +214,9 @@ try {
 }
 ```
 
-Bad input never leaks a raw `TypeError` or `ValueError`. Years outside the supported range throw `InvalidDateException`. Read the [error guide](docs/en/error-handling.html) for the full list.
+Bad input never leaks a raw `TypeError` or `ValueError`. Years outside the supported range throw `InvalidDateException`. Read the [error guide](https://ehsanenaloo.github.io/RTLY-Kit/en/error-handling.html) for the full list.
+
+---
 
 ## How accurate is it?
 
@@ -176,7 +228,9 @@ We prefer to tell you the limits now than have you find them in production.
 - **Data tables.** Bank BINs (39), Sheba bank codes (38) and national-code offices (547) come from community lists with shared roots. Each entry has at least two sources. A valid card can still return `null` for the bank name. That does not mean the card is wrong.
 - **Arabic number words.** Masculine form only, up to 999,999,999. Ask a native speaker to review formal or legal text.
 
-Found a mistake? Please [open an issue](https://github.com/ehsanenaloo/RTLY-Kit/issues/new/choose) with a source. The full list is in the [accuracy guide](docs/en/accuracy-and-data.html).
+Found a mistake? Please [open an issue](https://github.com/ehsanenaloo/RTLY-Kit/issues/new/choose) with a source. The full list is in the [accuracy guide](https://ehsanenaloo.github.io/RTLY-Kit/en/accuracy-and-data.html).
+
+---
 
 ## Requirements
 
@@ -184,30 +238,27 @@ Found a mistake? Please [open an issue](https://github.com/ehsanenaloo/RTLY-Kit/
 - No required Composer packages. `nesbot/carbon` and `illuminate/support` are optional.
 - Tested in CI on PHP 8.2, 8.3 and 8.4. Works with Laravel 11 and 12 and Carbon 3.
 
-## Guides
+---
 
-The full guide is in English and Persian, with search. Open [`docs/index.html`](docs/index.html) or start here:
+## Help the project
 
-| Topic | Read |
-|---|---|
-| Start | [Quick start](docs/en/quick-start.html) |
-| Calendars | [Jalali](docs/en/jalali.html) · [Hijri](docs/en/hijri.html) · [Hebrew](docs/en/hebrew.html) · [Convert and compare](docs/en/convert-and-compare.html) |
-| Validation | [Validators overview](docs/en/validators-overview.html) |
-| Numbers and text | [Digits and format](docs/en/digits-and-format.html) · [Number words](docs/en/number-words.html) · [Text tools](docs/en/text-tools.html) |
-| Holidays and prayer | [Holidays](docs/en/holidays.html) · [Prayer times](docs/en/prayer-times.html) |
-| Laravel | [Setup](docs/en/laravel-setup.html) · [Validation and cast](docs/en/laravel-validation-and-cast.html) |
-| Reference | [Helpers](docs/en/helpers-and-globals.html) · [Errors](docs/en/error-handling.html) · [API stability](docs/en/api-stability.html) · [FAQ](docs/en/troubleshooting-faq.html) |
+- **Star the repository** if it saves you time. It helps other people find it.
+- **Report a wrong result.** Use the data-correction form and add a source. Every table entry needs at least two.
+- **Improve the words.** Fixes for the Persian guide and for Arabic translations are very welcome.
+- **Send a pull request.** Read [CONTRIBUTING.md](.github/CONTRIBUTING.md) first. It explains the Docker workflow, the code style and how we handle data sources.
+
+Security problems go through [SECURITY.md](.github/SECURITY.md), not public issues.
 
 Moving from an early build? See [UPGRADE.md](UPGRADE.md). Recent changes are in [CHANGELOG.md](CHANGELOG.md).
 
-## Contributing
-
-Bug reports, data corrections and pull requests are welcome. Read [CONTRIBUTING.md](.github/CONTRIBUTING.md) first. It explains the Docker workflow, the code style and how we handle data sources. Security problems go through [SECURITY.md](.github/SECURITY.md), not public issues.
+---
 
 ## License
 
-[MIT](LICENSE). Data sources and their notes are listed in [SOURCES.md](resources/data/SOURCES.md) and [NOTICE](NOTICE).
+[MIT](LICENSE). Data sources and their notes are in [SOURCES.md](resources/data/SOURCES.md) and [NOTICE](NOTICE).
 
 ## About
 
-Made by [Ehsan Enaloo](https://github.com/ehsanenaloo). Topics: `jalali` `hijri` `hebrew` `persian` `arabic` `rtl` `php` `laravel` `carbon` `iran` `prayer-times`.
+Made by [Ehsan Enaloo](https://github.com/ehsanenaloo). RTLY-Kit is a toolkit for Jalali, Hijri and Hebrew calendars, Iranian validators, number words, holidays and prayer times in PHP.
+
+Topics: `jalali` `hijri` `hebrew` `persian` `arabic` `rtl` `php` `laravel` `carbon` `iran` `prayer-times`

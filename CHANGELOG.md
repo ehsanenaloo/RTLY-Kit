@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `RtlyKit\Contracts\CalendarDate`, implemented by `Jalali`, `Hijri` and `Hebrew`. Comparisons and `diffIn*()` accept `CalendarDate|DateTimeInterface` (cross-calendar), `make()` accepts a `CalendarDate`, and `equals()`, `isBefore()`, `isAfter()` are new aliases.
 - `RtlyKit\Contracts\Validator` (static `validate(mixed): Result`, `isValid(mixed): bool`), implemented by all six validators. Non-string input returns an invalid `Result` with `invalid_type`, input over 4096 bytes returns `input_too_long`; validators never throw.
 - `RtlyKit\Exceptions\ErrorCode` backed string enum. Every library exception has `getErrorCode()` and `getContext()`, and `RtlyKitException::because()` builds one with a specific code.
-- Documentation: [error handling](docs/en/error-handling.html), [API stability](docs/en/api-stability.html) and [UPGRADE.md](UPGRADE.md).
+- Documentation: [error handling](https://ehsanenaloo.github.io/RTLY-Kit/en/error-handling.html), [API stability](https://ehsanenaloo.github.io/RTLY-Kit/en/api-stability.html) and [UPGRADE.md](UPGRADE.md).
 
 - Pure-PHP Hebrew calendar (`Hebrew`): leap years, ordinal months, `en` / `he` / `fa` month and weekday names, no `ext-calendar` needed.
 - Hijri calendar rewritten around the Umm al-Qura month table for AH 1300-1500 (generated from ICU/CLDR data), with a `HijriVariant::Tabular` arithmetic fallback, month/year arithmetic and `ar` / `fa` / `en` formatting with selectable digits.
@@ -49,7 +49,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Slugify::make()` throws `RtlyKitException` (`input_too_long` / `invalid_argument`) for an invalid UTF-8 separator or one over 64 bytes.
 - `PrayerTimes` core rewritten clean-room from standard astronomical equations (Meeus/NOAA); each event uses the sun position at its own time, DST is applied per event, optional `$elevation` constructor argument, Asr is `null` during polar night. Differences from the previous implementation across 14 cities × 6 methods × 2 Asr factors × 365 days: at most 2 minutes (evening events), mean ≤ 0.5 min. Sunrise/sunset cross-checked against the NOAA Solar Calculator.
 - `Jalali` conversion internals rewritten as an independent implementation of the arithmetic 33-year rule; verified identical to the previous implementation on every supported day.
-- Benchmarks: see the [benchmarks guide](docs/en/benchmarks.html).
+- Benchmarks: see the [benchmarks guide](https://ehsanenaloo.github.io/RTLY-Kit/en/benchmarks.html).
 
 - `Jalali::format()` supports the full set of `date()` tokens plus backslash escaping; `createFromFormat()` and `create()` validate time fields.
 - `Format::ordinal()` handles 30 (`سی‌ام`) and 23 (`بیست و سوم`) correctly; `Format::withSeparator()` accepts Persian/Arabic digits and separators without rounding.
@@ -71,7 +71,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - `Jalali::make()`, `Hijri::make()`, `Hebrew::make()` and `createFromFormat()` now throw `InvalidDateException` for strings that contain only a time-zone token (for example `x`, `UTC`) instead of silently returning the current time.
 
-- `PrayerTimes::METHOD_MAKKAH`: Isha is now Maghrib + 120 minutes during Ramadan (Umm al-Qura practice) and Maghrib + 90 minutes otherwise. It was always + 90, so Ramadan Isha was 30 minutes early. Verified against the Umm Al-Qura Calendar (see `docs/en/prayer-times.html`).
+- `PrayerTimes::METHOD_MAKKAH`: Isha is now Maghrib + 120 minutes during Ramadan (Umm al-Qura practice) and Maghrib + 90 minutes otherwise. It was always + 90, so Ramadan Isha was 30 minutes early. Verified against the Umm Al-Qura Calendar (see `https://ehsanenaloo.github.io/RTLY-Kit/en/prayer-times.html`).
 - `BankCard` rejects numbers made of one repeated digit.
 - Duplicate `hdate()` helper declaration removed.
 - `NationalCode` no longer ships an unverifiable city table: `getLocation()` now covers only the 547 prefixes that three community datasets agree on, and returns `null` for everything else.

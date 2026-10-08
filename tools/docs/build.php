@@ -1023,6 +1023,9 @@ function main(array $argv): int
     foreach (['logo.svg', 'favicon.svg', 'social-preview.svg'] as $f) {
         $files["assets/$f"] = (string) file_get_contents("$assetDir/$f");
     }
+    foreach (glob("$assetDir/screenshots/*.{jpg,png}", GLOB_BRACE) ?: [] as $shot) {
+        $files['assets/screenshots/' . basename($shot)] = (string) file_get_contents($shot);
+    }
     $files['README.md'] = (string) file_get_contents(__DIR__ . '/README.docs.md');
     $files['.nojekyll'] = '';
     $files['index.html'] = renderRoot($strings, $present);

@@ -1,6 +1,6 @@
 # Upgrade guide
 
-Before 1.0.0, a minor release may contain breaking changes. Each one is listed here with the steps to migrate. See [API stability](docs/en/api-stability.html) for the policy.
+Before 1.0.0, a minor release may contain breaking changes. Each one is listed here with the steps to migrate. See [API stability](https://ehsanenaloo.github.io/RTLY-Kit/en/api-stability.html) for the policy.
 
 ## From the pre-release helpers to the namespaced helpers (Unreleased)
 
