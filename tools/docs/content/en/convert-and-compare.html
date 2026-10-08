@@ -1,0 +1,146 @@
+<!--
+title: Convert and compare dates
+description: The shared CalendarDate contract of Jalali, Hijri and Hebrew, how to convert a date between calendars, and how comparison and differences work across calendars and time zones.
+group: calendars
+order: 40
+-->
+<h2 id="idea">One instant, three calendars</h2>
+<p>The three calendar classes (<a href="jalali.html">Jalali</a>, <a href="hijri.html">Hijri</a>, <a href="hebrew.html">Hebrew</a>) share one design: each wraps a single <code>DateTimeImmutable</code> instant and only <em>views</em> it in its own calendar. Conversion between calendars therefore never goes through text; it is the same instant read through another set of rules. Two consequences follow from this:</p>
+<ul>
+<li>Converting a date and converting back gives the same instant.</li>
+<li>Comparing or subtracting dates of different calendars is always well defined, because they are compared as instants.</li>
+</ul>
+<p>All examples use this header:</p>
+<pre><code class="language-php">&lt;?php
+require 'vendor/autoload.php';
+
+use RtlyKit\Calendar\Hebrew;
+use RtlyKit\Calendar\Hijri;
+use RtlyKit\Calendar\Jalali;
+use RtlyKit\Contracts\CalendarDate;
+use RtlyKit\Exceptions\InvalidDateException;
+
+$utc = new DateTimeZone('UTC');</code></pre>
+
+<h2 id="convert">Converting between calendars</h2>
+<h3 id="make-from-calendar">Pass a date to another class's <code>make()</code></h3>
+<p>Every <code>make()</code> accepts a <code>CalendarDate</code> (as well as a <code>DateTimeInterface</code>, an <code>int</code> timestamp, a string or <code>null</code>). Pass the date you have to the class you want:</p>
+<pre><code class="language-php">$j = Jalali::create(1405, 1, 1, 12, 0, 0, $utc);
+
+echo Hijri::make($j)-&gt;format('Y/m/d F', 'en');    // 1447/10/02 Shawwal
+echo Hebrew::make($j)-&gt;format('Y/m/d F');          // 5786/07/03 Nisan
+echo Jalali::make(Hijri::make($j));                 // 1405/01/01 12:00:00</code></pre>
+<p>The time of day and the time zone are carried over. To re-express the result in another zone pass a <code>DateTimeZone</code> as the second argument of <code>make()</code>:</p>
+<pre><code class="language-php">$tehran = new DateTimeZone('Asia/Tehran');
+
+$h = Hijri::make($j, $tehran);
+echo $h-&gt;getTimezone()-&gt;getName();      // Asia/Tehran
+echo $h-&gt;getHour(), ':', $h-&gt;getMinute();   // 15:30   (12:00 UTC)</code></pre>
+<div class="note"><strong>Same-class shortcut.</strong> <code>Hijri::make($hijri)</code> and <code>Hebrew::make($hebrew)</code> return the very instance you pass (any time zone or variant argument is ignored). <code>Jalali::make($jalali)</code> returns it too unless you pass a time zone, in which case you get a copy in that zone. To change a Hijri date's variant, go through the instant: <code>Hijri::make($h-&gt;toGregorian(), null, HijriVariant::Tabular)</code>.</div>
+
+<h3 id="gregorian">From and to Gregorian</h3>
+<p><code>toGregorian()</code> returns the underlying <code>DateTimeImmutable</code>; passing a <code>DateTimeInterface</code> to <code>make()</code> goes the other way. The static converters work on plain integers:</p>
+<pre><code class="language-php">$g = new DateTimeImmutable('2026-03-21 12:00', $utc);
+
+echo json_encode([
+    Jalali::gregorianToJalali(2026, 3, 21),
+    Hijri::gregorianToHijri(2026, 3, 21),
+    Hebrew::gregorianToHebrew(2026, 3, 21),
+]);
+// [[1405,1,1],[1447,10,2],[5786,7,3]]
+
+echo json_encode(Jalali::jalaliToGregorian(1405, 1, 1));   // [2026,3,21]
+echo get_class($j-&gt;toGregorian());                         // DateTimeImmutable</code></pre>
+<p>The Gregorian year must be 1 to 9999. Each calendar's own range (Jalali -620 to 9377, Hijri 1 to 9665, Hebrew 3762 to 13759) is the part of that span the calendar can represent, so converting an early Gregorian date to Hebrew or Hijri can throw <code>InvalidDateException</code> even though the Gregorian date itself is valid:</p>
+<pre><code class="language-php">try { Hebrew::make(new DateTimeImmutable('0001-01-01', $utc)); }
+catch (InvalidDateException $e) { echo $e-&gt;getMessage(); }
+// Date out of the supported Hebrew range (3762..13759): 3761</code></pre>
+
+<h3 id="time-zones">Time zones decide the date</h3>
+<p>The calendar date of an instant depends on the zone you look at it in. The same moment is still 1 Farvardin 1405 (21 March) in UTC but already 2 Farvardin in Tehran, which is 3.5 hours ahead:</p>
+<pre><code class="language-php">$instant = new DateTimeImmutable('2026-03-21 22:30', $utc);
+
+echo Jalali::make($instant);            // 1405/01/01 22:30:00   (UTC)
+echo Jalali::make($instant, $tehran);   // 1405/01/02 02:00:00   (Tehran, +03:30)</code></pre>
+<p>Pass an explicit zone whenever the calendar day matters; do not rely on the server default.</p>
+
+<h2 id="contract">The <code>CalendarDate</code> contract</h2>
+<p><code>RtlyKit\Contracts\CalendarDate</code> is an interface that extends <code>Stringable</code> and is implemented by <code>Jalali</code>, <code>Hijri</code> and <code>Hebrew</code>. Type-hint it to write code that works with every calendar:</p>
+<pre><code class="language-php">function describe(CalendarDate $d): string
+{
+    return sprintf('%s %d/%02d/%02d', (new ReflectionClass($d))-&gt;getShortName(),
+        $d-&gt;getYear(), $d-&gt;getMonth(), $d-&gt;getDay());
+}
+
+foreach ([Jalali::class, Hijri::class, Hebrew::class] as $class) {
+    echo describe($class::make($g)), "\n";
+}
+// Jalali 1405/01/01
+// Hijri 1447/10/02
+// Hebrew 5786/07/03</code></pre>
+<table>
+<thead><tr><th>Group</th><th>Members</th></tr></thead>
+<tbody>
+<tr><td>Construction</td><td><code>make()</code>, <code>now()</code>, <code>today()</code>, <code>create()</code></td></tr>
+<tr><td>Calendar arithmetic (static)</td><td><code>isValid()</code>, <code>isLeapYear()</code>, <code>daysInYear()</code>, <code>daysInMonth()</code></td></tr>
+<tr><td>Getters</td><td><code>getYear()</code>, <code>getMonth()</code>, <code>getDay()</code>, <code>getHour()</code>, <code>getMinute()</code>, <code>getSecond()</code>, <code>getDayOfWeek()</code>, <code>getTimestamp()</code>, <code>getTimezone()</code>, <code>toGregorian()</code></td></tr>
+<tr><td>Formatting</td><td><code>format()</code>, <code>toDateString()</code>, <code>toDateTimeString()</code>, <code>__toString()</code></td></tr>
+<tr><td>Modification</td><td><code>add</code>/<code>sub</code> for <code>Days</code>, <code>Hours</code>, <code>Minutes</code>, <code>Seconds</code>, <code>Months</code>, <code>Years</code>; <code>startOf</code>/<code>endOf</code> for <code>Day</code>, <code>Month</code>, <code>Year</code></td></tr>
+<tr><td>Comparison</td><td><code>eq</code>, <code>ne</code>, <code>gt</code>, <code>gte</code>, <code>lt</code>, <code>lte</code>, <code>equals</code>, <code>isBefore</code>, <code>isAfter</code>, <code>between</code>, <code>isPast</code>, <code>isFuture</code>, <code>isToday</code></td></tr>
+<tr><td>Difference</td><td><code>diffInDays()</code>, <code>diffInMonths()</code>, <code>diffInYears()</code></td></tr>
+</tbody>
+</table>
+<p>Guarantees that hold for every implementation:</p>
+<ul>
+<li>Instances are <code>final</code> and immutable; modifiers return a new object.</li>
+<li>Every method that takes a date, timestamp or delta throws only <code>InvalidDateException</code> for out-of-range input, never a <code>TypeError</code> or <code>ValueError</code>.</li>
+<li><code>format()</code> is declared with the pattern only; each class adds its own optional trailing parameters (<code>$persianDigits</code> for Jalali; <code>$locale</code> and <code>$digits</code> for Hijri; <code>$locale</code> for Hebrew). Through the interface you can call only <code>format($pattern)</code>.</li>
+<li>Weekday numbering is <em>not</em> uniform: Jalali is Saturday-first, Hijri and Hebrew are Sunday-first.</li>
+</ul>
+<pre><code class="language-php">$i = new DateTimeImmutable('2025-10-07', $utc);   // a Tuesday
+echo Jalali::make($i)-&gt;getDayOfWeek(), ' ', Hijri::make($i)-&gt;getDayOfWeek(), ' ', Hebrew::make($i)-&gt;getDayOfWeek();
+// 3 2 2   (Jalali: Saturday = 0; the others: Sunday = 0)</code></pre>
+
+<h2 id="compare">Comparing across calendars</h2>
+<p>All comparison methods take <code>CalendarDate|DateTimeInterface</code> and compare timestamps. No conversion is needed first:</p>
+<pre><code class="language-php">$nowruz = Jalali::create(1405, 1, 1, 12, 0, 0, $utc);
+
+var_dump($nowruz-&gt;eq(Hijri::make($nowruz)));                     // bool(true)
+var_dump($nowruz-&gt;eq($nowruz-&gt;toGregorian()));                   // bool(true)
+var_dump($nowruz-&gt;gt(Hebrew::create(5785, 1, 1, 0, 0, 0, $utc)));  // bool(true)
+var_dump($nowruz-&gt;between(Hijri::create(1447, 8, 1, 0, 0, 0, $utc),
+                          Hebrew::create(5787, 1, 1, 0, 0, 0, $utc))); // bool(true)</code></pre>
+<p><code>between($a, $b, $equal = true)</code> accepts the bounds in either order and includes them unless you pass <code>false</code>. Equality is equality of instants: <code>Jalali::create(1405, 1, 1)</code> built in UTC is not equal to the same civil date built in Tehran, because they are 3.5 hours apart.</p>
+<p>To sort a mixed list, order by <code>getTimestamp()</code>:</p>
+<pre><code class="language-php">$list = [
+    Hebrew::create(5786, 1, 1, 0, 0, 0, $utc),
+    Jalali::create(1405, 1, 1, 0, 0, 0, $utc),
+    Hijri::create(1447, 1, 1, 0, 0, 0, $utc),
+];
+usort($list, fn (CalendarDate $a, CalendarDate $b) =&gt; $a-&gt;getTimestamp() &lt;=&gt; $b-&gt;getTimestamp());
+
+foreach ($list as $d) { echo $d::class, ' ', $d-&gt;toGregorian()-&gt;format('Y-m-d'), "\n"; }
+// RtlyKit\Calendar\Hijri 2025-06-26
+// RtlyKit\Calendar\Hebrew 2025-09-23
+// RtlyKit\Calendar\Jalali 2026-03-21</code></pre>
+
+<h2 id="diff">Differences across calendars</h2>
+<p><code>diffInDays()</code> counts whole days between the two instants and does not care about calendars. <code>diffInMonths()</code> and <code>diffInYears()</code> count whole months and years <em>of the calendar of the object you call them on</em>; the other date is re-expressed in that calendar first. With <code>$absolute = false</code> the sign is that of <code>$this - $other</code>.</p>
+<pre><code class="language-php">$target = Hijri::create(1447, 9, 1, 0, 0, 0, $utc);   // 1 Ramadan 1447
+
+echo $nowruz-&gt;diffInDays($target);          // 31
+echo $nowruz-&gt;diffInDays($target, false);   // 31   ($nowruz is later than $target)
+echo $target-&gt;diffInDays($nowruz, false);   // -31
+
+echo $nowruz-&gt;diffInMonths($target);        // 1    (Jalali months)
+echo Hijri::make($nowruz)-&gt;diffInMonths($nowruz-&gt;addMonths(3));  // 3  (Hijri months)
+echo $nowruz-&gt;diffInYears(Hijri::create(1450, 1, 1, 0, 0, 0, $utc)); // 2</code></pre>
+<p>So "how many months until X" depends on which calendar you ask in; choose the one your users think in. The unit tables per calendar are in <a href="jalali.html#compare-diff">Jalali</a>, <a href="hijri.html#compare-diff">Hijri</a> and <a href="hebrew.html#compare-diff">Hebrew</a>.</p>
+
+<h2 id="limits">Edge cases and limits</h2>
+<ul>
+<li><strong>Ranges.</strong> Jalali -620..9377, Hijri 1..9665, Hebrew 3762..13759. Conversion into a calendar whose range does not contain the instant throws <code>InvalidDateException</code>.</li>
+<li><strong>Hijri variant.</strong> A Hijri value converted to another calendar and back keeps the instant, but the variant is that of the target <code>make()</code> call (Umm al-Qura by default).</li>
+<li><strong>Accuracy.</strong> Jalali is the arithmetic 33-year rule, not the astronomical official calendar. Hijri Umm al-Qura data for AH 1300 to 1500 comes from ICU/CLDR and is not verified month by month against the official publication; outside that range the arithmetic Tabular rules apply. See the <em>Known limitation</em> notes on the calendar pages.</li>
+<li><strong>Errors.</strong> Catch <code>InvalidDateException</code> for calendar problems, or <code>RtlyKit\Exceptions\RtlyKitException</code> for any library error (<a href="error-handling.html">Error handling</a>).</li>
+</ul>

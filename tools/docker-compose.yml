@@ -1,0 +1,7 @@
+# Development environment. From the repository root:
+#   docker compose -f tools/docker-compose.yml run --rm php composer check
+services:
+  php:
+    build: { context: . }
+    volumes: ["..:/app"]
+    working_dir: /app

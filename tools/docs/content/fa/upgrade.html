@@ -1,0 +1,88 @@
+<!--
+title: راهنمای ارتقا
+description: تغییرهای ناسازگار پیش از نسخهٔ ۱٫۰ با گام‌های دقیق مهاجرت، به‌علاوهٔ نکات مهم تغییرنامه برای سری 0.x.
+group: reference
+order: 80
+-->
+<p>پیش از ۱٫۰٫۰ هر انتشار minor ممکن است تغییر ناسازگار داشته باشد. هر مورد اینجا با گام‌های مهاجرت آمده است. سیاست نسخه‌گذاری در <a href="api-stability.html#versioning">پایداری API</a> است. بقیهٔ این صفحه تغییرهایی را پوشش می‌دهد که فعلاً <strong>منتشرنشده</strong> هستند، یعنی هر آنچه از ساخت‌های پیش‌انتشار اولیه تا امروز آمده؛ هنوز هیچ نسخه‌ای برچسب نخورده است.</p>
+
+<h2 id="helpers">از توابع کمکی پیش‌انتشار به توابع فضای‌نام‌دار</h2>
+
+<h3 id="no-globals">۱. توابع کمکی سراسری دیگر به‌طور پیش‌فرض تعریف نمی‌شوند</h3>
+<div class="warn"><strong>تغییر ناسازگار.</strong> ساخت‌های پیش‌انتشار قبلی <code>jdate()</code>، <code>to_persian()</code>، <code>is_national_code()</code> و سایر توابع کمکی را همان لحظه‌ای که Composer بسته را بارگذاری می‌کرد به‌صورت تابع سراسری تعریف می‌کردند. این می‌توانست با کد شما یا بستهٔ دیگری تداخل کند؛ پس حذف شد. اکنون توابع کمکی در فضای‌نام <code>RtlyKit</code> هستند و چیزی سراسری تعریف نمی‌شود.</div>
+<p>۲۷ تابع کمکی: <code>jdate</code>، <code>hdate</code>، <code>hebrew_date</code>، <code>to_persian_digits</code>، <code>to_english_digits</code>، <code>to_persian</code>، <code>to_english</code>، <code>is_national_code</code>، <code>is_sheba</code>، <code>is_bank_card</code>، <code>is_mobile</code>، <code>is_postal_code</code>، <code>is_vehicle_plate</code>، <code>validate_national_code</code>، <code>validate_sheba</code>، <code>validate_bank_card</code>، <code>validate_mobile</code>، <code>validate_postal_code</code>، <code>validate_vehicle_plate</code>، <code>number_to_words</code>، <code>normalize_text</code>، <code>contains_rtl</code>، <code>text_direction</code>، <code>is_iran_holiday</code>، <code>prayer_times</code>، <code>format_number</code> و <code>ordinal</code>.</p>
+<p><strong>راه الف: آنچه را استفاده می‌کنید import کنید (پیشنهادی).</strong></p>
+<pre><code class="language-php">use function RtlyKit\jdate;
+use function RtlyKit\is_national_code;
+
+echo jdate('2026-03-21')-&gt;format('Y/m/d');   // 1405/01/01</code></pre>
+<p>یا نام کاملاً مشخص را صدا بزنید: <code>\RtlyKit\jdate('2026-03-21')</code>.</p>
+<p><strong>راه ب: نام‌های کوتاه سراسری قدیمی را برگردانید.</strong> یک بار <code>Globals::register()</code> را صدا بزنید، مثلاً در فایل راه‌اندازی:</p>
+<pre><code class="language-php">\RtlyKit\Globals::register();
+
+echo jdate('2026-03-21')-&gt;format('Y/m/d');   // 1405/01/01، مثل قبل کار می‌کند</code></pre>
+<p>‏<code>register()</code> فقط نام‌هایی را تعریف می‌کند که هنوز آزادند. هرگز تابع موجودی را بازنویسی نمی‌کند و هرگز استثنا پرتاب نمی‌کند. فهرست نام‌هایی را که چون چیز دیگری از آن‌ها استفاده می‌کرد رد کرده برمی‌گرداند و صدا زدن چندباره‌اش بی‌خطر است:</p>
+<pre><code class="language-php">$skipped = \RtlyKit\Globals::register();
+if ($skipped !== []) {
+    error_log('RTLY-Kit globals skipped: '.implode(', ', $skipped));   // برای آن‌ها \RtlyKit\name() را به کار ببرید
+}</code></pre>
+<p>ارائه‌دهندهٔ سرویس لاراول هم تابع سراسری ثبت نمی‌کند. در Blade بنویسید <code>{{ \RtlyKit\jdate($post-&gt;created_at)-&gt;format('j F Y') }}</code> یا <code>Globals::register()</code> را از <code>AppServiceProvider::register()</code> صدا بزنید. بیشتر در <a href="helpers-and-globals.html">توابع کمکی و سراسری‌ها</a>.</p>
+
+<h3 id="other-changes">۲. تغییرهای دیگر که باید بدانید</h3>
+<table>
+<thead><tr><th>تغییر</th><th>چه کنید</th></tr></thead>
+<tbody>
+<tr><td><strong>اعتبارسنج‌ها هر مقداری می‌پذیرند.</strong> هر شش اعتبارسنج <code>RtlyKit\Contracts\Validator</code> را پیاده می‌کنند (‏<code>validate(mixed): Result</code>، <code>isValid(mixed): bool</code>). ورودی غیررشته (null، آرایه، شیء) یک <code>Result</code> نامعتبر با خطای <code>invalid_type</code> می‌دهد؛ ورودی بیش از ۴۰۹۶ بایت <code>input_too_long</code> می‌دهد. برای ورودی بد هرگز استثنا پرتاب نمی‌کنند.</td><td>بلوک‌های <code>try</code> و بررسی نوعِ احتیاطی دور اعتبارسنج‌ها را بردارید. به <a href="validators-overview.html">مرور اعتبارسنج‌ها</a> نگاه کنید.</td></tr>
+<tr><td><strong>استثناها کد دارند.</strong> <code>getErrorCode()</code> (یک enum به نام <code>ErrorCode</code>) و <code>getContext()</code> روی هر استثنای کتابخانه وجود دارد.</td><td>کاری لازم نیست. به‌جای متن پیام، روی کد تصمیم بگیرید. به <a href="error-handling.html">مدیریت خطا</a> نگاه کنید.</td></tr>
+<tr><td><strong><code>Slugify::make()</code> استثنا پرتاب می‌کند</strong>: <code>RtlyKitException</code> (با <code>input_too_long</code> یا <code>invalid_argument</code>) برای جداکنندهٔ UTF-8 نامعتبر یا بلندتر از ۶۴ بایت.</td><td>فقط اگر جداکننده را کاربر تعیین می‌کند اهمیت دارد. <code>RtlyKitThrowable</code> را بگیرید.</td></tr>
+<tr><td><strong>تقویم‌ها یک قرارداد مشترک دارند.</strong> <code>Jalali</code>، <code>Hijri</code> و <code>Hebrew</code> رابط <code>RtlyKit\Contracts\CalendarDate</code> را پیاده می‌کنند. مقایسه‌ها و <code>diffIn*()</code> یک <code>CalendarDate</code> یا هر <code>DateTimeInterface</code> می‌پذیرند، <code>make()</code> یک <code>CalendarDate</code> می‌پذیرد، و <code>equals()</code>، <code>isBefore()</code> و <code>isAfter()</code> نام‌های مستعار تازه‌اند.</td><td>فراخوانی‌های موجود به کار خود ادامه می‌دهند. به <a href="convert-and-compare.html">تبدیل و مقایسه</a> نگاه کنید.</td></tr>
+<tr><td><strong>داده‌های مرجع منتقل شد</strong> به <code>resources/data/*.php</code>.</td><td>اگر کلاس‌های جدولِ قدیمی را مستقیم می‌خواندید (هیچ‌گاه API عمومی نبودند)، به کلاس‌های عمومی مثل <code>Hijri</code>، <code>Sheba::getBankName()</code> یا <code>NationalCode::getLocation()</code> بروید.</td></tr>
+<tr><td><strong>عشای مکه در رمضان تغییر کرد.</strong> <code>PrayerTimes::METHOD_MAKKAH</code> اکنون عشا را در رمضان مغرب + ۱۲۰ دقیقه (روش ام‌القری) و در بقیهٔ سال مغرب + ۹۰ دقیقه می‌دهد. ساخت قبلی همیشه ۹۰ می‌گرفت.</td><td>عشای رمضان ۳۰ دقیقه دیرتر می‌شود. این رفع باگ است؛ مقدارهای مورد انتظارِ ذخیره‌شده را به‌روز کنید. مثال زیر را ببینید.</td></tr>
+</tbody>
+</table>
+<p>بررسی رفتار تازهٔ مکه (2026-03-01 در رمضان است و 2026-03-21 نیست):</p>
+<pre><code class="language-php">use RtlyKit\Prayer\PrayerTimes;
+
+$mecca = PrayerTimes::forCity('mecca', PrayerTimes::METHOD_MAKKAH);
+foreach (['2026-03-01', '2026-03-21'] as $d) {
+    $t = $mecca-&gt;getTimes(new DateTimeImmutable($d));
+    echo $d, ' maghrib ', $t['maghrib'], ' isha ', $t['isha'], "\n";
+}
+// 2026-03-01 maghrib 18:25 isha 20:25
+// 2026-03-21 maghrib 18:32 isha 20:02</code></pre>
+
+<h2 id="changelog-highlights">نکات مهم تغییرنامه برای سری 0.x</h2>
+<p>این‌ها نکاتی از تغییرنامه‌اند که برای کاربر دیدنی‌اند، دسته‌بندی‌شده؛ فهرست کامل در <code>CHANGELOG.md</code> مخزن است.</p>
+
+<h3 id="highlights-breaking">رفتارهایی که تغییر کرده</h3>
+<ul>
+<li><strong>ورودی تقویمِ بیرون از بازه استثنا می‌دهد.</strong> سال، timestamp و مقدارهای بسیار بزرگ <code>add*()</code> / <code>sub*()</code> بیرون از بازه‌های پشتیبانی‌شده به‌جای <code>TypeError</code> یا تاریخ سرریزشده، <code>InvalidDateException</code> پرتاب می‌کنند. بازه‌ها: جلالی ‎-620 تا 9377، هجری 1 تا 9665، عبری 3762 تا 13759 (<a href="limits.html#calendars">محدودیت‌ها</a>).</li>
+<li><strong>قواعد رشتهٔ <code>make()</code> مشخص شد.</strong> سال کمتر از ۱۷۰۰ (برای عبری ۳۰۰۰ یا بیشتر) در تقویم خود کلاس خوانده می‌شود و بقیه میلادی؛ رشتهٔ خالی استثنا می‌دهد؛ <code>null</code> یعنی اکنون. رشتهٔ ISO میلادی با سال کمتر از ۱۷۰۰ پس جلالی یا هجری خوانده می‌شود: برای چنین تاریخ‌هایی <code>DateTimeImmutable</code> بدهید (<a href="troubleshooting-faq.html#string-year">پرسش‌های متداول</a>).</li>
+<li><strong>تعطیلات.</strong> <code>IranHolidays</code> مناسبت‌های اسلامی را فقط برای سال‌های ۱۳۰۰ تا ۱۵۰۰ هجری قمری گزارش می‌کند. بیرون از آن فقط تعطیلات ثابت جلالی برمی‌گردد و سال بیرون از بازهٔ جلالی <code>InvalidDateException</code> پرتاب می‌کند.</li>
+<li><strong>ورودی عددی.</strong> <code>NumberToWords::convert()</code> و <code>Format::ordinal()</code> <code>float</code> صحیح (مثل <code>3.0</code>) را می‌پذیرند و برای <code>float</code> اعشاری، <code>NaN</code> و <code>INF</code> <code>InvalidNumberException</code> پرتاب می‌کنند.</li>
+<li><strong>سقف ورودی</strong> (تقویت امنیت): رشته‌های بیش از ۴۰۹۶ بایت در <code>NumberToWords</code> و <code>Format</code> رد می‌شوند و <code>Format::withSeparator()</code> عددهای بیش از ۱۰۰۰ نویسه را رد می‌کند. <code>InvalidNumberException</code> (با <code>input_too_long</code>) پرتاب می‌شود.</li>
+<li><strong>جدول‌های داده به موارد تأییدشده محدود شد.</strong> <code>NationalCode::getLocation()</code> ۵۴۷ پیش‌شماره را پوشش می‌دهد و برای بقیه <code>null</code> برمی‌گرداند؛ جدول‌های BIN (‏۳۹)، کد شبا (‏۳۸) و اپراتور فقط ورودی‌های تأییدشده با دو منبع را نگه می‌دارند. نامی که پیش‌تر برمی‌گشت ممکن است اکنون <code>null</code> باشد. <code>BankCard</code> عددی را که از یک رقم تکراری ساخته شده رد می‌کند.</li>
+<li><strong>هستهٔ اوقات شرعی بازنویسی شد</strong> بر پایهٔ معادلات استاندارد نجومی؛ اختلاف با پیاده‌سازی قبلی در شبکهٔ مقایسه برای رویدادهای عصر حداکثر ۲ دقیقه بود (میانگین ۰٫۵ دقیقه یا کمتر). ساعت تابستانی برای هر رویداد جداگانه اعمال می‌شود و آرگومان سازندهٔ <code>$elevation</code> تازه است.</li>
+<li><strong>مناسبت‌های اسلامی</strong> از تقویم هجری مشتق می‌شوند و ممکن است ۱ تا ۲ روز با اعلام رسمی فرق داشته باشند.</li>
+</ul>
+
+<h3 id="highlights-added">افزوده‌شده‌ها</h3>
+<ul>
+<li>تقویم عبریِ PHP خالص (<code>Hebrew</code>) بدون نیاز به <code>ext-calendar</code>؛ تقویم هجری بازنویسی‌شده بر پایهٔ جدول ام‌القری برای سال‌های ۱۳۰۰ تا ۱۵۰۰، با جایگزین <code>HijriVariant::Tabular</code>.</li>
+<li>اعتبارسنجی ساخت‌یافته: <code>Result</code> (‏<code>isValid()</code>، <code>errors()</code>، <code>details()</code>) و توابع <code>validate_*()</code> با کدهای خطای پایدار.</li>
+<li>‏<code>NumberToWords::fromWords()</code>، اعداد تا ۲۱ رقم، اعداد منفی، و اعداد به حروف عربی کمتر از 10^9 (‏<code>number_to_words($n, 'ar')</code>).</li>
+<li>‏<code>Normalizer::fixHalfSpace()</code> / <code>clean()</code>، <code>Detector::isRtlLocale()</code> / <code>isHebrew()</code>، <code>IranHolidays::getTitles()</code> / <code>isBusinessDay()</code> / <code>nextBusinessDay()</code> و <code>PrayerTimes::nextPrayer()</code>.</li>
+<li>لاراول: facade به نام <code>Jalali</code> و factory حل‌شده از کانتینر، کشف خودکار، شش قاعدهٔ اعتبارسنجی با پیام‌های fa / en / ar و <code>JalaliCast</code>.</li>
+<li>ماکروهای Carbon: <code>toJalali</code>، <code>jformat</code>، <code>createFromJalali</code>، <code>toHijri</code>، <code>toHebrew</code>، <code>createFromHijri</code>، <code>createFromHebrew</code>.</li>
+<li>سلسله‌مراتب استثنا زیر <code>RtlyKitThrowable</code>، enum به نام <code>ErrorCode</code>، <code>Globals::register()</code> و قراردادهای <code>CalendarDate</code> و <code>Validator</code>.</li>
+</ul>
+
+<h3 id="highlights-fixed">رفع‌شده‌ها</h3>
+<ul>
+<li>عشای روش مکه در رمضان (در بالا شرح داده شد).</li>
+<li>‏<code>Format::ordinal()</code> برای ۳۰ و ۲۳؛ <code>Format::withSeparator()</code> ارقام فارسی و عربی را بدون گرد کردن می‌پذیرد؛ <code>Mobile</code> شکل‌های <code>0098</code>، <code>98</code> و <code>9xxxxxxxxx</code> بدون پیش‌شماره را نرمال می‌کند؛ <code>Sheba</code> شکل ۲۴ رقمیِ بدون <code>IR</code> را می‌پذیرد.</li>
+<li>مدیریت منطقهٔ زمانی اوقات شرعی در اطراف ساعت تابستانی، و مدیریت خطا برای روش یا ضریب عصرِ ناشناخته.</li>
+<li>تعریف تکراریِ تابع کمکی <code>hdate()</code>.</li>
+</ul>
+
+<div class="note"><strong>یادداشت.</strong> تا وقتی کتابخانه زیر ۱٫۰٫۰ است یک بازهٔ minor را قفل کنید (مثلاً <code>~0.1.0</code>)، پیش از هر ارتقای minor این صفحه را بخوانید و آزمون‌های خودتان را روی خروجی‌های تاریخ و اوقات شرعیِ ذخیره‌شده اجرا کنید.</div>

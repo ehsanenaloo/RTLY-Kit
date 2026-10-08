@@ -1,0 +1,74 @@
+<!--
+title: نصب
+description: پیش‌نیازها، نصب با کامپوزر یا داکر، یکپارچگی اختیاری با Carbon و لاراول، نسخه‌های پشتیبانی‌شده، راستی‌آزمایی نصب و حذف تمیز بسته.
+group: start
+order: 20
+-->
+<h2 id="requirements">پیش‌نیازها</h2>
+<table>
+<thead><tr><th>نیازمندی</th><th>وضعیت</th><th>توضیح</th></tr></thead>
+<tbody>
+<tr><td>PHP <code>^8.2</code></td><td>الزامی</td><td>در CI روی PHP 8.2، 8.3 و 8.4 آزموده می‌شود</td></tr>
+<tr><td><code>ext-mbstring</code></td><td>الزامی</td><td>در بیلدهای استاندارد PHP فعال است؛ <code>ordinal()</code>، <code>Slugify</code> و ابزارهای متنی از آن استفاده می‌کنند</td></tr>
+<tr><td>Composer 2</td><td>برای نصب لازم است</td><td>بارگذاری خودکار را انجام می‌دهد؛ بسته هیچ وابستگی الزامی کامپوزری ندارد</td></tr>
+<tr><td><code>nesbot/carbon</code> ^3.0</td><td>اختیاری</td><td><a href="carbon-macros.html">ماکروهای Carbon</a> را فعال می‌کند</td></tr>
+<tr><td><code>illuminate/support</code> ^11 یا ^12</td><td>اختیاری</td><td>کشف خودکار لاراول، فاساد، قواعد اعتبارسنجی و کست Eloquent (<a href="laravel-setup.html">راه‌اندازی لاراول</a>)</td></tr>
+</tbody>
+</table>
+<p>همین. به‌ویژه، <code>ext-calendar</code>، <code>ext-intl</code> و پایگاه داده <strong>لازم نیست</strong>: سه تقویم با PHP خالص نوشته شده‌اند و جدول ام‌القری درون بسته است.</p>
+
+<h2 id="composer">نصب با کامپوزر</h2>
+<pre><code class="language-bash">composer require enaxon/rtly-kit</code></pre>
+<p>مطمئن شوید اسکریپت ورودی شما بارگذار خودکار کامپوزر را یک بار فراخوانی می‌کند:</p>
+<pre><code class="language-php">&lt;?php
+require __DIR__.'/vendor/autoload.php';</code></pre>
+<p>بارگذار خودکار فضای‌نام <code>RtlyKit\</code> را به پوشهٔ <code>src/</code> بسته نگاشت می‌کند و یک فایل کمکی را هم بارگذاری می‌کند که توابع کمکی فضای‌نام‌دار (<code>RtlyKit\jdate()</code> و بقیه) را تعریف می‌کند. آن فایل هیچ تابع سراسری تعریف نمی‌کند؛ نام‌های کوتاهِ اختیاری در <a href="helpers-and-globals.html">توابع کمکی و سراسری‌ها</a> آمده است.</p>
+<h3 id="optional">بسته‌های اختیاری</h3>
+<pre><code class="language-bash">composer require nesbot/carbon          # ماکروهای Carbon: toJalali()، createFromJalali()، ...
+composer require illuminate/support     # فقط در پروژه‌های غیرلاراولی که قطعه‌های لاراولی را می‌خواهند</code></pre>
+<p>هر دو یکپارچگی خودکار فعال می‌شوند. ماکروهای Carbon وقتی ثبت می‌شوند که بارگذار خودکار Carbon را پیدا کند. در برنامهٔ لاراول، ارائه‌دهندهٔ سرویس و نام مستعار فاساد <code>Jalali</code> با کشف خودکار بسته پیدا می‌شوند و چیزی به <code>config/app.php</code> اضافه نمی‌شود. اگر استقرار شما کشف را کش می‌کند، پس از نصب در پروژهٔ لاراولیِ موجود <code>php artisan package:discover</code> را اجرا کنید.</p>
+
+<h2 id="docker">نصب بدون PHP روی دستگاه (داکر)</h2>
+<p>اگر PHP و کامپوزر محلی ندارید، از ایمیج‌های رسمی اجرایشان کنید. از پوشهٔ پروژه:</p>
+<pre><code class="language-bash">docker run --rm -v "$PWD":/app -w /app composer:2 require enaxon/rtly-kit
+docker run --rm -v "$PWD":/app -w /app php:8.3-cli php quick.php</code></pre>
+<p>فرمان اول بسته را در <code>vendor/</code> نصب می‌کند؛ دومی اسکریپتی مثل اسکریپت <a href="quick-start.html">شروع سریع</a> را با PHP 8.3 اجرا می‌کند (ایمیج رسمی CLI شامل <code>mbstring</code> است). برای کار روی خود کتابخانه، مخزن را کلون کنید و از <code>docker-compose.yml</code> آن استفاده کنید:</p>
+<pre><code class="language-bash">docker compose -f tools/docker-compose.yml run --rm php composer install
+docker compose -f tools/docker-compose.yml run --rm php composer test
+docker compose -f tools/docker-compose.yml run --rm php php -r 'require "vendor/autoload.php"; echo RtlyKit\jdate("2026-03-21")-&gt;format("Y/m/d");'</code></pre>
+
+<h2 id="versions">نسخه‌های پشتیبانی‌شده</h2>
+<ul>
+<li><strong>PHP</strong> نسخه‌های 8.2، 8.3 و 8.4 (ماتریس CI). انتظار می‌رود نسخه‌های جدیدتر 8.x هم کار کنند ولی هنوز در ماتریس نیستند.</li>
+<li><strong>لاراول</strong> 11 و 12.</li>
+<li><strong>Carbon</strong> نسخهٔ 3.</li>
+<li><strong>نسخه‌گذاری.</strong> پیش از 1.0.0 هر انتشار فرعی ممکن است تغییر ناسازگار داشته باشد. هر مورد با مراحل مهاجرت در راهنمای ارتقا فهرست شده است (<a href="upgrade.html">ارتقا</a>) و تعهد سازگاری و فهرست کلاس‌های داخلی در <a href="api-stability.html">پایداری API</a> آمده است. تا 1.0.0 نسخهٔ فرعی را در قید <code>composer.json</code> ثابت کنید (قید تیلدا مثل <code>~0.x.y</code> با نسخه‌ای که آزموده‌اید) و پیش از بالا بردن آن راهنمای ارتقا را بخوانید.</li>
+</ul>
+
+<h2 id="verify">راستی‌آزمایی نصب</h2>
+<p>فایل <code>verify.php</code> را در ریشهٔ پروژه بسازید:</p>
+<pre><code class="language-php">&lt;?php
+require __DIR__.'/vendor/autoload.php';
+
+echo PHP_VERSION, "\n";
+echo extension_loaded('mbstring') ? "mbstring: yes\n" : "mbstring: NO\n";
+echo \RtlyKit\jdate('2026-03-21')-&gt;format('Y/m/d'), "\n";   // 1405/01/01</code></pre>
+<p>با <code>php verify.php</code> اجرا کنید. خط آخر باید <code>1405/01/01</code> چاپ کند؛ نسخهٔ PHP زیر 8.2 یا <code>mbstring: NO</code> یعنی محیط پیش‌نیازها را ندارد. دو فرمان کامپوزر هم کمک می‌کنند:</p>
+<pre><code class="language-bash">composer show enaxon/rtly-kit            # نسخهٔ نصب‌شده و فراداده
+composer check-platform-reqs          # PHP و افزونه‌ها را در برابر همهٔ بسته‌های نصب‌شده می‌سنجد</code></pre>
+<h3 id="problems">اگر چیزی کار نکرد</h3>
+<ul>
+<li><code>Class "RtlyKit\..." not found</code> یا <code>Call to undefined function RtlyKit\jdate()</code>: <code>vendor/autoload.php</code> فراخوانی نشده یا بارگذار خودکار کامپوزر کهنه است؛ <code>composer dump-autoload</code> را اجرا کنید.</li>
+<li><code>Call to undefined function jdate()</code> (بدون فضای‌نام): نام‌های کوتاه سراسری اختیاری‌اند. از <code>use function RtlyKit\jdate;</code> استفاده کنید یا <code>\RtlyKit\Globals::register()</code> را صدا بزنید.</li>
+<li>کامپوزر نصب نمی‌کند و از نسخهٔ PHP یا <code>ext-mbstring</code> می‌گوید: PHP 8.2 یا جدیدتر نصب کنید یا <code>mbstring</code> را در <code>php.ini</code> فعال کنید.</li>
+<li>موارد بیشتر: <a href="troubleshooting-faq.html">عیب‌یابی و پرسش‌های پرتکرار</a>.</li>
+</ul>
+
+<h2 id="uninstall">حذف</h2>
+<ol>
+<li>بسته را حذف کنید: <code>composer remove enaxon/rtly-kit</code>. این کار بارگذار خودکار را هم دوباره می‌سازد.</li>
+<li>استفاده‌های خودتان را پاک کنید: خط‌های <code>use RtlyKit\...</code> و <code>use function RtlyKit\...</code>، فراخوانی‌های <code>\RtlyKit\Globals::register()</code> و بلوک‌های catch برای <code>RtlyKit\Exceptions\*</code>. برای یافتن همه، کدتان را با <code>RtlyKit</code> جست‌وجو کنید.</li>
+<li>پروژه‌های Carbon: ماکروها (<code>toJalali</code>، <code>jformat</code>، <code>toHijri</code>، <code>toHebrew</code>، <code>createFromJalali</code>، <code>createFromHijri</code>، <code>createFromHebrew</code>) با بسته می‌روند؛ ابتدا فراخوانی‌هایشان را جایگزین کنید.</li>
+<li>پروژه‌های لاراول: قواعد اعتبارسنجی <code>national_code</code>، <code>sheba</code>، <code>bank_card</code>، <code>iran_mobile</code>، <code>mobile</code>، <code>postal_code</code> و <code>vehicle_plate</code> را از فرم‌ریکوئست‌ها، <code>JalaliCast</code> را از مدل‌ها، هر استفاده از فاساد <code>Jalali</code> و هر فایل ترجمه‌ای را که از بسته کپی کرده‌اید پاک کنید. سپس <code>php artisan optimize:clear</code> را اجرا کنید. دادهٔ ذخیره‌شده در پایگاه داده با حذف بسته دست‌نخورده می‌ماند؛ پیش از برداشتن کست بررسی کنید که کست چگونه آن را ذخیره کرده است.</li>
+</ol>
+<p>بسته چیزی بیرون از <code>vendor/</code> نصب نمی‌کند (جز قفل کامپوزر و فرادادهٔ بارگذار خودکار)، پس چیز دیگری برای پاک‌سازی نیست.</p>

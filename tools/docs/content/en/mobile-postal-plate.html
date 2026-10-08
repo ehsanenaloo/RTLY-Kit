@@ -1,0 +1,111 @@
+<!--
+title: Mobile, postal code and plate
+description: Validate Iranian mobile numbers in every common input form, postal codes, and vehicle plates, with operator hints, parsing and honest limits.
+group: validation
+order: 40
+-->
+<h2 id="quick-start">Quick start</h2>
+<pre><code class="language-php">&lt;?php
+require 'vendor/autoload.php';
+
+use RtlyKit\Validation\Mobile;
+use RtlyKit\Validation\PostalCode;
+use RtlyKit\Validation\VehiclePlate;
+use function RtlyKit\is_mobile;
+use function RtlyKit\is_postal_code;
+use function RtlyKit\is_vehicle_plate;
+
+var_dump(is_mobile('+98 912 123 4567'));          // bool(true)
+var_dump(is_postal_code('۱۲۳۴۵-۶۷۸۹۰'));          // bool(true)
+var_dump(is_vehicle_plate('12ب345 ایران 67'));    // bool(true)
+
+echo Mobile::getOperator('09121234567'), "\n";    // همراه اول</code></pre>
+<p>All three implement the shared <a href="validators-overview.html#contract"><code>Validator</code> contract</a>. Their helpers are <code>validate_mobile()</code>, <code>validate_postal_code()</code> and <code>validate_vehicle_plate()</code>.</p>
+
+<h2 id="mobile">Mobile numbers</h2>
+<h3 id="mobile-forms">Accepted forms</h3>
+<p><code>Mobile</code> normalizes everything to the national form <code>09xxxxxxxxx</code> (11 digits). It accepts these five spellings, with Persian or Arabic digits and with spaces, hyphens or parentheses mixed in:</p>
+<table>
+<thead><tr><th>Input</th><th><code>normalized</code></th></tr></thead>
+<tbody>
+<tr><td><code>09121234567</code></td><td><code>09121234567</code></td></tr>
+<tr><td><code>9121234567</code></td><td><code>09121234567</code></td></tr>
+<tr><td><code>989121234567</code></td><td><code>09121234567</code></td></tr>
+<tr><td><code>+989121234567</code></td><td><code>09121234567</code></td></tr>
+<tr><td><code>00989121234567</code></td><td><code>09121234567</code></td></tr>
+<tr><td><code>۰۹۱۲ ۱۲۳ ۴۵۶۷</code></td><td><code>09121234567</code></td></tr>
+<tr><td><code>(0912) 123-4567</code></td><td><code>09121234567</code></td></tr>
+</tbody>
+</table>
+<p>Because <code>Mobile</code> keeps only digits, any non-digit separator is dropped. An integer such as <code>9121234567</code> is also accepted (it has no leading zero to lose, so it is read as the 10-digit form).</p>
+
+<h3 id="mobile-rules">The rule</h3>
+<p>Validity is a shape check: after normalization the number must match <code>09</code> followed by a digit from 0 to 4 or 9, then eight more digits. These are the blocks <code>090x</code> to <code>094x</code> and <code>099x</code> that are allocated to mobile networks. Anything else, such as <code>0950...</code> or a 10-digit number, returns <code>invalid_format</code>.</p>
+<pre><code class="language-php">$r = Mobile::validate('09121234567');
+echo json_encode($r-&gt;details(), JSON_UNESCAPED_UNICODE);
+// {"normalized":"09121234567","operator":"همراه اول"}
+
+print_r(Mobile::validate('09501234567')-&gt;errors());   // [invalid_format]
+print_r(Mobile::validate('0912123456')-&gt;errors());    // [invalid_format]
+echo Mobile::normalize('+98 912 123 4567');           // 09121234567</code></pre>
+
+<h3 id="mobile-operator">Operator hint</h3>
+<p><code>details()['operator']</code> and <code>Mobile::getOperator()</code> look the number up in a small table of well-established prefixes: Hamrah-e Aval (<code>0910</code>-<code>0919</code>, <code>0990</code>-<code>0994</code>), Irancell (<code>0900</code>-<code>0905</code>, <code>0930</code>, <code>0933</code>, <code>0935</code>-<code>0939</code>), RighTel (<code>0920</code>-<code>0922</code>), Shatel Mobile (<code>0998</code>) and Aptel (<code>09991</code>). The longest matching prefix wins. For a valid number whose prefix is not in the table the operator is <code>null</code>:</p>
+<pre><code class="language-php">echo Mobile::getOperator('09351234567'), "\n";           // ایرانسل
+echo Mobile::getOperator('09981234567'), "\n";           // شاتل موبایل
+echo Mobile::getOperator('09991012345'), "\n";           // آپتل
+var_dump(Mobile::validate('09951234567')-&gt;isValid());   // bool(true)
+var_dump(Mobile::getOperator('09951234567'));            // NULL, valid but not in the table
+var_dump(Mobile::getOperator('09501234567'));            // NULL, invalid number</code></pre>
+<div class="known"><strong>Known limitation.</strong> The operator is a prefix hint only. Number portability lets people keep their number when they change operator, so the prefix never guarantees the current operator. The table is deliberately conservative: blocks whose allocation differs between sources (for example <code>0931</code>, <code>0932</code>, <code>0934</code>, <code>0940</code>-<code>0949</code> and most of <code>0995</code>-<code>0999</code>) are omitted and return <code>null</code>, though the number is still valid. The table has no individually cited source; see <a href="accuracy-and-data.html">Accuracy and data</a>. Do not route SMS or billing by it.</div>
+<p>Details: <code>normalized</code>, <code>operator</code>. The only error keys are <code>invalid_format</code>, <code>invalid_type</code> and <code>input_too_long</code>. Landline and international numbers are not accepted.</p>
+
+<h2 id="postal-code">Postal code</h2>
+<p>An Iranian postal code has 10 digits and never starts with <code>0</code>. <code>PostalCode</code> keeps only digits (Persian and Arabic digits are converted first, then separators such as spaces and hyphens are dropped) and checks the length and the first digit:</p>
+<pre><code class="language-php">$r = PostalCode::validate('۱۲۳۴۵-۶۷۸۹۰');
+echo json_encode($r-&gt;details());   // {"normalized":"1234567890"}
+
+print_r(PostalCode::validate('12345')-&gt;errors());          // [invalid_length]
+print_r(PostalCode::validate('123456789012')-&gt;errors());   // [invalid_length]
+print_r(PostalCode::validate('0123456789')-&gt;errors());     // [invalid_format]</code></pre>
+<table>
+<thead><tr><th>Error</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td><code>invalid_length</code></td><td>The digit count is not 10</td></tr>
+<tr><td><code>invalid_format</code></td><td>The code starts with <code>0</code></td></tr>
+<tr><td><code>invalid_type</code>, <code>input_too_long</code></td><td>See <a href="validators-overview.html#input-handling">Input handling</a></td></tr>
+</tbody>
+</table>
+<div class="note"><strong>Shape only.</strong> There is no check digit in a postal code, and no region-range check is performed: a 10-digit code that does not start with <code>0</code> is valid even if Iran Post has not assigned it. An integer such as <code>1234567890</code> is accepted because a valid code never starts with zero, but keeping postal codes as strings is still the safer habit.</div>
+
+<h2 id="vehicle-plate">Vehicle plate</h2>
+<h3 id="plate-shape">Shape</h3>
+<p><code>VehiclePlate</code> understands the common passenger-car plate: two digits, one letter, three digits, and a two-digit region code, written as <code>12ب345 ایران 67</code>. The word «ایران», spaces, hyphens, underscores and half-spaces are ignored, so these all mean the same plate:</p>
+<pre><code class="language-php">echo VehiclePlate::normalize('۱۲ ب ۳۴۵ ایران ۶۷');   // 12ب34567
+
+$r = VehiclePlate::validate('12ب345 ایران 67');
+echo json_encode($r-&gt;details(), JSON_UNESCAPED_UNICODE);
+// {"normalized":"12ب34567","two_digit":"12","letter":"ب","three_digit":"345","region":"67"}
+
+print_r(VehiclePlate::parse('12ب345 ایران 67'));
+// Array ( [two_digit] =&gt; 12 [letter] =&gt; ب [three_digit] =&gt; 345 [region] =&gt; 67 )
+var_dump(VehiclePlate::parse('xx'));   // NULL</code></pre>
+
+<h3 id="plate-letters">Letters</h3>
+<p>The letter must be one of: <code>الف ب پ ت ث ج د ز س ش ص ط ع ف ق ک گ ل م ن و ه ی ژ</code>. The long form <code>الف</code> counts as one letter. The Latin <code>D</code> and <code>S</code> are accepted for diplomatic and special plates. Arabic letter variants are normalized first, so <code>ك</code> and <code>ي</code> are read as <code>ک</code> and <code>ی</code>:</p>
+<pre><code class="language-php">echo json_encode(VehiclePlate::validate('12ي34567')-&gt;details(), JSON_UNESCAPED_UNICODE);
+// {"normalized":"12ی34567","two_digit":"12","letter":"ی","three_digit":"345","region":"67"}
+
+var_dump(VehiclePlate::isValid('12D34567'));       // bool(true)
+var_dump(VehiclePlate::isValid('12الف34567'));     // bool(true)</code></pre>
+
+<h3 id="plate-errors">Errors</h3>
+<ul>
+<li><code>invalid_format</code>: the shape does not match (wrong digit counts, a letter that is not allowed, a missing part).</li>
+<li><code>invalid_region</code>: the shape matches, but the region is <code>00</code>, the two-digit part is <code>00</code>, or the three-digit part is <code>000</code>. The parsed parts are still in <code>details()</code>.</li>
+</ul>
+<pre><code class="language-php">print_r(VehiclePlate::validate('12ب345')-&gt;errors());       // [invalid_format]
+print_r(VehiclePlate::validate('12ب34500')-&gt;errors());     // [invalid_region]
+print_r(VehiclePlate::validate('00ب34567')-&gt;errors());     // [invalid_region]</code></pre>
+<div class="known"><strong>Known limitation.</strong> The validator checks shape and non-zero numbers. It does not know which region codes exist, which letters are used for which kind of vehicle, or other plate families (motorcycles, older layouts, free-zone and government plates are not modeled). A valid result means the plate is well formed, not that it was issued.</div>
+<p><code>VehiclePlate::parse()</code> returns the four parts as an array, or <code>null</code> when the plate is not valid by the same rules as <code>validate()</code>.</p>

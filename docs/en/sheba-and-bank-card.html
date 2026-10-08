@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en" dir="ltr" data-i18n="{&quot;dark&quot;:&quot;Dark mode&quot;,&quot;light&quot;:&quot;Light mode&quot;,&quot;to_dark&quot;:&quot;Switch to dark theme&quot;,&quot;to_light&quot;:&quot;Switch to light theme&quot;,&quot;copy&quot;:&quot;Copy&quot;,&quot;copied&quot;:&quot;Copied&quot;,&quot;copy_failed&quot;:&quot;Selected. Press copy.&quot;,&quot;copy_label&quot;:&quot;Copy the code example above&quot;,&quot;no_results&quot;:&quot;No guide matches. Try a shorter word.&quot;,&quot;loading&quot;:&quot;The search index is still loading. Try again in a moment.&quot;,&quot;results&quot;:&quot;Search results&quot;,&quot;status&quot;:&quot;%d of %d guides shown&quot;,&quot;suggest&quot;:&quot;English version&quot;,&quot;search_label&quot;:&quot;Search the guide&quot;,&quot;search_placeholder&quot;:&quot;Search the guide&quot;}" data-search-index="search-index.js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sheba and bank card | RTLY-Kit User guide</title>
+<meta name="description" content="Validate Sheba (IBAN) numbers with ISO 7064 mod-97-10 and bank card numbers with the Luhn checksum, and look up the issuing bank with honest data caveats.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="Sheba and bank card | RTLY-Kit User guide">
+<meta property="og:description" content="Validate Sheba (IBAN) numbers with ISO 7064 mod-97-10 and bank card numbers with the Luhn checksum, and look up the issuing bank with honest data caveats.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="en_US">
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+<link rel="alternate" hreflang="fa" href="../fa/sheba-and-bank-card.html">
+<link rel="stylesheet" href="../styles.css">
+<script>try{var t=localStorage.getItem("rtly-docs-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<script defer src="../app.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a><header class="site-header"><div class="shell header-inner"><a class="brand" href="index.html"><img src="../assets/logo.svg" width="34" height="34" alt=""><span><span class="name">RTLY-Kit</span><small>User guide</small></span></a><nav class="top-nav" aria-label="Primary"><a href="index.html">Overview</a><a href="quick-start.html">Quick start</a><a href="all.html">All guides</a><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">GitHub &#8599;</a></nav><div class="header-tools"><span data-search-host></span><button type="button" class="icon-button" data-theme-toggle hidden>Theme</button><a class="icon-button" href="../fa/sheba-and-bank-card.html" hreflang="fa" lang="fa" aria-label="تغییر به فارسی">فارسی</a></div></div></header>
+<main id="main">
+<div class="shell page-intro"><nav class="breadcrumbs" aria-label="Breadcrumb"><ol><li><a href="index.html">Home</a></li><li><a href="all.html#group-validation">Validation</a></li><li aria-current="page">Sheba and bank card</li></ol></nav><h1>Sheba and bank card</h1><p class="lead">Validate Sheba (IBAN) numbers with ISO 7064 mod-97-10 and bank card numbers with the Luhn checksum, and look up the issuing bank with honest data caveats.</p></div>
+<div class="shell doc-layout has-toc">
+<aside class="sidebar"><details open><summary>Browse the guides</summary><nav aria-label="Guides"><a href="all.html">All guides</a><p>Getting started</p><a href="quick-start.html">Quick start</a><a href="installation.html">Installation</a><p>Calendars</p><a href="jalali.html">Jalali calendar</a><a href="hijri.html">Hijri calendar</a><a href="hebrew.html">Hebrew calendar</a><a href="convert-and-compare.html">Convert and compare dates</a><a href="carbon-macros.html">Carbon macros</a><p>Validation</p><a href="validators-overview.html">Validators overview</a><a href="national-code.html">National code</a><a href="sheba-and-bank-card.html" aria-current="page">Sheba and bank card</a><a href="mobile-postal-plate.html">Mobile, postal code and plate</a><p>Numbers and text</p><a href="digits-and-format.html">Digits and number formatting</a><a href="number-words.html">Number to words</a><a href="text-tools.html">Text tools</a><p>Holidays and prayer times</p><a href="holidays.html">Iranian holidays</a><a href="prayer-times.html">Prayer times</a><p>Laravel</p><a href="laravel-setup.html">Laravel setup</a><a href="laravel-validation-and-cast.html">Validation rules and Eloquent cast</a><p>Reference</p><a href="helpers-and-globals.html">Helpers and globals</a><a href="error-handling.html">Error handling</a><a href="api-stability.html">API stability</a><a href="accuracy-and-data.html">Accuracy and data</a><a href="benchmarks.html">Benchmarks</a><a href="limits.html">Limits</a><a href="troubleshooting-faq.html">Troubleshooting and FAQ</a><a href="upgrade.html">Upgrade guide</a></nav></details></aside>
+<article class="prose">
+<details class="toc-inline"><summary>On this page</summary><ol><li><a href="#quick-start">Quick start</a></li><li><a href="#sheba">Sheba (IBAN)</a><ol><li><a href="#sheba-format">Format</a></li><li><a href="#sheba-normalization">Normalization</a></li><li><a href="#sheba-checks">What is checked</a></li></ol></li><li><a href="#bank-card">Bank card number</a><ol><li><a href="#card-format">Format and checks</a></li></ol></li><li><a href="#data">Bank lookup data</a></li><li><a href="#notes">Practical notes</a></li></ol></details>
+<h2 id="quick-start">Quick start<a class="anchor" href="#quick-start" aria-label="Link to this section">#</a></h2>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">&lt;?php
+require</span> <span class="tok-s">'vendor/autoload.php'</span>;
+
+<span class="tok-k">use</span> RtlyKit\Validation\BankCard;
+<span class="tok-k">use</span> RtlyKit\Validation\Sheba;
+<span class="tok-k">use</span> <span class="tok-k">function</span> RtlyKit\is_bank_card;
+<span class="tok-k">use</span> <span class="tok-k">function</span> RtlyKit\is_sheba;
+
+var_dump(Sheba::isValid(<span class="tok-s">'IR800170000000000000000123'</span>));   <span class="tok-c">// bool(true)</span>
+var_dump(is_sheba(<span class="tok-s">'800170000000000000000123'</span>));           <span class="tok-c">// bool(true), "IR" added for you</span>
+var_dump(BankCard::isValid(<span class="tok-s">'6037-9912-3456-7893'</span>));       <span class="tok-c">// bool(true)</span>
+var_dump(is_bank_card(<span class="tok-s">'۶۰۳۷۹۹۱۲۳۴۵۶۷۸۹۳'</span>));               <span class="tok-c">// bool(true), Persian digits</span>
+
+<span class="tok-k">echo</span> Sheba::getBankName(<span class="tok-s">'IR800170000000000000000123'</span>), <span class="tok-s">"\n"</span>;   <span class="tok-c">// بانک ملی ایران</span>
+<span class="tok-k">echo</span> BankCard::getBankName(<span class="tok-s">'6219861234567898'</span>), <span class="tok-s">"\n"</span>;          <span class="tok-c">// بانک سامان</span></code></pre>
+<p>The numbers in these examples are synthetic: they pass the checksum but do not belong to real accounts. Both classes implement the shared <a href="validators-overview.html#contract"><code>Validator</code> contract</a>, never throw for bad input, and also have the helpers <code>validate_sheba()</code> and <code>validate_bank_card()</code>.</p>
+
+<h2 id="sheba">Sheba (IBAN)<a class="anchor" href="#sheba" aria-label="Link to this section">#</a></h2>
+<h3 id="sheba-format">Format<a class="anchor" href="#sheba-format" aria-label="Link to this section">#</a></h3>
+<p>A Sheba number is the Iranian IBAN: <code>IR</code>, two check digits, and a 22-digit BBAN, 26 characters in all. The first three digits of the BBAN identify the bank.</p>
+<pre tabindex="0"><code class="language-text">IR 80 017 0000000000000000123
+│  │  │   └─ rest of the BBAN (19 digits)
+│  │  └──── bank code (3 digits)
+│  └─────── check digits
+└────────── country code</code></pre>
+
+<h3 id="sheba-normalization">Normalization<a class="anchor" href="#sheba-normalization" aria-label="Link to this section">#</a></h3>
+<p><code>Sheba::normalize()</code> upper-cases the text, converts Persian and Arabic digits, and removes spaces, hyphens and half-spaces. A bare string of exactly 24 digits, the common "without IR" form that banks print, gets the <code>IR</code> prefix. Any other input is left as typed and then fails the format check:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">echo</span> Sheba::normalize(<span class="tok-s">'800170000000000000000123'</span>);        <span class="tok-c">// IR800170000000000000000123</span>
+<span class="tok-k">echo</span> Sheba::normalize(<span class="tok-s">'ir80 0170 0000'</span>);                   <span class="tok-c">// IR8001700000</span>
+<span class="tok-k">echo</span> json_encode(Sheba::validate(<span class="tok-s">'ir80-0170-0000-0000-0000-0001-23'</span>)-&gt;isValid());   <span class="tok-c">// true</span></code></pre>
+
+<h3 id="sheba-checks">What is checked<a class="anchor" href="#sheba-checks" aria-label="Link to this section">#</a></h3>
+<ol>
+<li>Type and size (<code>invalid_type</code>, <code>input_too_long</code>).</li>
+<li>Format: <code>IR</code> followed by exactly 24 digits, otherwise <code>invalid_format</code>.</li>
+<li>Checksum: ISO 7064 mod-97-10. The first four characters move to the end, <code>I</code> and <code>R</code> become 18 and 27, and the resulting number modulo 97 must equal 1; otherwise <code>invalid_checksum</code>.</li>
+</ol>
+<p>The bank lookup runs before the checksum, so the bank code is present in <code>details()</code> even for a number with a wrong check digit:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-v">$r</span> = Sheba::validate(<span class="tok-s">'IR060170000000000000000123'</span>);
+var_dump(<span class="tok-v">$r</span>-&gt;isValid());       <span class="tok-c">// bool(false)</span>
+print_r(<span class="tok-v">$r</span>-&gt;errors());         <span class="tok-c">// Array ( [0] =&gt; invalid_checksum )</span>
+<span class="tok-k">echo</span> <span class="tok-v">$r</span>-&gt;details()[<span class="tok-s">'bank_name'</span>]; <span class="tok-c">// بانک ملی ایران</span>
+
+<span class="tok-v">$ok</span> = Sheba::validate(<span class="tok-s">'IR800170000000000000000123'</span>);
+<span class="tok-k">echo</span> json_encode(<span class="tok-v">$ok</span>-&gt;details(), JSON_UNESCAPED_UNICODE);
+<span class="tok-c">// {"normalized":"IR800170000000000000000123","bank_code":"017","bank_name":"بانک ملی ایران"}</span>
+
+<span class="tok-v">$unknown</span> = Sheba::validate(<span class="tok-s">'IR049990000000000000000123'</span>);
+var_dump(<span class="tok-v">$unknown</span>-&gt;isValid(), <span class="tok-v">$unknown</span>-&gt;details()[<span class="tok-s">'bank_name'</span>]);   <span class="tok-c">// bool(true)  NULL</span></code></pre>
+<p>Details: <code>normalized</code>, <code>bank_code</code> (three-digit string, or <code>null</code> when the format failed), <code>bank_name</code> (or <code>null</code> when the code is not in the table). A checksum-valid Sheba with an unknown bank code is <em>valid</em>; the name is simply missing.</p>
+<div class="callout note" role="note"><strong>Bank names.</strong> Names are those of the issuing bank at assignment time. Codes of banks that later merged keep their original name.</div>
+
+<h2 id="bank-card">Bank card number<a class="anchor" href="#bank-card" aria-label="Link to this section">#</a></h2>
+<h3 id="card-format">Format and checks<a class="anchor" href="#card-format" aria-label="Link to this section">#</a></h3>
+<p>An Iranian bank card has 16 digits. <code>BankCard::normalize()</code> keeps only the digits after converting Persian and Arabic ones, so spaces, hyphens and other separators are free. The checks, in order:</p>
+<ol>
+<li>Type and size.</li>
+<li>Exactly 16 digits, otherwise <code>invalid_format</code>.</li>
+<li>All 16 digits identical (for example <code>0000000000000000</code>) gives <code>repeated_digits</code>.</li>
+<li>The Luhn checksum, otherwise <code>invalid_checksum</code>. Starting from the right, every second digit is doubled (subtracting 9 when the result exceeds 9), and the digit sum must be divisible by 10.</li>
+</ol>
+<pre tabindex="0"><code class="language-php"><span class="tok-v">$ok</span> = BankCard::validate(<span class="tok-s">'6037-9912 3456 7893'</span>);
+<span class="tok-k">echo</span> json_encode(<span class="tok-v">$ok</span>-&gt;details(), JSON_UNESCAPED_UNICODE);
+<span class="tok-c">// {"normalized":"6037991234567893","bin":"603799","bank_name":"بانک ملی ایران"}</span>
+
+print_r(BankCard::validate(<span class="tok-s">'6037991234567890'</span>)-&gt;errors());   <span class="tok-c">// [invalid_checksum]</span>
+print_r(BankCard::validate(<span class="tok-s">'0000000000000000'</span>)-&gt;errors());   <span class="tok-c">// [repeated_digits]</span>
+print_r(BankCard::validate(<span class="tok-s">'1234'</span>)-&gt;errors());               <span class="tok-c">// [invalid_format]</span>
+
+<span class="tok-v">$x</span> = BankCard::validate(<span class="tok-s">'9999991234567893'</span>);   <span class="tok-c">// checksum ok, BIN not in the table</span>
+var_dump(<span class="tok-v">$x</span>-&gt;isValid(), <span class="tok-v">$x</span>-&gt;details()[<span class="tok-s">'bank_name'</span>]);   <span class="tok-c">// bool(true)  NULL</span></code></pre>
+<p>Details: <code>normalized</code>, <code>bin</code> (first six digits, or <code>null</code> if the format failed), <code>bank_name</code>. As with Sheba, the BIN lookup runs before the digit-repetition and checksum checks.</p>
+<p><code>BankCard::getBankName()</code> and <code>Sheba::getBankName()</code> are shortcuts that return the name only for a <em>valid</em> number, and <code>null</code> otherwise:</p>
+<pre tabindex="0"><code class="language-php">var_dump(BankCard::getBankName(<span class="tok-s">'6037991234567890'</span>));   <span class="tok-c">// NULL, because the checksum fails</span>
+var_dump(BankCard::getBankName(<span class="tok-s">'6037991234567893'</span>));   <span class="tok-c">// string(26) "بانک ملی ایران"</span></code></pre>
+
+<h2 id="data">Bank lookup data<a class="anchor" href="#data" aria-label="Link to this section">#</a></h2>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Table"><table>
+<thead><tr><th scope="col">Table</th><th scope="col">Key</th><th scope="col">Entries</th></tr></thead>
+<tbody>
+<tr><td>Card BINs</td><td>first 6 digits of the card</td><td>39</td></tr>
+<tr><td>Sheba bank codes</td><td>3 digits after <code>IRkk</code></td><td>38</td></tr>
+</tbody>
+</table></div>
+<p>An entry is included only when at least two independent sources agree on the mapping (public bank-prefix tables and community datasets). Single-source or conflicting entries are left out on purpose.</p>
+<div class="callout known" role="note"><strong>Known limitation.</strong> The tables are small and best-effort. Many valid cards come from a bank that is not listed, and for those <code>bank_name</code> is <code>null</code>. Some of the community sources share ancestry, so their agreement is strong but not fully independent, and the official Central Bank of Iran table was not reachable when the data was compiled (a few Sheba codes are confirmed by two sources only). Banks merge, rename and reassign ranges, so the data was checked on 2026-10-07 and will drift. Treat the name as a display hint; never use it for legal or financial decisions. Details are in <a href="accuracy-and-data.html">Accuracy and data</a>.</div>
+<p>Validity never depends on these tables. A checksum-valid number is valid whether or not its bank is known.</p>
+
+<h2 id="notes">Practical notes<a class="anchor" href="#notes" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>The checksum catches typos, not fake numbers. It cannot tell you that a card exists or that an account belongs to someone.</li>
+<li>Validate the card number for shape only. Never log full card numbers, and do not store the CVV2 or the second password.</li>
+<li>Store the normalized value, so <code>6037-9912-3456-7893</code> and <code>6037991234567893</code> are the same record.</li>
+<li>Card numbers and Sheba numbers must stay strings. A 16-digit number may exceed what a JSON number or float can hold exactly.</li>
+</ul>
+<p>The size cap and type rules are the same as for every validator; see <a href="validators-overview.html#input-handling">Input handling</a>.</p>
+<nav class="reading-footer" aria-label="Previous and next page"><a class="prev" rel="prev" href="national-code.html"><small>Previous</small>National code</a><a class="next" rel="next" href="mobile-postal-plate.html"><small>Next</small>Mobile, postal code and plate</a></nav>
+</article>
+<nav class="toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#quick-start">Quick start</a></li><li><a href="#sheba">Sheba (IBAN)</a><ol><li><a href="#sheba-format">Format</a></li><li><a href="#sheba-normalization">Normalization</a></li><li><a href="#sheba-checks">What is checked</a></li></ol></li><li><a href="#bank-card">Bank card number</a><ol><li><a href="#card-format">Format and checks</a></li></ol></li><li><a href="#data">Bank lookup data</a></li><li><a href="#notes">Practical notes</a></li></ol></nav>
+</div>
+</main>
+<footer class="footer"><div class="shell footer-inner"><p>RTLY-Kit user guide · MIT licensed</p><div><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">Repository on GitHub &#8599;</a><a href="https://github.com/ehsanenaloo/RTLY-Kit/issues" rel="noopener noreferrer">Report an issue &#8599;</a></div></div></footer>
+</body>
+</html>

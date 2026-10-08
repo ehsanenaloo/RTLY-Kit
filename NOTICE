@@ -1,0 +1,28 @@
+RTLY-Kit
+Licensed under the MIT License (see LICENSE).
+
+Attributions and provenance
+
+Prayer times (src/Prayer/PrayerTimes.php)
+  Written independently from standard astronomical equations: the low-precision
+  solar position series of Jean Meeus, "Astronomical Algorithms" (as also used
+  by the NOAA Solar Calculator), spherical-trigonometry hour angles, the
+  standard -0.833 degree sunrise/sunset altitude, and the shadow-length
+  definition of Asr. Per-method Fajr/Isha/Maghrib angles are published
+  conventions (see resources/data/SOURCES.md). No third-party prayer-time source code
+  was consulted or copied. Output was cross-checked against NOAA Solar
+  Calculator sunrise/sunset values.
+
+Reference data
+  Bank BINs, Sheba bank codes, national-code prefixes, operator prefixes and
+  the Umm al-Qura month table are factual data compiled from third-party
+  public sources, listed in resources/data/SOURCES.md. The Umm al-Qura table was
+  generated from ICU/CLDR calendar data (Unicode License,
+  https://www.unicode.org/license.txt); no ICU source code is included.
+
+Algorithms
+  Luhn, ISO 7064 mod-97-10, the Iranian national-code checksum, the tabular
+  Islamic calendar and Hebrew calendar arithmetic are public algorithms.
+
+Carbon, Laravel and Illuminate are trademarks or names of their respective
+owners; RTLY-Kit is not affiliated with them.

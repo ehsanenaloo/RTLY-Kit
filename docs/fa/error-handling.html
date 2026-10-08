@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="fa" dir="rtl" data-i18n="{&quot;dark&quot;:&quot;حالت تیره&quot;,&quot;light&quot;:&quot;حالت روشن&quot;,&quot;to_dark&quot;:&quot;تغییر به پوستهٔ تیره&quot;,&quot;to_light&quot;:&quot;تغییر به پوستهٔ روشن&quot;,&quot;copy&quot;:&quot;کپی&quot;,&quot;copied&quot;:&quot;کپی شد&quot;,&quot;copy_failed&quot;:&quot;انتخاب شد؛ کپی کنید&quot;,&quot;copy_label&quot;:&quot;کپی کردن کد بالا&quot;,&quot;no_results&quot;:&quot;نتیجه‌ای پیدا نشد. عبارت کوتاه‌تری امتحان کنید.&quot;,&quot;loading&quot;:&quot;فهرست جست‌وجو هنوز بارگذاری می‌شود. چند لحظه بعد دوباره امتحان کنید.&quot;,&quot;results&quot;:&quot;نتایج جست‌وجو&quot;,&quot;status&quot;:&quot;%d از %d راهنما نمایش داده می‌شود&quot;,&quot;suggest&quot;:&quot;نسخهٔ فارسی&quot;,&quot;search_label&quot;:&quot;جست‌وجو در راهنما&quot;,&quot;search_placeholder&quot;:&quot;جست‌وجو در راهنما&quot;}" data-search-index="search-index.js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>مدیریت خطا | RTLY-Kit راهنمای کاربر</title>
+<meta name="description" content="کدام فراخوانی‌ها استثنا پرتاب می‌کنند و کدام هرگز، سلسله‌مراتب استثناها، مقدارهای پایدار ErrorCode و روش امن گرفتن و ثبت خطا.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="مدیریت خطا | RTLY-Kit راهنمای کاربر">
+<meta property="og:description" content="کدام فراخوانی‌ها استثنا پرتاب می‌کنند و کدام هرگز، سلسله‌مراتب استثناها، مقدارهای پایدار ErrorCode و روش امن گرفتن و ثبت خطا.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fa_IR">
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+<link rel="alternate" hreflang="en" href="../en/error-handling.html">
+<link rel="stylesheet" href="../styles.css">
+<script>try{var t=localStorage.getItem("rtly-docs-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<script defer src="../app.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">پرش به محتوا</a><header class="site-header"><div class="shell header-inner"><a class="brand" href="index.html"><img src="../assets/logo.svg" width="34" height="34" alt=""><span><span class="name">RTLY-Kit</span><small>راهنمای کاربر</small></span></a><nav class="top-nav" aria-label="ناوبری اصلی"><a href="index.html">نمای کلی</a><a href="quick-start.html">شروع سریع</a><a href="all.html">همهٔ راهنماها</a><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">گیت‌هاب &#8599;</a></nav><div class="header-tools"><span data-search-host></span><button type="button" class="icon-button" data-theme-toggle hidden>Theme</button><a class="icon-button" href="../en/error-handling.html" hreflang="en" lang="en" aria-label="Switch to English">English</a></div></div></header>
+<main id="main">
+<div class="shell page-intro"><nav class="breadcrumbs" aria-label="مسیر صفحه"><ol><li><a href="index.html">خانه</a></li><li><a href="all.html#group-reference">مرجع</a></li><li aria-current="page">مدیریت خطا</li></ol></nav><h1>مدیریت خطا</h1><p class="lead">کدام فراخوانی‌ها استثنا پرتاب می‌کنند و کدام هرگز، سلسله‌مراتب استثناها، مقدارهای پایدار ErrorCode و روش امن گرفتن و ثبت خطا.</p></div>
+<div class="shell doc-layout has-toc">
+<aside class="sidebar"><details open><summary>فهرست راهنماها</summary><nav aria-label="راهنماها"><a href="all.html">همهٔ راهنماها</a><p>شروع کار</p><a href="quick-start.html">شروع سریع</a><a href="installation.html">نصب</a><p>تقویم‌ها</p><a href="jalali.html">تقویم جلالی</a><a href="hijri.html">تقویم هجری</a><a href="hebrew.html">تقویم عبری</a><a href="convert-and-compare.html">تبدیل و مقایسهٔ تاریخ‌ها</a><a href="carbon-macros.html">ماکروهای Carbon</a><p>اعتبارسنجی</p><a href="validators-overview.html">نمای کلی اعتبارسنج‌ها</a><a href="national-code.html">کد ملی</a><a href="sheba-and-bank-card.html">شبا و کارت بانکی</a><a href="mobile-postal-plate.html">موبایل، کدپستی و پلاک</a><p>اعداد و متن</p><a href="digits-and-format.html">ارقام و قالب‌بندی اعداد</a><a href="number-words.html">عدد به حروف</a><a href="text-tools.html">ابزارهای متن</a><p>تعطیلات و اوقات شرعی</p><a href="holidays.html">تعطیلات رسمی ایران</a><a href="prayer-times.html">اوقات شرعی</a><p>لاراول</p><a href="laravel-setup.html">راه‌اندازی لاراول</a><a href="laravel-validation-and-cast.html">قواعد اعتبارسنجی و کست Eloquent</a><p>مرجع</p><a href="helpers-and-globals.html">توابع کمکی و سراسری</a><a href="error-handling.html" aria-current="page">مدیریت خطا</a><a href="api-stability.html">پایداری API</a><a href="accuracy-and-data.html">دقت و داده‌ها</a><a href="benchmarks.html">بنچمارک</a><a href="limits.html">محدودیت‌ها</a><a href="troubleshooting-faq.html">عیب‌یابی و پرسش‌های متداول</a><a href="upgrade.html">راهنمای ارتقا</a></nav></details></aside>
+<article class="prose">
+<details class="toc-inline"><summary>در این صفحه</summary><ol><li><a href="#two-styles">دو سبک شکست</a></li><li><a href="#hierarchy">سلسله‌مراتب استثناها</a></li><li><a href="#error-codes">کدهای خطا</a></li><li><a href="#reading-codes">خواندن کد و زمینه (context)</a></li><li><a href="#catching">الگوهای گرفتن استثنا</a></li><li><a href="#never-throws">چه چیزی هرگز استثنا پرتاب نمی‌کند</a></li><li><a href="#caps">سقف ورودی‌ها</a></li><li><a href="#calendar-rule">قاعدهٔ بازهٔ تقویم</a></li><li><a href="#complete-example">یک نمونهٔ کامل</a></li></ol></details>
+<h2 id="two-styles">دو سبک شکست<a class="anchor" href="#two-styles" aria-label="پیوند به این بخش">#</a></h2>
+<p>هر تابع در RTLY-Kit دقیقاً یکی از دو سبک زیر را دارد، پس همیشه می‌دانید کجا باید محافظت کنید:</p>
+<ul>
+<li><strong>اعتبارسنج‌ها هرگز استثنا پرتاب نمی‌کنند.</strong> <code>NationalCode</code>، <code>Sheba</code>، <code>BankCard</code>، <code>Mobile</code>، <code>PostalCode</code> و <code>VehiclePlate</code> (و توابع کمکی <code>is_*</code> و <code>validate_*</code>) هر مقداری را می‌پذیرند و با <code>false</code> یا یک <code>Result</code> نامعتبر پاسخ می‌دهند. به <a href="validators-overview.html">مرور اعتبارسنج‌ها</a> نگاه کنید.</li>
+<li><strong>بقیهٔ توابع استثنا پرتاب می‌کنند</strong>؛ یک <code>RtlyKit\Exceptions\RtlyKitException</code> (یا زیرکلاس آن) برای ورودی‌ای که نمی‌پذیرند. برای ورودی بد، هرگز <code>TypeError</code>، <code>ValueError</code> یا استثنای <code>DateMalformed*</code> خود PHP بیرون نمی‌آید؛ اگر دیدید، باگ کتابخانه است و گزارشش کنید.</li>
+</ul>
+
+<h2 id="hierarchy">سلسله‌مراتب استثناها<a class="anchor" href="#hierarchy" aria-label="پیوند به این بخش">#</a></h2>
+<pre tabindex="0"><code class="language-text">\InvalidArgumentException
+ └─ RtlyKit\Exceptions\RtlyKitException        implements RtlyKitThrowable
+     ├─ InvalidDateException
+     ├─ InvalidNumberException
+     ├─ InvalidPrayerConfigException
+     └─ UnsupportedLocaleException</code></pre>
+<p>‏<code>RtlyKitThrowable</code> یک رابط نشانگر است که <code>getErrorCode(): ErrorCode</code> و <code>getContext(): array</code> را تعریف می‌کند. با گرفتن آن (یا <code>RtlyKitException</code>) همهٔ کتابخانه را با یک بلوک <code>catch</code> پوشش می‌دهید. چون <code>RtlyKitException</code> از <code>\InvalidArgumentException</code> ارث می‌برد، کدهای قدیمی که <code>catch (\InvalidArgumentException)</code> یا <code>catch (\LogicException)</code> دارند همچنان کار می‌کنند.</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="جدول"><table>
+<thead><tr><th scope="col">استثنا</th><th scope="col">موارد پرتاب</th></tr></thead>
+<tbody>
+<tr><td><code>InvalidDateException</code></td><td>تاریخ غیرممکن، سال بیرون از بازهٔ پشتیبانی‌شده، رشتهٔ خالی یا غیرقابل‌پارس، مقدار نامعقول در <code>add*()</code> / <code>sub*()</code>، timestamp بیرون از بازه، الگوی قالب‌بندی بیش‌ازحد بلند</td></tr>
+<tr><td><code>InvalidNumberException</code></td><td>ورودی غیرعددی یا اعشاری، <code>NaN</code> / <code>INF</code>، ورودی بیش‌ازحد بزرگ، عدد خیلی بزرگ، واژه‌های عددی ناشناخته</td></tr>
+<tr><td><code>InvalidPrayerConfigException</code></td><td>روش محاسبهٔ ناشناخته، شهر ناشناخته، ضریب عصر نامعتبر</td></tr>
+<tr><td><code>UnsupportedLocaleException</code></td><td>زبانی که تابع پشتیبانی نمی‌کند (مثلاً <code>number_to_words(5, 'de')</code>)</td></tr>
+<tr><td>خود <code>RtlyKitException</code></td><td>سایر آرگومان‌های نامعتبر، مانند جداکنندهٔ نامعتبر یا بلند در <code>Slugify::make()</code> یا نبودِ یک جدول دادهٔ همراه بسته</td></tr>
+</tbody>
+</table></div>
+
+<h2 id="error-codes">کدهای خطا<a class="anchor" href="#error-codes" aria-label="پیوند به این بخش">#</a></h2>
+<p>متن پیام استثنا برای انسان است و ممکن است در هر انتشار بازنویسی شود. بخش پایدار، <strong>کد خطا</strong> است: یک enum رشته‌ای به نام <code>ErrorCode</code> که نام caseها و مقدارهایش بخشی از API عمومی است (به <a href="api-stability.html">پایداری API</a> نگاه کنید).</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="جدول"><table>
+<thead><tr><th scope="col">Case</th><th scope="col">مقدار</th><th scope="col">معنا</th></tr></thead>
+<tbody>
+<tr><td><code>InvalidArgument</code></td><td><code>invalid_argument</code></td><td>حالت پیش‌فرضِ آرگومان نامعتبر که کد دقیق‌تری ندارد</td></tr>
+<tr><td><code>InvalidDate</code></td><td><code>invalid_date</code></td><td>تاریخ یا زمان بدشکل، غیرممکن یا غیرقابل‌پارس (ماه ۱۳، ۳۰ اسفند در سال غیرکبیسه، <code>'not a date'</code>، رشتهٔ خالی)</td></tr>
+<tr><td><code>DateOutOfRange</code></td><td><code>date_out_of_range</code></td><td>سال، تاریخ، timestamp یا مقدار <code>add*()</code> / <code>sub*()</code> بیرون از بازهٔ پشتیبانی‌شده (به <a href="limits.html">محدودیت‌ها</a> نگاه کنید)</td></tr>
+<tr><td><code>InvalidNumber</code></td><td><code>invalid_number</code></td><td>مقدار را نمی‌توان به‌عنوان عدد (صحیح) خواند</td></tr>
+<tr><td><code>NumberTooLarge</code></td><td><code>number_too_large</code></td><td>عدد از بزرگی پشتیبانی‌شده بیشتر است</td></tr>
+<tr><td><code>NonFiniteNumber</code></td><td><code>non_finite_number</code></td><td>جایی که عدد متناهی لازم است، <code>NaN</code> یا <code>INF</code> داده شده</td></tr>
+<tr><td><code>InvalidNumberWords</code></td><td><code>invalid_number_words</code></td><td>واژه‌های عددی ناشناخته یا نادرست در <code>NumberToWords::fromWords()</code></td></tr>
+<tr><td><code>InputTooLong</code></td><td><code>input_too_long</code></td><td>ورودی رشته‌ای از سقف مستندشده بلندتر است</td></tr>
+<tr><td><code>InvalidPrayerConfig</code></td><td><code>invalid_prayer_config</code></td><td>شهر، روش محاسبه یا ضریب عصرِ ناشناخته</td></tr>
+<tr><td><code>UnsupportedLocale</code></td><td><code>unsupported_locale</code></td><td>زبانی غیر از زبان‌های پشتیبانی‌شده</td></tr>
+<tr><td><code>DataUnavailable</code></td><td><code>data_unavailable</code></td><td>یک جدول دادهٔ همراه بسته وجود ندارد یا خراب است (مشکل بسته‌بندی، نه خطای کاربر)</td></tr>
+</tbody>
+</table></div>
+<div class="callout note" role="note"><strong>یادداشت.</strong> رشته‌هایی که <code>Result::errors()</code> برمی‌گرداند (<code>invalid_format</code>، <code>invalid_checksum</code>، <code>invalid_type</code> و ...) رشتهٔ ساده و مخصوص اعتبارسنج‌ها هستند، نه caseهای <code>ErrorCode</code>. این enum فقط برای استثناهاست.</div>
+
+<h2 id="reading-codes">خواندن کد و زمینه (context)<a class="anchor" href="#reading-codes" aria-label="پیوند به این بخش">#</a></h2>
+<p>هر استثنای کتابخانه <code>getErrorCode()</code> و <code>getContext()</code> دارد. context آرایه‌ای از واقعیت‌های ماشین‌خوان دربارهٔ شکست است (یک سقف، زبانِ ناپشتیبانی‌شده، نام آرگومان). هرگز رازی در آن نیست و ممکن است خالی باشد. این اسکریپت پنج ورودی بد را به <code>number_to_words()</code> می‌دهد:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">&lt;?php
+require</span> __DIR__.<span class="tok-s">'/vendor/autoload.php'</span>;
+
+<span class="tok-k">use</span> <span class="tok-k">function</span> RtlyKit\number_to_words;
+<span class="tok-k">use</span> RtlyKit\Exceptions\RtlyKitThrowable;
+
+<span class="tok-k">foreach</span> ([<span class="tok-n">1.5</span>, NAN, <span class="tok-s">'abc'</span>, str_repeat(<span class="tok-s">'9'</span>, <span class="tok-n">22</span>), str_repeat(<span class="tok-s">'1'</span>, <span class="tok-n">5000</span>)] <span class="tok-k">as</span> <span class="tok-v">$input</span>) {
+    <span class="tok-k">try</span> {
+        number_to_words(<span class="tok-v">$input</span>);
+    } <span class="tok-k">catch</span> (RtlyKitThrowable <span class="tok-v">$e</span>) {
+        <span class="tok-k">echo</span> (<span class="tok-k">new</span> ReflectionClass(<span class="tok-v">$e</span>))-&gt;getShortName(), <span class="tok-s">' '</span>,
+            <span class="tok-v">$e</span>-&gt;getErrorCode()-&gt;value, <span class="tok-s">' '</span>,
+            json_encode(<span class="tok-v">$e</span>-&gt;getContext()), <span class="tok-s">"\n"</span>;
+    }
+}
+<span class="tok-c">// InvalidNumberException invalid_number []</span>
+<span class="tok-c">// InvalidNumberException non_finite_number []</span>
+<span class="tok-c">// InvalidNumberException invalid_number []</span>
+<span class="tok-c">// InvalidNumberException number_too_large {"limit":"10^21 - 1"}</span>
+<span class="tok-c">// InvalidNumberException input_too_long {"limit":4096}</span></code></pre>
+
+<h2 id="catching">الگوهای گرفتن استثنا<a class="anchor" href="#catching" aria-label="پیوند به این بخش">#</a></h2>
+<p>بر اساس کد تصمیم بگیرید، نه متن پیام. از <code>match</code> همراه با شاخهٔ <code>default</code> استفاده کنید، چون ممکن است در انتشار فرعی (minor) caseهای تازه‌ای اضافه شود.</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">&lt;?php
+require</span> __DIR__.<span class="tok-s">'/vendor/autoload.php'</span>;
+
+<span class="tok-k">use</span> RtlyKit\Calendar\Jalali;
+<span class="tok-k">use</span> RtlyKit\Exceptions\{ErrorCode, InvalidDateException, RtlyKitThrowable};
+
+<span class="tok-k">function</span> category(RtlyKitThrowable <span class="tok-v">$e</span>): string
+{
+    <span class="tok-k">return</span> <span class="tok-k">match</span> (<span class="tok-v">$e</span>-&gt;getErrorCode()) {
+        ErrorCode::InvalidDate, ErrorCode::DateOutOfRange =&gt; <span class="tok-s">'date'</span>,
+        ErrorCode::InputTooLong =&gt; <span class="tok-s">'too-long'</span>,
+        <span class="tok-k">default</span> =&gt; <span class="tok-s">'other'</span>,
+    };
+}
+
+<span class="tok-k">try</span> {
+    Jalali::create(<span class="tok-n">1404</span>, <span class="tok-n">13</span>, <span class="tok-n">1</span>);          <span class="tok-c">// ماه ۱۳ وجود ندارد</span>
+} <span class="tok-k">catch</span> (RtlyKitThrowable <span class="tok-v">$e</span>) {
+    <span class="tok-k">echo</span> category(<span class="tok-v">$e</span>), <span class="tok-s">"\n"</span>;               <span class="tok-c">// date</span>
+}
+
+<span class="tok-v">$e</span> = InvalidDateException::because(ErrorCode::DateOutOfRange, <span class="tok-s">'Year is out of range'</span>, [<span class="tok-s">'year'</span> =&gt; <span class="tok-n">99999</span>]);
+<span class="tok-k">echo</span> <span class="tok-v">$e</span>-&gt;getErrorCode()-&gt;value, <span class="tok-s">' '</span>, json_encode(<span class="tok-v">$e</span>-&gt;getContext()), <span class="tok-s">"\n"</span>;
+<span class="tok-c">// date_out_of_range {"year":99999}</span>
+
+<span class="tok-k">try</span> {
+    Jalali::create(<span class="tok-n">1404</span>, <span class="tok-n">13</span>, <span class="tok-n">1</span>);
+} <span class="tok-k">catch</span> (\InvalidArgumentException <span class="tok-v">$e</span>) {   <span class="tok-c">// catch قدیمی هنوز کار می‌کند</span>
+    <span class="tok-k">echo</span> get_class(<span class="tok-v">$e</span>), <span class="tok-s">' '</span>, <span class="tok-v">$e</span> <span class="tok-k">instanceof</span> RtlyKitThrowable ? <span class="tok-s">'is RtlyKitThrowable'</span> : <span class="tok-s">''</span>, <span class="tok-s">"\n"</span>;
+    <span class="tok-c">// RtlyKit\Exceptions\InvalidDateException is RtlyKitThrowable</span>
+}</code></pre>
+<p>‏<code>RtlyKitException::because(ErrorCode, string $message, array $context = [], ?Throwable $previous = null)</code> سازندهٔ نام‌دارِ خود کتابخانه برای پرتاب استثنا با کد مشخص است. می‌توانید برای خطاهای خودتان هم از آن استفاده کنید، ولی آنچه شما می‌سازید جزو تعهد کتابخانه نیست.</p>
+<p>هنگام ثبت لاگ، کد و context را بنویسید، نه متن پیام را:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">catch</span> (RtlyKitThrowable <span class="tok-v">$e</span>) {
+    error_log(<span class="tok-v">$e</span>-&gt;getErrorCode()-&gt;value.<span class="tok-s">' '</span>.json_encode(<span class="tok-v">$e</span>-&gt;getContext()));
+}</code></pre>
+
+<h2 id="never-throws">چه چیزی هرگز استثنا پرتاب نمی‌کند<a class="anchor" href="#never-throws" aria-label="پیوند به این بخش">#</a></h2>
+<p>اعتبارسنج‌ها هر مقدار PHP را می‌پذیرند. برای ورودی بد، با هر نوع و هر اندازه، استثنا پرتاب نمی‌کنند:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">&lt;?php
+require</span> __DIR__.<span class="tok-s">'/vendor/autoload.php'</span>;
+
+<span class="tok-k">use</span> <span class="tok-k">function</span> RtlyKit\validate_national_code;
+<span class="tok-k">use</span> RtlyKit\Validation\Sheba;
+
+var_dump(Sheba::isValid(<span class="tok-k">null</span>));                                  <span class="tok-c">// bool(false)</span>
+<span class="tok-k">echo</span> json_encode(validate_national_code([])-&gt;errors()), <span class="tok-s">"\n"</span>;                    <span class="tok-c">// ["invalid_type"]</span>
+<span class="tok-k">echo</span> json_encode(validate_national_code(str_repeat(<span class="tok-s">'1'</span>, <span class="tok-n">5000</span>))-&gt;errors()), <span class="tok-s">"\n"</span>; <span class="tok-c">// ["input_too_long"]</span>
+<span class="tok-k">echo</span> json_encode(validate_national_code(<span class="tok-s">'0013542418'</span>)-&gt;errors()), <span class="tok-s">"\n"</span>;          <span class="tok-c">// ["invalid_checksum"]</span>
+var_dump(validate_national_code(<span class="tok-s">'0013542419'</span>)-&gt;isValid());       <span class="tok-c">// bool(true)</span></code></pre>
+<div class="table-wrap" tabindex="0" role="region" aria-label="جدول"><table>
+<thead><tr><th scope="col">ورودی اعتبارسنج</th><th scope="col">نتیجه</th></tr></thead>
+<tbody>
+<tr><td>رشته تا ۴۰۹۶ بایت</td><td>به‌طور عادی بررسی می‌شود (ارقام فارسی و عربی پذیرفته است)</td></tr>
+<tr><td><code>int</code> و <code>float</code> صحیحِ متناهی</td><td>به رشته تبدیل و سپس بررسی می‌شود (صفرهای ابتدایی در <code>int</code> از قبل از دست رفته‌اند)</td></tr>
+<tr><td><code>null</code>، <code>bool</code>، آرایه، شیء، <code>NaN</code>، <code>INF</code>، <code>float</code> اعشاری</td><td>نامعتبر، با خطای <code>invalid_type</code></td></tr>
+<tr><td>رشته بیش از ۴۰۹۶ بایت</td><td>نامعتبر، با خطای <code>input_too_long</code></td></tr>
+<tr><td>UTF-8 نامعتبر</td><td>نامعتبر (معمولاً <code>invalid_format</code>)</td></tr>
+</tbody>
+</table></div>
+<p>قواعد اعتبارسنجی لاراول و <code>Globals::register()</code> هم از همین اصل پیروی می‌کنند: قواعد یک مقدار بولی برمی‌گردانند و <code>Globals::register()</code> هرگز استثنا پرتاب نمی‌کند (نام‌هایی را که رد کرده برمی‌گرداند).</p>
+
+<h2 id="caps">سقف ورودی‌ها<a class="anchor" href="#caps" aria-label="پیوند به این بخش">#</a></h2>
+<p>هر فراخوانی که متن نامطمئن می‌گیرد سقف اندازه دارد تا ورودی مخرب هزینهٔ زیادی نداشته باشد. عبور از سقف، <code>input_too_long</code> را پدید می‌آورد، به‌صورت استثنا یا خطای اعتبارسنج. فهرست کامل در <a href="limits.html">محدودیت‌ها</a> آمده است.</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="جدول"><table>
+<thead><tr><th scope="col">کجا</th><th scope="col">سقف</th><th scope="col">در صورت عبور</th></tr></thead>
+<tbody>
+<tr><td>اعتبارسنج‌ها</td><td>۴۰۹۶ بایت برای هر رشته</td><td><code>Result</code> نامعتبر با خطای <code>input_too_long</code></td></tr>
+<tr><td>ورودی رشته‌ای <code>NumberToWords::convert()</code> / <code>fromWords()</code> و <code>Format</code></td><td>۴۰۹۶ بایت برای هر رشته</td><td><code>InvalidNumberException</code></td></tr>
+<tr><td><code>Format::withSeparator()</code> / <code>format_number()</code></td><td>۱۰۰۰ نویسه در عدد اعشاری ساده</td><td><code>InvalidNumberException</code></td></tr>
+<tr><td>جداکنندهٔ <code>Slugify::make()</code></td><td>۶۴ بایت، UTF-8 معتبر</td><td><code>RtlyKitException</code></td></tr>
+<tr><td>الگوی <code>Jalali::format()</code></td><td>۲۵۶ بایت (<code>Jalali::MAX_FORMAT_LENGTH</code>)</td><td><code>InvalidDateException</code></td></tr>
+</tbody>
+</table></div>
+
+<h2 id="calendar-rule">قاعدهٔ بازهٔ تقویم<a class="anchor" href="#calendar-rule" aria-label="پیوند به این بخش">#</a></h2>
+<p>هر نقطهٔ ورود تقویم (<code>make</code>، <code>create</code>، <code>createFromFormat</code>، timestamp، <code>add*</code> / <code>sub*</code>، توابع کمکی و ماکروهای Carbon) یا تاریخ معتبر برمی‌گرداند یا <code>InvalidDateException</code> پرتاب می‌کند. چیزی سرریز نمی‌شود و نوع دیگری از استثنا به کار نمی‌رود. بازه‌ها: جلالی ‎-620 تا 9377، هجری 1 تا 9665 و عبری 3762 تا 13759، که همه درون سال‌های میلادی 1 تا 9999 هستند. به <a href="limits.html#calendars">محدودیت‌ها</a> نگاه کنید.</p>
+
+<h2 id="complete-example">یک نمونهٔ کامل<a class="anchor" href="#complete-example" aria-label="پیوند به این بخش">#</a></h2>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">use</span> <span class="tok-k">function</span> RtlyKit\jdate;
+<span class="tok-k">use</span> <span class="tok-k">function</span> RtlyKit\number_to_words;
+<span class="tok-k">use</span> RtlyKit\Exceptions\InvalidDateException;
+<span class="tok-k">use</span> RtlyKit\Exceptions\RtlyKitThrowable;
+
+<span class="tok-k">try</span> {
+    <span class="tok-v">$date</span>  = jdate(<span class="tok-v">$userInput</span>);
+    <span class="tok-v">$words</span> = number_to_words(<span class="tok-v">$userAmount</span>);
+} <span class="tok-k">catch</span> (InvalidDateException <span class="tok-v">$e</span>) {
+    <span class="tok-k">echo</span> <span class="tok-s">"لطفاً تاریخ معتبر وارد کنید.\n"</span>;
+} <span class="tok-k">catch</span> (RtlyKitThrowable <span class="tok-v">$e</span>) {
+    error_log(<span class="tok-v">$e</span>-&gt;getErrorCode()-&gt;value.<span class="tok-s">' '</span>.json_encode(<span class="tok-v">$e</span>-&gt;getContext()));
+}</code></pre>
+<nav class="reading-footer" aria-label="صفحهٔ قبلی و بعدی"><a class="prev" rel="prev" href="helpers-and-globals.html"><small>قبلی</small>توابع کمکی و سراسری</a><a class="next" rel="next" href="api-stability.html"><small>بعدی</small>پایداری API</a></nav>
+</article>
+<nav class="toc" aria-label="در این صفحه"><p>در این صفحه</p><ol><li><a href="#two-styles">دو سبک شکست</a></li><li><a href="#hierarchy">سلسله‌مراتب استثناها</a></li><li><a href="#error-codes">کدهای خطا</a></li><li><a href="#reading-codes">خواندن کد و زمینه (context)</a></li><li><a href="#catching">الگوهای گرفتن استثنا</a></li><li><a href="#never-throws">چه چیزی هرگز استثنا پرتاب نمی‌کند</a></li><li><a href="#caps">سقف ورودی‌ها</a></li><li><a href="#calendar-rule">قاعدهٔ بازهٔ تقویم</a></li><li><a href="#complete-example">یک نمونهٔ کامل</a></li></ol></nav>
+</div>
+</main>
+<footer class="footer"><div class="shell footer-inner"><p>راهنمای RTLY-Kit · مجوز MIT</p><div><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">مخزن در گیت‌هاب &#8599;</a><a href="https://github.com/ehsanenaloo/RTLY-Kit/issues" rel="noopener noreferrer">گزارش مشکل &#8599;</a></div></div></footer>
+</body>
+</html>

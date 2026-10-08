@@ -1,0 +1,16 @@
+{
+    "name": "rtly-kit/benchmark",
+    "description": "Reproducible micro-benchmarks (dev only, not shipped)",
+    "type": "project",
+    "repositories": [
+        { "type": "path", "url": "../..", "options": { "symlink": false } }
+    ],
+    "require": {
+        "php": "^8.2",
+        "enaxon/rtly-kit": "@dev",
+        "morilog/jalali": "^3.0"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "config": { "lock": false }
+}

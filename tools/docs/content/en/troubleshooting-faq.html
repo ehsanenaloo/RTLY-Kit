@@ -1,0 +1,156 @@
+<!--
+title: Troubleshooting and FAQ
+description: Answers to the questions people actually hit: missing helpers, weekday numbering, string years, time zones, Carbon macros, the Eloquent cast, prayer times and holidays.
+group: reference
+order: 70
+-->
+<p>Every answer below was checked against the code, and the examples were run. If your problem is not here, check <a href="error-handling.html">Error handling</a> (what each exception code means) and <a href="limits.html">Limits</a> first.</p>
+
+<h2 id="setup">Setup and helpers</h2>
+
+<h3 id="undefined-function">I get "Call to undefined function jdate()". Where are the helpers?</h3>
+<p>The helpers are namespaced functions in <code>RtlyKit</code>, and the package defines <strong>no</strong> global function by default, so it can never collide with your code or another package. Import the ones you use, call them by their full name, or opt in to the short global names once at boot:</p>
+<pre><code class="language-php">&lt;?php
+require __DIR__.'/vendor/autoload.php';
+
+use function RtlyKit\jdate;                       // option 1: import
+echo jdate('2026-03-21')-&gt;format('Y/m/d'), "\n";  // 1405/01/01
+
+echo \RtlyKit\jdate('2026-03-21')-&gt;format('Y/m/d'), "\n";  // option 2: full name
+
+$skipped = \RtlyKit\Globals::register();          // option 3: short global names
+echo \jdate('2026-03-21')-&gt;format('Y/m/d'), "\n";  // 1405/01/01
+var_dump($skipped);                               // array(0) {} (nothing was already taken)</code></pre>
+<p><code>Globals::register()</code> never overwrites an existing function and never throws; it returns the names it skipped, so you can log them. In Blade, either call <code>\RtlyKit\jdate(...)</code> or register the globals from <code>AppServiceProvider::register()</code>. The Laravel provider does not register them for you. See <a href="helpers-and-globals.html">Helpers and globals</a>.</p>
+
+<h3 id="which-exception">Which exception should I catch?</h3>
+<p>Catch <code>RtlyKit\Exceptions\RtlyKitThrowable</code> (or <code>RtlyKitException</code>) for the whole library, or a specific subclass such as <code>InvalidDateException</code>. Validators do not throw at all, so they need no <code>try</code>. Decide by <code>getErrorCode()</code>, not by the message text. Details: <a href="error-handling.html">Error handling</a>.</p>
+
+<h2 id="calendars-faq">Calendars</h2>
+
+<h3 id="weekday">The weekday number is different for Jalali and Hijri</h3>
+<p>That is by design. <code>Jalali::getDayOfWeek()</code> (and the <code>w</code> format token) counts from Saturday, the first day of the Persian week: Saturday is 0 and Friday is 6. <code>Hijri</code> and <code>Hebrew</code> count from Sunday like PHP's <code>date('w')</code>, so Saturday is 6. The same day, 2026-03-21 (a Saturday):</p>
+<pre><code class="language-php">use function RtlyKit\{jdate, hdate, hebrew_date};
+
+echo jdate('2026-03-21')-&gt;getDayOfWeek(), ' ',
+     hdate('2026-03-21')-&gt;getDayOfWeek(), ' ',
+     hebrew_date('2026-03-21')-&gt;getDayOfWeek(), "\n";   // 0 6 6</code></pre>
+<p>If you want one numbering across calendars, convert with <code>toGregorian()-&gt;format('w')</code>.</p>
+
+<h3 id="string-year">jdate('1405-01-01') and jdate('2026-03-21') both work, but a Gregorian year like 999 does not</h3>
+<p>A string of the form <code>Y/m/d</code> or <code>Y-m-d</code> is read as a date in the class's own calendar when the year is below 1700 (<code>Hijri</code> likewise; <code>Hebrew</code>: a year of 3000 or more), and as a Gregorian string otherwise. So a real Gregorian date with a small year is misread. Pass a <code>DateTimeImmutable</code> instead, which is never reinterpreted:</p>
+<pre><code class="language-php">use function RtlyKit\jdate;
+
+echo jdate('2026-03-21')-&gt;format('Y/m/d'), "\n";                              // 1405/01/01 (year &gt;= 1700: Gregorian)
+echo jdate('1405-01-01')-&gt;toGregorian()-&gt;format('Y-m-d'), "\n";               // 2026-03-21 (year &lt; 1700: Jalali)
+echo jdate('0999-01-01')-&gt;format('Y/m/d'), "\n";                              // 0999/01/01 (Jalali year 999)
+echo jdate(new DateTimeImmutable('0999-01-01'))-&gt;format('Y/m/d'), "\n";       // 0377/10/11 (Gregorian year 999)</code></pre>
+<p>Persian and Arabic digits are normalised first, so <code>'۱۴۰۴/۰۱/۰۱'</code> works. Blank strings throw <code>InvalidDateException</code>, and <code>null</code> means "now".</p>
+
+<h3 id="digits-output">format() prints English digits. How do I get Persian digits?</h3>
+<p>Formatting returns Latin digits on purpose, so the result is safe for databases and URLs. Convert the output when you display it:</p>
+<pre><code class="language-php">use function RtlyKit\{jdate, to_persian};
+
+echo jdate('2026-03-21')-&gt;format('Y/m/d'), "\n";               // 1405/01/01
+echo to_persian(jdate('2026-03-21')-&gt;format('Y/m/d')), "\n";   // ۱۴۰۵/۰۱/۰۱</code></pre>
+<p><code>Hijri::format()</code> can also produce the digits itself through its <code>$digits</code> argument (<code>latin</code>, <code>persian</code> or <code>arabic</code>).</p>
+
+<h3 id="invalid-date">jdate('1404/12/30') throws, but 1403/12/30 works</h3>
+<p>Esfand has 30 days only in a leap year. 1403 is a leap year and 1404 is not, so 1404/12/30 does not exist and throws <code>InvalidDateException</code> with the code <code>invalid_date</code>. Month 13, or day 31 in a month of the second half of the year (such as 1404/07/31), behaves the same way.</p>
+
+<h3 id="today-wrong">"Today" is a day off for my users</h3>
+<p><code>jdate()</code> with no argument uses PHP's default time zone (<code>date_default_timezone_get()</code>, often UTC on servers). Near midnight Tehran time that is the previous or next Jalali day. Pass a <code>DateTimeZone</code>, or set the default time zone in your application. The timezone argument converts an incoming instant:</p>
+<pre><code class="language-php">use function RtlyKit\jdate;
+
+$utc = new DateTimeImmutable('2026-03-20 22:00', new DateTimeZone('UTC'));
+
+echo jdate($utc)-&gt;format('Y/m/d H:i'), "\n";                                       // 1404/12/29 22:00
+echo jdate($utc, new DateTimeZone('Asia/Tehran'))-&gt;format('Y/m/d H:i'), "\n";    // 1405/01/01 01:30</code></pre>
+
+<h3 id="out-of-range">I get an InvalidDateException for a far-future year or a huge number</h3>
+<p>Every calendar has a fixed range (Jalali -620 to 9377, Hijri 1 to 9665, Hebrew 3762 to 13759; Gregorian 1 to 9999), and huge <code>add*()</code> amounts and timestamps are refused. This is deliberate: you get an exception, never a wrapped-around date. See <a href="limits.html#calendars">Limits</a>.</p>
+
+<h3 id="hijri-differs">The Hijri date is one day off from my local announcement</h3>
+<p><code>Hijri</code> uses the Umm al-Qura calendar (the Saudi civil calendar), which is calculated in advance. Local moon-sighting authorities, including Iran's, can start a month a day or two later. The embedded table covers AH 1300 to 1500; outside it, and for <code>HijriVariant::Tabular</code>, the date is arithmetic and can differ from observation by a day or two. See <a href="hijri.html">Hijri calendar</a> and <a href="accuracy-and-data.html">Accuracy and data</a>.</p>
+
+<h2 id="carbon-laravel">Carbon and Laravel</h2>
+
+<h3 id="macros-missing">Call to undefined method toJalali() on a Carbon object</h3>
+<p>The Carbon macros (<code>toJalali</code>, <code>jformat</code>, <code>createFromJalali</code>, <code>toHijri</code>, <code>toHebrew</code>, <code>createFromHijri</code>, <code>createFromHebrew</code>) are registered only when <code>nesbot/carbon</code> (version 3) is installed. Composer lists it as a suggestion, so install it yourself: <code>composer require nesbot/carbon</code>. The macros are registered when the package's helpers file is loaded by Composer's autoloader (and again by the Laravel provider on boot), for <code>Carbon</code> and <code>CarbonImmutable</code>. Laravel's <code>Illuminate\Support\Carbon</code> extends Carbon, so it works too:</p>
+<pre><code class="language-php">use Carbon\Carbon;
+
+echo Carbon::parse('2026-03-21')-&gt;toJalali()-&gt;format('Y/m/d'), "\n";   // 1405/01/01
+echo Carbon::createFromJalali(1405, 1, 1)-&gt;toDateString(), "\n";       // 2026-03-21
+var_dump(Carbon::hasMacro('toJalali'));                                // bool(true)</code></pre>
+<p>If <code>hasMacro()</code> is false, Carbon is missing or is an unsupported major version. See <a href="carbon-macros.html">Carbon macros</a>.</p>
+
+<h3 id="rules-missing">The Laravel validation rules (national_code, sheba, ...) are not found</h3>
+<p>With package auto-discovery the service provider is registered for you. If you have disabled discovery for this package (<code>dont-discover</code>) or run an old cached config, register <code>RtlyKit\Laravel\RtlyKitServiceProvider</code> manually and clear the caches. The rule names are <code>national_code</code>, <code>sheba</code>, <code>bank_card</code>, <code>iran_mobile</code> (alias <code>mobile</code>), <code>postal_code</code> and <code>vehicle_plate</code>. Messages ship in Persian, English and Arabic and follow <code>app()-&gt;getLocale()</code>; your own <code>lang/{locale}/validation.php</code> lines still win. See <a href="laravel-setup.html">Laravel setup</a>.</p>
+
+<h3 id="cast-errors">My Eloquent model throws InvalidDateException when I assign a date</h3>
+<p><code>JalaliCast</code> accepts a <code>Jalali</code>, any <code>DateTimeInterface</code>, a Unix timestamp, a Gregorian string, or a Jalali string such as <code>1404/01/15 10:30</code> (Persian digits and <code>/</code> or <code>-</code> are fine). Anything else is an error: an impossible date, junk text and non-scalar values (such as an array) throw <code>InvalidDateException</code> on assignment. <code>null</code> and the empty string become <code>null</code>. Catch it in your form request or controller:</p>
+<pre><code class="language-php">$post-&gt;published_at = '1404/01/15 10:30';   // stored as 2025-04-04 10:30:00
+$post-&gt;published_at = '1404/13/45';         // throws InvalidDateException (invalid_date)
+$post-&gt;published_at = 'hello';              // throws InvalidDateException (invalid_date)
+$post-&gt;published_at = ['x'];                // throws InvalidDateException (invalid_date)</code></pre>
+<p>Keep the column a normal Gregorian <code>datetime</code>: the cast writes <code>Y-m-d H:i:s</code> and reads it back as an immutable <code>Jalali</code>. No time-zone conversion happens in the cast. See <a href="laravel-validation-and-cast.html">Laravel validation and cast</a>.</p>
+
+<h2 id="validation-faq">Validators and data</h2>
+
+<h3 id="leading-zero">is_national_code(13542419) is false, but the string version is true</h3>
+<p>An <code>int</code> has already lost its leading zeros: <code>0013542419</code> became <code>13542419</code>, eight digits. Validators convert integers to strings but cannot restore zeros. Keep identifiers as strings everywhere (form fields, JSON, database columns):</p>
+<pre><code class="language-php">use function RtlyKit\is_national_code;
+
+var_dump(is_national_code(13542419));       // bool(false)
+var_dump(is_national_code('0013542419'));   // bool(true)</code></pre>
+
+<h3 id="null-bank">getBankName() returns null for a valid card or Sheba</h3>
+<p>The BIN, Sheba-code and operator tables contain only entries confirmed by at least two sources, so they are intentionally incomplete (39 BINs, 38 Sheba codes). <code>null</code> means "unknown", not "invalid"; the card's validity comes from the Luhn checksum and the Sheba's from mod-97, independently of the tables. The same goes for <code>NationalCode::getLocation()</code> (547 prefixes) and the issuing place it reports: it is where the card was issued, not the birthplace. Never reject a user because a name is <code>null</code>. See <a href="accuracy-and-data.html">Accuracy and data</a>.</p>
+
+<h3 id="what-validators-throw">Why does a validator never throw, even for null or an array?</h3>
+<p>By design: validators take <code>mixed</code> and answer with <code>false</code> or an invalid <code>Result</code> (<code>invalid_type</code> for non-scalar values, <code>input_too_long</code> above 4096 bytes), so you can pass raw request input directly. See <a href="validators-overview.html">Validators overview</a>.</p>
+
+<h2 id="numbers-faq">Numbers and text</h2>
+
+<h3 id="format-float">format_number(1234567.891) prints a long tail of digits</h3>
+<p>A PHP <code>float</code> cannot hold 1234567.891 exactly, and the formatter prints the exact stored value. Pass decimals as <strong>strings</strong>, or round first:</p>
+<pre><code class="language-php">use function RtlyKit\format_number;
+
+echo format_number('1234567.891'), "\n";   // ۱٬۲۳۴٬۵۶۷٫۸۹۱
+echo format_number(1234567.891), "\n";     // ۱٬۲۳۴٬۵۶۷٫۸۹۱۰۰۰۰۰۰۰۶۱۴۶۷</code></pre>
+
+<h3 id="words-limits">number_to_words() throws for 1.5, for big Arabic numbers and for other languages</h3>
+<p>Words are defined for whole numbers only (<code>1.5</code>, <code>NaN</code> and <code>INF</code> throw <code>InvalidNumberException</code>; an integral float such as <code>3.0</code> is accepted). Persian goes up to 21 digits, Arabic to 999,999,999 in the masculine counting form without case endings. Only <code>fa</code> and <code>ar</code> exist; any other locale throws <code>UnsupportedLocaleException</code>. See <a href="number-words.html">Number words</a> and <a href="limits.html#numbers">Limits</a>.</p>
+
+<h2 id="prayer-faq">Prayer times and holidays</h2>
+
+<h3 id="prayer-timezone">The prayer times are in the wrong time zone or shifted by an hour</h3>
+<p>Times are HH:MM <strong>local time of the calculator's time zone</strong>, for the local calendar day of the date you pass. <code>PrayerTimes::forCity()</code> uses the city's own zone. A calculator built with <code>new PrayerTimes()</code> and no zone uses PHP's default (<code>date_default_timezone_get()</code>, which is <code>UTC</code> in a fresh container), so pass a <code>DateTimeZone</code>. Daylight saving is applied per event, so a table across a clock change is right on both sides (Cairo's Dhuhr on 2026-10-08 and 2026-10-31):</p>
+<pre><code class="language-php">use RtlyKit\Prayer\PrayerTimes;
+
+$cairo = PrayerTimes::forCity('cairo', PrayerTimes::METHOD_EGYPT);
+
+echo $cairo-&gt;getTimes(new DateTimeImmutable('2026-10-08'))['dhuhr'], ' ',   // 12:43 (summer time)
+     $cairo-&gt;getTimes(new DateTimeImmutable('2026-10-31'))['dhuhr'], "\n";   // 11:39 (standard time)</code></pre>
+<p>A date you pass in another zone is first converted to the calculator's zone: 2026-03-20 23:30 UTC and 2026-03-21 03:00 Asia/Tehran both give the times of 21 March in Tehran.</p>
+
+<h3 id="prayer-null">Some prayer times are null</h3>
+<p>At high latitudes the sun may never reach the angle needed for Fajr, sunrise, Maghrib or Isha on a given day, and those values are <code>null</code> (and Asr is <code>null</code> in polar night). This is a result, not an error. Handle it in your UI:</p>
+<pre><code class="language-php">use RtlyKit\Prayer\PrayerTimes;
+
+$oslo = new PrayerTimes(69.65, 18.96, PrayerTimes::METHOD_MWL, PrayerTimes::ASR_STANDARD, new DateTimeZone('Europe/Oslo'));
+echo json_encode($oslo-&gt;getTimes(new DateTimeImmutable('2026-06-21'))), "\n";
+// {"fajr":null,"sunrise":null,"dhuhr":"12:46","asr":"17:58","maghrib":null,"isha":null}</code></pre>
+
+<h3 id="next-prayer">nextPrayer() returned a time that is tomorrow</h3>
+<p>After Isha, <code>nextPrayer()</code> rolls over to tomorrow's Fajr. The result has a <code>date</code> key (<code>Y-m-d</code>) telling which day the prayer falls on:</p>
+<pre><code class="language-php">use RtlyKit\Prayer\PrayerTimes;
+
+$next = PrayerTimes::forCity('tehran')-&gt;nextPrayer(new DateTimeImmutable('2026-03-21 23:00', new DateTimeZone('Asia/Tehran')));
+echo json_encode($next), "\n";   // {"name":"fajr","time":"04:42","date":"2026-03-22"}</code></pre>
+
+<h3 id="prayer-differs">My times differ by a few minutes from my mosque or another app</h3>
+<p>Different authorities use different twilight angles and rounding. The calculation matches published tables within about a minute for the verified methods, but the Karachi, MWL and ISNA angles, and the Tehran method's Isha and Asr, have not been checked against an official timetable. Choose the method your community follows, set the Asr factor (<code>ASR_HANAFI</code> shifts Asr later) and, for high places, the elevation argument. See <a href="prayer-times.html">Prayer times</a> and <a href="accuracy-and-data.html#prayer-status">Accuracy and data</a>.</p>
+
+<h3 id="holiday-off">A religious holiday is a day off from the official calendar</h3>
+<p>Islamic holidays are computed from the Hijri calendar, while Iran announces them by moon sighting, so they can be 1 or 2 days off. Fixed Jalali holidays (such as Nowruz and 22 Bahman) are exact. Outside AH 1300 to 1500 only the fixed holidays are reported. If correctness matters for payroll or deadlines, add an override list from the official announcement on your side. See <a href="holidays.html">Holidays</a>.</p>

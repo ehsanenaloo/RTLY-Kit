@@ -1,0 +1,233 @@
+<!--
+title: Jalali calendar
+description: The immutable Jalali (Persian, Solar Hijri) date class: create and parse dates, format them with PHP date tokens, shift and snap them, compare and diff them, with the exact year range and error behaviour.
+group: calendars
+order: 10
+-->
+<h2 id="overview">What the class does</h2>
+<p><code>RtlyKit\Calendar\Jalali</code> is an immutable date-time value in the Persian (Solar Hijri) calendar. Internally it wraps one <code>DateTimeImmutable</code> instant, so it has a time zone, a Unix timestamp and an exact Gregorian counterpart; the Jalali year, month and day are computed from that instant. Every modifier returns a new object and the original never changes. The class is <code>final</code> and implements the shared <code>CalendarDate</code> contract described in <a href="convert-and-compare.html">Convert and compare dates</a>.</p>
+<p><strong>Prerequisites.</strong> Install the package (<a href="installation.html">Installation</a>). All examples assume this header:</p>
+<pre><code class="language-php">&lt;?php
+require 'vendor/autoload.php';
+
+use RtlyKit\Calendar\Jalali;
+use RtlyKit\Exceptions\InvalidDateException;
+use function RtlyKit\jdate;   // namespaced helper, same as Jalali::make()</code></pre>
+<div class="known"><strong>Known limitation.</strong> The conversion implements the arithmetic 33-year-cycle rule (leap years at residues 1, 5, 9, 13, 17, 22, 26, 30 modulo 33). It is not the astronomical calendar used for the official Iranian calendar. For the modern years it agrees with the official calendar, but the two rules are different by construction and may disagree on a leap day in some far past or future year. Do not use this class as an authority for legal deadlines that depend on the official publication.</div>
+
+<h2 id="make">Creating dates</h2>
+<h3 id="create">From components: <code>create()</code></h3>
+<p><code>create($year, $month, $day, $hour = 0, $minute = 0, $second = 0, $timezone = null)</code> builds a date from Jalali components. The date is validated against the real month length of that year, so <code>1404/12/30</code> (1404 is not a leap year) is rejected while <code>1403/12/30</code> is accepted. Without a time zone the PHP default time zone (<code>date_default_timezone_get()</code>) is used.</p>
+<pre><code class="language-php">$tehran = new DateTimeZone('Asia/Tehran');
+$d = Jalali::create(1404, 7, 15, 14, 30, 5, $tehran);
+
+echo $d;                                   // 1404/07/15 14:30:05
+echo $d-&gt;getTimestamp();                   // 1759834805
+echo $d-&gt;toGregorian()-&gt;format('c');       // 2025-10-07T14:30:05+03:30</code></pre>
+
+<h3 id="make-values">From anything: <code>make()</code></h3>
+<p><code>Jalali::make($time = null, $timezone = null)</code> accepts a <code>DateTimeInterface</code>, another <code>CalendarDate</code> (Hijri, Hebrew, Jalali), an <code>int</code> Unix timestamp, a string or <code>null</code> (now). The namespaced helper <code>jdate()</code> is a thin alias of it.</p>
+<pre><code class="language-php">$utc = new DateTimeZone('UTC');
+
+echo Jalali::make(new DateTimeImmutable('2026-03-21 12:00', $utc)); // 1405/01/01 12:00:00
+echo Jalali::make(0, $utc);                                        // 1348/10/11 00:00:00
+echo jdate('2026-03-21')-&gt;format('l j F Y');                       // شنبه 1 فروردین 1405
+echo Jalali::now();      // current instant in the default time zone
+echo Jalali::today();    // today at 00:00:00</code></pre>
+
+<h3 id="string-rules">String semantics of <code>make()</code></h3>
+<p>Strings are handled in this order:</p>
+<ol>
+<li>Persian and Arabic digits are converted to English digits, and the string is trimmed. An empty or whitespace-only string throws <code>InvalidDateException</code>.</li>
+<li>If the string looks like <code>Y/m/d</code> or <code>Y-m-d</code> with a 3 or 4 digit year, optionally followed by <code>H:i</code> or <code>H:i:s</code> (separated by a space or <code>T</code>), <strong>and the year is below 1700</strong>, it is read as a <em>Jalali</em> date.</li>
+<li>Every other string, including any year of 1700 or later, is passed to <code>DateTimeImmutable</code> and read as Gregorian or free-form text (<code>'2025-10-07'</code>, <code>'tomorrow'</code>, <code>'10 October 2025'</code>).</li>
+</ol>
+<pre><code class="language-php">echo Jalali::make('1403/12/30');          // 1403/12/30 00:00:00
+echo Jalali::make('۱۴۰۴/۰۷/۱۵');          // 1404/07/15 00:00:00   (Persian digits)
+echo Jalali::make('1404-07-15 08:05');    // 1404/07/15 08:05:00
+echo Jalali::make('2025-10-07')-&gt;format('Y/m/d');  // 1404/07/15   (Gregorian text)
+echo Jalali::make('1700/01/01')-&gt;format('Y/m/d');  // 1078/10/12   (1700 or later is Gregorian)</code></pre>
+<div class="warn"><strong>Watch the 1700 boundary.</strong> A string such as <code>'0001-01-01'</code> or <code>'1500-06-01'</code> is read as a Jalali date, not as a Gregorian one. To pass a real Gregorian date earlier than year 1700, build a <code>DateTimeImmutable</code> yourself and hand that object to <code>make()</code>.</div>
+<p>Invalid input always raises <code>InvalidDateException</code>:</p>
+<pre><code class="language-php">foreach (['1404/12/30', '1404/13/01', '1404/07/15 25:00', '', 'garbage'] as $s) {
+    try {
+        Jalali::make($s);
+    } catch (InvalidDateException $e) {
+        echo "'$s': ", $e-&gt;getMessage(), "\n";
+    }
+}
+// '1404/12/30': Invalid Jalali date: 1404/12/30
+// '1404/13/01': Invalid Jalali date: 1404/13/1
+// '1404/07/15 25:00': Invalid time: 25:0:0
+// '': Unable to parse an empty date string.
+// 'garbage': Unable to parse date: garbage</code></pre>
+
+<h3 id="from-format">With a format: <code>createFromFormat()</code></h3>
+<p><code>Jalali::createFromFormat($format, $time, $timezone = null)</code> parses with the PHP <code>DateTime::createFromFormat</code> token syntax (digits may be Persian) but interprets the year, month and day as Jalali values. Gregorian-only limits such as "February has at most 29 days" do not apply; the Jalali calendar validates the result.</p>
+<pre><code class="language-php">echo Jalali::createFromFormat('Y/m/d H:i', '1404/07/15 08:30', $tehran); // 1404/07/15 08:30:00
+echo Jalali::createFromFormat('d-m-Y', '31-06-1404');                    // 1404/06/31 00:00:00
+
+try {
+    Jalali::createFromFormat('Y/m/d', 'abc');
+} catch (InvalidDateException $e) {
+    echo $e-&gt;getMessage();   // Unable to parse 'abc' with format 'Y/m/d'
+}</code></pre>
+
+<h2 id="range">Supported range and errors</h2>
+<p>Supported Jalali years are <code>Jalali::MIN_YEAR</code> = <strong>-620</strong> to <code>Jalali::MAX_YEAR</code> = <strong>9377</strong>. This is exactly the span that maps to Gregorian years 1 to 9999: the first supported day is -620/01/01 (0001-03-21) and the last is 9377/12/30 (9999-03-20). Every entry point checks the range and throws only <code>InvalidDateException</code> (never a <code>TypeError</code>, <code>ValueError</code> or <code>DateMalformed*</code> exception), including <code>create()</code>, <code>make()</code>, <code>createFromFormat()</code>, integer timestamps, <code>add*()</code>/<code>sub*()</code> and the static converters.</p>
+<pre><code class="language-php">foreach ([[-621, 1, 1], [9378, 1, 1], [1404, 12, 30], [1404, 0, 1], [1404, 7, 31]] as [$y, $m, $d]) {
+    try {
+        Jalali::create($y, $m, $d);
+    } catch (InvalidDateException $e) {
+        echo $e-&gt;getMessage(), "\n";
+    }
+}
+// Invalid Jalali date: -621/1/1
+// Invalid Jalali date: 9378/1/1
+// Invalid Jalali date: 1404/12/30
+// Invalid Jalali date: 1404/0/1
+// Invalid Jalali date: 1404/7/31</code></pre>
+<p>Time components are checked too: <code>Jalali::create(1404, 1, 1, 24, 0, 0)</code> throws <code>Invalid time: 24:0:0</code>. An integer timestamp outside Gregorian years 1 to 9999 throws <code>Timestamp out of the supported range: ...</code>.</p>
+<p>Catch <code>InvalidDateException</code> to handle only calendar problems, or the base class <code>RtlyKit\Exceptions\RtlyKitException</code> (also the marker interface <code>RtlyKitThrowable</code>) to handle every error of the library. See <a href="error-handling.html">Error handling</a>.</p>
+
+<h2 id="getters">Reading values</h2>
+<table>
+<thead><tr><th>Method</th><th>Returns</th></tr></thead>
+<tbody>
+<tr><td><code>getYear()</code>, <code>getMonth()</code>, <code>getDay()</code></td><td>Jalali year, month (1 to 12), day (1 to 31)</td></tr>
+<tr><td><code>getHour()</code>, <code>getMinute()</code>, <code>getSecond()</code></td><td>Time of day in the instance's time zone</td></tr>
+<tr><td><code>getDayOfWeek()</code></td><td>0 = Saturday (Shanbe) to 6 = Friday (Jomeh)</td></tr>
+<tr><td><code>monthName()</code></td><td>Persian name of the month, e.g. <code>مهر</code></td></tr>
+<tr><td><code>getTimestamp()</code>, <code>getTimezone()</code></td><td>Unix timestamp and the <code>DateTimeZone</code></td></tr>
+<tr><td><code>toGregorian()</code></td><td>The underlying <code>DateTimeImmutable</code></td></tr>
+<tr><td><code>toDateString()</code>, <code>toDateTimeString()</code>, <code>__toString()</code></td><td><code>Y/m/d</code>, <code>Y/m/d H:i:s</code>, <code>Y/m/d H:i:s</code></td></tr>
+</tbody>
+</table>
+<h3 id="weekdays">Weekday numbering</h3>
+<p>Jalali weeks start on Saturday: <code>getDayOfWeek()</code> and the <code>w</code> format token return 0 for Saturday and 6 for Friday; the <code>N</code> token is 1 (Saturday) to 7 (Friday). <strong>Hijri and Hebrew are different:</strong> they are Sunday-first (0 = Sunday), like PHP's own <code>w</code>. Never share weekday numbers across calendars; compare instants instead.</p>
+<pre><code class="language-php">$d = Jalali::create(1404, 7, 15);           // a Tuesday
+foreach (range(0, 6) as $i) {
+    $x = $d-&gt;addDays($i);
+    echo $x-&gt;getDayOfWeek(), ':', $x-&gt;format('l'), ' ';
+}
+// 3:سه‌شنبه 4:چهارشنبه 5:پنجشنبه 6:جمعه 0:شنبه 1:یکشنبه 2:دوشنبه</code></pre>
+
+<h2 id="format">Formatting</h2>
+<p><code>format($pattern = 'Y/m/d H:i:s', $persianDigits = false)</code> evaluates PHP <code>date()</code>-style tokens in the Jalali calendar. Pass <code>true</code> as the second argument to convert all digits to Persian. A backslash escapes the next character. Characters that are not tokens are copied unchanged. A pattern longer than <code>Jalali::MAX_FORMAT_LENGTH</code> (256 bytes) throws <code>InvalidDateException</code>.</p>
+<pre><code class="language-php">$d = Jalali::create(1404, 7, 15, 14, 30, 5, $tehran);
+
+echo $d-&gt;format('l j F Y');            // سه‌شنبه 15 مهر 1404
+echo $d-&gt;format('Y/m/d', true);        // ۱۴۰۴/۰۷/۱۵
+echo $d-&gt;format('c');                  // 1404-07-15T14:30:05+03:30
+echo $d-&gt;format('h:i A');              // 02:30 بعد از ظهر
+echo $d-&gt;format('g:i a');              // 2:30 ب.ظ
+echo $d-&gt;format('\Y: Y, \d: d');       // Y: 1404, d: 15
+echo $d-&gt;format('t L z W N D');        // 30 0 200 41 4 س</code></pre>
+<table>
+<thead><tr><th>Token</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td><code>Y</code> <code>y</code></td><td>Year, 4 digits and 2 digits</td></tr>
+<tr><td><code>m</code> <code>n</code></td><td>Month with and without leading zero</td></tr>
+<tr><td><code>F</code> <code>M</code></td><td>Persian month name (<code>M</code> is identical to <code>F</code>: Persian month names have no abbreviation)</td></tr>
+<tr><td><code>d</code> <code>j</code></td><td>Day with and without leading zero</td></tr>
+<tr><td><code>l</code> <code>D</code></td><td>Weekday name; <code>D</code> is the one-letter form (<code>ش ی د س چ پ ج</code>)</td></tr>
+<tr><td><code>w</code> <code>N</code></td><td>Weekday number: 0 to 6 and 1 to 7, Saturday first</td></tr>
+<tr><td><code>z</code></td><td>Zero-based day of the Jalali year</td></tr>
+<tr><td><code>t</code> <code>L</code></td><td>Days in the month; 1 if the year is a leap year</td></tr>
+<tr><td><code>H</code> <code>G</code> <code>h</code> <code>g</code></td><td>24-hour and 12-hour clock, with and without leading zero</td></tr>
+<tr><td><code>i</code> <code>s</code></td><td>Minutes and seconds</td></tr>
+<tr><td><code>a</code> <code>A</code></td><td><code>ق.ظ</code>/<code>ب.ظ</code> and <code>قبل از ظهر</code>/<code>بعد از ظهر</code></td></tr>
+<tr><td><code>S</code></td><td>Always empty (Persian has no ordinal suffix)</td></tr>
+<tr><td><code>W</code></td><td>ISO-8601 week number of the underlying Gregorian instant</td></tr>
+<tr><td><code>c</code></td><td><code>Y-m-d\TH:i:sP</code> with the Jalali date</td></tr>
+<tr><td><code>r</code></td><td>RFC 2822 string of the Gregorian instant (the RFC requires English Gregorian names)</td></tr>
+<tr><td><code>U e T P p O Z I u v</code></td><td>Delegated to the underlying instant (timestamp, zone, offset, microseconds, ...)</td></tr>
+</tbody>
+</table>
+
+<h2 id="modify">Shifting and snapping</h2>
+<p>Every modifier returns a new instance; the time zone is preserved.</p>
+<table>
+<thead><tr><th>Method</th><th>Behaviour</th></tr></thead>
+<tbody>
+<tr><td><code>addDays()</code> <code>subDays()</code></td><td>Whole days on the underlying instant</td></tr>
+<tr><td><code>addHours()</code> <code>addMinutes()</code> <code>addSeconds()</code> and the <code>sub*</code> forms</td><td>Exact elapsed time</td></tr>
+<tr><td><code>addMonths()</code> <code>subMonths()</code></td><td>Calendar months; the day is <strong>clamped</strong> to the target month's length</td></tr>
+<tr><td><code>addYears()</code> <code>subYears()</code></td><td>Same as 12 months per year; <code>30 Esfand</code> in a leap year becomes <code>29 Esfand</code> in a regular year</td></tr>
+<tr><td><code>startOfDay()</code> <code>endOfDay()</code></td><td>00:00:00 and 23:59:59 of the same day</td></tr>
+<tr><td><code>startOfMonth()</code> <code>endOfMonth()</code></td><td>First day 00:00:00; last day 23:59:59</td></tr>
+<tr><td><code>startOfYear()</code> <code>endOfYear()</code></td><td>1 Farvardin 00:00:00; last day of Esfand 23:59:59</td></tr>
+</tbody>
+</table>
+<pre><code class="language-php">$x = Jalali::create(1403, 12, 30);              // last day of a leap year
+echo $x-&gt;addDays(1);                            // 1404/01/01 00:00:00
+echo $x-&gt;subDays(30);                           // 1403/11/30 00:00:00
+echo $x-&gt;addHours(30);                          // 1404/01/01 06:00:00
+echo $x-&gt;addYears(1);                           // 1404/12/29 00:00:00  (clamped)
+echo $x-&gt;subMonths(13);                         // 1402/11/30 00:00:00
+echo Jalali::create(1404, 6, 31)-&gt;addMonths(1); // 1404/07/30 00:00:00  (clamped)
+
+$m = Jalali::create(1404, 7, 15, 14, 30, 5);
+echo $m-&gt;startOfMonth();   // 1404/07/01 00:00:00
+echo $m-&gt;endOfMonth();     // 1404/07/30 23:59:59
+echo $m-&gt;startOfYear();    // 1404/01/01 00:00:00
+echo $m-&gt;endOfYear();      // 1404/12/29 23:59:59</code></pre>
+<p>Moving past the supported range, or by an absurd amount, throws <code>InvalidDateException</code> instead of wrapping around:</p>
+<pre><code class="language-php">try { Jalali::create(9377, 1, 1)-&gt;addYears(1); }
+catch (InvalidDateException $e) { echo $e-&gt;getMessage(); }
+// Jalali year out of the supported range: 9378
+
+try { $x-&gt;addDays(PHP_INT_MAX); }
+catch (InvalidDateException $e) { echo $e-&gt;getMessage(); }
+// Cannot shift a date by 9223372036854775807 days: out of the supported range.</code></pre>
+
+<h2 id="compare-diff">Comparing and measuring</h2>
+<p>Comparison methods (<code>eq ne gt gte lt lte equals isBefore isAfter between isPast isFuture isToday</code>) compare <strong>instants</strong>, and accept any <code>CalendarDate</code> or <code>DateTimeInterface</code>. So two values are equal only when they are the same moment, which depends on the time zone, not just the printed date.</p>
+<pre><code class="language-php">$a = Jalali::create(1405, 1, 1, 0, 0, 0, $tehran);
+var_dump($a-&gt;eq(new DateTimeImmutable('2026-03-21 00:00', $tehran))); // bool(true)
+var_dump($a-&gt;between(Jalali::create(1404, 1, 1), Jalali::create(1406, 1, 1))); // bool(true)</code></pre>
+<table>
+<thead><tr><th>Method</th><th>Semantics</th></tr></thead>
+<tbody>
+<tr><td><code>diffInDays($other, $absolute = true)</code></td><td>Whole days, truncated toward zero. With <code>false</code> the sign is that of <code>$this - $other</code></td></tr>
+<tr><td><code>diffInMonths($other, $absolute = true)</code></td><td>Whole <em>Jalali</em> months; the day and time of day count (15 Farvardin to 14 Tir is 2 months)</td></tr>
+<tr><td><code>diffInYears($other, $absolute = true)</code></td><td>Whole Jalali years, anniversary based</td></tr>
+</tbody>
+</table>
+<pre><code class="language-php">$jan = Jalali::create(1404, 1, 1);
+$feb = Jalali::create(1404, 2, 1);
+echo $jan-&gt;diffInDays($feb);                 // 31
+echo $jan-&gt;diffInDays($feb, false);          // -31
+echo Jalali::create(1404, 1, 15)-&gt;diffInMonths(Jalali::create(1404, 4, 14)); // 2
+echo Jalali::create(1380, 5, 5)-&gt;diffInYears(Jalali::create(1404, 5, 4));    // 23
+echo Jalali::create(1380, 5, 5)-&gt;diffInYears(Jalali::create(1404, 5, 5));    // 24</code></pre>
+
+<h2 id="static">Static helpers</h2>
+<table>
+<thead><tr><th>Method</th><th>Returns</th></tr></thead>
+<tbody>
+<tr><td><code>Jalali::isValid($y, $m, $d)</code></td><td><code>bool</code>; false (never throws) for out-of-range years, months or days</td></tr>
+<tr><td><code>Jalali::isLeapYear($y)</code></td><td>Leap if <code>$y mod 33</code> is one of 1, 5, 9, 13, 17, 22, 26, 30</td></tr>
+<tr><td><code>Jalali::daysInYear($y)</code></td><td>365 or 366</td></tr>
+<tr><td><code>Jalali::daysInMonth($y, $m)</code></td><td>31 for months 1 to 6, 30 for 7 to 11, 29 or 30 for Esfand; <code>0</code> for an invalid month number</td></tr>
+<tr><td><code>Jalali::gregorianToJalali($gy, $gm, $gd)</code></td><td><code>[year, month, day]</code>; Gregorian year must be 1 to 9999</td></tr>
+<tr><td><code>Jalali::jalaliToGregorian($jy, $jm, $jd)</code></td><td><code>[year, month, day]</code>; day 1 to 31 is accepted for any month and overflow rolls forward</td></tr>
+</tbody>
+</table>
+<pre><code class="language-php">echo implode(',', array_filter(range(1399, 1410), Jalali::isLeapYear(...))); // 1399,1403,1408
+echo Jalali::daysInMonth(1403, 12), ' ', Jalali::daysInMonth(1404, 12);        // 30 29
+echo Jalali::daysInYear(1403), ' ', Jalali::daysInYear(1404);                  // 366 365
+echo json_encode(Jalali::gregorianToJalali(2026, 3, 21));                      // [1405,1,1]
+echo json_encode(Jalali::jalaliToGregorian(1405, 1, 1));                       // [2026,3,21]
+
+try { Jalali::gregorianToJalali(10000, 1, 1); }
+catch (InvalidDateException $e) { echo $e-&gt;getMessage(); }
+// Gregorian date out of the supported range (years 1-9999): 10000-1-1</code></pre>
+
+<h2 id="notes">Practical notes</h2>
+<ul>
+<li><strong>Time zones.</strong> Dates created without a zone use the PHP default zone. Pass a <code>DateTimeZone</code> to <code>create()</code>/<code>make()</code> whenever the result must not depend on server configuration. Hour, minute and the date itself are read in the instance's zone.</li>
+<li><strong>Day boundaries.</strong> The day changes at civil midnight in the instance's zone, as everywhere in this library.</li>
+<li><strong>Use as a value.</strong> Instances are <code>Stringable</code>, safe to share and to store in arrays; sort by <code>getTimestamp()</code>.</li>
+<li><strong>Related.</strong> Convert to other calendars and compare across calendars in <a href="convert-and-compare.html">Convert and compare dates</a>; add Carbon integration in <a href="carbon-macros.html">Carbon macros</a>; check Iranian holidays in <a href="holidays.html">Holidays</a>.</li>
+</ul>

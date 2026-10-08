@@ -1,0 +1,80 @@
+<!--
+title: راه‌اندازی لاراول
+description: چگونگی اتصال RTLY-Kit به لاراول: کشف خودکار بسته، کارهای سرویس‌پرووایدر، فاساد Jalali و پیام‌های اعتبارسنجی فارسی، انگلیسی و عربی که می‌توانید بازنویسی کنید.
+group: laravel
+order: 10
+-->
+<h2 id="install">نصب و کشف خودکار</h2>
+<p>جز Composer به هیچ چیز دیگری نیاز نیست. بسته سرویس‌پرووایدر و نام مستعار فاساد را در <code>composer.json</code> زیر <code>extra.laravel</code> اعلام کرده است؛ پس کشف خودکار بسته‌های لاراول در <code>composer install</code> یا <code>composer update</code> بعدی آن‌ها را ثبت می‌کند.</p>
+<pre><code class="language-bash">composer require enaxon/rtly-kit</code></pre>
+<p>یکپارچگی لاراول از اجزای <code>illuminate/support</code>، <code>illuminate/translation</code>، <code>illuminate/validation</code> و <code>illuminate/database</code> استفاده می‌کند که هر برنامهٔ لاراول از قبل دارد. مجموعهٔ آزمون روی این اجزا با نسخهٔ ۱۱ و ۱۲ اجرا می‌شود (قید توسعه <code>^11.0||^12.0</code>)؛ خود کتابخانه فقط PHP 8.2 می‌خواهد و بدون لاراول هم کار می‌کند.</p>
+<div class="note"><strong>نکته.</strong> آزمون‌های یکپارچگی کلاس‌های واقعی container، translator، validation factory و مدل Eloquent را اجرا می‌کنند، نه یک اسکلت کامل برنامهٔ لاراول. نمونه‌کدهای این صفحه‌ها هم به همین شیوه اجرا شده‌اند.</div>
+<p>اگر برنامهٔ شما کشف خودکار این بسته را خاموش کرده است (<code>"dont-discover": ["enaxon/rtly-kit"]</code>)، پرووایدر را خودتان ثبت کنید. در لاراول ۱۱ و بالاتر آن را به <code>bootstrap/providers.php</code> اضافه کنید:</p>
+<pre><code class="language-php">return [
+    App\Providers\AppServiceProvider::class,
+    RtlyKit\Laravel\RtlyKitServiceProvider::class,
+];</code></pre>
+<p>در ساختار قدیمی همین کلاس را به آرایهٔ <code>providers</code> در <code>config/app.php</code> اضافه کنید. فایل پیکربندی برای انتشار و مایگریشن وجود ندارد.</p>
+
+<h2 id="provider">سرویس‌پرووایدر چه می‌کند</h2>
+<p>کلاس <code>RtlyKit\Laravel\RtlyKitServiceProvider</code> در هر مرحله یک کار مشخص دارد:</p>
+<ul>
+<li><strong><code>register()</code></strong> یک singleton با کلید <code>rtly-kit.jalali</code> می‌بندد، از نوع <code>RtlyKit\Laravel\JalaliFactory</code>. این همان شیء پشت فاساد است.</li>
+<li><strong><code>boot()</code></strong> سه کار می‌کند: ماکروهای Carbon را نصب می‌کند (<a href="carbon-macros.html">ماکروهای Carbon</a>)، ترجمه‌های بسته را با فضای نام <code>rtly-kit</code> بارگیری می‌کند و اگر container یک validation factory داشته باشد، قواعد اعتبارسنجی را ثبت می‌کند (<a href="laravel-validation-and-cast.html">اعتبارسنجی و کست</a>).</li>
+</ul>
+<div class="note"><strong>نکته.</strong> پرووایدر <strong>هیچ تابع سراسری</strong> ثبت نمی‌کند. یک آزمون پرووایدر را بوت می‌کند و تأیید می‌کند که پس از آن هیچ‌کدام از ۲۷ نام کوتاه وجود ندارد. اگر نام‌های کوتاه سراسری می‌خواهید، خودتان <code>\RtlyKit\Globals::register()</code> را صدا بزنید؛ <a href="helpers-and-globals.html">توابع کمکی و سراسری</a> را ببینید.</div>
+<p>اگر <code>validator</code> در container از نوع <code>Illuminate\Validation\Factory</code> نباشد (جایگزین سفارشی)، پرووایدر آن را دست‌نخورده می‌گذارد و به‌جای شکست، ثبت قواعد را رد می‌کند.</p>
+
+<h2 id="facade">فاساد Jalali</h2>
+<p>نام مستعار <code>Jalali</code> (کلاس <code>RtlyKit\Laravel\Facades\Jalali</code>) به factory می‌رسد. چهار متد دارد که سازنده‌های ایستای <code>RtlyKit\Calendar\Jalali</code> را بازتاب می‌دهند:</p>
+<pre><code class="language-php">use RtlyKit\Laravel\Facades\Jalali;
+
+echo Jalali::create(1404, 1, 1)->format('Y/m/d l');   // 1404/01/01 جمعه
+echo Jalali::make('2025-03-21')->toDateString();       // 1404/01/01
+echo get_class(Jalali::now());                         // RtlyKit\Calendar\Jalali
+// Jalali::today() هم موجود است</code></pre>
+<p>هر فراخوانی یک شیء معمولی و تغییرناپذیر <code>Jalali</code> برمی‌گرداند، پس هرچه در صفحهٔ <a href="jalali.html">تقویم جلالی</a> آمده اینجا هم صادق است. factory یک singleton است و <code>app('rtly-kit.jalali')</code> همیشه همان نمونه را می‌دهد.</p>
+<p>فاساد اختیاری است. در کلاس‌ها می‌توانید کلاس را مستقیم import کنید یا از تابع فضای‌نامی <code>\RtlyKit\jdate()</code> استفاده کنید؛ در آزمون‌ها چیزی برای fake کردن نیست، چون factory حالت ندارد.</p>
+
+<h2 id="translations">ترجمه‌ها: فارسی، انگلیسی، عربی</h2>
+<p>پرووایدر <code>loadTranslationsFrom()</code> را با فضای نام <code>rtly-kit</code> صدا می‌زند؛ پس پیام‌ها زیر <code>rtly-kit::validation.*</code> هستند و از زبان برنامه پیروی می‌کنند. سه مجموعهٔ کامل هست و هر قاعده یک خط دارد:</p>
+<table>
+<thead><tr><th>کلید</th><th>fa</th><th>en</th></tr></thead>
+<tbody>
+<tr><td><code>national_code</code></td><td>:attribute کد ملی معتبر نیست.</td><td>The :attribute is not a valid Iranian national code.</td></tr>
+<tr><td><code>sheba</code></td><td>:attribute شماره شبا معتبر نیست.</td><td>The :attribute is not a valid Iranian Sheba (IBAN).</td></tr>
+<tr><td><code>bank_card</code></td><td>:attribute شماره کارت بانکی معتبر نیست.</td><td>The :attribute is not a valid Iranian bank card.</td></tr>
+<tr><td><code>iran_mobile</code>، <code>mobile</code></td><td>:attribute شماره موبایل معتبر نیست.</td><td>The :attribute is not a valid Iranian mobile number.</td></tr>
+<tr><td><code>postal_code</code></td><td>:attribute کد پستی معتبر نیست.</td><td>The :attribute is not a valid Iranian postal code.</td></tr>
+<tr><td><code>vehicle_plate</code></td><td>:attribute پلاک خودرو معتبر نیست.</td><td>The :attribute is not a valid Iranian vehicle plate.</td></tr>
+</tbody>
+</table>
+<p>فایل عربی در بسته <code>resources/lang/ar/validation.php</code> است و کلیدهای یکسان دارد. همین قاعده در سه زبان:</p>
+<pre><code class="language-php">// فیلدی به نام national_code، مقدار '1234567890'، قاعدهٔ national_code
+// locale fa: national code کد ملی معتبر نیست.
+// locale en: The national code is not a valid Iranian national code.
+// locale ar: national code ليس رقماً وطنياً إيرانياً صالحاً.</code></pre>
+<p>(لاراول نام فیلد <code>national_code</code> را به برچسب «national code» تبدیل می‌کند؛ برای جملهٔ طبیعی، برچسب مناسب را در ترجمه‌های <code>attributes</code> بدهید.)</p>
+<p>اگر زبان فعال خطی نداشته باشد، زبان جایگزین معمول لاراول (<code>app.fallback_locale</code>) به کار می‌رود. اگر اصلاً ترجمه‌ای پیدا نشود، متن انگلیسی داخلی آخرین راه است.</p>
+
+<h2 id="override">بازنویسی پیام</h2>
+<p>چیزی را منتشر (publish) نمی‌کنید. از باریک‌ترین تا گسترده‌ترین، هرکدام را که مناسب است انتخاب کنید:</p>
+<ol>
+<li><strong>برای یک فراخوانی:</strong> پیام سفارشی را به‌روش معمول به validator یا <code>$request->validate()</code> بدهید، مثلاً با کلید <code>postal_code</code> یا <code>zip.postal_code</code>. پیام سفارشی همیشه برنده است.</li>
+<li><strong>در کل برنامه:</strong> خط قاعده را به <code>lang/fa/validation.php</code> خودتان اضافه کنید (کلید همان نام قاعده است، مثلاً <code>'sheba' => 'شبای :attribute اشتباه است.'</code>). خط <code>validation.&lt;rule&gt;</code> برنامه بر خط بسته ترجیح داده می‌شود.</li>
+<li><strong>جایگزینی متن‌های بسته:</strong> فایل <code>lang/vendor/rtly-kit/fa/validation.php</code> (یا <code>en</code>، <code>ar</code>) را بسازید. سازوکار استاندارد vendor-override لاراول آن را روی فایل بسته بارگیری می‌کند؛ فقط کلیدهای تغییرکرده را بنویسید.</li>
+</ol>
+<p>خروجی راستی‌آزمایی‌شدهٔ گزینه‌های ۲ و ۳ با زبان <code>fa</code>:</p>
+<pre><code class="language-php">// lang/vendor/rtly-kit/fa/validation.php  ->  ['national_code' => 'کد ملی :attribute درست نیست.']
+// lang/fa/validation.php                  ->  ['sheba' => 'شبای :attribute اشتباه است.']
+// پیام سفارشی روی فراخوانی               ->  ['postal_code' => 'کد پستی :attribute نادرست']
+//
+// national_code: کد ملی x درست نیست.
+// sheba:         شبای x اشتباه است.
+// postal_code:   کد پستی x نادرست</code></pre>
+<p>نام فیلد در این مثال‌ها <code>x</code> است و برای همین <code>x</code> در جمله‌ها می‌آید. در فرم واقعی، برچسب خوانا را در آرایهٔ <code>attributes</code> فایل <code>validation.php</code> بدهید.</p>
+
+<h2 id="config">پیکربندی</h2>
+<p>فایل پیکربندی وجود ندارد. رفتار با طراحی و زبان برنامه تعیین می‌شود. کتابخانه منطقهٔ زمانی پیش‌فرض را از PHP (<code>date_default_timezone_get()</code>) می‌خواند و لاراول آن را از <code>config('app.timezone')</code> تنظیم می‌کند؛ پس <code>Jalali::now()</code> از منطقهٔ زمانی برنامهٔ شما پیروی می‌کند.</p>
+<div class="known"><strong>محدودیت شناخته‌شده.</strong> اگر هنگام بوت پرووایدر validation factory در container بسته نشده باشد، قواعد ثبت نمی‌شوند و بعداً هم تنبل‌وار ثبت نخواهند شد. این فقط در بوت‌استرپ‌های غیرمعمول پیش می‌آید (مثلاً container فقط‌کنسول بدون سرویس اعتبارسنجی).</div>
+<p>بعدی: <a href="laravel-validation-and-cast.html">قواعد اعتبارسنجی و کست Eloquent</a>.</p>

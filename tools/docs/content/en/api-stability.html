@@ -1,0 +1,61 @@
+<!--
+title: API stability
+description: What you can rely on, what is internal, how versions are numbered before and after 1.0, and which PHP, Laravel and Carbon versions are supported.
+group: reference
+order: 30
+-->
+<h2 id="public-api">Public API</h2>
+<p>Everything in this table is covered by the compatibility promise.</p>
+<table>
+<thead><tr><th>Area</th><th>Public symbols</th></tr></thead>
+<tbody>
+<tr><td>Calendars</td><td><code>RtlyKit\Calendar\Jalali</code>, <code>Hijri</code>, <code>Hebrew</code>, <code>HijriVariant</code>; the <code>MIN_YEAR</code> / <code>MAX_YEAR</code> constants; <code>RtlyKit\Contracts\CalendarDate</code></td></tr>
+<tr><td>Validation</td><td><code>RtlyKit\Contracts\Validator</code>; <code>RtlyKit\Validation\NationalCode</code>, <code>Sheba</code>, <code>BankCard</code>, <code>Mobile</code>, <code>PostalCode</code>, <code>VehiclePlate</code>, <code>Result</code>, and the error-code strings they return</td></tr>
+<tr><td>Numbers and text</td><td><code>RtlyKit\Number\Digits</code>, <code>Format</code>, <code>NumberToWords</code>; <code>RtlyKit\Text\Normalizer</code>, <code>Detector</code>, <code>Slugify</code></td></tr>
+<tr><td>Holidays, prayer times</td><td><code>RtlyKit\Holiday\IranHolidays</code>, <code>RtlyKit\Prayer\PrayerTimes</code> (its <code>METHOD_*</code> / <code>ASR_*</code> constants and public methods)</td></tr>
+<tr><td>Errors</td><td><code>RtlyKit\Exceptions\RtlyKitThrowable</code>, <code>RtlyKitException</code>, <code>InvalidDateException</code>, <code>InvalidNumberException</code>, <code>InvalidPrayerConfigException</code>, <code>UnsupportedLocaleException</code>, and <code>ErrorCode</code> (case names and values)</td></tr>
+<tr><td>Helpers</td><td>the 27 namespaced functions in <code>RtlyKit\</code> (<code>RtlyKit\jdate()</code> and so on) and <code>RtlyKit\Globals::register()</code> / <code>Globals::NAMES</code></td></tr>
+<tr><td>Laravel</td><td><code>RtlyKit\Laravel\RtlyKitServiceProvider</code>, <code>Facades\Jalali</code>, <code>JalaliFactory</code>, <code>Casts\JalaliCast</code>, the validation rule names (<code>national_code</code>, <code>sheba</code>, <code>bank_card</code>, <code>iran_mobile</code>, <code>mobile</code>, <code>postal_code</code>, <code>vehicle_plate</code>) and the translation keys under the <code>rtly-kit</code> namespace</td></tr>
+<tr><td>Carbon</td><td>the macro names <code>toJalali</code>, <code>jformat</code>, <code>toHijri</code>, <code>toHebrew</code>, <code>createFromJalali</code>, <code>createFromHijri</code>, <code>createFromHebrew</code></td></tr>
+</tbody>
+</table>
+<p>The documented behaviour of these symbols is part of the contract: accepted inputs, the exception class and <code>ErrorCode</code> thrown, return types, the year ranges and the input caps. The wording of exception and validation messages is <strong>not</strong>; match on <code>getErrorCode()</code> or <code>Result::errors()</code> instead (see <a href="error-handling.html">Error handling</a>).</p>
+
+<h2 id="internal">Internal (no promise)</h2>
+<p>These carry an <code>@internal</code> docblock or are implementation detail. They can change or disappear in any release, including a patch release. Do not call, extend or depend on them.</p>
+<ul>
+<li><code>RtlyKit\Calendar\CalendarLimits</code></li>
+<li><code>RtlyKit\Calendar\Jdn</code></li>
+<li><code>RtlyKit\Calendar\CalendarDateTrait</code></li>
+<li><code>RtlyKit\Calendar\UmmAlQuraTable</code></li>
+<li><code>RtlyKit\Validation\Input</code></li>
+<li><code>RtlyKit\Validation\DataTables</code></li>
+<li><code>RtlyKit\Support\CarbonMacros</code> and <code>RtlyKit\Support\AutoLoader</code> (registration plumbing; use the macros, not these classes)</li>
+<li>the files in <code>resources/data/</code> (read the data through the public classes only)</li>
+<li><code>src/functions-global.php</code> (reach it through <code>Globals::register()</code>)</li>
+<li>private and protected members of every class, and the constructors of <code>final</code> classes unless documented</li>
+</ul>
+<div class="warn"><strong>Warning.</strong> Reading <code>resources/data/*.php</code> directly, or calling a class listed above, is unsupported. Earlier pre-release builds kept the reference tables in classes of their own; those were never API, and the data now lives in <code>resources/data/</code> (see <a href="upgrade.html">Upgrade</a>).</div>
+<p>Also not covered: the exact contents of the embedded reference tables (bank BINs, Sheba bank codes, operator prefixes, national-code prefixes, Umm al-Qura months). They are corrected when better sources appear, and a correction is not a breaking change. See <a href="accuracy-and-data.html">Accuracy and data</a>.</p>
+
+<h2 id="versioning">Versioning policy</h2>
+<p>RTLY-Kit follows <a href="https://semver.org/">Semantic Versioning</a>.</p>
+<ul>
+<li><strong>From 1.0.0:</strong> breaking changes to the public API only in a major release. Minor releases add features and may add enum cases, methods and error codes. Patch releases fix bugs only.</li>
+<li><strong>Before 1.0.0 (now):</strong> a minor release (<code>0.x</code>) may contain breaking changes. Each one is listed under "Changed" in the changelog, with migration steps on the <a href="upgrade.html">Upgrade</a> page. Patch releases (<code>0.x.y</code>) do not break the public API. Pin a minor range in <code>composer.json</code> (for example <code>~0.1.0</code>) and read the upgrade notes before moving to the next one.</li>
+<li>A bug fix that makes a function return the correct answer is a fix, not a breaking change, even if the output changes. Example: Makkah-method Isha during Ramadan moved 30 minutes later when it was corrected.</li>
+<li>Adding a case to <code>ErrorCode</code>, or a key to a <code>Result::details()</code> array, is not breaking. Write <code>match</code> over <code>ErrorCode</code> with a <code>default</code> arm.</li>
+<li>The interfaces (<code>CalendarDate</code>, <code>Validator</code>, <code>RtlyKitThrowable</code>) are for consuming. The library may add methods to them in a minor release before 1.0.0 and in a major release afterwards, so do not implement them yourself.</li>
+<li>Deprecations are announced in the changelog and in <code>@deprecated</code> tags, and are kept for at least one minor release after 1.0.0.</li>
+</ul>
+
+<h2 id="platforms">Supported platforms</h2>
+<table>
+<thead><tr><th></th><th>Supported</th></tr></thead>
+<tbody>
+<tr><td>PHP</td><td>8.2, 8.3 and 8.4 (CI runs all three); <code>ext-mbstring</code> is required</td></tr>
+<tr><td>Laravel (<code>illuminate/*</code>)</td><td>11 and 12</td></tr>
+<tr><td>Carbon</td><td>3 (<code>nesbot/carbon ^3.0</code>)</td></tr>
+</tbody>
+</table>
+<p>The only required dependency is PHP itself (plus <code>ext-mbstring</code>). Carbon and Laravel are optional integrations. Dropping support for a PHP, Laravel or Carbon version is announced in the changelog and happens in a minor release before 1.0.0 and in a major release afterwards.</p>

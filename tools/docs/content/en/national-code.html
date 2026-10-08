@@ -1,0 +1,111 @@
+<!--
+title: National code
+description: Validate Iranian national codes (کد ملی) with the mod-11 check digit, accept Persian and Arabic digits, and read the place-of-issue hint safely.
+group: validation
+order: 20
+-->
+<h2 id="quick-start">Quick start</h2>
+<pre><code class="language-php">&lt;?php
+require 'vendor/autoload.php';
+
+use RtlyKit\Validation\NationalCode;
+
+var_dump(NationalCode::isValid('0499370899'));      // bool(true)
+var_dump(NationalCode::isValid('۰۴۹۹۳۷۰۸۹۹'));      // bool(true), Persian digits
+var_dump(NationalCode::isValid('049-937-0899'));    // bool(true), hyphens removed
+
+$result = NationalCode::validate('0499370899');
+echo json_encode($result-&gt;details(), JSON_UNESCAPED_UNICODE);
+// {"normalized":"0499370899","location":{"province":"تهران","city":"شهرری"}}</code></pre>
+<p>The class implements the shared <a href="validators-overview.html#contract"><code>Validator</code> contract</a>, so <code>validate()</code> returns a <code>Result</code> and nothing throws for bad input. The helpers are <code>RtlyKit\is_national_code()</code> and <code>RtlyKit\validate_national_code()</code>:</p>
+<pre><code class="language-php">use function RtlyKit\is_national_code;
+use function RtlyKit\validate_national_code;
+
+var_dump(is_national_code('۰۴۹۹۳۷۰۸۹۹'));                  // bool(true)
+print_r(validate_national_code('0499370898')-&gt;errors());  // Array ( [0] =&gt; invalid_checksum )</code></pre>
+
+<h2 id="what-is-checked">What is checked</h2>
+<p>Checks run in this order and stop at the first failure:</p>
+<ol>
+<li><strong>Type and size.</strong> Strings, <code>int</code> and integral <code>float</code> are accepted; anything else is <code>invalid_type</code>, and a string over 4096 bytes is <code>input_too_long</code>.</li>
+<li><strong>Normalization.</strong> Persian and Arabic digits become English; spaces, hyphens and half-spaces (ZWNJ) are removed and the ends are trimmed.</li>
+<li><strong>Format.</strong> Exactly 10 digits, otherwise <code>invalid_format</code>.</li>
+<li><strong>Repeated digits.</strong> <code>0000000000</code> to <code>9999999999</code> pass the arithmetic by coincidence but are not real codes, so they return <code>repeated_digits</code>.</li>
+<li><strong>Check digit</strong> (the mod-11 rule below), otherwise <code>invalid_checksum</code>.</li>
+</ol>
+
+<h2 id="algorithm">The check-digit algorithm</h2>
+<p>Multiply each of the first nine digits by a weight from 10 down to 2, add the products, and take the remainder of the sum divided by 11. If the remainder is 0 or 1, the check digit equals the remainder; otherwise it is 11 minus the remainder.</p>
+<p>For <code>0499370899</code>: the products are 0, 36, 72, 63, 18, 35, 0, 24 and 18, which add up to 266. The remainder of 266 divided by 11 is 2, so the check digit must be 11 &minus; 2 = 9, and the last digit is indeed 9.</p>
+<pre><code class="language-php">print_r(NationalCode::validate('0499370898')-&gt;errors());   // [invalid_checksum]
+print_r(NationalCode::validate('1111111111')-&gt;errors());   // [repeated_digits]
+print_r(NationalCode::validate('12345')-&gt;errors());        // [invalid_format]
+print_r(NationalCode::validate('abc')-&gt;errors());          // [invalid_format]</code></pre>
+<div class="warn"><strong>Keep it a string.</strong> A national code can start with zero. <code>NationalCode::validate(499370899)</code> receives the nine digits <code>499370899</code> and returns <code>invalid_format</code>. Do not cast the value to an integer anywhere between the input and the validator, including in a database column or a JSON number.</div>
+
+<h2 id="accepted-input">Accepted input</h2>
+<table>
+<thead><tr><th>Input</th><th>Result</th></tr></thead>
+<tbody>
+<tr><td><code>'0499370899'</code></td><td>valid</td></tr>
+<tr><td><code>'۰۴۹۹۳۷۰۸۹۹'</code> (Persian digits)</td><td>valid</td></tr>
+<tr><td><code>'٠٤٩٩٣٧٠٨٩٩'</code> (Arabic-Indic digits)</td><td>valid</td></tr>
+<tr><td><code>'049-937-0899'</code>, <code>' 0499370899 '</code></td><td>valid; separators and spaces removed</td></tr>
+<tr><td><code>null</code>, <code>[]</code>, <code>1.5</code></td><td><code>invalid_type</code></td></tr>
+<tr><td><code>12.0</code></td><td>read as <code>'12'</code>, so <code>invalid_format</code></td></tr>
+<tr><td>4097 characters</td><td><code>input_too_long</code></td></tr>
+</tbody>
+</table>
+<p>Only spaces, hyphens and ZWNJ are treated as separators. Slashes, dots and letters are not removed and cause <code>invalid_format</code>.</p>
+<p>To get the cleaned form without validating, call <code>NationalCode::normalize()</code>:</p>
+<pre><code class="language-php">echo NationalCode::normalize(' ۰۴۹-۹۳۷ ۰۸۹۹ ');   // 0499370899</code></pre>
+
+<h2 id="result">The Result details</h2>
+<table>
+<thead><tr><th>Key</th><th>Type</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td><code>normalized</code></td><td>string</td><td>The code after normalization (empty for <code>invalid_type</code> / <code>input_too_long</code>)</td></tr>
+<tr><td><code>location</code></td><td>array or null</td><td><code>{province, city}</code> for a valid code whose prefix is in the table, otherwise <code>null</code></td></tr>
+</tbody>
+</table>
+<p>Error keys: <code>invalid_format</code>, <code>repeated_digits</code>, <code>invalid_checksum</code>, <code>invalid_type</code>, <code>input_too_long</code>. The meaning of each is in the <a href="validators-overview.html#error-keys">error key table</a>.</p>
+
+<h2 id="location">Place-of-issue hint</h2>
+<p>The first three digits of a national code are a prefix assigned by the civil registry. <code>NationalCode::getLocation()</code> maps it to a province and a city, and returns <code>null</code> when the code is invalid or the prefix is not in the table:</p>
+<pre><code class="language-php">print_r(NationalCode::getLocation('0499370899'));
+// Array ( [province] =&gt; تهران [city] =&gt; شهرری )
+
+var_dump(NationalCode::getLocation('0499370898'));   // NULL (invalid code)
+
+$a = NationalCode::validate('0012345679');   // prefix 001
+echo json_encode($a-&gt;details()['location'], JSON_UNESCAPED_UNICODE);
+// {"province":"تهران","city":"تهران مرکزی"}
+
+$b = NationalCode::validate('9991234561');   // valid checksum, prefix 999 not in the table
+var_dump($b-&gt;isValid(), $b-&gt;details()['location']);   // bool(true)  NULL</code></pre>
+<div class="warn"><strong>A hint, not proof.</strong> The prefix identifies where the original birth certificate or card was <em>issued</em>, not where the person was born or lives. Many people hold codes issued elsewhere, and province boundaries have changed since issuance (Karaj, for example, appears under Tehran). Never use the location to verify identity, origin or residence.</div>
+<div class="known"><strong>Known limitation.</strong> The civil registry publishes no machine-readable list. The table has 547 prefixes, each kept only when three community datasets agree on both province and city and a fourth does not contradict it. These datasets share ancestry (several are ports or derivatives of one another), so their agreement is strong but not fully independent. A missing prefix means unknown, not invalid. See <a href="accuracy-and-data.html">Accuracy and data</a> for the sources.</div>
+
+<h2 id="what-is-not-checked">What validation does not tell you</h2>
+<ul>
+<li>A valid checksum means the number is well formed. It does not mean the code was ever issued or belongs to a given person.</li>
+<li>Legal entities use a different 11-digit identifier. It is not handled by this validator and is rejected as <code>invalid_format</code>.</li>
+<li>Foreign nationals' identification numbers (Amayesh and similar) are a different scheme and are not covered.</li>
+</ul>
+
+<h2 id="in-forms">Using it in a form</h2>
+<p>Show the user a message chosen by the error key, and store the normalized value:</p>
+<pre><code class="language-php">$messages = [
+    'invalid_format'   =&gt; 'The national code must be 10 digits.',
+    'repeated_digits'  =&gt; 'This national code is not valid.',
+    'invalid_checksum' =&gt; 'This national code is not valid.',
+];
+
+$result = NationalCode::validate($_POST['national_code'] ?? null);
+if (! $result-&gt;isValid()) {
+    $key = $result-&gt;errors()[0];
+    echo $messages[$key] ?? 'Invalid input.';
+} else {
+    $code = $result-&gt;details()['normalized'];   // save this value
+}</code></pre>
+<p>In Laravel, use the ready-made rule and translations instead; see <a href="laravel-validation-and-cast.html">Laravel validation and cast</a>.</p>

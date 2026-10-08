@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="fa" dir="rtl" data-i18n="{&quot;dark&quot;:&quot;حالت تیره&quot;,&quot;light&quot;:&quot;حالت روشن&quot;,&quot;to_dark&quot;:&quot;تغییر به پوستهٔ تیره&quot;,&quot;to_light&quot;:&quot;تغییر به پوستهٔ روشن&quot;,&quot;copy&quot;:&quot;کپی&quot;,&quot;copied&quot;:&quot;کپی شد&quot;,&quot;copy_failed&quot;:&quot;انتخاب شد؛ کپی کنید&quot;,&quot;copy_label&quot;:&quot;کپی کردن کد بالا&quot;,&quot;no_results&quot;:&quot;نتیجه‌ای پیدا نشد. عبارت کوتاه‌تری امتحان کنید.&quot;,&quot;loading&quot;:&quot;فهرست جست‌وجو هنوز بارگذاری می‌شود. چند لحظه بعد دوباره امتحان کنید.&quot;,&quot;results&quot;:&quot;نتایج جست‌وجو&quot;,&quot;status&quot;:&quot;%d از %d راهنما نمایش داده می‌شود&quot;,&quot;suggest&quot;:&quot;نسخهٔ فارسی&quot;,&quot;search_label&quot;:&quot;جست‌وجو در راهنما&quot;,&quot;search_placeholder&quot;:&quot;جست‌وجو در راهنما&quot;}" data-search-index="search-index.js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>تبدیل و مقایسهٔ تاریخ‌ها | RTLY-Kit راهنمای کاربر</title>
+<meta name="description" content="قرارداد مشترک CalendarDate در Jalali، Hijri و Hebrew، تبدیل تاریخ بین تقویم‌ها، و چگونگی مقایسه و محاسبهٔ اختلاف بین تقویم‌ها و منطقه‌های زمانی.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="تبدیل و مقایسهٔ تاریخ‌ها | RTLY-Kit راهنمای کاربر">
+<meta property="og:description" content="قرارداد مشترک CalendarDate در Jalali، Hijri و Hebrew، تبدیل تاریخ بین تقویم‌ها، و چگونگی مقایسه و محاسبهٔ اختلاف بین تقویم‌ها و منطقه‌های زمانی.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fa_IR">
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+<link rel="alternate" hreflang="en" href="../en/convert-and-compare.html">
+<link rel="stylesheet" href="../styles.css">
+<script>try{var t=localStorage.getItem("rtly-docs-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<script defer src="../app.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">پرش به محتوا</a><header class="site-header"><div class="shell header-inner"><a class="brand" href="index.html"><img src="../assets/logo.svg" width="34" height="34" alt=""><span><span class="name">RTLY-Kit</span><small>راهنمای کاربر</small></span></a><nav class="top-nav" aria-label="ناوبری اصلی"><a href="index.html">نمای کلی</a><a href="quick-start.html">شروع سریع</a><a href="all.html">همهٔ راهنماها</a><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">گیت‌هاب &#8599;</a></nav><div class="header-tools"><span data-search-host></span><button type="button" class="icon-button" data-theme-toggle hidden>Theme</button><a class="icon-button" href="../en/convert-and-compare.html" hreflang="en" lang="en" aria-label="Switch to English">English</a></div></div></header>
+<main id="main">
+<div class="shell page-intro"><nav class="breadcrumbs" aria-label="مسیر صفحه"><ol><li><a href="index.html">خانه</a></li><li><a href="all.html#group-calendars">تقویم‌ها</a></li><li aria-current="page">تبدیل و مقایسهٔ تاریخ‌ها</li></ol></nav><h1>تبدیل و مقایسهٔ تاریخ‌ها</h1><p class="lead">قرارداد مشترک CalendarDate در Jalali، Hijri و Hebrew، تبدیل تاریخ بین تقویم‌ها، و چگونگی مقایسه و محاسبهٔ اختلاف بین تقویم‌ها و منطقه‌های زمانی.</p></div>
+<div class="shell doc-layout has-toc">
+<aside class="sidebar"><details open><summary>فهرست راهنماها</summary><nav aria-label="راهنماها"><a href="all.html">همهٔ راهنماها</a><p>شروع کار</p><a href="quick-start.html">شروع سریع</a><a href="installation.html">نصب</a><p>تقویم‌ها</p><a href="jalali.html">تقویم جلالی</a><a href="hijri.html">تقویم هجری</a><a href="hebrew.html">تقویم عبری</a><a href="convert-and-compare.html" aria-current="page">تبدیل و مقایسهٔ تاریخ‌ها</a><a href="carbon-macros.html">ماکروهای Carbon</a><p>اعتبارسنجی</p><a href="validators-overview.html">نمای کلی اعتبارسنج‌ها</a><a href="national-code.html">کد ملی</a><a href="sheba-and-bank-card.html">شبا و کارت بانکی</a><a href="mobile-postal-plate.html">موبایل، کدپستی و پلاک</a><p>اعداد و متن</p><a href="digits-and-format.html">ارقام و قالب‌بندی اعداد</a><a href="number-words.html">عدد به حروف</a><a href="text-tools.html">ابزارهای متن</a><p>تعطیلات و اوقات شرعی</p><a href="holidays.html">تعطیلات رسمی ایران</a><a href="prayer-times.html">اوقات شرعی</a><p>لاراول</p><a href="laravel-setup.html">راه‌اندازی لاراول</a><a href="laravel-validation-and-cast.html">قواعد اعتبارسنجی و کست Eloquent</a><p>مرجع</p><a href="helpers-and-globals.html">توابع کمکی و سراسری</a><a href="error-handling.html">مدیریت خطا</a><a href="api-stability.html">پایداری API</a><a href="accuracy-and-data.html">دقت و داده‌ها</a><a href="benchmarks.html">بنچمارک</a><a href="limits.html">محدودیت‌ها</a><a href="troubleshooting-faq.html">عیب‌یابی و پرسش‌های متداول</a><a href="upgrade.html">راهنمای ارتقا</a></nav></details></aside>
+<article class="prose">
+<details class="toc-inline"><summary>در این صفحه</summary><ol><li><a href="#idea">یک لحظه، سه تقویم</a></li><li><a href="#convert">تبدیل بین تقویم‌ها</a><ol><li><a href="#make-from-calendar">تاریخ را به make() کلاس دیگر بدهید</a></li><li><a href="#gregorian">از و به میلادی</a></li><li><a href="#time-zones">منطقهٔ زمانی تاریخ را تعیین می‌کند</a></li></ol></li><li><a href="#contract">قرارداد CalendarDate</a></li><li><a href="#compare">مقایسه بین تقویم‌ها</a></li><li><a href="#diff">اختلاف بین تقویم‌ها</a></li><li><a href="#limits">موارد مرزی و محدودیت‌ها</a></li></ol></details>
+<h2 id="idea">یک لحظه، سه تقویم<a class="anchor" href="#idea" aria-label="پیوند به این بخش">#</a></h2>
+<p>سه کلاس تقویم (<a href="jalali.html">جلالی</a>، <a href="hijri.html">هجری</a>، <a href="hebrew.html">عبری</a>) یک طراحی مشترک دارند: هر کدام فقط یک لحظهٔ <code>DateTimeImmutable</code> را در خود نگه می‌دارد و آن را در تقویم خودش <em>نمایش می‌دهد</em>. پس تبدیل بین تقویم‌ها هرگز از متن عبور نمی‌کند؛ همان لحظه است که با قواعد دیگری خوانده می‌شود. دو نتیجه:</p>
+<ul>
+<li>تبدیل یک تاریخ و بازگرداندن آن همان لحظه را برمی‌گرداند.</li>
+<li>مقایسه یا تفریق تاریخ‌های تقویم‌های مختلف همیشه معنا دارد، چون به‌صورت لحظه مقایسه می‌شوند.</li>
+</ul>
+<p>همهٔ مثال‌ها این ابتدای فایل را دارند:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">&lt;?php
+require</span> <span class="tok-s">'vendor/autoload.php'</span>;
+
+<span class="tok-k">use</span> RtlyKit\Calendar\Hebrew;
+<span class="tok-k">use</span> RtlyKit\Calendar\Hijri;
+<span class="tok-k">use</span> RtlyKit\Calendar\Jalali;
+<span class="tok-k">use</span> RtlyKit\Contracts\CalendarDate;
+<span class="tok-k">use</span> RtlyKit\Exceptions\InvalidDateException;
+
+<span class="tok-v">$utc</span> = <span class="tok-k">new</span> DateTimeZone(<span class="tok-s">'UTC'</span>);</code></pre>
+
+<h2 id="convert">تبدیل بین تقویم‌ها<a class="anchor" href="#convert" aria-label="پیوند به این بخش">#</a></h2>
+<h3 id="make-from-calendar">تاریخ را به <code>make()</code> کلاس دیگر بدهید<a class="anchor" href="#make-from-calendar" aria-label="پیوند به این بخش">#</a></h3>
+<p>هر <code>make()</code> یک <code>CalendarDate</code> را می‌پذیرد (و همچنین <code>DateTimeInterface</code>، زمان یونیکس، رشته یا <code>null</code>). تاریخی را که دارید به کلاسی که می‌خواهید بدهید:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-v">$j</span> = Jalali::create(<span class="tok-n">1405</span>, <span class="tok-n">1</span>, <span class="tok-n">1</span>, <span class="tok-n">12</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-v">$utc</span>);
+
+<span class="tok-k">echo</span> Hijri::make(<span class="tok-v">$j</span>)-&gt;format(<span class="tok-s">'Y/m/d F'</span>, <span class="tok-s">'en'</span>);    <span class="tok-c">// 1447/10/02 Shawwal</span>
+<span class="tok-k">echo</span> Hebrew::make(<span class="tok-v">$j</span>)-&gt;format(<span class="tok-s">'Y/m/d F'</span>);          <span class="tok-c">// 5786/07/03 Nisan</span>
+<span class="tok-k">echo</span> Jalali::make(Hijri::make(<span class="tok-v">$j</span>));                 <span class="tok-c">// 1405/01/01 12:00:00</span></code></pre>
+<p>ساعت و منطقهٔ زمانی منتقل می‌شوند. برای بیان نتیجه در منطقهٔ دیگر، <code>DateTimeZone</code> را آرگومان دوم <code>make()</code> بدهید:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-v">$tehran</span> = <span class="tok-k">new</span> DateTimeZone(<span class="tok-s">'Asia/Tehran'</span>);
+
+<span class="tok-v">$h</span> = Hijri::make(<span class="tok-v">$j</span>, <span class="tok-v">$tehran</span>);
+<span class="tok-k">echo</span> <span class="tok-v">$h</span>-&gt;getTimezone()-&gt;getName();      <span class="tok-c">// Asia/Tehran</span>
+<span class="tok-k">echo</span> <span class="tok-v">$h</span>-&gt;getHour(), <span class="tok-s">':'</span>, <span class="tok-v">$h</span>-&gt;getMinute();   <span class="tok-c">// 15:30   (ساعت 12:00 UTC)</span></code></pre>
+<div class="callout note" role="note"><strong>میان‌بر هم‌کلاس.</strong> <code>Hijri::make($hijri)</code> و <code>Hebrew::make($hebrew)</code> همان نمونه‌ای را که داده‌اید برمی‌گردانند (آرگومان منطقهٔ زمانی یا گونه نادیده گرفته می‌شود). <code>Jalali::make($jalali)</code> هم همان را برمی‌گرداند، مگر منطقهٔ زمانی بدهید که آنگاه نسخه‌ای در آن منطقه می‌گیرید. برای عوض کردن گونهٔ یک تاریخ هجری از لحظه عبور کنید: <code>Hijri::make($h-&gt;toGregorian(), null, HijriVariant::Tabular)</code>.</div>
+
+<h3 id="gregorian">از و به میلادی<a class="anchor" href="#gregorian" aria-label="پیوند به این بخش">#</a></h3>
+<p><code>toGregorian()</code> همان <code>DateTimeImmutable</code> زیرین را می‌دهد و دادن <code>DateTimeInterface</code> به <code>make()</code> مسیر برعکس است. مبدل‌های استاتیک روی عددهای ساده کار می‌کنند:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-v">$g</span> = <span class="tok-k">new</span> DateTimeImmutable(<span class="tok-s">'2026-03-21 12:00'</span>, <span class="tok-v">$utc</span>);
+
+<span class="tok-k">echo</span> json_encode([
+    Jalali::gregorianToJalali(<span class="tok-n">2026</span>, <span class="tok-n">3</span>, <span class="tok-n">21</span>),
+    Hijri::gregorianToHijri(<span class="tok-n">2026</span>, <span class="tok-n">3</span>, <span class="tok-n">21</span>),
+    Hebrew::gregorianToHebrew(<span class="tok-n">2026</span>, <span class="tok-n">3</span>, <span class="tok-n">21</span>),
+]);
+<span class="tok-c">// [[1405,1,1],[1447,10,2],[5786,7,3]]</span>
+
+<span class="tok-k">echo</span> json_encode(Jalali::jalaliToGregorian(<span class="tok-n">1405</span>, <span class="tok-n">1</span>, <span class="tok-n">1</span>));   <span class="tok-c">// [2026,3,21]</span>
+<span class="tok-k">echo</span> get_class(<span class="tok-v">$j</span>-&gt;toGregorian());                         <span class="tok-c">// DateTimeImmutable</span></code></pre>
+<p>سال میلادی باید 1 تا 9999 باشد. بازهٔ هر تقویم (جلالی -620 تا 9377، هجری 1 تا 9665، عبری 3762 تا 13759) بخشی از این بازه است که آن تقویم می‌تواند نمایش دهد؛ پس تبدیل یک تاریخ میلادیِ قدیمی به عبری یا هجری ممکن است <code>InvalidDateException</code> بدهد، حتی اگر خودِ تاریخ میلادی معتبر باشد:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">try</span> { Hebrew::make(<span class="tok-k">new</span> DateTimeImmutable(<span class="tok-s">'0001-01-01'</span>, <span class="tok-v">$utc</span>)); }
+<span class="tok-k">catch</span> (InvalidDateException <span class="tok-v">$e</span>) { <span class="tok-k">echo</span> <span class="tok-v">$e</span>-&gt;getMessage(); }
+<span class="tok-c">// Date out of the supported Hebrew range (3762..13759): 3761</span></code></pre>
+
+<h3 id="time-zones">منطقهٔ زمانی تاریخ را تعیین می‌کند<a class="anchor" href="#time-zones" aria-label="پیوند به این بخش">#</a></h3>
+<p>تاریخ تقویمی یک لحظه به منطقه‌ای که در آن نگاهش می‌کنید بستگی دارد. همین لحظه در UTC هنوز اول فروردین 1405 (۲۱ مارس) است ولی در تهران، که 3.5 ساعت جلوتر است، دوم فروردین شده است:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-v">$instant</span> = <span class="tok-k">new</span> DateTimeImmutable(<span class="tok-s">'2026-03-21 22:30'</span>, <span class="tok-v">$utc</span>);
+
+<span class="tok-k">echo</span> Jalali::make(<span class="tok-v">$instant</span>);            <span class="tok-c">// 1405/01/01 22:30:00   (UTC)</span>
+<span class="tok-k">echo</span> Jalali::make(<span class="tok-v">$instant</span>, <span class="tok-v">$tehran</span>);   <span class="tok-c">// 1405/01/02 02:00:00   (تهران، +03:30)</span></code></pre>
+<p>هر جا روز تقویمی مهم است منطقه را صریح بدهید و به پیش‌فرض سرور تکیه نکنید.</p>
+
+<h2 id="contract">قرارداد <code>CalendarDate</code><a class="anchor" href="#contract" aria-label="پیوند به این بخش">#</a></h2>
+<p><code>RtlyKit\Contracts\CalendarDate</code> اینترفیسی است که <code>Stringable</code> را گسترش می‌دهد و <code>Jalali</code>، <code>Hijri</code> و <code>Hebrew</code> آن را پیاده می‌کنند. برای نوشتن کدی که با هر تقویمی کار کند، همین نوع را تایپ‌هینت کنید:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">function</span> describe(CalendarDate <span class="tok-v">$d</span>): string
+{
+    <span class="tok-k">return</span> sprintf(<span class="tok-s">'%s %d/%02d/%02d'</span>, (<span class="tok-k">new</span> ReflectionClass(<span class="tok-v">$d</span>))-&gt;getShortName(),
+        <span class="tok-v">$d</span>-&gt;getYear(), <span class="tok-v">$d</span>-&gt;getMonth(), <span class="tok-v">$d</span>-&gt;getDay());
+}
+
+<span class="tok-k">foreach</span> ([Jalali::<span class="tok-k">class</span>, Hijri::<span class="tok-k">class</span>, Hebrew::<span class="tok-k">class</span>] <span class="tok-k">as</span> <span class="tok-v">$class</span>) {
+    <span class="tok-k">echo</span> describe(<span class="tok-v">$class</span>::make(<span class="tok-v">$g</span>)), <span class="tok-s">"\n"</span>;
+}
+<span class="tok-c">// Jalali 1405/01/01</span>
+<span class="tok-c">// Hijri 1447/10/02</span>
+<span class="tok-c">// Hebrew 5786/07/03</span></code></pre>
+<div class="table-wrap" tabindex="0" role="region" aria-label="جدول"><table>
+<thead><tr><th scope="col">گروه</th><th scope="col">اعضا</th></tr></thead>
+<tbody>
+<tr><td>ساخت</td><td><code>make()</code>، <code>now()</code>، <code>today()</code>، <code>create()</code></td></tr>
+<tr><td>محاسبات تقویمی (استاتیک)</td><td><code>isValid()</code>، <code>isLeapYear()</code>، <code>daysInYear()</code>، <code>daysInMonth()</code></td></tr>
+<tr><td>گیرنده‌ها</td><td><code>getYear()</code>، <code>getMonth()</code>، <code>getDay()</code>، <code>getHour()</code>، <code>getMinute()</code>، <code>getSecond()</code>، <code>getDayOfWeek()</code>، <code>getTimestamp()</code>، <code>getTimezone()</code>، <code>toGregorian()</code></td></tr>
+<tr><td>قالب‌بندی</td><td><code>format()</code>، <code>toDateString()</code>، <code>toDateTimeString()</code>، <code>__toString()</code></td></tr>
+<tr><td>تغییر</td><td><code>add</code>/<code>sub</code> برای <code>Days</code>، <code>Hours</code>، <code>Minutes</code>، <code>Seconds</code>، <code>Months</code>، <code>Years</code>؛ <code>startOf</code>/<code>endOf</code> برای <code>Day</code>، <code>Month</code>، <code>Year</code></td></tr>
+<tr><td>مقایسه</td><td><code>eq</code>، <code>ne</code>، <code>gt</code>، <code>gte</code>، <code>lt</code>، <code>lte</code>، <code>equals</code>، <code>isBefore</code>، <code>isAfter</code>، <code>between</code>، <code>isPast</code>، <code>isFuture</code>، <code>isToday</code></td></tr>
+<tr><td>اختلاف</td><td><code>diffInDays()</code>، <code>diffInMonths()</code>، <code>diffInYears()</code></td></tr>
+</tbody>
+</table></div>
+<p>تضمین‌هایی که برای هر پیاده‌سازی برقرار است:</p>
+<ul>
+<li>نمونه‌ها <code>final</code> و تغییرناپذیرند؛ متدهای تغییردهنده شیء تازه برمی‌گردانند.</li>
+<li>هر متدی که تاریخ، زمان یونیکس یا مقدار جابه‌جایی می‌گیرد، برای ورودی بیرون از بازه فقط <code>InvalidDateException</code> پرتاب می‌کند؛ هرگز <code>TypeError</code> یا <code>ValueError</code>.</li>
+<li><code>format()</code> در قرارداد فقط با الگو تعریف شده است؛ هر کلاس پارامترهای اختیاری پایانی خودش را اضافه می‌کند (<code>$persianDigits</code> برای جلالی؛ <code>$locale</code> و <code>$digits</code> برای هجری؛ <code>$locale</code> برای عبری). از طریق اینترفیس فقط <code>format($pattern)</code> قابل فراخوانی است.</li>
+<li>شمارهٔ روز هفته یکسان <em>نیست</em>: جلالی شنبه‌محور و هجری و عبری یکشنبه‌محورند.</li>
+</ul>
+<pre tabindex="0"><code class="language-php"><span class="tok-v">$i</span> = <span class="tok-k">new</span> DateTimeImmutable(<span class="tok-s">'2025-10-07'</span>, <span class="tok-v">$utc</span>);   <span class="tok-c">// سه‌شنبه</span>
+<span class="tok-k">echo</span> Jalali::make(<span class="tok-v">$i</span>)-&gt;getDayOfWeek(), <span class="tok-s">' '</span>, Hijri::make(<span class="tok-v">$i</span>)-&gt;getDayOfWeek(), <span class="tok-s">' '</span>, Hebrew::make(<span class="tok-v">$i</span>)-&gt;getDayOfWeek();
+<span class="tok-c">// 3 2 2   (جلالی: شنبه = 0؛ دو تقویم دیگر: یکشنبه = 0)</span></code></pre>
+
+<h2 id="compare">مقایسه بین تقویم‌ها<a class="anchor" href="#compare" aria-label="پیوند به این بخش">#</a></h2>
+<p>همهٔ متدهای مقایسه <code>CalendarDate|DateTimeInterface</code> می‌گیرند و زمان یونیکس را مقایسه می‌کنند؛ نیازی به تبدیل قبلی نیست:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-v">$nowruz</span> = Jalali::create(<span class="tok-n">1405</span>, <span class="tok-n">1</span>, <span class="tok-n">1</span>, <span class="tok-n">12</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-v">$utc</span>);
+
+var_dump(<span class="tok-v">$nowruz</span>-&gt;eq(Hijri::make(<span class="tok-v">$nowruz</span>)));                     <span class="tok-c">// bool(true)</span>
+var_dump(<span class="tok-v">$nowruz</span>-&gt;eq(<span class="tok-v">$nowruz</span>-&gt;toGregorian()));                   <span class="tok-c">// bool(true)</span>
+var_dump(<span class="tok-v">$nowruz</span>-&gt;gt(Hebrew::create(<span class="tok-n">5785</span>, <span class="tok-n">1</span>, <span class="tok-n">1</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-v">$utc</span>)));  <span class="tok-c">// bool(true)</span>
+var_dump(<span class="tok-v">$nowruz</span>-&gt;between(Hijri::create(<span class="tok-n">1447</span>, <span class="tok-n">8</span>, <span class="tok-n">1</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-v">$utc</span>),
+                          Hebrew::create(<span class="tok-n">5787</span>, <span class="tok-n">1</span>, <span class="tok-n">1</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-v">$utc</span>))); <span class="tok-c">// bool(true)</span></code></pre>
+<p><code>between($a, $b, $equal = true)</code> کران‌ها را به هر ترتیبی می‌پذیرد و، مگر <code>false</code> بدهید، آن‌ها را هم شامل می‌شود. برابری یعنی برابریِ لحظه: <code>Jalali::create(1405, 1, 1)</code> ساخته‌شده در UTC با همان تاریخ مدنی ساخته‌شده در تهران برابر نیست، چون 3.5 ساعت فاصله دارند.</p>
+<p>برای مرتب‌سازی فهرست مخلوط، بر پایهٔ <code>getTimestamp()</code> مرتب کنید:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-v">$list</span> = [
+    Hebrew::create(<span class="tok-n">5786</span>, <span class="tok-n">1</span>, <span class="tok-n">1</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-v">$utc</span>),
+    Jalali::create(<span class="tok-n">1405</span>, <span class="tok-n">1</span>, <span class="tok-n">1</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-v">$utc</span>),
+    Hijri::create(<span class="tok-n">1447</span>, <span class="tok-n">1</span>, <span class="tok-n">1</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-v">$utc</span>),
+];
+usort(<span class="tok-v">$list</span>, <span class="tok-k">fn</span> (CalendarDate <span class="tok-v">$a</span>, CalendarDate <span class="tok-v">$b</span>) =&gt; <span class="tok-v">$a</span>-&gt;getTimestamp() &lt;=&gt; <span class="tok-v">$b</span>-&gt;getTimestamp());
+
+<span class="tok-k">foreach</span> (<span class="tok-v">$list</span> <span class="tok-k">as</span> <span class="tok-v">$d</span>) { <span class="tok-k">echo</span> <span class="tok-v">$d</span>::<span class="tok-k">class</span>, <span class="tok-s">' '</span>, <span class="tok-v">$d</span>-&gt;toGregorian()-&gt;format(<span class="tok-s">'Y-m-d'</span>), <span class="tok-s">"\n"</span>; }
+<span class="tok-c">// RtlyKit\Calendar\Hijri 2025-06-26</span>
+<span class="tok-c">// RtlyKit\Calendar\Hebrew 2025-09-23</span>
+<span class="tok-c">// RtlyKit\Calendar\Jalali 2026-03-21</span></code></pre>
+
+<h2 id="diff">اختلاف بین تقویم‌ها<a class="anchor" href="#diff" aria-label="پیوند به این بخش">#</a></h2>
+<p><code>diffInDays()</code> روزهای کامل بین دو لحظه را می‌شمارد و به تقویم کاری ندارد. <code>diffInMonths()</code> و <code>diffInYears()</code> ماه و سال کامل را <em>در تقویمِ شیئی که روی آن صدا می‌زنید</em> می‌شمارند؛ تاریخ دیگر ابتدا در همان تقویم بیان می‌شود. با <code>$absolute = false</code> علامت همان علامت <code>$this - $other</code> است.</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-v">$target</span> = Hijri::create(<span class="tok-n">1447</span>, <span class="tok-n">9</span>, <span class="tok-n">1</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-v">$utc</span>);   <span class="tok-c">// اول رمضان 1447</span>
+
+<span class="tok-k">echo</span> <span class="tok-v">$nowruz</span>-&gt;diffInDays(<span class="tok-v">$target</span>);          <span class="tok-c">// 31</span>
+<span class="tok-k">echo</span> <span class="tok-v">$nowruz</span>-&gt;diffInDays(<span class="tok-v">$target</span>, <span class="tok-k">false</span>);   <span class="tok-c">// 31   ($nowruz دیرتر از $target است)</span>
+<span class="tok-k">echo</span> <span class="tok-v">$target</span>-&gt;diffInDays(<span class="tok-v">$nowruz</span>, <span class="tok-k">false</span>);   <span class="tok-c">// -31</span>
+
+<span class="tok-k">echo</span> <span class="tok-v">$nowruz</span>-&gt;diffInMonths(<span class="tok-v">$target</span>);        <span class="tok-c">// 1    (ماه جلالی)</span>
+<span class="tok-k">echo</span> Hijri::make(<span class="tok-v">$nowruz</span>)-&gt;diffInMonths(<span class="tok-v">$nowruz</span>-&gt;addMonths(<span class="tok-n">3</span>));  <span class="tok-c">// 3  (ماه هجری)</span>
+<span class="tok-k">echo</span> <span class="tok-v">$nowruz</span>-&gt;diffInYears(Hijri::create(<span class="tok-n">1450</span>, <span class="tok-n">1</span>, <span class="tok-n">1</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-v">$utc</span>)); <span class="tok-c">// 2</span></code></pre>
+<p>پس «چند ماه مانده» به تقویمی که می‌پرسید بستگی دارد؛ همان تقویمی را انتخاب کنید که کاربرانتان در آن فکر می‌کنند. جدول واحدها برای هر تقویم در <a href="jalali.html#compare-diff">جلالی</a>، <a href="hijri.html#compare-diff">هجری</a> و <a href="hebrew.html#compare-diff">عبری</a> آمده است.</p>
+
+<h2 id="limits">موارد مرزی و محدودیت‌ها<a class="anchor" href="#limits" aria-label="پیوند به این بخش">#</a></h2>
+<ul>
+<li><strong>بازه‌ها.</strong> جلالی -620..9377، هجری 1..9665، عبری 3762..13759. تبدیل به تقویمی که بازه‌اش آن لحظه را در بر نمی‌گیرد <code>InvalidDateException</code> پرتاب می‌کند.</li>
+<li><strong>گونهٔ هجری.</strong> تاریخ هجری که به تقویم دیگر و بازمی‌گردد همان لحظه را نگه می‌دارد، ولی گونه همان است که در فراخوانی <code>make()</code> مقصد آمده (به‌طور پیش‌فرض ام‌القری).</li>
+<li><strong>دقت.</strong> جلالی قاعدهٔ حسابی ۳۳ ساله است، نه تقویم نجومی رسمی. دادهٔ ام‌القری برای 1300 تا 1500 هجری قمری از ICU/CLDR آمده و ماه‌به‌ماه با انتشار رسمی راستی‌آزمایی نشده است؛ بیرون از این بازه قواعد حسابی Tabular به کار می‌رود. یادداشت‌های <em>محدودیت شناخته‌شده</em> در صفحه‌های تقویم را ببینید.</li>
+<li><strong>خطاها.</strong> برای مشکلات تقویمی <code>InvalidDateException</code> و برای هر خطای کتابخانه <code>RtlyKit\Exceptions\RtlyKitException</code> را بگیرید (<a href="error-handling.html">مدیریت خطا</a>).</li>
+</ul>
+<nav class="reading-footer" aria-label="صفحهٔ قبلی و بعدی"><a class="prev" rel="prev" href="hebrew.html"><small>قبلی</small>تقویم عبری</a><a class="next" rel="next" href="carbon-macros.html"><small>بعدی</small>ماکروهای Carbon</a></nav>
+</article>
+<nav class="toc" aria-label="در این صفحه"><p>در این صفحه</p><ol><li><a href="#idea">یک لحظه، سه تقویم</a></li><li><a href="#convert">تبدیل بین تقویم‌ها</a><ol><li><a href="#make-from-calendar">تاریخ را به make() کلاس دیگر بدهید</a></li><li><a href="#gregorian">از و به میلادی</a></li><li><a href="#time-zones">منطقهٔ زمانی تاریخ را تعیین می‌کند</a></li></ol></li><li><a href="#contract">قرارداد CalendarDate</a></li><li><a href="#compare">مقایسه بین تقویم‌ها</a></li><li><a href="#diff">اختلاف بین تقویم‌ها</a></li><li><a href="#limits">موارد مرزی و محدودیت‌ها</a></li></ol></nav>
+</div>
+</main>
+<footer class="footer"><div class="shell footer-inner"><p>راهنمای RTLY-Kit · مجوز MIT</p><div><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">مخزن در گیت‌هاب &#8599;</a><a href="https://github.com/ehsanenaloo/RTLY-Kit/issues" rel="noopener noreferrer">گزارش مشکل &#8599;</a></div></div></footer>
+</body>
+</html>

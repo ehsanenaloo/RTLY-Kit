@@ -1,0 +1,14 @@
+* text=auto eol=lf
+
+# Keep release archives (composer dist) minimal: runtime code only
+# (src/, resources/, LICENSE, NOTICE, README, CHANGELOG, composer.json).
+/tests                      export-ignore
+/docs                       export-ignore
+/tools                      export-ignore
+/.github                    export-ignore
+/.editorconfig              export-ignore
+/.gitattributes             export-ignore
+/.gitignore                 export-ignore
+/composer.lock              export-ignore
+
+# Internal files: never part of any archive or public export.

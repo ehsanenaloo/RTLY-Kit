@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en" dir="ltr" data-i18n="{&quot;dark&quot;:&quot;Dark mode&quot;,&quot;light&quot;:&quot;Light mode&quot;,&quot;to_dark&quot;:&quot;Switch to dark theme&quot;,&quot;to_light&quot;:&quot;Switch to light theme&quot;,&quot;copy&quot;:&quot;Copy&quot;,&quot;copied&quot;:&quot;Copied&quot;,&quot;copy_failed&quot;:&quot;Selected. Press copy.&quot;,&quot;copy_label&quot;:&quot;Copy the code example above&quot;,&quot;no_results&quot;:&quot;No guide matches. Try a shorter word.&quot;,&quot;loading&quot;:&quot;The search index is still loading. Try again in a moment.&quot;,&quot;results&quot;:&quot;Search results&quot;,&quot;status&quot;:&quot;%d of %d guides shown&quot;,&quot;suggest&quot;:&quot;English version&quot;,&quot;search_label&quot;:&quot;Search the guide&quot;,&quot;search_placeholder&quot;:&quot;Search the guide&quot;}" data-search-index="search-index.js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Benchmarks | RTLY-Kit User guide</title>
+<meta name="description" content="A small, honest micro-benchmark of RTLY-Kit against morilog/jalali, with the full method, the caveats and a one-line command to reproduce it on your machine.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="Benchmarks | RTLY-Kit User guide">
+<meta property="og:description" content="A small, honest micro-benchmark of RTLY-Kit against morilog/jalali, with the full method, the caveats and a one-line command to reproduce it on your machine.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="en_US">
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+<link rel="alternate" hreflang="fa" href="../fa/benchmarks.html">
+<link rel="stylesheet" href="../styles.css">
+<script>try{var t=localStorage.getItem("rtly-docs-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<script defer src="../app.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a><header class="site-header"><div class="shell header-inner"><a class="brand" href="index.html"><img src="../assets/logo.svg" width="34" height="34" alt=""><span><span class="name">RTLY-Kit</span><small>User guide</small></span></a><nav class="top-nav" aria-label="Primary"><a href="index.html">Overview</a><a href="quick-start.html">Quick start</a><a href="all.html">All guides</a><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">GitHub &#8599;</a></nav><div class="header-tools"><span data-search-host></span><button type="button" class="icon-button" data-theme-toggle hidden>Theme</button><a class="icon-button" href="../fa/benchmarks.html" hreflang="fa" lang="fa" aria-label="تغییر به فارسی">فارسی</a></div></div></header>
+<main id="main">
+<div class="shell page-intro"><nav class="breadcrumbs" aria-label="Breadcrumb"><ol><li><a href="index.html">Home</a></li><li><a href="all.html#group-reference">Reference</a></li><li aria-current="page">Benchmarks</li></ol></nav><h1>Benchmarks</h1><p class="lead">A small, honest micro-benchmark of RTLY-Kit against morilog/jalali, with the full method, the caveats and a one-line command to reproduce it on your machine.</p></div>
+<div class="shell doc-layout has-toc">
+<aside class="sidebar"><details open><summary>Browse the guides</summary><nav aria-label="Guides"><a href="all.html">All guides</a><p>Getting started</p><a href="quick-start.html">Quick start</a><a href="installation.html">Installation</a><p>Calendars</p><a href="jalali.html">Jalali calendar</a><a href="hijri.html">Hijri calendar</a><a href="hebrew.html">Hebrew calendar</a><a href="convert-and-compare.html">Convert and compare dates</a><a href="carbon-macros.html">Carbon macros</a><p>Validation</p><a href="validators-overview.html">Validators overview</a><a href="national-code.html">National code</a><a href="sheba-and-bank-card.html">Sheba and bank card</a><a href="mobile-postal-plate.html">Mobile, postal code and plate</a><p>Numbers and text</p><a href="digits-and-format.html">Digits and number formatting</a><a href="number-words.html">Number to words</a><a href="text-tools.html">Text tools</a><p>Holidays and prayer times</p><a href="holidays.html">Iranian holidays</a><a href="prayer-times.html">Prayer times</a><p>Laravel</p><a href="laravel-setup.html">Laravel setup</a><a href="laravel-validation-and-cast.html">Validation rules and Eloquent cast</a><p>Reference</p><a href="helpers-and-globals.html">Helpers and globals</a><a href="error-handling.html">Error handling</a><a href="api-stability.html">API stability</a><a href="accuracy-and-data.html">Accuracy and data</a><a href="benchmarks.html" aria-current="page">Benchmarks</a><a href="limits.html">Limits</a><a href="troubleshooting-faq.html">Troubleshooting and FAQ</a><a href="upgrade.html">Upgrade guide</a></nav></details></aside>
+<article class="prose">
+<details class="toc-inline"><summary>On this page</summary><ol><li><a href="#what">What is compared</a></li><li><a href="#results">Results</a></li><li><a href="#correctness">Correctness cross-check</a></li><li><a href="#why">Why the difference?</a></li><li><a href="#reproduce">Reproduce</a></li><li><a href="#limitations">Limitations</a></li></ol></details>
+<div class="callout warn" role="note"><strong>Read this first.</strong> These are micro-benchmarks of three small scenarios, run once on one machine. They show relative cost on this workload, not a general verdict. Re-run them yourself with the command below before you quote any number.</div>
+
+<h2 id="what">What is compared<a class="anchor" href="#what" aria-label="Link to this section">#</a></h2>
+<p><a href="https://github.com/morilog/jalali" rel="noopener noreferrer">morilog/jalali</a> v3.5.0 (the most widely used Jalali package) against RTLY-Kit, on three operations:</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Table"><table>
+<thead><tr><th scope="col">Scenario</th><th scope="col">RTLY-Kit</th><th scope="col">morilog/jalali</th></tr></thead>
+<tbody>
+<tr><td>Gregorian string to Jalali <code>Y/m/d</code></td><td><code>Jalali::make('2025-03-21')-&gt;format('Y/m/d')</code></td><td><code>Jalalian::fromDateTime('2025-03-21')-&gt;format('Y/m/d')</code></td></tr>
+<tr><td>Jalali <code>y/m/d</code> to Gregorian <code>Y-m-d</code></td><td><code>Jalali::create(1404, m, d)-&gt;toGregorian()-&gt;format('Y-m-d')</code></td><td><code>(new Jalalian(1404, m, d))-&gt;toCarbon()-&gt;format('Y-m-d')</code></td></tr>
+<tr><td><code>addDays</code> then format</td><td><code>Jalali::create(1404, 1, 1)-&gt;addDays(n)-&gt;format('Y/m/d')</code></td><td><code>(new Jalalian(1404, 1, 1))-&gt;addDays(n)-&gt;format('Y/m/d')</code></td></tr>
+</tbody>
+</table></div>
+<p>The RTLY-Kit side of each scenario, as you would write it:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">&lt;?php
+require</span> __DIR__.<span class="tok-s">'/vendor/autoload.php'</span>;
+
+<span class="tok-k">use</span> RtlyKit\Calendar\Jalali;
+
+<span class="tok-k">echo</span> Jalali::make(<span class="tok-s">'2025-03-21'</span>)-&gt;format(<span class="tok-s">'Y/m/d'</span>), <span class="tok-s">"\n"</span>;                       <span class="tok-c">// 1404/01/01</span>
+<span class="tok-k">echo</span> Jalali::create(<span class="tok-n">1404</span>, <span class="tok-n">1</span>, <span class="tok-n">1</span>)-&gt;toGregorian()-&gt;format(<span class="tok-s">'Y-m-d'</span>), <span class="tok-s">"\n"</span>;       <span class="tok-c">// 2025-03-21</span>
+<span class="tok-k">echo</span> Jalali::create(<span class="tok-n">1404</span>, <span class="tok-n">1</span>, <span class="tok-n">1</span>)-&gt;addDays(<span class="tok-n">100</span>)-&gt;format(<span class="tok-s">'Y/m/d'</span>), <span class="tok-s">"\n"</span>;        <span class="tok-c">// 1404/04/08</span></code></pre>
+
+<h2 id="results">Results<a class="anchor" href="#results" aria-label="Link to this section">#</a></h2>
+<p>One run, median of 5 repeats of 20,000 iterations each. Environment: PHP 8.2.30 CLI in Docker on Windows 11, <code>opcache.enable_cli=1</code>.</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Table"><table>
+<thead><tr><th scope="col">Scenario</th><th scope="col">RTLY-Kit (µs/op)</th><th scope="col">morilog/jalali (µs/op)</th><th scope="col">Ratio</th></tr></thead>
+<tbody>
+<tr><td>Gregorian string to Jalali <code>Y/m/d</code></td><td>13.33</td><td>153.84</td><td>11.5x</td></tr>
+<tr><td>Jalali <code>y/m/d</code> to Gregorian <code>Y-m-d</code></td><td>12.80</td><td>58.55</td><td>4.6x</td></tr>
+<tr><td><code>addDays</code> + format</td><td>33.18</td><td>479.04</td><td>14.4x</td></tr>
+</tbody>
+</table></div>
+<p>Peak memory for the whole process, with both libraries loaded, was 4 MiB.</p>
+<p>An earlier ad-hoc run, without opcache and with a different scenario mix, showed a larger gap (roughly 25x). The spread between runs is itself the lesson: the ratio depends on the scenario and on the PHP configuration.</p>
+
+<h2 id="correctness">Correctness cross-check<a class="anchor" href="#correctness" aria-label="Link to this section">#</a></h2>
+<p>For every day from 1900-01-01 to 2099-12-27 (73,000 consecutive days) the Jalali date from RTLY-Kit is identical to the one from morilog's <code>CalendarUtils::toJalali</code>: 0 mismatches. Both implement the arithmetic 33-year leap rule, so agreement means that the two are consistent with each other. It does <strong>not</strong> mean that either matches the official astronomical Iranian calendar far from the present (see <a href="accuracy-and-data.html">Accuracy and data</a>).</p>
+
+<h2 id="why">Why the difference?<a class="anchor" href="#why" aria-label="Link to this section">#</a></h2>
+<p>We have not profiled this, so treat the following as likely, not proven. RTLY-Kit wraps a plain <code>DateTimeImmutable</code> and converts with integer arithmetic. morilog builds and manipulates Carbon objects, which are much larger (parsing and locale machinery), so part of the gap is an architectural choice and not only the conversion algorithm. If you already use Carbon everywhere, the gap that matters to you may be smaller.</p>
+
+<h2 id="reproduce">Reproduce<a class="anchor" href="#reproduce" aria-label="Link to this section">#</a></h2>
+<p>The benchmark lives in <code>tools/benchmark</code> in the repository. Its <code>composer.json</code> installs RTLY-Kit from the working tree plus <code>morilog/jalali</code> in its own <code>vendor/</code> directory (which is not part of the package). The script prints the PHP version, the opcache and JIT settings and the median of the repeats.</p>
+<pre tabindex="0"><code class="language-bash">docker compose -f tools/docker-compose.yml run --rm php sh -c 'cd tools/benchmark &amp;&amp; composer install -n &amp;&amp; php -d opcache.enable_cli=1 run.php 20000 5'</code></pre>
+<p>Numbers from different machines are not comparable.</p>
+
+<h2 id="limitations">Limitations<a class="anchor" href="#limitations" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Three scenarios; no formatting-heavy, parsing-heavy or bulk-array workloads.</li>
+<li>One machine and one PHP build; Docker on Windows adds noise.</li>
+<li>No memory-per-object measurement beyond the total peak.</li>
+<li>Only morilog/jalali was measured; other packages were not.</li>
+</ul>
+<nav class="reading-footer" aria-label="Previous and next page"><a class="prev" rel="prev" href="accuracy-and-data.html"><small>Previous</small>Accuracy and data</a><a class="next" rel="next" href="limits.html"><small>Next</small>Limits</a></nav>
+</article>
+<nav class="toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#what">What is compared</a></li><li><a href="#results">Results</a></li><li><a href="#correctness">Correctness cross-check</a></li><li><a href="#why">Why the difference?</a></li><li><a href="#reproduce">Reproduce</a></li><li><a href="#limitations">Limitations</a></li></ol></nav>
+</div>
+</main>
+<footer class="footer"><div class="shell footer-inner"><p>RTLY-Kit user guide · MIT licensed</p><div><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">Repository on GitHub &#8599;</a><a href="https://github.com/ehsanenaloo/RTLY-Kit/issues" rel="noopener noreferrer">Report an issue &#8599;</a></div></div></footer>
+</body>
+</html>

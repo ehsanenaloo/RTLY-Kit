@@ -1,0 +1,91 @@
+<!--
+title: شروع سریع
+description: RTLY-Kit را با کامپوزر نصب کنید و در حدود پنج دقیقه یک تاریخ جلالی بسازید، کد ملی را اعتبارسنجی کنید و اولین استثنای کتابخانه را مدیریت کنید.
+group: start
+order: 10
+-->
+<h2 id="goal">در این صفحه چه می‌کنید</h2>
+<p>در این صفحه بسته را نصب می‌کنید، اولین تاریخ جلالی را چاپ می‌کنید، اولین اعتبارسنجی را اجرا می‌کنید و اولین استثنای کتابخانه را می‌گیرید. همه‌چیز روی PHP ساده اجرا می‌شود؛ نه فریم‌ورک لازم است، نه فایل پیکربندی و نه وابستگی اضافه.</p>
+<p><strong>پیش‌نیاز.</strong> PHP نسخهٔ 8.2 یا بالاتر با افزونهٔ استاندارد <code>mbstring</code> و <a href="https://getcomposer.org/">کامپوزر</a>. اگر نه PHP دارید نه کامپوزر، مسیر داکر را در <a href="installation.html#docker">نصب</a> ببینید.</p>
+
+<h2 id="install">۱. نصب</h2>
+<pre><code class="language-bash">composer require enaxon/rtly-kit</code></pre>
+<p>کامپوزر بسته را نصب و فایل <code>vendor/autoload.php</code> را تولید می‌کند. RTLY-Kit هیچ وابستگی الزامی کامپوزری ندارد. یکپارچگی‌های اختیاری (ماکروهای Carbon، لاراول) خودشان با حضور Carbon یا لاراول فعال می‌شوند. جزئیات در <a href="installation.html">نصب</a>.</p>
+
+<h2 id="first-date">۲. اولین تاریخ</h2>
+<p>فایل <code>quick.php</code> را کنار پوشهٔ <code>vendor/</code> بسازید:</p>
+<pre><code class="language-php">&lt;?php
+declare(strict_types=1);
+
+require __DIR__.'/vendor/autoload.php';
+
+use function RtlyKit\hdate;
+use function RtlyKit\jdate;
+
+echo jdate('2026-03-21')-&gt;format('l j F Y'), "\n";   // شنبه 1 فروردین 1405
+echo hdate('2026-03-21')-&gt;format('j F Y', 'en'), "\n"; // 2 Shawwal 1447</code></pre>
+<p>با <code>php quick.php</code> اجرا کنید. خط اول تاریخ جلالیِ 21 مارس 2026 را چاپ می‌کند که نوروز 1405 است. خط دوم همان روز را در تقویم هجری نشان می‌دهد.</p>
+<p>دو نکته:</p>
+<ul>
+<li>توابع کمکی در فضای‌نام <code>RtlyKit</code> هستند و با <code>use function</code> وارد می‌شوند؛ پس هرگز با تابع شما یا بستهٔ دیگر تداخل نمی‌کنند.</li>
+<li>رشتهٔ <code>'2026-03-21'</code> میلادی خوانده می‌شود. رشته‌ای مثل <code>'1405/01/01'</code> (سال کمتر از 1700 به شکل <code>Y/m/d</code>) جلالی خوانده می‌شود. <a href="jalali.html#string-rules">معنای رشته در make()</a> را ببینید.</li>
+</ul>
+<pre><code class="language-php">echo jdate('1405/01/01')-&gt;toGregorian()-&gt;format('Y-m-d'), "\n";   // 2026-03-21</code></pre>
+<p>تابع کمکی یک شیء <a href="jalali.html">Jalali</a> برمی‌گرداند (و <code>hdate()</code> یک <a href="hijri.html">Hijri</a> و <code>hebrew_date()</code> یک <a href="hebrew.html">Hebrew</a>). این اشیاء تغییرناپذیرند: <code>addDays()</code>، <code>startOfMonth()</code> و دیگر متدهای تغییردهنده شیء تازه برمی‌گردانند.</p>
+
+<h2 id="globals">۳. اختیاری: نام‌های کوتاه سراسری</h2>
+<p>به‌طور پیش‌فرض هیچ تابع سراسری تعریف نمی‌شود. اگر <code>jdate()</code> و <code>is_national_code()</code> ساده را ترجیح می‌دهید، یک بار، مثلاً در فایل راه‌اندازی، فعالشان کنید:</p>
+<pre><code class="language-php">$skipped = \RtlyKit\Globals::register();   // آرایهٔ نام‌هایی که نتوانست تعریف کند
+
+echo jdate('2026-03-21')-&gt;format('Y/m/d'), "\n";   // 1405/01/01</code></pre>
+<p><code>register()</code> از 27 نام کمکی، آن‌هایی را که آزادند تعریف می‌کند. هرگز تابع موجود را بازنویسی نمی‌کند و هرگز پرتاب نمی‌کند؛ فهرست نام‌های ردشده را برمی‌گرداند (آرایهٔ خالی یعنی همه تعریف شدند) و فراخوانی چندباره‌اش بی‌خطر است. برای هر نام ردشده از شکل فضای‌نام‌دار استفاده کنید. جزئیات: <a href="helpers-and-globals.html">توابع کمکی و سراسری‌ها</a>.</p>
+
+<h2 id="first-validation">۴. اولین اعتبارسنجی</h2>
+<pre><code class="language-php">use function RtlyKit\is_national_code;
+use function RtlyKit\validate_national_code;
+use function RtlyKit\to_persian_digits;
+use function RtlyKit\number_to_words;
+
+var_dump(is_national_code('0013542419'));       // bool(true)
+
+$result = validate_national_code('0013542410');
+var_dump($result-&gt;isValid());                  // bool(false)
+print_r($result-&gt;errors());                    // [0] =&gt; invalid_checksum
+
+echo to_persian_digits('1405/01/01'), "\n";    // ۱۴۰۵/۰۱/۰۱
+echo number_to_words(1405), "\n";              // یک هزار و چهارصد و پنج</code></pre>
+<p>توابع <code>is_*()</code> یک <code>bool</code> ساده برمی‌گردانند. توابع <code>validate_*()</code> یک <code>Result</code> با <code>isValid()</code>، کلیدهای پایدار و ماشین‌خوان <code>errors()</code> و <code>details()</code> می‌دهند. اعتبارسنج‌ها برای ورودی بد کاربر پرتاب نمی‌کنند؛ گزارش می‌دهند. <a href="validators-overview.html">نمای کلی اعتبارسنج‌ها</a> و <a href="national-code.html">کد ملی</a> را ببینید.</p>
+
+<h2 id="first-exception">۵. اولین استثنا</h2>
+<p>کد تقویم با اعتبارسنجی فرق دارد: ساختن تاریخ ناممکن خطای برنامه‌نویسی یا دادهٔ نادرست است، پس کلاس‌های تقویم پرتاب می‌کنند. 1404 کبیسه نیست، بنابراین ۳۰ اسفند 1404 وجود ندارد:</p>
+<pre><code class="language-php">use RtlyKit\Exceptions\InvalidDateException;
+use RtlyKit\Exceptions\RtlyKitThrowable;
+
+try {
+    jdate('1404/12/30');
+} catch (InvalidDateException $e) {
+    echo get_class($e), ': ', $e-&gt;getMessage(), ' [', $e-&gt;getErrorCode()-&gt;value, "]\n";
+}
+// RtlyKit\Exceptions\InvalidDateException: Invalid Jalali date: 1404/12/30 [invalid_date]
+
+try {
+    jdate('not a date');
+} catch (RtlyKitThrowable $e) {
+    echo 'library error: ', $e-&gt;getMessage(), "\n";   // library error: Unable to parse date: not a date
+}</code></pre>
+<p>همهٔ استثناهای کتابخانه <code>RtlyKit\Exceptions\RtlyKitThrowable</code> را پیاده می‌کنند و از <code>\InvalidArgumentException</code> ارث می‌برند؛ پس یک <code>catch</code> همه را می‌گیرد و <code>getErrorCode()</code> مقدار پایداری برای شاخه‌بندی می‌دهد (متن پیام را پارس نکنید). ورودی بیرون از بازه، از جمله سال بیرون از بازه‌های پشتیبانی‌شده (جلالی -620 تا 9377، هجری 1 تا 9665، عبری 3762 تا 13759)، همیشه <code>InvalidDateException</code> پرتاب می‌کند، نه <code>TypeError</code>. بیشتر در <a href="error-handling.html">مدیریت خطا</a>.</p>
+
+<h2 id="notes">چیزهایی که زود باید بدانید</h2>
+<div class="known"><strong>محدودیت شناخته‌شده.</strong> تقویم جلالی اینجا قاعدهٔ حسابی ۳۳ ساله است، نه تقویم نجومی رسمی. جدول ام‌القری هجری (1300 تا 1500 هجری قمری) از دادهٔ ICU/CLDR آمده و ماه‌به‌ماه با انتشار رسمی راستی‌آزمایی نشده است. پیش از استفاده برای مهلت‌های قانونی یا مناسکی، <a href="accuracy-and-data.html">دقت و داده‌ها</a> را بخوانید.</div>
+<ul>
+<li><strong>منطقهٔ زمانی.</strong> بدون <code>DateTimeZone</code> صریح، منطقهٔ پیش‌فرض PHP به کار می‌رود. هر وقت روز تقویمی مهم است منطقه بدهید (مثلاً <code>new DateTimeZone('Asia/Tehran')</code>).</li>
+<li><strong>روز هفته.</strong> جلالی از شنبه = 0 شماره‌گذاری می‌کند؛ هجری و عبری از یکشنبه = 0.</li>
+</ul>
+
+<h2 id="next">گام بعد</h2>
+<ul>
+<li>تاریخ: <a href="jalali.html">جلالی</a>، <a href="hijri.html">هجری</a>، <a href="hebrew.html">عبری</a>، <a href="convert-and-compare.html">تبدیل و مقایسه</a>.</li>
+<li>اعتبارسنجی: <a href="validators-overview.html">نمای کلی اعتبارسنج‌ها</a>.</li>
+<li>پروژه‌های لاراول: <a href="laravel-setup.html">راه‌اندازی لاراول</a>.</li>
+<li>مشکلات: <a href="troubleshooting-faq.html">عیب‌یابی و پرسش‌های پرتکرار</a>.</li>
+</ul>

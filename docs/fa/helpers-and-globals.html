@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="fa" dir="rtl" data-i18n="{&quot;dark&quot;:&quot;حالت تیره&quot;,&quot;light&quot;:&quot;حالت روشن&quot;,&quot;to_dark&quot;:&quot;تغییر به پوستهٔ تیره&quot;,&quot;to_light&quot;:&quot;تغییر به پوستهٔ روشن&quot;,&quot;copy&quot;:&quot;کپی&quot;,&quot;copied&quot;:&quot;کپی شد&quot;,&quot;copy_failed&quot;:&quot;انتخاب شد؛ کپی کنید&quot;,&quot;copy_label&quot;:&quot;کپی کردن کد بالا&quot;,&quot;no_results&quot;:&quot;نتیجه‌ای پیدا نشد. عبارت کوتاه‌تری امتحان کنید.&quot;,&quot;loading&quot;:&quot;فهرست جست‌وجو هنوز بارگذاری می‌شود. چند لحظه بعد دوباره امتحان کنید.&quot;,&quot;results&quot;:&quot;نتایج جست‌وجو&quot;,&quot;status&quot;:&quot;%d از %d راهنما نمایش داده می‌شود&quot;,&quot;suggest&quot;:&quot;نسخهٔ فارسی&quot;,&quot;search_label&quot;:&quot;جست‌وجو در راهنما&quot;,&quot;search_placeholder&quot;:&quot;جست‌وجو در راهنما&quot;}" data-search-index="search-index.js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>توابع کمکی و سراسری | RTLY-Kit راهنمای کاربر</title>
+<meta name="description" content="۲۷ تابع کمکی در فضای نام، روش وارد کردن آن‌ها، و Globals::register() اختیاری که نام‌های کوتاه سراسری را بدون بازنویسی توابع شما اضافه می‌کند.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="توابع کمکی و سراسری | RTLY-Kit راهنمای کاربر">
+<meta property="og:description" content="۲۷ تابع کمکی در فضای نام، روش وارد کردن آن‌ها، و Globals::register() اختیاری که نام‌های کوتاه سراسری را بدون بازنویسی توابع شما اضافه می‌کند.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fa_IR">
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+<link rel="alternate" hreflang="en" href="../en/helpers-and-globals.html">
+<link rel="stylesheet" href="../styles.css">
+<script>try{var t=localStorage.getItem("rtly-docs-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<script defer src="../app.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">پرش به محتوا</a><header class="site-header"><div class="shell header-inner"><a class="brand" href="index.html"><img src="../assets/logo.svg" width="34" height="34" alt=""><span><span class="name">RTLY-Kit</span><small>راهنمای کاربر</small></span></a><nav class="top-nav" aria-label="ناوبری اصلی"><a href="index.html">نمای کلی</a><a href="quick-start.html">شروع سریع</a><a href="all.html">همهٔ راهنماها</a><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">گیت‌هاب &#8599;</a></nav><div class="header-tools"><span data-search-host></span><button type="button" class="icon-button" data-theme-toggle hidden>Theme</button><a class="icon-button" href="../en/helpers-and-globals.html" hreflang="en" lang="en" aria-label="Switch to English">English</a></div></div></header>
+<main id="main">
+<div class="shell page-intro"><nav class="breadcrumbs" aria-label="مسیر صفحه"><ol><li><a href="index.html">خانه</a></li><li><a href="all.html#group-reference">مرجع</a></li><li aria-current="page">توابع کمکی و سراسری</li></ol></nav><h1>توابع کمکی و سراسری</h1><p class="lead">۲۷ تابع کمکی در فضای نام، روش وارد کردن آن‌ها، و Globals::register() اختیاری که نام‌های کوتاه سراسری را بدون بازنویسی توابع شما اضافه می‌کند.</p></div>
+<div class="shell doc-layout has-toc">
+<aside class="sidebar"><details open><summary>فهرست راهنماها</summary><nav aria-label="راهنماها"><a href="all.html">همهٔ راهنماها</a><p>شروع کار</p><a href="quick-start.html">شروع سریع</a><a href="installation.html">نصب</a><p>تقویم‌ها</p><a href="jalali.html">تقویم جلالی</a><a href="hijri.html">تقویم هجری</a><a href="hebrew.html">تقویم عبری</a><a href="convert-and-compare.html">تبدیل و مقایسهٔ تاریخ‌ها</a><a href="carbon-macros.html">ماکروهای Carbon</a><p>اعتبارسنجی</p><a href="validators-overview.html">نمای کلی اعتبارسنج‌ها</a><a href="national-code.html">کد ملی</a><a href="sheba-and-bank-card.html">شبا و کارت بانکی</a><a href="mobile-postal-plate.html">موبایل، کدپستی و پلاک</a><p>اعداد و متن</p><a href="digits-and-format.html">ارقام و قالب‌بندی اعداد</a><a href="number-words.html">عدد به حروف</a><a href="text-tools.html">ابزارهای متن</a><p>تعطیلات و اوقات شرعی</p><a href="holidays.html">تعطیلات رسمی ایران</a><a href="prayer-times.html">اوقات شرعی</a><p>لاراول</p><a href="laravel-setup.html">راه‌اندازی لاراول</a><a href="laravel-validation-and-cast.html">قواعد اعتبارسنجی و کست Eloquent</a><p>مرجع</p><a href="helpers-and-globals.html" aria-current="page">توابع کمکی و سراسری</a><a href="error-handling.html">مدیریت خطا</a><a href="api-stability.html">پایداری API</a><a href="accuracy-and-data.html">دقت و داده‌ها</a><a href="benchmarks.html">بنچمارک</a><a href="limits.html">محدودیت‌ها</a><a href="troubleshooting-faq.html">عیب‌یابی و پرسش‌های متداول</a><a href="upgrade.html">راهنمای ارتقا</a></nav></details></aside>
+<article class="prose">
+<details class="toc-inline"><summary>در این صفحه</summary><ol><li><a href="#why">چرا توابع کمکی در فضای نام‌اند</a></li><li><a href="#import">استفاده از توابع</a></li><li><a href="#reference">همهٔ توابع</a><ol><li><a href="#reference-calendar">تقویم‌ها</a></li><li><a href="#reference-digits">ارقام و اعداد</a></li><li><a href="#reference-text">متن</a></li><li><a href="#reference-bool">اعتبارسنجی: بله/خیر</a></li><li><a href="#reference-result">اعتبارسنجی: نتیجهٔ ساخت‌یافته</a></li><li><a href="#reference-dates">تعطیلات و اوقات شرعی</a></li></ol></li><li><a href="#globals">نام‌های سراسری اختیاری: Globals::register()</a><ol><li><a href="#collision">نمونهٔ برخورد نام</a></li></ol></li><li><a href="#choosing">کدام سبک را انتخاب کنم؟</a></li></ol></details>
+<h2 id="why">چرا توابع کمکی در فضای نام‌اند<a class="anchor" href="#why" aria-label="پیوند به این بخش">#</a></h2>
+<p>نام‌هایی مانند <code>is_mobile()</code>، <code>ordinal()</code> یا <code>to_english()</code> کوتاه و عمومی‌اند. PHP راهی برای «بازنویسی» تابع سراسری ندارد: اگر دو بسته (یا برنامهٔ شما و یک بسته) نام سراسری یکسانی تعریف کنند، تعریف دوم خطای مرگبار است. کتابخانه‌ای که بی‌قید‌وشرط تابع سراسری تعریف کند ممکن است برنامه‌ای را که تا پیش از نصب سالم بود از کار بیندازد.</p>
+<p>RTLY-Kit این مشکل را در طراحی حل کرده است:</p>
+<ul>
+<li>هر ۲۷ تابع کمکی در فضای نام <code>RtlyKit</code> تعریف شده‌اند. Composer آن‌ها را خودکار بارگیری می‌کند و هرگز با چیزی برخورد نمی‌کنند.</li>
+<li>نام‌های کوتاه سراسری <strong>اختیاری</strong> هستند و با <code>\RtlyKit\Globals::register()</code> فعال می‌شوند که فقط نام‌های آزاد را تعریف می‌کند.</li>
+<li>سرویس‌پرووایدر لاراول هم تابع سراسری ثبت نمی‌کند. <a href="laravel-setup.html#provider">راه‌اندازی لاراول</a> را ببینید.</li>
+</ul>
+
+<h2 id="import">استفاده از توابع<a class="anchor" href="#import" aria-label="پیوند به این بخش">#</a></h2>
+<p>آنچه لازم دارید با <code>use function</code> وارد کنید و با نام کوتاه صدا بزنید. یا با نام کامل صدا بزنید:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">use</span> <span class="tok-k">function</span> RtlyKit\jdate;
+<span class="tok-k">use</span> <span class="tok-k">function</span> RtlyKit\is_national_code;
+
+<span class="tok-k">echo</span> jdate(<span class="tok-s">'2025-03-21'</span>)-&gt;format(<span class="tok-s">'Y/m/d'</span>);       <span class="tok-c">// 1404/01/01</span>
+var_dump(is_national_code(<span class="tok-s">'0013542419'</span>));         <span class="tok-c">// bool(true)</span>
+<span class="tok-k">echo</span> \RtlyKit\to_persian_digits(<span class="tok-n">1404</span>);            <span class="tok-c">// ۱۴۰۴</span>
+
+<span class="tok-c">// چند تابع با هم (group use در PHP):</span>
+<span class="tok-k">use</span> <span class="tok-k">function</span> RtlyKit\{hdate, hebrew_date, number_to_words};
+<span class="tok-k">echo</span> hdate(<span class="tok-s">'2025-03-21'</span>)-&gt;format(<span class="tok-s">'Y/m/d'</span>);       <span class="tok-c">// 1446/09/21</span>
+<span class="tok-k">echo</span> hebrew_date(<span class="tok-s">'2025-03-21'</span>)-&gt;format(<span class="tok-s">'Y/m/d'</span>); <span class="tok-c">// 5785/06/21</span>
+<span class="tok-k">echo</span> number_to_words(<span class="tok-n">1404</span>);                       <span class="tok-c">// یک هزار و چهارصد و چهار</span></code></pre>
+<p>این توابع پوشش نازکی هستند: هرکدام کلاس متناظر را صدا می‌زند؛ هر وقت کنترل بیشتری خواستید (مثلاً <code>Jalali::create()</code> با منطقهٔ زمانی) خود کلاس را به کار ببرید.</p>
+
+<h2 id="reference">همهٔ توابع<a class="anchor" href="#reference" aria-label="پیوند به این بخش">#</a></h2>
+<p>نوع پارامترها و بازگشتی‌ها دقیقاً مطابق کد منبع است. ورودی‌های <code>mixed</code> هرگز استثنا نمی‌دهند: ورودی نامعتبر فقط <code>false</code> یا <code>Result</code> نامعتبر می‌دهد.</p>
+
+<h3 id="reference-calendar">تقویم‌ها<a class="anchor" href="#reference-calendar" aria-label="پیوند به این بخش">#</a></h3>
+<div class="table-wrap" tabindex="0" role="region" aria-label="جدول"><table>
+<thead><tr><th scope="col">تابع</th><th scope="col">امضا</th><th scope="col">واگذار می‌کند به</th></tr></thead>
+<tbody>
+<tr><td><code>jdate</code></td><td><code>jdate(DateTimeInterface|string|int|null $time = null, ?DateTimeZone $timezone = null): Jalali</code></td><td><code>Jalali::make()</code>، <a href="jalali.html">جلالی</a></td></tr>
+<tr><td><code>hdate</code></td><td><code>hdate(DateTimeInterface|string|int|null $time = null, ?DateTimeZone $timezone = null): Hijri</code></td><td><code>Hijri::make()</code>، <a href="hijri.html">هجری</a></td></tr>
+<tr><td><code>hebrew_date</code></td><td><code>hebrew_date(DateTimeInterface|string|int|null $time = null, ?DateTimeZone $timezone = null): Hebrew</code></td><td><code>Hebrew::make()</code>، <a href="hebrew.html">عبری</a></td></tr>
+</tbody>
+</table></div>
+
+<h3 id="reference-digits">ارقام و اعداد<a class="anchor" href="#reference-digits" aria-label="پیوند به این بخش">#</a></h3>
+<div class="table-wrap" tabindex="0" role="region" aria-label="جدول"><table>
+<thead><tr><th scope="col">تابع</th><th scope="col">امضا</th><th scope="col">نمونه</th></tr></thead>
+<tbody>
+<tr><td><code>to_persian_digits</code></td><td><code>(string|int|float $value): string</code></td><td><code>to_persian_digits(1404)</code> می‌دهد <code>۱۴۰۴</code></td></tr>
+<tr><td><code>to_english_digits</code></td><td><code>(string $value): string</code></td><td><code>to_english_digits('۱۴۰۴')</code> می‌دهد <code>1404</code></td></tr>
+<tr><td><code>to_persian</code></td><td><code>(string|int|float $value): string</code></td><td>نام کوتاه <code>to_persian_digits</code>؛ <code>to_persian('12.5')</code> می‌دهد <code>۱۲.۵</code></td></tr>
+<tr><td><code>to_english</code></td><td><code>(string $value): string</code></td><td>نام کوتاه <code>to_english_digits</code>؛ <code>to_english('٣٤')</code> می‌دهد <code>34</code></td></tr>
+<tr><td><code>number_to_words</code></td><td><code>(int|float|string $number, string $locale = 'fa'): string</code></td><td><code>number_to_words(25, 'ar')</code> می‌دهد <code>خمسة وعشرون</code></td></tr>
+<tr><td><code>format_number</code></td><td><code>(int|float|string $number): string</code></td><td><code>format_number(1234567)</code> می‌دهد <code>۱٬۲۳۴٬۵۶۷</code></td></tr>
+<tr><td><code>ordinal</code></td><td><code>(int|float $number): string</code></td><td><code>ordinal(3)</code> می‌دهد <code>سوم</code></td></tr>
+</tbody>
+</table></div>
+<p><a href="digits-and-format.html">ارقام و قالب‌بندی</a> و <a href="number-words.html">عدد به حروف</a> را ببینید.</p>
+
+<h3 id="reference-text">متن<a class="anchor" href="#reference-text" aria-label="پیوند به این بخش">#</a></h3>
+<div class="table-wrap" tabindex="0" role="region" aria-label="جدول"><table>
+<thead><tr><th scope="col">تابع</th><th scope="col">امضا</th><th scope="col">نمونه</th></tr></thead>
+<tbody>
+<tr><td><code>normalize_text</code></td><td><code>(string $text): string</code></td><td><code>normalize_text('كتاب ي')</code> می‌دهد <code>کتاب ی</code> (کاف و یای عربی به فارسی تبدیل می‌شوند)</td></tr>
+<tr><td><code>contains_rtl</code></td><td><code>(string $text): bool</code></td><td><code>contains_rtl('abc سلام')</code> می‌دهد <code>true</code></td></tr>
+<tr><td><code>text_direction</code></td><td><code>(string $text): string</code></td><td><code>text_direction('سلام')</code> می‌دهد <code>rtl</code> و <code>text_direction('hello')</code> می‌دهد <code>ltr</code></td></tr>
+</tbody>
+</table></div>
+<p><a href="text-tools.html">ابزارهای متن</a> را ببینید.</p>
+
+<h3 id="reference-bool">اعتبارسنجی: بله/خیر<a class="anchor" href="#reference-bool" aria-label="پیوند به این بخش">#</a></h3>
+<p>هرکدام <code>bool</code> برمی‌گرداند و <code>mixed</code> می‌پذیرد.</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="جدول"><table>
+<thead><tr><th scope="col">تابع</th><th scope="col">امضا</th><th scope="col">نمونه</th></tr></thead>
+<tbody>
+<tr><td><code>is_national_code</code></td><td><code>(mixed $value): bool</code></td><td><code>is_national_code('0013542419')</code> می‌دهد <code>true</code></td></tr>
+<tr><td><code>is_sheba</code></td><td><code>(mixed $value): bool</code></td><td><code>is_sheba('IR062960000000100324200001')</code> می‌دهد <code>true</code></td></tr>
+<tr><td><code>is_bank_card</code></td><td><code>(mixed $value): bool</code></td><td><code>is_bank_card('6037997535328737')</code> می‌دهد <code>true</code></td></tr>
+<tr><td><code>is_mobile</code></td><td><code>(mixed $value): bool</code></td><td><code>is_mobile('09123456789')</code> می‌دهد <code>true</code></td></tr>
+<tr><td><code>is_postal_code</code></td><td><code>(mixed $value): bool</code></td><td><code>is_postal_code('1676543210')</code> می‌دهد <code>true</code></td></tr>
+<tr><td><code>is_vehicle_plate</code></td><td><code>(mixed $value): bool</code></td><td><code>is_vehicle_plate('12ب345-67')</code> می‌دهد <code>true</code></td></tr>
+</tbody>
+</table></div>
+
+<h3 id="reference-result">اعتبارسنجی: نتیجهٔ ساخت‌یافته<a class="anchor" href="#reference-result" aria-label="پیوند به این بخش">#</a></h3>
+<p>هرکدام یک <code>RtlyKit\Validation\Result</code> با متدهای <code>valid()</code>، <code>invalid()</code>، <code>isValid()</code>، <code>errors()</code> و <code>details()</code> برمی‌گرداند. <a href="validators-overview.html">مرور اعتبارسنج‌ها</a> را ببینید.</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="جدول"><table>
+<thead><tr><th scope="col">تابع</th><th scope="col">امضا</th></tr></thead>
+<tbody>
+<tr><td><code>validate_national_code</code></td><td><code>(mixed $value): Result</code></td></tr>
+<tr><td><code>validate_sheba</code></td><td><code>(mixed $value): Result</code></td></tr>
+<tr><td><code>validate_bank_card</code></td><td><code>(mixed $value): Result</code></td></tr>
+<tr><td><code>validate_mobile</code></td><td><code>(mixed $value): Result</code></td></tr>
+<tr><td><code>validate_postal_code</code></td><td><code>(mixed $value): Result</code></td></tr>
+<tr><td><code>validate_vehicle_plate</code></td><td><code>(mixed $value): Result</code></td></tr>
+</tbody>
+</table></div>
+<pre tabindex="0"><code class="language-php"><span class="tok-v">$r</span> = \RtlyKit\validate_national_code(<span class="tok-s">'1234567890'</span>);
+var_dump(<span class="tok-v">$r</span>-&gt;isValid());   <span class="tok-c">// bool(false)</span></code></pre>
+
+<h3 id="reference-dates">تعطیلات و اوقات شرعی<a class="anchor" href="#reference-dates" aria-label="پیوند به این بخش">#</a></h3>
+<div class="table-wrap" tabindex="0" role="region" aria-label="جدول"><table>
+<thead><tr><th scope="col">تابع</th><th scope="col">امضا</th><th scope="col">توضیح</th></tr></thead>
+<tbody>
+<tr><td><code>is_iran_holiday</code></td><td><code>(Jalali|int $year, ?int $month = null, ?int $day = null): bool</code></td><td>پوشش <code>IranHolidays::isHoliday()</code>؛ <code>is_iran_holiday(1404, 11, 22)</code> می‌دهد <code>true</code>. <a href="holidays.html">تعطیلات</a> را ببینید.</td></tr>
+<tr><td><code>prayer_times</code></td><td><code>(string $city = 'tehran', string $method = 'Tehran'): array</code></td><td>وقت‌های امروز به منطقهٔ زمانی شهر، به شکل <code>{"fajr", "sunrise", "dhuhr", "asr", "maghrib", "isha"}</code>. شهر یا روش ناشناخته <code>InvalidPrayerConfigException</code> می‌دهد. <a href="prayer-times.html">اوقات شرعی</a> را ببینید.</td></tr>
+</tbody>
+</table></div>
+<p>روی‌هم ۳ + ۷ + ۳ + ۶ + ۶ + ۲ = ۲۷ تابع، همان فهرستی که <code>Globals::NAMES</code> نگه می‌دارد.</p>
+
+<h2 id="globals">نام‌های سراسری اختیاری: Globals::register()<a class="anchor" href="#globals" aria-label="پیوند به این بخش">#</a></h2>
+<p>اگر نام‌های کوتاه سراسری را ترجیح می‌دهید (مثلاً در کد قدیمی، موتور قالب یا اسکریپت)، یک بار در بوت‌استرپ این را صدا بزنید:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-v">$skipped</span> = \RtlyKit\Globals::register();</code></pre>
+<p>تضمین‌ها:</p>
+<ul>
+<li><strong>فقط نام‌های آزاد تعریف می‌شوند.</strong> نامی فقط وقتی تعریف می‌شود که هیچ تابعی با آن نام نباشد. تابع موجود هرگز بازنویسی نمی‌شود.</li>
+<li><strong>موارد ردشده را گزارش می‌دهد.</strong> مقدار بازگشتی <code>list&lt;string&gt;</code> از نام‌هایی است که چون تابع دیگری از آن‌ها استفاده می‌کرد تعریف <em>نشدند</em>. فهرست خالی یعنی همه ثبت شدند.</li>
+<li><strong>هرگز استثنا پرتاب نمی‌کند</strong> و در هیچ شرایطی خطای تعریف مجدد نمی‌دهد.</li>
+<li><strong>خودتوان (idempotent) است.</strong> هر چند بار صدا بزنید فرقی نمی‌کند. نامی که تعریف قبلیِ خود RTLY-Kit باشد ردشده گزارش نمی‌شود، پس فراخوانی دوم همان فهرست اول را برمی‌گرداند.</li>
+<li><strong>توابع فضای‌نامی همیشه کار می‌کنند</strong>، چه نام سراسری ردشده باشد چه نه.</li>
+<li>ثابت <code>\RtlyKit\Globals::NAMES</code> هر ۲۷ نام را فهرست می‌کند.</li>
+</ul>
+
+<h3 id="collision">نمونهٔ برخورد نام<a class="anchor" href="#collision" aria-label="پیوند به این بخش">#</a></h3>
+<p>برنامه از قبل <code>is_mobile()</code> خودش را دارد (بررسی user-agent). بسته آن را خراب نمی‌کند، بازنویسی نمی‌کند و به شما خبر می‌دهد:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">require</span> <span class="tok-s">'vendor/autoload.php'</span>;
+
+<span class="tok-c">// برنامه از قبل تابع سراسری هم‌نام دارد.</span>
+<span class="tok-k">function</span> is_mobile(string <span class="tok-v">$ua</span>): bool { <span class="tok-k">return</span> str_contains(<span class="tok-v">$ua</span>, <span class="tok-s">'Mobi'</span>); }
+
+<span class="tok-v">$skipped</span> = \RtlyKit\Globals::register();
+var_dump(<span class="tok-v">$skipped</span>);
+<span class="tok-c">// array(1) { [0]=&gt; string(9) "is_mobile" }</span>
+
+var_dump(is_mobile(<span class="tok-s">'Mozilla/5.0 (iPhone) Mobile'</span>));   <span class="tok-c">// bool(true)   تابع خودِ برنامه</span>
+var_dump(\RtlyKit\is_mobile(<span class="tok-s">'09123456789'</span>));           <span class="tok-c">// bool(true)   بررسی شمارهٔ موبایل ایران، همیشه در دسترس</span>
+<span class="tok-k">echo</span> jdate(<span class="tok-s">'2025-03-21'</span>)-&gt;format(<span class="tok-s">'Y/m/d'</span>), <span class="tok-s">"\n"</span>;       <span class="tok-c">// 1404/01/01   نام آزاد: به‌صورت سراسری ثبت شد</span>
+var_dump(\RtlyKit\Globals::register());                <span class="tok-c">// خودتوان: همان فهرست، array(1) { [0]=&gt; string(9) "is_mobile" }</span></code></pre>
+<p>سیاست معقول این است که فهرست را لاگ کنید و ادامه دهید:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-v">$skipped</span> = \RtlyKit\Globals::register();
+<span class="tok-k">if</span> (<span class="tok-v">$skipped</span> !== []) {
+    error_log(<span class="tok-s">'RTLY-Kit globals skipped: '</span> . implode(<span class="tok-s">', '</span>, <span class="tok-v">$skipped</span>));
+}</code></pre>
+<div class="callout note" role="note"><strong>نکته.</strong> تعریف‌های تابعِ سطح بالای یک فایل PHP پیشاپیش ثبت (hoist) می‌شوند؛ پس تابع سراسری‌ای که در همان فایلِ فراخوانی، پایین‌تر تعریف شده باشد هم «از قبل تعریف‌شده» حساب می‌شود. اگر نامی برایتان مهم است آن را پیش از <code>register()</code> تعریف کنید یا فقط به تابع فضای‌نامی تکیه کنید.</div>
+
+<h2 id="choosing">کدام سبک را انتخاب کنم؟<a class="anchor" href="#choosing" aria-label="پیوند به این بخش">#</a></h2>
+<ul>
+<li><strong>کتابخانه‌ها و برنامه‌های جدید:</strong> importهای فضای‌نامی (<code>use function RtlyKit\jdate;</code>). صریح، قابل جست‌وجو و بدون برخورد.</li>
+<li><strong>کد قدیمی، اسکریپت و قالب:</strong> یک بار <code>Globals::register()</code> را صدا بزنید و سبک کوتاه قبلی را نگه دارید.</li>
+<li><strong>لاراول:</strong> هر دو ممکن است؛ پرووایدر تابع سراسری اضافه نمی‌کند، پس اگر خواستید <code>Globals::register()</code> را در <code>AppServiceProvider::register()</code> صدا بزنید یا در Blade و کلاس‌ها توابع فضای‌نامی را import کنید.</li>
+</ul>
+<nav class="reading-footer" aria-label="صفحهٔ قبلی و بعدی"><a class="prev" rel="prev" href="laravel-validation-and-cast.html"><small>قبلی</small>قواعد اعتبارسنجی و کست Eloquent</a><a class="next" rel="next" href="error-handling.html"><small>بعدی</small>مدیریت خطا</a></nav>
+</article>
+<nav class="toc" aria-label="در این صفحه"><p>در این صفحه</p><ol><li><a href="#why">چرا توابع کمکی در فضای نام‌اند</a></li><li><a href="#import">استفاده از توابع</a></li><li><a href="#reference">همهٔ توابع</a><ol><li><a href="#reference-calendar">تقویم‌ها</a></li><li><a href="#reference-digits">ارقام و اعداد</a></li><li><a href="#reference-text">متن</a></li><li><a href="#reference-bool">اعتبارسنجی: بله/خیر</a></li><li><a href="#reference-result">اعتبارسنجی: نتیجهٔ ساخت‌یافته</a></li><li><a href="#reference-dates">تعطیلات و اوقات شرعی</a></li></ol></li><li><a href="#globals">نام‌های سراسری اختیاری: Globals::register()</a><ol><li><a href="#collision">نمونهٔ برخورد نام</a></li></ol></li><li><a href="#choosing">کدام سبک را انتخاب کنم؟</a></li></ol></nav>
+</div>
+</main>
+<footer class="footer"><div class="shell footer-inner"><p>راهنمای RTLY-Kit · مجوز MIT</p><div><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">مخزن در گیت‌هاب &#8599;</a><a href="https://github.com/ehsanenaloo/RTLY-Kit/issues" rel="noopener noreferrer">گزارش مشکل &#8599;</a></div></div></footer>
+</body>
+</html>

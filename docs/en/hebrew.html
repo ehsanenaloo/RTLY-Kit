@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en" dir="ltr" data-i18n="{&quot;dark&quot;:&quot;Dark mode&quot;,&quot;light&quot;:&quot;Light mode&quot;,&quot;to_dark&quot;:&quot;Switch to dark theme&quot;,&quot;to_light&quot;:&quot;Switch to light theme&quot;,&quot;copy&quot;:&quot;Copy&quot;,&quot;copied&quot;:&quot;Copied&quot;,&quot;copy_failed&quot;:&quot;Selected. Press copy.&quot;,&quot;copy_label&quot;:&quot;Copy the code example above&quot;,&quot;no_results&quot;:&quot;No guide matches. Try a shorter word.&quot;,&quot;loading&quot;:&quot;The search index is still loading. Try again in a moment.&quot;,&quot;results&quot;:&quot;Search results&quot;,&quot;status&quot;:&quot;%d of %d guides shown&quot;,&quot;suggest&quot;:&quot;English version&quot;,&quot;search_label&quot;:&quot;Search the guide&quot;,&quot;search_placeholder&quot;:&quot;Search the guide&quot;}" data-search-index="search-index.js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hebrew calendar | RTLY-Kit User guide</title>
+<meta name="description" content="The immutable Hebrew (Jewish) date class with ordinal month numbering, leap-year Adar I and II, and month names in English, Hebrew and Persian: create, parse, format, shift and measure dates.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="Hebrew calendar | RTLY-Kit User guide">
+<meta property="og:description" content="The immutable Hebrew (Jewish) date class with ordinal month numbering, leap-year Adar I and II, and month names in English, Hebrew and Persian: create, parse, format, shift and measure dates.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="en_US">
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+<link rel="alternate" hreflang="fa" href="../fa/hebrew.html">
+<link rel="stylesheet" href="../styles.css">
+<script>try{var t=localStorage.getItem("rtly-docs-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<script defer src="../app.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a><header class="site-header"><div class="shell header-inner"><a class="brand" href="index.html"><img src="../assets/logo.svg" width="34" height="34" alt=""><span><span class="name">RTLY-Kit</span><small>User guide</small></span></a><nav class="top-nav" aria-label="Primary"><a href="index.html">Overview</a><a href="quick-start.html">Quick start</a><a href="all.html">All guides</a><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">GitHub &#8599;</a></nav><div class="header-tools"><span data-search-host></span><button type="button" class="icon-button" data-theme-toggle hidden>Theme</button><a class="icon-button" href="../fa/hebrew.html" hreflang="fa" lang="fa" aria-label="تغییر به فارسی">فارسی</a></div></div></header>
+<main id="main">
+<div class="shell page-intro"><nav class="breadcrumbs" aria-label="Breadcrumb"><ol><li><a href="index.html">Home</a></li><li><a href="all.html#group-calendars">Calendars</a></li><li aria-current="page">Hebrew calendar</li></ol></nav><h1>Hebrew calendar</h1><p class="lead">The immutable Hebrew (Jewish) date class with ordinal month numbering, leap-year Adar I and II, and month names in English, Hebrew and Persian: create, parse, format, shift and measure dates.</p></div>
+<div class="shell doc-layout has-toc">
+<aside class="sidebar"><details open><summary>Browse the guides</summary><nav aria-label="Guides"><a href="all.html">All guides</a><p>Getting started</p><a href="quick-start.html">Quick start</a><a href="installation.html">Installation</a><p>Calendars</p><a href="jalali.html">Jalali calendar</a><a href="hijri.html">Hijri calendar</a><a href="hebrew.html" aria-current="page">Hebrew calendar</a><a href="convert-and-compare.html">Convert and compare dates</a><a href="carbon-macros.html">Carbon macros</a><p>Validation</p><a href="validators-overview.html">Validators overview</a><a href="national-code.html">National code</a><a href="sheba-and-bank-card.html">Sheba and bank card</a><a href="mobile-postal-plate.html">Mobile, postal code and plate</a><p>Numbers and text</p><a href="digits-and-format.html">Digits and number formatting</a><a href="number-words.html">Number to words</a><a href="text-tools.html">Text tools</a><p>Holidays and prayer times</p><a href="holidays.html">Iranian holidays</a><a href="prayer-times.html">Prayer times</a><p>Laravel</p><a href="laravel-setup.html">Laravel setup</a><a href="laravel-validation-and-cast.html">Validation rules and Eloquent cast</a><p>Reference</p><a href="helpers-and-globals.html">Helpers and globals</a><a href="error-handling.html">Error handling</a><a href="api-stability.html">API stability</a><a href="accuracy-and-data.html">Accuracy and data</a><a href="benchmarks.html">Benchmarks</a><a href="limits.html">Limits</a><a href="troubleshooting-faq.html">Troubleshooting and FAQ</a><a href="upgrade.html">Upgrade guide</a></nav></details></aside>
+<article class="prose">
+<details class="toc-inline"><summary>On this page</summary><ol><li><a href="#overview">What the class does</a></li><li><a href="#months">Month numbering</a></li><li><a href="#make">Creating dates</a><ol><li><a href="#string-rules">String semantics</a></li></ol></li><li><a href="#range">Supported range and errors</a></li><li><a href="#getters">Reading values</a><ol><li><a href="#weekdays">Weekday numbering</a></li></ol></li><li><a href="#format">Formatting</a></li><li><a href="#modify">Shifting and snapping</a></li><li><a href="#compare-diff">Comparing and measuring</a></li><li><a href="#static">Calendar arithmetic</a></li></ol></details>
+<h2 id="overview">What the class does<a class="anchor" href="#overview" aria-label="Link to this section">#</a></h2>
+<p><code>RtlyKit\Calendar\Hebrew</code> is an immutable date-time value in the Hebrew (Jewish) calendar. It is pure PHP (no <code>ext-calendar</code>) and implements the fixed arithmetic calendar: the molad of Tishrei, the four <em>dehiyyot</em> postponements, and year lengths of 353/354/355 days (regular) and 383/384/385 days (leap). Like the other calendars it wraps one <code>DateTimeImmutable</code> instant and implements the <code>CalendarDate</code> contract (see <a href="convert-and-compare.html">Convert and compare dates</a>).</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">&lt;?php
+require</span> <span class="tok-s">'vendor/autoload.php'</span>;
+
+<span class="tok-k">use</span> RtlyKit\Calendar\Hebrew;
+<span class="tok-k">use</span> RtlyKit\Exceptions\InvalidDateException;
+<span class="tok-k">use</span> <span class="tok-k">function</span> RtlyKit\hebrew_date;   <span class="tok-c">// namespaced helper, same as Hebrew::make()</span>
+
+<span class="tok-v">$utc</span> = <span class="tok-k">new</span> DateTimeZone(<span class="tok-s">'UTC'</span>);</code></pre>
+<div class="callout known" role="note"><strong>Known limitation.</strong> A Hebrew day really begins at sunset. This class, like the other calendars of the library, changes the date at civil midnight, so an evening time (for example the eve of a holiday) belongs to the previous Hebrew date in religious practice but to the next civil day here. The class also does not compute holidays, parashot or Omer counts.</div>
+
+<h2 id="months">Month numbering<a class="anchor" href="#months" aria-label="Link to this section">#</a></h2>
+<p>Months are numbered by their <strong>ordinal position in the year starting from Tishrei</strong> (the civil new year). In a leap year, Adar I and Adar II are two separate months:</p>
+<ul>
+<li>Months 1 to 5 are always Tishrei, Cheshvan, Kislev, Tevet, Shevat.</li>
+<li>Regular year: 6 = Adar, 7 = Nisan, 8 = Iyar, 9 = Sivan, 10 = Tammuz, 11 = Av, 12 = Elul.</li>
+<li>Leap year: 6 = Adar I, 7 = Adar II, 8 = Nisan, 9 = Iyar, 10 = Sivan, 11 = Tammuz, 12 = Av, 13 = Elul.</li>
+</ul>
+<div class="callout warn" role="note"><strong>Not Hebcal numbering.</strong> This differs from Hebcal (Nisan = 1) and from PHP <code>ext-calendar</code>. Elul is month 12 in a regular year and 13 in a leap year, and Nisan is month 7 or 8. Always get month numbers from <code>Hebrew</code> itself (<code>getMonth()</code>, <code>monthName()</code>, <code>monthsInYear()</code>), never from tables of another library.</div>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">foreach</span> ([<span class="tok-n">5784</span>, <span class="tok-n">5785</span>] <span class="tok-k">as</span> <span class="tok-v">$y</span>) {
+    <span class="tok-v">$a</span> = [];
+    <span class="tok-k">for</span> (<span class="tok-v">$m</span> = <span class="tok-n">1</span>; <span class="tok-v">$m</span> &lt;= Hebrew::monthsInYear(<span class="tok-v">$y</span>); <span class="tok-v">$m</span>++) {
+        <span class="tok-v">$a</span>[] = <span class="tok-v">$m</span>.<span class="tok-s">':'</span>.Hebrew::monthName(<span class="tok-v">$y</span>, <span class="tok-v">$m</span>).<span class="tok-s">'('</span>.Hebrew::daysInMonth(<span class="tok-v">$y</span>, <span class="tok-v">$m</span>).<span class="tok-s">')'</span>;
+    }
+    <span class="tok-k">echo</span> <span class="tok-v">$y</span>, <span class="tok-s">' '</span>, implode(<span class="tok-s">' '</span>, <span class="tok-v">$a</span>), <span class="tok-s">"\n"</span>;
+}
+<span class="tok-c">// 5784 1:Tishrei(30) 2:Cheshvan(29) 3:Kislev(29) 4:Tevet(29) 5:Shevat(30) 6:Adar I(30) 7:Adar II(29) 8:Nisan(30) 9:Iyar(29) 10:Sivan(30) 11:Tammuz(29) 12:Av(30) 13:Elul(29)</span>
+<span class="tok-c">// 5785 1:Tishrei(30) 2:Cheshvan(30) 3:Kislev(30) 4:Tevet(29) 5:Shevat(30) 6:Adar(29) 7:Nisan(30) 8:Iyar(29) 9:Sivan(30) 10:Tammuz(29) 11:Av(30) 12:Elul(29)</span></code></pre>
+<p><code>Hebrew::monthName($year, $month, $locale = 'en')</code> supports <code>en</code>, <code>he</code> and <code>fa</code> (unknown locales use <code>en</code>); in a regular year slot 6 is the plain <em>Adar</em>.</p>
+
+<h2 id="make">Creating dates<a class="anchor" href="#make" aria-label="Link to this section">#</a></h2>
+<p><code>Hebrew::create($year, $month, $day, $hour = 0, $minute = 0, $second = 0, $timezone = null)</code> validates against the real length of that month in that year (Cheshvan and Kislev vary between 29 and 30 days).</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-v">$e</span> = Hebrew::create(<span class="tok-n">5785</span>, <span class="tok-n">1</span>, <span class="tok-n">1</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-v">$utc</span>);
+
+<span class="tok-k">echo</span> <span class="tok-v">$e</span>;                                   <span class="tok-c">// 5785/01/01 00:00:00</span>
+<span class="tok-k">echo</span> <span class="tok-v">$e</span>-&gt;toGregorian()-&gt;format(<span class="tok-s">'Y-m-d'</span>);   <span class="tok-c">// 2024-10-03</span>
+<span class="tok-k">echo</span> Hebrew::create(<span class="tok-n">5785</span>, <span class="tok-n">7</span>, <span class="tok-n">15</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-v">$utc</span>)-&gt;toGregorian()-&gt;format(<span class="tok-s">'Y-m-d'</span>);  <span class="tok-c">// 2025-04-13  (15 Nisan 5785)</span>
+<span class="tok-k">echo</span> Hebrew::create(<span class="tok-n">5786</span>, <span class="tok-n">1</span>, <span class="tok-n">10</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-v">$utc</span>)-&gt;toGregorian()-&gt;format(<span class="tok-s">'Y-m-d l'</span>); <span class="tok-c">// 2025-10-02 Thursday</span></code></pre>
+<p><code>Hebrew::make($time = null, $timezone = null)</code> accepts a <code>DateTimeInterface</code>, any <code>CalendarDate</code>, an <code>int</code> timestamp, a string or <code>null</code>; <code>hebrew_date()</code> is the helper. Passing a <code>Hebrew</code> instance returns it unchanged.</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">echo</span> Hebrew::make(<span class="tok-s">'2025-10-07'</span>, <span class="tok-v">$utc</span>);                       <span class="tok-c">// 5786/01/15 00:00:00</span>
+<span class="tok-k">echo</span> hebrew_date(<span class="tok-s">'2025-10-07'</span>)-&gt;format(<span class="tok-s">'Y/m/d F'</span>);           <span class="tok-c">// 5786/01/15 Tishrei</span>
+<span class="tok-k">echo</span> Hebrew::make(<span class="tok-s">'5785/01/10'</span>, <span class="tok-v">$utc</span>);                       <span class="tok-c">// 5785/01/10 00:00:00</span>
+<span class="tok-k">echo</span> Hebrew::make(<span class="tok-s">'0001-09-06'</span>)-&gt;format(<span class="tok-s">'Y/m/d'</span>);            <span class="tok-c">// 3762/01/01</span></code></pre>
+<h3 id="string-rules">String semantics<a class="anchor" href="#string-rules" aria-label="Link to this section">#</a></h3>
+<ol>
+<li>Persian and Arabic digits become English digits; the string is trimmed; an empty string throws <code>InvalidDateException</code>.</li>
+<li>A string of the form <code>Y/m/d</code> or <code>Y-m-d</code> (optional <code>H:i[:s]</code>) with a year of <strong>3000 or more</strong> is read as a <em>Hebrew</em> date, using the ordinal month numbering above. (The threshold is opposite to Jalali and Hijri, which read years <em>below</em> 1700 as their own.)</li>
+<li>Every other string is parsed as Gregorian or free-form text.</li>
+</ol>
+<p>So <code>'5785/01/10'</code> is Hebrew, <code>'2025-10-07'</code> is Gregorian, and <code>'3000/01/01'</code> is read as Hebrew year 3000, which is below the supported minimum and therefore throws <code>Invalid Hebrew date: 3000/1/1</code>.</p>
+
+<h2 id="range">Supported range and errors<a class="anchor" href="#range" aria-label="Link to this section">#</a></h2>
+<p>Hebrew years <code>Hebrew::MIN_YEAR</code> = <strong>3762</strong> to <code>Hebrew::MAX_YEAR</code> = <strong>13759</strong> are supported. These are exactly the years that lie inside Gregorian years 1 to 9999: the first day is 1 Tishrei 3762 (0001-09-06) and the last is the last day of Elul 13759 (9999-11-03). Anything outside throws <code>InvalidDateException</code>; <code>isValid()</code> returns false instead.</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">foreach</span> ([[<span class="tok-n">3761</span>, <span class="tok-n">1</span>, <span class="tok-n">1</span>], [<span class="tok-n">13760</span>, <span class="tok-n">1</span>, <span class="tok-n">1</span>], [<span class="tok-n">5785</span>, <span class="tok-n">13</span>, <span class="tok-n">1</span>], [<span class="tok-n">5785</span>, <span class="tok-n">3</span>, <span class="tok-n">31</span>]] <span class="tok-k">as</span> [<span class="tok-v">$y</span>, <span class="tok-v">$m</span>, <span class="tok-v">$d</span>]) {
+    <span class="tok-k">try</span> { Hebrew::create(<span class="tok-v">$y</span>, <span class="tok-v">$m</span>, <span class="tok-v">$d</span>); }
+    <span class="tok-k">catch</span> (InvalidDateException <span class="tok-v">$x</span>) { <span class="tok-k">echo</span> <span class="tok-v">$x</span>-&gt;getMessage(), <span class="tok-s">"\n"</span>; }
+}
+<span class="tok-c">// Invalid Hebrew date: 3761/1/1</span>
+<span class="tok-c">// Invalid Hebrew date: 13760/1/1</span>
+<span class="tok-c">// Invalid Hebrew date: 5785/13/1       (5785 is a regular year: 12 months)</span>
+<span class="tok-c">// Invalid Hebrew date: 5785/3/31</span>
+
+<span class="tok-k">echo</span> Hebrew::create(<span class="tok-n">5784</span>, <span class="tok-n">13</span>, <span class="tok-n">1</span>) <span class="tok-k">instanceof</span> Hebrew ? <span class="tok-s">'ok'</span> : <span class="tok-s">''</span>;   <span class="tok-c">// ok  (5784 is a leap year)</span>
+
+<span class="tok-k">try</span> { Hebrew::make(<span class="tok-s">'0001-01-01'</span>); }
+<span class="tok-k">catch</span> (InvalidDateException <span class="tok-v">$x</span>) { <span class="tok-k">echo</span> <span class="tok-v">$x</span>-&gt;getMessage(); }
+<span class="tok-c">// Date out of the supported Hebrew range (3762..13759): 3761</span></code></pre>
+<p>The pure arithmetic helpers <code>daysInYear()</code>, <code>daysInMonth()</code> and <code>monthName()</code> accept years 1 to 13759 (year 0 throws <code>Hebrew year out of the supported range: 0</code>); only date construction uses the narrower 3762 minimum.</p>
+
+<h2 id="getters">Reading values<a class="anchor" href="#getters" aria-label="Link to this section">#</a></h2>
+<p>Getters are those of the contract (<code>getYear()</code>, <code>getMonth()</code>, <code>getDay()</code>, time parts, <code>getTimestamp()</code>, <code>getTimezone()</code>, <code>toGregorian()</code>, <code>toDateString()</code>, <code>toDateTimeString()</code>). <code>getMonth()</code> is the ordinal month described above.</p>
+<h3 id="weekdays">Weekday numbering<a class="anchor" href="#weekdays" aria-label="Link to this section">#</a></h3>
+<p><code>getDayOfWeek()</code> and the <code>w</code> token are <strong>Sunday-first</strong>: 0 = Sunday to 6 = Saturday (like Hijri and PHP, unlike Jalali). <code>N</code> is the ISO number (Monday = 1).</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">echo</span> <span class="tok-v">$e</span>-&gt;getDayOfWeek();   <span class="tok-c">// 4   (1 Tishrei 5785 was a Thursday)</span>
+<span class="tok-k">foreach</span> (range(<span class="tok-n">0</span>, <span class="tok-n">6</span>) <span class="tok-k">as</span> <span class="tok-v">$i</span>) { <span class="tok-k">echo</span> <span class="tok-v">$e</span>-&gt;addDays(<span class="tok-v">$i</span>)-&gt;getDayOfWeek(); }  <span class="tok-c">// 4560123</span></code></pre>
+
+<h2 id="format">Formatting<a class="anchor" href="#format" aria-label="Link to this section">#</a></h2>
+<p><code>format($pattern = 'Y/m/d H:i:s', $locale = 'en')</code> with <code>$locale</code> one of <code>en</code>, <code>he</code>, <code>fa</code>. Digits are always Latin. A backslash escapes the next character.</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">echo</span> <span class="tok-v">$e</span>-&gt;format(<span class="tok-s">'l j F Y'</span>);         <span class="tok-c">// Thursday 1 Tishrei 5785</span>
+<span class="tok-k">echo</span> <span class="tok-v">$e</span>-&gt;format(<span class="tok-s">'l j F Y'</span>, <span class="tok-s">'he'</span>);   <span class="tok-c">// חמישי 1 תשרי 5785</span>
+<span class="tok-k">echo</span> <span class="tok-v">$e</span>-&gt;format(<span class="tok-s">'l j F Y'</span>, <span class="tok-s">'fa'</span>);   <span class="tok-c">// پنجشنبه 1 تشری 5785</span>
+
+<span class="tok-k">echo</span> Hebrew::create(<span class="tok-n">5784</span>, <span class="tok-n">6</span>, <span class="tok-n">15</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-v">$utc</span>)-&gt;format(<span class="tok-s">'j F'</span>);   <span class="tok-c">// 15 Adar I</span>
+<span class="tok-k">echo</span> Hebrew::create(<span class="tok-n">5784</span>, <span class="tok-n">7</span>, <span class="tok-n">15</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-v">$utc</span>)-&gt;format(<span class="tok-s">'j F'</span>);   <span class="tok-c">// 15 Adar II</span></code></pre>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Table"><table>
+<thead><tr><th scope="col">Token</th><th scope="col">Meaning</th></tr></thead>
+<tbody>
+<tr><td><code>Y y m n d j</code></td><td>Year, month (ordinal), day</td></tr>
+<tr><td><code>H G h g i s</code></td><td>Time of day (24-hour and 12-hour)</td></tr>
+<tr><td><code>F M</code></td><td>Month name in the locale (Adar I/II or Adar as appropriate)</td></tr>
+<tr><td><code>l</code></td><td>Weekday name in the locale</td></tr>
+<tr><td><code>w N</code></td><td>Sunday = 0; ISO Monday = 1</td></tr>
+<tr><td><code>z t L</code></td><td>Zero-based day of the year; days in the month; 1 for a leap year (13 months)</td></tr>
+<tr><td><code>a A</code></td><td><code>am</code>/<code>pm</code> and <code>AM</code>/<code>PM</code></td></tr>
+<tr><td><code>S W c r</code></td><td>Empty; ISO week of the Gregorian instant; <code>Y-m-d\TH:i:sP</code> with the Hebrew date; RFC 2822</td></tr>
+<tr><td><code>U e T P p O Z I u v</code></td><td>Delegated to the underlying instant</td></tr>
+</tbody>
+</table></div>
+
+<h2 id="modify">Shifting and snapping<a class="anchor" href="#modify" aria-label="Link to this section">#</a></h2>
+<p>Methods are the same as for <a href="jalali.html#modify">Jalali</a>. Two Hebrew-specific rules matter:</p>
+<ul>
+<li><strong>Months</strong> are counted as ordinal months, with Adar I and Adar II as two separate months; the day is clamped to the target month's length. The work is bounded (whole 19-year cycles plus at most 19 yearly steps), independent of how large <code>$months</code> is.</li>
+<li><strong>Years</strong> keep the "same" month: moving from a leap to a regular year maps Adar I and Adar II to Adar; moving from a regular to a leap year maps Adar to <em>Adar II</em>.</li>
+</ul>
+<pre tabindex="0"><code class="language-php"><span class="tok-v">$adar1</span> = Hebrew::create(<span class="tok-n">5784</span>, <span class="tok-n">6</span>, <span class="tok-n">15</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-v">$utc</span>);
+<span class="tok-k">echo</span> <span class="tok-v">$adar1</span>-&gt;addMonths(<span class="tok-n">1</span>)-&gt;format(<span class="tok-s">'Y/m/d F'</span>);                                  <span class="tok-c">// 5784/07/15 Adar II</span>
+<span class="tok-k">echo</span> Hebrew::create(<span class="tok-n">5784</span>, <span class="tok-n">7</span>, <span class="tok-n">15</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-v">$utc</span>)-&gt;addYears(<span class="tok-n">1</span>)-&gt;format(<span class="tok-s">'Y/m/d F'</span>); <span class="tok-c">// 5785/06/15 Adar</span>
+<span class="tok-k">echo</span> Hebrew::create(<span class="tok-n">5785</span>, <span class="tok-n">2</span>, <span class="tok-n">29</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-v">$utc</span>)-&gt;addMonths(<span class="tok-n">1</span>);                   <span class="tok-c">// 5785/03/29 00:00:00</span>
+<span class="tok-k">echo</span> Hebrew::create(<span class="tok-n">5785</span>, <span class="tok-n">5</span>, <span class="tok-n">30</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-v">$utc</span>)-&gt;addMonths(<span class="tok-n">1</span>)-&gt;format(<span class="tok-s">'Y/m/d F'</span>); <span class="tok-c">// 5785/06/29 Adar  (clamped)</span>
+<span class="tok-k">echo</span> <span class="tok-v">$e</span>-&gt;endOfMonth();   <span class="tok-c">// 5785/01/30 23:59:59</span>
+<span class="tok-k">echo</span> <span class="tok-v">$e</span>-&gt;endOfYear();    <span class="tok-c">// 5785/12/29 23:59:59</span></code></pre>
+
+<h2 id="compare-diff">Comparing and measuring<a class="anchor" href="#compare-diff" aria-label="Link to this section">#</a></h2>
+<p>Comparison works on instants and accepts any calendar. <code>diffInMonths()</code> counts whole Hebrew months (Adar I and II count separately); <code>diffInYears()</code> is anniversary based (a Hebrew year has 12 or 13 months, so it is not months divided by 12).</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">echo</span> Hebrew::create(<span class="tok-n">5784</span>, <span class="tok-n">1</span>, <span class="tok-n">1</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-v">$utc</span>)-&gt;diffInMonths(Hebrew::create(<span class="tok-n">5785</span>, <span class="tok-n">1</span>, <span class="tok-n">1</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-v">$utc</span>)); <span class="tok-c">// 13</span>
+<span class="tok-k">echo</span> Hebrew::create(<span class="tok-n">5780</span>, <span class="tok-n">3</span>, <span class="tok-n">3</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-v">$utc</span>)-&gt;diffInYears(Hebrew::create(<span class="tok-n">5785</span>, <span class="tok-n">3</span>, <span class="tok-n">2</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-v">$utc</span>));  <span class="tok-c">// 4</span></code></pre>
+
+<h2 id="static">Calendar arithmetic<a class="anchor" href="#static" aria-label="Link to this section">#</a></h2>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Table"><table>
+<thead><tr><th scope="col">Method</th><th scope="col">Returns</th></tr></thead>
+<tbody>
+<tr><td><code>Hebrew::isValid($y, $m, $d)</code></td><td><code>bool</code></td></tr>
+<tr><td><code>Hebrew::isLeapYear($y)</code></td><td>True for years 3, 6, 8, 11, 14, 17, 19 of the 19-year cycle</td></tr>
+<tr><td><code>Hebrew::monthsInYear($y)</code></td><td>12 or 13</td></tr>
+<tr><td><code>Hebrew::daysInYear($y)</code></td><td>353, 354, 355, 383, 384 or 385</td></tr>
+<tr><td><code>Hebrew::daysInMonth($y, $m)</code></td><td>29 or 30; throws for a month beyond the year's month count</td></tr>
+<tr><td><code>Hebrew::gregorianToHebrew($gy, $gm, $gd)</code></td><td><code>[year, ordinalMonth, day]</code></td></tr>
+<tr><td><code>Hebrew::hebrewToGregorian($hy, $hm, $hd)</code></td><td><code>[year, month, day]</code></td></tr>
+</tbody>
+</table></div>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">echo</span> (Hebrew::isLeapYear(<span class="tok-n">5784</span>) ? <span class="tok-s">'leap'</span> : <span class="tok-s">'regular'</span>), <span class="tok-s">' '</span>, (Hebrew::isLeapYear(<span class="tok-n">5785</span>) ? <span class="tok-s">'leap'</span> : <span class="tok-s">'regular'</span>); <span class="tok-c">// leap regular</span>
+<span class="tok-k">echo</span> Hebrew::daysInYear(<span class="tok-n">5784</span>), <span class="tok-s">' '</span>, Hebrew::daysInYear(<span class="tok-n">5785</span>), <span class="tok-s">' '</span>, Hebrew::daysInYear(<span class="tok-n">5786</span>);             <span class="tok-c">// 383 355 354</span>
+<span class="tok-k">echo</span> json_encode(Hebrew::gregorianToHebrew(<span class="tok-n">2025</span>, <span class="tok-n">10</span>, <span class="tok-n">3</span>));   <span class="tok-c">// [5786,1,11]</span>
+<span class="tok-k">echo</span> json_encode(Hebrew::hebrewToGregorian(<span class="tok-n">5786</span>, <span class="tok-n">1</span>, <span class="tok-n">1</span>));    <span class="tok-c">// [2025,9,23]</span></code></pre>
+<p>Related: cross-calendar conversion in <a href="convert-and-compare.html">Convert and compare dates</a>, Carbon macros (<code>toHebrew()</code>, <code>createFromHebrew()</code>) in <a href="carbon-macros.html">Carbon macros</a>.</p>
+<nav class="reading-footer" aria-label="Previous and next page"><a class="prev" rel="prev" href="hijri.html"><small>Previous</small>Hijri calendar</a><a class="next" rel="next" href="convert-and-compare.html"><small>Next</small>Convert and compare dates</a></nav>
+</article>
+<nav class="toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#overview">What the class does</a></li><li><a href="#months">Month numbering</a></li><li><a href="#make">Creating dates</a><ol><li><a href="#string-rules">String semantics</a></li></ol></li><li><a href="#range">Supported range and errors</a></li><li><a href="#getters">Reading values</a><ol><li><a href="#weekdays">Weekday numbering</a></li></ol></li><li><a href="#format">Formatting</a></li><li><a href="#modify">Shifting and snapping</a></li><li><a href="#compare-diff">Comparing and measuring</a></li><li><a href="#static">Calendar arithmetic</a></li></ol></nav>
+</div>
+</main>
+<footer class="footer"><div class="shell footer-inner"><p>RTLY-Kit user guide · MIT licensed</p><div><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">Repository on GitHub &#8599;</a><a href="https://github.com/ehsanenaloo/RTLY-Kit/issues" rel="noopener noreferrer">Report an issue &#8599;</a></div></div></footer>
+</body>
+</html>

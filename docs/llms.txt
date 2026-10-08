@@ -1,0 +1,59 @@
+# RTLY-Kit
+
+> A PHP library (PHP 8.2 or newer, no required Composer packages) for Persian and Arabic right-to-left work: Jalali, Hijri and Hebrew calendars, Iranian validators, numbers and text, holidays and prayer times, with optional Carbon and Laravel integrations.
+
+Package: enaxon/rtly-kit (install: composer require enaxon/rtly-kit). Requires PHP 8.2 or newer. Source: https://github.com/ehsanenaloo/RTLY-Kit
+
+## Getting started
+
+- [Quick start](en/quick-start.html): Install RTLY-Kit with Composer and, in about five minutes, convert a Jalali date, validate an Iranian national code and handle your first library exception.
+- [Installation](en/installation.html): Requirements, installation with Composer or Docker, optional Carbon and Laravel integration, supported versions, how to verify the install and how to remove the package cleanly.
+
+## Calendars
+
+- [Jalali calendar](en/jalali.html): The immutable Jalali (Persian, Solar Hijri) date class: create and parse dates, format them with PHP date tokens, shift and snap them, compare and diff them, with the exact year range and error behaviour.
+- [Hijri calendar](en/hijri.html): The immutable Hijri (Islamic) date class with the Umm al-Qura month table and an arithmetic Tabular variant: create, parse and format dates in Arabic, Persian or English, shift, compare and diff them.
+- [Hebrew calendar](en/hebrew.html): The immutable Hebrew (Jewish) date class with ordinal month numbering, leap-year Adar I and II, and month names in English, Hebrew and Persian: create, parse, format, shift and measure dates.
+- [Convert and compare dates](en/convert-and-compare.html): The shared CalendarDate contract of Jalali, Hijri and Hebrew, how to convert a date between calendars, and how comparison and differences work across calendars and time zones.
+- [Carbon macros](en/carbon-macros.html): Optional Carbon integration: convert any Carbon instance to Jalali, Hijri or Hebrew and create Carbon dates from calendar components, with the exact macro list, return types and errors.
+
+## Validation
+
+- [Validators overview](en/validators-overview.html): How the six Iranian validators work: the shared Validator contract, the Result object, stable error keys, input normalization and size limits.
+- [National code](en/national-code.html): Validate Iranian national codes (کد ملی) with the mod-11 check digit, accept Persian and Arabic digits, and read the place-of-issue hint safely.
+- [Sheba and bank card](en/sheba-and-bank-card.html): Validate Sheba (IBAN) numbers with ISO 7064 mod-97-10 and bank card numbers with the Luhn checksum, and look up the issuing bank with honest data caveats.
+- [Mobile, postal code and plate](en/mobile-postal-plate.html): Validate Iranian mobile numbers in every common input form, postal codes, and vehicle plates, with operator hints, parsing and honest limits.
+
+## Numbers and text
+
+- [Digits and number formatting](en/digits-and-format.html): Convert between English, Persian and Arabic-Indic digits, format numbers with Persian separators, and build Persian ordinals, with every cap and edge case spelled out.
+- [Number to words](en/number-words.html): Spell integers out in Persian (up to 10^21) and Modern Standard Arabic (below 10^9), and read Persian number words back into numbers with fromWords().
+- [Text tools](en/text-tools.html): Normalize Persian and Arabic text, repair half-spaces, detect language and direction, and build URL-safe slugs, with the exact behavior and edge cases of each tool.
+
+## Holidays and prayer times
+
+- [Iranian holidays](en/holidays.html): Look up official Iranian public holidays for any Jalali date, list a whole year, and find business days. Fixed solar holidays are exact; Islamic holidays are estimates.
+- [Prayer times](en/prayer-times.html): Compute Fajr, sunrise, Dhuhr, Asr, Maghrib and Isha for any location with six calculation methods, with an honest per-method verification status.
+
+## Laravel
+
+- [Laravel setup](en/laravel-setup.html): How RTLY-Kit plugs into Laravel: package auto-discovery, what the service provider registers, the Jalali facade, and the fa/en/ar validation messages you can override.
+- [Validation rules and Eloquent cast](en/laravel-validation-and-cast.html): Use the Iranian validation rules in Laravel forms, store Jalali dates in Eloquent models with JalaliCast, and show them in Blade.
+
+## Reference
+
+- [Helpers and globals](en/helpers-and-globals.html): The 27 namespaced helper functions, how to import them, and the opt-in Globals::register() that adds short global names without ever overwriting yours.
+- [Error handling](en/error-handling.html): Which calls throw, which never do, the exception hierarchy, the stable ErrorCode values, and how to catch and log failures safely.
+- [API stability](en/api-stability.html): What you can rely on, what is internal, how versions are numbered before and after 1.0, and which PHP, Laravel and Carbon versions are supported.
+- [Accuracy and data](en/accuracy-and-data.html): Where every embedded data table comes from, what has been verified against what, and what has not been verified. Read it before you rely on the results in production.
+- [Benchmarks](en/benchmarks.html): A small, honest micro-benchmark of RTLY-Kit against morilog/jalali, with the full method, the caveats and a one-line command to reproduce it on your machine.
+- [Limits](en/limits.html): Every hard limit in one place: supported year ranges, input size caps, number-word ranges, the Umm al-Qura range and the other numeric boundaries of the library.
+- [Troubleshooting and FAQ](en/troubleshooting-faq.html): Answers to the questions people actually hit: missing helpers, weekday numbering, string years, time zones, Carbon macros, the Eloquent cast, prayer times and holidays.
+- [Upgrade guide](en/upgrade.html): Breaking changes before 1.0 with the exact steps to migrate, plus the highlights of the changelog for the 0.x series.
+
+## Notes for readers and tools
+
+- Helpers are namespaced functions: `use function RtlyKit\jdate;`. Short global names are opt-in with `\RtlyKit\Globals::register();`.
+- Every exception extends `RtlyKit\Exceptions\RtlyKitException`; validators never throw and return a `Result` instead.
+- Calendar entry points accept only years inside the supported ranges and throw `InvalidDateException` otherwise.
+- Accuracy limits of the Umm al-Qura table, Iranian religious holidays, prayer times and data tables are listed in en/accuracy-and-data.html.

@@ -1,0 +1,96 @@
+{
+    "name": "enaxon/rtly-kit",
+    "description": "RTLY-Kit: the definitive RTL kit for PHP — Jalali, Hijri, Hebrew calendars, Iranian validations, numbers, text, holidays and prayer times.",
+    "type": "library",
+    "keywords": [
+        "rtl",
+        "jalali",
+        "hijri",
+        "hebrew",
+        "persian",
+        "arabic",
+        "calendar",
+        "datetime",
+        "carbon",
+        "validation",
+        "iran",
+        "prayer-times",
+        "shamsi",
+        "umm-al-qura"
+    ],
+    "homepage": "https://github.com/ehsanenaloo/RTLY-Kit",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ehsan Enaloo",
+            "homepage": "https://github.com/ehsanenaloo"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/ehsanenaloo/RTLY-Kit/issues",
+        "source": "https://github.com/ehsanenaloo/RTLY-Kit",
+        "security": "https://github.com/ehsanenaloo/RTLY-Kit/security/policy"
+    },
+    "require": {
+        "php": "^8.2",
+        "ext-mbstring": "*"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.64",
+        "illuminate/container": "^11.0||^12.0",
+        "illuminate/database": "^11.0||^12.0",
+        "illuminate/support": "^11.0||^12.0",
+        "illuminate/translation": "^11.0||^12.0",
+        "illuminate/validation": "^11.0||^12.0",
+        "nesbot/carbon": "^3.0",
+        "phpstan/phpstan": "^2.0",
+        "phpunit/phpunit": "^11.0"
+    },
+    "suggest": {
+        "nesbot/carbon": "For Carbon macros (toJalali, jformat, createFromJalali, ...)",
+        "illuminate/support": "For Laravel auto-discovery: service provider, Jalali facade, validation rules and the JalaliCast Eloquent cast"
+    },
+    "autoload": {
+        "psr-4": {
+            "RtlyKit\\": "src/"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "RtlyKit\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit -c tools/phpunit.xml.dist",
+        "coverage": "php -d pcov.enabled=1 -d pcov.directory=src vendor/bin/phpunit -c tools/phpunit.xml.dist --coverage-text",
+        "phpstan": "phpstan analyse -c tools/phpstan.neon --memory-limit=1G",
+        "cs": "php-cs-fixer fix --config=tools/php-cs-fixer.dist.php --dry-run --diff --ansi",
+        "cs-fix": "php-cs-fixer fix --config=tools/php-cs-fixer.dist.php --ansi",
+        "docs": "php tools/docs/build.php",
+        "docs:check": "php tools/docs/build.php --check",
+        "check": [
+            "@phpstan",
+            "@test",
+            "@cs"
+        ]
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "config": {
+        "sort-packages": true,
+        "preferred-install": "dist"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "RtlyKit\\Laravel\\RtlyKitServiceProvider"
+            ],
+            "aliases": {
+                "Jalali": "RtlyKit\\Laravel\\Facades\\Jalali"
+            }
+        }
+    }
+}

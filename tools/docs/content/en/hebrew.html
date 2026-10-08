@@ -1,0 +1,143 @@
+<!--
+title: Hebrew calendar
+description: The immutable Hebrew (Jewish) date class with ordinal month numbering, leap-year Adar I and II, and month names in English, Hebrew and Persian: create, parse, format, shift and measure dates.
+group: calendars
+order: 30
+-->
+<h2 id="overview">What the class does</h2>
+<p><code>RtlyKit\Calendar\Hebrew</code> is an immutable date-time value in the Hebrew (Jewish) calendar. It is pure PHP (no <code>ext-calendar</code>) and implements the fixed arithmetic calendar: the molad of Tishrei, the four <em>dehiyyot</em> postponements, and year lengths of 353/354/355 days (regular) and 383/384/385 days (leap). Like the other calendars it wraps one <code>DateTimeImmutable</code> instant and implements the <code>CalendarDate</code> contract (see <a href="convert-and-compare.html">Convert and compare dates</a>).</p>
+<pre><code class="language-php">&lt;?php
+require 'vendor/autoload.php';
+
+use RtlyKit\Calendar\Hebrew;
+use RtlyKit\Exceptions\InvalidDateException;
+use function RtlyKit\hebrew_date;   // namespaced helper, same as Hebrew::make()
+
+$utc = new DateTimeZone('UTC');</code></pre>
+<div class="known"><strong>Known limitation.</strong> A Hebrew day really begins at sunset. This class, like the other calendars of the library, changes the date at civil midnight, so an evening time (for example the eve of a holiday) belongs to the previous Hebrew date in religious practice but to the next civil day here. The class also does not compute holidays, parashot or Omer counts.</div>
+
+<h2 id="months">Month numbering</h2>
+<p>Months are numbered by their <strong>ordinal position in the year starting from Tishrei</strong> (the civil new year). In a leap year, Adar I and Adar II are two separate months:</p>
+<ul>
+<li>Months 1 to 5 are always Tishrei, Cheshvan, Kislev, Tevet, Shevat.</li>
+<li>Regular year: 6 = Adar, 7 = Nisan, 8 = Iyar, 9 = Sivan, 10 = Tammuz, 11 = Av, 12 = Elul.</li>
+<li>Leap year: 6 = Adar I, 7 = Adar II, 8 = Nisan, 9 = Iyar, 10 = Sivan, 11 = Tammuz, 12 = Av, 13 = Elul.</li>
+</ul>
+<div class="warn"><strong>Not Hebcal numbering.</strong> This differs from Hebcal (Nisan = 1) and from PHP <code>ext-calendar</code>. Elul is month 12 in a regular year and 13 in a leap year, and Nisan is month 7 or 8. Always get month numbers from <code>Hebrew</code> itself (<code>getMonth()</code>, <code>monthName()</code>, <code>monthsInYear()</code>), never from tables of another library.</div>
+<pre><code class="language-php">foreach ([5784, 5785] as $y) {
+    $a = [];
+    for ($m = 1; $m &lt;= Hebrew::monthsInYear($y); $m++) {
+        $a[] = $m.':'.Hebrew::monthName($y, $m).'('.Hebrew::daysInMonth($y, $m).')';
+    }
+    echo $y, ' ', implode(' ', $a), "\n";
+}
+// 5784 1:Tishrei(30) 2:Cheshvan(29) 3:Kislev(29) 4:Tevet(29) 5:Shevat(30) 6:Adar I(30) 7:Adar II(29) 8:Nisan(30) 9:Iyar(29) 10:Sivan(30) 11:Tammuz(29) 12:Av(30) 13:Elul(29)
+// 5785 1:Tishrei(30) 2:Cheshvan(30) 3:Kislev(30) 4:Tevet(29) 5:Shevat(30) 6:Adar(29) 7:Nisan(30) 8:Iyar(29) 9:Sivan(30) 10:Tammuz(29) 11:Av(30) 12:Elul(29)</code></pre>
+<p><code>Hebrew::monthName($year, $month, $locale = 'en')</code> supports <code>en</code>, <code>he</code> and <code>fa</code> (unknown locales use <code>en</code>); in a regular year slot 6 is the plain <em>Adar</em>.</p>
+
+<h2 id="make">Creating dates</h2>
+<p><code>Hebrew::create($year, $month, $day, $hour = 0, $minute = 0, $second = 0, $timezone = null)</code> validates against the real length of that month in that year (Cheshvan and Kislev vary between 29 and 30 days).</p>
+<pre><code class="language-php">$e = Hebrew::create(5785, 1, 1, 0, 0, 0, $utc);
+
+echo $e;                                   // 5785/01/01 00:00:00
+echo $e-&gt;toGregorian()-&gt;format('Y-m-d');   // 2024-10-03
+echo Hebrew::create(5785, 7, 15, 0, 0, 0, $utc)-&gt;toGregorian()-&gt;format('Y-m-d');  // 2025-04-13  (15 Nisan 5785)
+echo Hebrew::create(5786, 1, 10, 0, 0, 0, $utc)-&gt;toGregorian()-&gt;format('Y-m-d l'); // 2025-10-02 Thursday</code></pre>
+<p><code>Hebrew::make($time = null, $timezone = null)</code> accepts a <code>DateTimeInterface</code>, any <code>CalendarDate</code>, an <code>int</code> timestamp, a string or <code>null</code>; <code>hebrew_date()</code> is the helper. Passing a <code>Hebrew</code> instance returns it unchanged.</p>
+<pre><code class="language-php">echo Hebrew::make('2025-10-07', $utc);                       // 5786/01/15 00:00:00
+echo hebrew_date('2025-10-07')-&gt;format('Y/m/d F');           // 5786/01/15 Tishrei
+echo Hebrew::make('5785/01/10', $utc);                       // 5785/01/10 00:00:00
+echo Hebrew::make('0001-09-06')-&gt;format('Y/m/d');            // 3762/01/01</code></pre>
+<h3 id="string-rules">String semantics</h3>
+<ol>
+<li>Persian and Arabic digits become English digits; the string is trimmed; an empty string throws <code>InvalidDateException</code>.</li>
+<li>A string of the form <code>Y/m/d</code> or <code>Y-m-d</code> (optional <code>H:i[:s]</code>) with a year of <strong>3000 or more</strong> is read as a <em>Hebrew</em> date, using the ordinal month numbering above. (The threshold is opposite to Jalali and Hijri, which read years <em>below</em> 1700 as their own.)</li>
+<li>Every other string is parsed as Gregorian or free-form text.</li>
+</ol>
+<p>So <code>'5785/01/10'</code> is Hebrew, <code>'2025-10-07'</code> is Gregorian, and <code>'3000/01/01'</code> is read as Hebrew year 3000, which is below the supported minimum and therefore throws <code>Invalid Hebrew date: 3000/1/1</code>.</p>
+
+<h2 id="range">Supported range and errors</h2>
+<p>Hebrew years <code>Hebrew::MIN_YEAR</code> = <strong>3762</strong> to <code>Hebrew::MAX_YEAR</code> = <strong>13759</strong> are supported. These are exactly the years that lie inside Gregorian years 1 to 9999: the first day is 1 Tishrei 3762 (0001-09-06) and the last is the last day of Elul 13759 (9999-11-03). Anything outside throws <code>InvalidDateException</code>; <code>isValid()</code> returns false instead.</p>
+<pre><code class="language-php">foreach ([[3761, 1, 1], [13760, 1, 1], [5785, 13, 1], [5785, 3, 31]] as [$y, $m, $d]) {
+    try { Hebrew::create($y, $m, $d); }
+    catch (InvalidDateException $x) { echo $x-&gt;getMessage(), "\n"; }
+}
+// Invalid Hebrew date: 3761/1/1
+// Invalid Hebrew date: 13760/1/1
+// Invalid Hebrew date: 5785/13/1       (5785 is a regular year: 12 months)
+// Invalid Hebrew date: 5785/3/31
+
+echo Hebrew::create(5784, 13, 1) instanceof Hebrew ? 'ok' : '';   // ok  (5784 is a leap year)
+
+try { Hebrew::make('0001-01-01'); }
+catch (InvalidDateException $x) { echo $x-&gt;getMessage(); }
+// Date out of the supported Hebrew range (3762..13759): 3761</code></pre>
+<p>The pure arithmetic helpers <code>daysInYear()</code>, <code>daysInMonth()</code> and <code>monthName()</code> accept years 1 to 13759 (year 0 throws <code>Hebrew year out of the supported range: 0</code>); only date construction uses the narrower 3762 minimum.</p>
+
+<h2 id="getters">Reading values</h2>
+<p>Getters are those of the contract (<code>getYear()</code>, <code>getMonth()</code>, <code>getDay()</code>, time parts, <code>getTimestamp()</code>, <code>getTimezone()</code>, <code>toGregorian()</code>, <code>toDateString()</code>, <code>toDateTimeString()</code>). <code>getMonth()</code> is the ordinal month described above.</p>
+<h3 id="weekdays">Weekday numbering</h3>
+<p><code>getDayOfWeek()</code> and the <code>w</code> token are <strong>Sunday-first</strong>: 0 = Sunday to 6 = Saturday (like Hijri and PHP, unlike Jalali). <code>N</code> is the ISO number (Monday = 1).</p>
+<pre><code class="language-php">echo $e-&gt;getDayOfWeek();   // 4   (1 Tishrei 5785 was a Thursday)
+foreach (range(0, 6) as $i) { echo $e-&gt;addDays($i)-&gt;getDayOfWeek(); }  // 4560123</code></pre>
+
+<h2 id="format">Formatting</h2>
+<p><code>format($pattern = 'Y/m/d H:i:s', $locale = 'en')</code> with <code>$locale</code> one of <code>en</code>, <code>he</code>, <code>fa</code>. Digits are always Latin. A backslash escapes the next character.</p>
+<pre><code class="language-php">echo $e-&gt;format('l j F Y');         // Thursday 1 Tishrei 5785
+echo $e-&gt;format('l j F Y', 'he');   // חמישי 1 תשרי 5785
+echo $e-&gt;format('l j F Y', 'fa');   // پنجشنبه 1 تشری 5785
+
+echo Hebrew::create(5784, 6, 15, 0, 0, 0, $utc)-&gt;format('j F');   // 15 Adar I
+echo Hebrew::create(5784, 7, 15, 0, 0, 0, $utc)-&gt;format('j F');   // 15 Adar II</code></pre>
+<table>
+<thead><tr><th>Token</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td><code>Y y m n d j</code></td><td>Year, month (ordinal), day</td></tr>
+<tr><td><code>H G h g i s</code></td><td>Time of day (24-hour and 12-hour)</td></tr>
+<tr><td><code>F M</code></td><td>Month name in the locale (Adar I/II or Adar as appropriate)</td></tr>
+<tr><td><code>l</code></td><td>Weekday name in the locale</td></tr>
+<tr><td><code>w N</code></td><td>Sunday = 0; ISO Monday = 1</td></tr>
+<tr><td><code>z t L</code></td><td>Zero-based day of the year; days in the month; 1 for a leap year (13 months)</td></tr>
+<tr><td><code>a A</code></td><td><code>am</code>/<code>pm</code> and <code>AM</code>/<code>PM</code></td></tr>
+<tr><td><code>S W c r</code></td><td>Empty; ISO week of the Gregorian instant; <code>Y-m-d\TH:i:sP</code> with the Hebrew date; RFC 2822</td></tr>
+<tr><td><code>U e T P p O Z I u v</code></td><td>Delegated to the underlying instant</td></tr>
+</tbody>
+</table>
+
+<h2 id="modify">Shifting and snapping</h2>
+<p>Methods are the same as for <a href="jalali.html#modify">Jalali</a>. Two Hebrew-specific rules matter:</p>
+<ul>
+<li><strong>Months</strong> are counted as ordinal months, with Adar I and Adar II as two separate months; the day is clamped to the target month's length. The work is bounded (whole 19-year cycles plus at most 19 yearly steps), independent of how large <code>$months</code> is.</li>
+<li><strong>Years</strong> keep the "same" month: moving from a leap to a regular year maps Adar I and Adar II to Adar; moving from a regular to a leap year maps Adar to <em>Adar II</em>.</li>
+</ul>
+<pre><code class="language-php">$adar1 = Hebrew::create(5784, 6, 15, 0, 0, 0, $utc);
+echo $adar1-&gt;addMonths(1)-&gt;format('Y/m/d F');                                  // 5784/07/15 Adar II
+echo Hebrew::create(5784, 7, 15, 0, 0, 0, $utc)-&gt;addYears(1)-&gt;format('Y/m/d F'); // 5785/06/15 Adar
+echo Hebrew::create(5785, 2, 29, 0, 0, 0, $utc)-&gt;addMonths(1);                   // 5785/03/29 00:00:00
+echo Hebrew::create(5785, 5, 30, 0, 0, 0, $utc)-&gt;addMonths(1)-&gt;format('Y/m/d F'); // 5785/06/29 Adar  (clamped)
+echo $e-&gt;endOfMonth();   // 5785/01/30 23:59:59
+echo $e-&gt;endOfYear();    // 5785/12/29 23:59:59</code></pre>
+
+<h2 id="compare-diff">Comparing and measuring</h2>
+<p>Comparison works on instants and accepts any calendar. <code>diffInMonths()</code> counts whole Hebrew months (Adar I and II count separately); <code>diffInYears()</code> is anniversary based (a Hebrew year has 12 or 13 months, so it is not months divided by 12).</p>
+<pre><code class="language-php">echo Hebrew::create(5784, 1, 1, 0, 0, 0, $utc)-&gt;diffInMonths(Hebrew::create(5785, 1, 1, 0, 0, 0, $utc)); // 13
+echo Hebrew::create(5780, 3, 3, 0, 0, 0, $utc)-&gt;diffInYears(Hebrew::create(5785, 3, 2, 0, 0, 0, $utc));  // 4</code></pre>
+
+<h2 id="static">Calendar arithmetic</h2>
+<table>
+<thead><tr><th>Method</th><th>Returns</th></tr></thead>
+<tbody>
+<tr><td><code>Hebrew::isValid($y, $m, $d)</code></td><td><code>bool</code></td></tr>
+<tr><td><code>Hebrew::isLeapYear($y)</code></td><td>True for years 3, 6, 8, 11, 14, 17, 19 of the 19-year cycle</td></tr>
+<tr><td><code>Hebrew::monthsInYear($y)</code></td><td>12 or 13</td></tr>
+<tr><td><code>Hebrew::daysInYear($y)</code></td><td>353, 354, 355, 383, 384 or 385</td></tr>
+<tr><td><code>Hebrew::daysInMonth($y, $m)</code></td><td>29 or 30; throws for a month beyond the year's month count</td></tr>
+<tr><td><code>Hebrew::gregorianToHebrew($gy, $gm, $gd)</code></td><td><code>[year, ordinalMonth, day]</code></td></tr>
+<tr><td><code>Hebrew::hebrewToGregorian($hy, $hm, $hd)</code></td><td><code>[year, month, day]</code></td></tr>
+</tbody>
+</table>
+<pre><code class="language-php">echo (Hebrew::isLeapYear(5784) ? 'leap' : 'regular'), ' ', (Hebrew::isLeapYear(5785) ? 'leap' : 'regular'); // leap regular
+echo Hebrew::daysInYear(5784), ' ', Hebrew::daysInYear(5785), ' ', Hebrew::daysInYear(5786);             // 383 355 354
+echo json_encode(Hebrew::gregorianToHebrew(2025, 10, 3));   // [5786,1,11]
+echo json_encode(Hebrew::hebrewToGregorian(5786, 1, 1));    // [2025,9,23]</code></pre>
+<p>Related: cross-calendar conversion in <a href="convert-and-compare.html">Convert and compare dates</a>, Carbon macros (<code>toHebrew()</code>, <code>createFromHebrew()</code>) in <a href="carbon-macros.html">Carbon macros</a>.</p>

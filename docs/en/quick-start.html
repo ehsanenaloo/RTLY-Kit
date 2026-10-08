@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en" dir="ltr" data-i18n="{&quot;dark&quot;:&quot;Dark mode&quot;,&quot;light&quot;:&quot;Light mode&quot;,&quot;to_dark&quot;:&quot;Switch to dark theme&quot;,&quot;to_light&quot;:&quot;Switch to light theme&quot;,&quot;copy&quot;:&quot;Copy&quot;,&quot;copied&quot;:&quot;Copied&quot;,&quot;copy_failed&quot;:&quot;Selected. Press copy.&quot;,&quot;copy_label&quot;:&quot;Copy the code example above&quot;,&quot;no_results&quot;:&quot;No guide matches. Try a shorter word.&quot;,&quot;loading&quot;:&quot;The search index is still loading. Try again in a moment.&quot;,&quot;results&quot;:&quot;Search results&quot;,&quot;status&quot;:&quot;%d of %d guides shown&quot;,&quot;suggest&quot;:&quot;English version&quot;,&quot;search_label&quot;:&quot;Search the guide&quot;,&quot;search_placeholder&quot;:&quot;Search the guide&quot;}" data-search-index="search-index.js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quick start | RTLY-Kit User guide</title>
+<meta name="description" content="Install RTLY-Kit with Composer and, in about five minutes, convert a Jalali date, validate an Iranian national code and handle your first library exception.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="Quick start | RTLY-Kit User guide">
+<meta property="og:description" content="Install RTLY-Kit with Composer and, in about five minutes, convert a Jalali date, validate an Iranian national code and handle your first library exception.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="en_US">
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+<link rel="alternate" hreflang="fa" href="../fa/quick-start.html">
+<link rel="stylesheet" href="../styles.css">
+<script>try{var t=localStorage.getItem("rtly-docs-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<script defer src="../app.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a><header class="site-header"><div class="shell header-inner"><a class="brand" href="index.html"><img src="../assets/logo.svg" width="34" height="34" alt=""><span><span class="name">RTLY-Kit</span><small>User guide</small></span></a><nav class="top-nav" aria-label="Primary"><a href="index.html">Overview</a><a href="quick-start.html" aria-current="page">Quick start</a><a href="all.html">All guides</a><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">GitHub &#8599;</a></nav><div class="header-tools"><span data-search-host></span><button type="button" class="icon-button" data-theme-toggle hidden>Theme</button><a class="icon-button" href="../fa/quick-start.html" hreflang="fa" lang="fa" aria-label="تغییر به فارسی">فارسی</a></div></div></header>
+<main id="main">
+<div class="shell page-intro"><nav class="breadcrumbs" aria-label="Breadcrumb"><ol><li><a href="index.html">Home</a></li><li><a href="all.html#group-start">Getting started</a></li><li aria-current="page">Quick start</li></ol></nav><h1>Quick start</h1><p class="lead">Install RTLY-Kit with Composer and, in about five minutes, convert a Jalali date, validate an Iranian national code and handle your first library exception.</p></div>
+<div class="shell doc-layout has-toc">
+<aside class="sidebar"><details open><summary>Browse the guides</summary><nav aria-label="Guides"><a href="all.html">All guides</a><p>Getting started</p><a href="quick-start.html" aria-current="page">Quick start</a><a href="installation.html">Installation</a><p>Calendars</p><a href="jalali.html">Jalali calendar</a><a href="hijri.html">Hijri calendar</a><a href="hebrew.html">Hebrew calendar</a><a href="convert-and-compare.html">Convert and compare dates</a><a href="carbon-macros.html">Carbon macros</a><p>Validation</p><a href="validators-overview.html">Validators overview</a><a href="national-code.html">National code</a><a href="sheba-and-bank-card.html">Sheba and bank card</a><a href="mobile-postal-plate.html">Mobile, postal code and plate</a><p>Numbers and text</p><a href="digits-and-format.html">Digits and number formatting</a><a href="number-words.html">Number to words</a><a href="text-tools.html">Text tools</a><p>Holidays and prayer times</p><a href="holidays.html">Iranian holidays</a><a href="prayer-times.html">Prayer times</a><p>Laravel</p><a href="laravel-setup.html">Laravel setup</a><a href="laravel-validation-and-cast.html">Validation rules and Eloquent cast</a><p>Reference</p><a href="helpers-and-globals.html">Helpers and globals</a><a href="error-handling.html">Error handling</a><a href="api-stability.html">API stability</a><a href="accuracy-and-data.html">Accuracy and data</a><a href="benchmarks.html">Benchmarks</a><a href="limits.html">Limits</a><a href="troubleshooting-faq.html">Troubleshooting and FAQ</a><a href="upgrade.html">Upgrade guide</a></nav></details></aside>
+<article class="prose">
+<details class="toc-inline"><summary>On this page</summary><ol><li><a href="#goal">What you will do</a></li><li><a href="#install">1. Install</a></li><li><a href="#first-date">2. Your first date</a></li><li><a href="#globals">3. Optional: short global names</a></li><li><a href="#first-validation">4. Your first validation</a></li><li><a href="#first-exception">5. Your first exception</a></li><li><a href="#notes">Things to know early</a></li><li><a href="#next">Where to go next</a></li></ol></details>
+<h2 id="goal">What you will do<a class="anchor" href="#goal" aria-label="Link to this section">#</a></h2>
+<p>In this page you install the package, print your first Jalali date, run your first validation and catch your first library exception. Everything runs on plain PHP; no framework, no configuration file and no extra dependency is needed.</p>
+<p><strong>Prerequisites.</strong> PHP 8.2 or newer with the standard <code>mbstring</code> extension, and <a href="https://getcomposer.org/" rel="noopener noreferrer">Composer</a>. If you have neither PHP nor Composer on your machine, see the Docker route in <a href="installation.html#docker">Installation</a>.</p>
+
+<h2 id="install">1. Install<a class="anchor" href="#install" aria-label="Link to this section">#</a></h2>
+<pre tabindex="0"><code class="language-bash">composer require enaxon/rtly-kit</code></pre>
+<p>Composer installs the package and generates <code>vendor/autoload.php</code>. RTLY-Kit has no required Composer dependencies. Optional integrations (Carbon macros, Laravel) switch on by themselves when Carbon or Laravel is present. More in <a href="installation.html">Installation</a>.</p>
+
+<h2 id="first-date">2. Your first date<a class="anchor" href="#first-date" aria-label="Link to this section">#</a></h2>
+<p>Create a file <code>quick.php</code> next to <code>vendor/</code>:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">&lt;?php
+declare</span>(strict_types=<span class="tok-n">1</span>);
+
+<span class="tok-k">require</span> __DIR__.<span class="tok-s">'/vendor/autoload.php'</span>;
+
+<span class="tok-k">use</span> <span class="tok-k">function</span> RtlyKit\hdate;
+<span class="tok-k">use</span> <span class="tok-k">function</span> RtlyKit\jdate;
+
+<span class="tok-k">echo</span> jdate(<span class="tok-s">'2026-03-21'</span>)-&gt;format(<span class="tok-s">'l j F Y'</span>), <span class="tok-s">"\n"</span>;   <span class="tok-c">// شنبه 1 فروردین 1405</span>
+<span class="tok-k">echo</span> hdate(<span class="tok-s">'2026-03-21'</span>)-&gt;format(<span class="tok-s">'j F Y'</span>, <span class="tok-s">'en'</span>), <span class="tok-s">"\n"</span>; <span class="tok-c">// 2 Shawwal 1447</span></code></pre>
+<p>Run it with <code>php quick.php</code>. The first line prints the Jalali date of 21 March 2026, which is Nowruz 1405. The second line shows the same day in the Hijri calendar.</p>
+<p>Two things to notice:</p>
+<ul>
+<li>The helper functions live in the <code>RtlyKit</code> namespace and are imported with <code>use function</code>. They can never collide with a function of your own or of another package.</li>
+<li>The string <code>'2026-03-21'</code> is read as a Gregorian date. A string such as <code>'1405/01/01'</code> (a year below 1700 in the <code>Y/m/d</code> form) is read as Jalali. See <a href="jalali.html#string-rules">String semantics of make()</a>.</li>
+</ul>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">echo</span> jdate(<span class="tok-s">'1405/01/01'</span>)-&gt;toGregorian()-&gt;format(<span class="tok-s">'Y-m-d'</span>), <span class="tok-s">"\n"</span>;   <span class="tok-c">// 2026-03-21</span></code></pre>
+<p>The helper returns a <a href="jalali.html">Jalali</a> object (and <code>hdate()</code> a <a href="hijri.html">Hijri</a> one, <code>hebrew_date()</code> a <a href="hebrew.html">Hebrew</a> one). These objects are immutable: <code>addDays()</code>, <code>startOfMonth()</code> and the other modifiers return a new object.</p>
+
+<h2 id="globals">3. Optional: short global names<a class="anchor" href="#globals" aria-label="Link to this section">#</a></h2>
+<p>By default no global function is defined. If you prefer plain <code>jdate()</code> and <code>is_national_code()</code>, opt in once, for example in your bootstrap file:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-v">$skipped</span> = \RtlyKit\Globals::register();   <span class="tok-c">// array of names it could not define</span>
+
+<span class="tok-k">echo</span> jdate(<span class="tok-s">'2026-03-21'</span>)-&gt;format(<span class="tok-s">'Y/m/d'</span>), <span class="tok-s">"\n"</span>;   <span class="tok-c">// 1405/01/01</span></code></pre>
+<p><code>register()</code> defines the 27 helper names that are still free. It never overwrites an existing function and never throws; it returns the list of names it skipped (an empty array when everything was defined), and it is safe to call more than once. Use the namespaced form for any skipped name. Details: <a href="helpers-and-globals.html">Helpers and globals</a>.</p>
+
+<h2 id="first-validation">4. Your first validation<a class="anchor" href="#first-validation" aria-label="Link to this section">#</a></h2>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">use</span> <span class="tok-k">function</span> RtlyKit\is_national_code;
+<span class="tok-k">use</span> <span class="tok-k">function</span> RtlyKit\validate_national_code;
+<span class="tok-k">use</span> <span class="tok-k">function</span> RtlyKit\to_persian_digits;
+<span class="tok-k">use</span> <span class="tok-k">function</span> RtlyKit\number_to_words;
+
+var_dump(is_national_code(<span class="tok-s">'0013542419'</span>));       <span class="tok-c">// bool(true)</span>
+
+<span class="tok-v">$result</span> = validate_national_code(<span class="tok-s">'0013542410'</span>);
+var_dump(<span class="tok-v">$result</span>-&gt;isValid());                  <span class="tok-c">// bool(false)</span>
+print_r(<span class="tok-v">$result</span>-&gt;errors());                    <span class="tok-c">// [0] =&gt; invalid_checksum</span>
+
+<span class="tok-k">echo</span> to_persian_digits(<span class="tok-s">'1405/01/01'</span>), <span class="tok-s">"\n"</span>;    <span class="tok-c">// ۱۴۰۵/۰۱/۰۱</span>
+<span class="tok-k">echo</span> number_to_words(<span class="tok-n">1405</span>), <span class="tok-s">"\n"</span>;              <span class="tok-c">// یک هزار و چهارصد و پنج</span></code></pre>
+<p><code>is_*()</code> functions return a plain <code>bool</code>. The <code>validate_*()</code> functions return a <code>Result</code> with <code>isValid()</code>, stable machine-readable <code>errors()</code> keys and <code>details()</code>. Validators never throw for bad user input; they report it. See <a href="validators-overview.html">Validators overview</a> and <a href="national-code.html">National code</a>.</p>
+
+<h2 id="first-exception">5. Your first exception<a class="anchor" href="#first-exception" aria-label="Link to this section">#</a></h2>
+<p>Calendar code is different from validation: building an impossible date is a programming or data error, so the calendar classes throw. 1404 is not a leap year, so 30 Esfand 1404 does not exist:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">use</span> RtlyKit\Exceptions\InvalidDateException;
+<span class="tok-k">use</span> RtlyKit\Exceptions\RtlyKitThrowable;
+
+<span class="tok-k">try</span> {
+    jdate(<span class="tok-s">'1404/12/30'</span>);
+} <span class="tok-k">catch</span> (InvalidDateException <span class="tok-v">$e</span>) {
+    <span class="tok-k">echo</span> get_class(<span class="tok-v">$e</span>), <span class="tok-s">': '</span>, <span class="tok-v">$e</span>-&gt;getMessage(), <span class="tok-s">' ['</span>, <span class="tok-v">$e</span>-&gt;getErrorCode()-&gt;value, <span class="tok-s">"]\n"</span>;
+}
+<span class="tok-c">// RtlyKit\Exceptions\InvalidDateException: Invalid Jalali date: 1404/12/30 [invalid_date]</span>
+
+<span class="tok-k">try</span> {
+    jdate(<span class="tok-s">'not a date'</span>);
+} <span class="tok-k">catch</span> (RtlyKitThrowable <span class="tok-v">$e</span>) {
+    <span class="tok-k">echo</span> <span class="tok-s">'library error: '</span>, <span class="tok-v">$e</span>-&gt;getMessage(), <span class="tok-s">"\n"</span>;   <span class="tok-c">// library error: Unable to parse date: not a date</span>
+}</code></pre>
+<p>Every exception of the library implements <code>RtlyKit\Exceptions\RtlyKitThrowable</code> and extends <code>\InvalidArgumentException</code>, so one <code>catch</code> handles them all, and <code>getErrorCode()</code> gives a stable value to branch on (do not parse the message text). Out-of-range input, including years outside the supported ranges (Jalali -620 to 9377, Hijri 1 to 9665, Hebrew 3762 to 13759), always raises <code>InvalidDateException</code>, never a <code>TypeError</code>. More in <a href="error-handling.html">Error handling</a>.</p>
+
+<h2 id="notes">Things to know early<a class="anchor" href="#notes" aria-label="Link to this section">#</a></h2>
+<div class="callout known" role="note"><strong>Known limitation.</strong> The Jalali calendar here is the arithmetic 33-year rule, not the astronomical official calendar. The Hijri Umm al-Qura table (AH 1300 to 1500) comes from ICU/CLDR data and is not verified month by month against the official publication. Check <a href="accuracy-and-data.html">Accuracy and data</a> before using dates for legal or religious deadlines.</div>
+<ul>
+<li><strong>Time zones.</strong> Without an explicit <code>DateTimeZone</code>, the PHP default zone is used. Pass a zone (for example <code>new DateTimeZone('Asia/Tehran')</code>) when the calendar day matters.</li>
+<li><strong>Weekdays.</strong> Jalali numbers days from Saturday = 0; Hijri and Hebrew from Sunday = 0.</li>
+</ul>
+
+<h2 id="next">Where to go next<a class="anchor" href="#next" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Dates: <a href="jalali.html">Jalali</a>, <a href="hijri.html">Hijri</a>, <a href="hebrew.html">Hebrew</a>, <a href="convert-and-compare.html">Convert and compare</a>.</li>
+<li>Validation: <a href="validators-overview.html">Validators overview</a>.</li>
+<li>Laravel projects: <a href="laravel-setup.html">Laravel setup</a>.</li>
+<li>Problems: <a href="troubleshooting-faq.html">Troubleshooting and FAQ</a>.</li>
+</ul>
+<nav class="reading-footer" aria-label="Previous and next page"><span></span><a class="next" rel="next" href="installation.html"><small>Next</small>Installation</a></nav>
+</article>
+<nav class="toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#goal">What you will do</a></li><li><a href="#install">1. Install</a></li><li><a href="#first-date">2. Your first date</a></li><li><a href="#globals">3. Optional: short global names</a></li><li><a href="#first-validation">4. Your first validation</a></li><li><a href="#first-exception">5. Your first exception</a></li><li><a href="#notes">Things to know early</a></li><li><a href="#next">Where to go next</a></li></ol></nav>
+</div>
+</main>
+<footer class="footer"><div class="shell footer-inner"><p>RTLY-Kit user guide · MIT licensed</p><div><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">Repository on GitHub &#8599;</a><a href="https://github.com/ehsanenaloo/RTLY-Kit/issues" rel="noopener noreferrer">Report an issue &#8599;</a></div></div></footer>
+</body>
+</html>

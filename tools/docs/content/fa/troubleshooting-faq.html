@@ -1,0 +1,156 @@
+<!--
+title: عیب‌یابی و پرسش‌های متداول
+description: پاسخ پرسش‌هایی که واقعاً پیش می‌آید: توابع کمکی پیدا نمی‌شود، شمارهٔ روز هفته، سال در رشته‌ها، منطقهٔ زمانی، ماکروهای Carbon، cast الکوئنت، اوقات شرعی و تعطیلات.
+group: reference
+order: 70
+-->
+<p>هر پاسخِ زیر با کد تطبیق داده شده و نمونه‌ها اجرا شده‌اند. اگر مشکلتان اینجا نیست، ابتدا <a href="error-handling.html">مدیریت خطا</a> (معنای هر کد استثنا) و <a href="limits.html">محدودیت‌ها</a> را ببینید.</p>
+
+<h2 id="setup">نصب و توابع کمکی</h2>
+
+<h3 id="undefined-function">خطای «Call to undefined function jdate()» می‌گیرم. توابع کمکی کجایند؟</h3>
+<p>توابع کمکی توابع فضای‌نام‌دار <code>RtlyKit</code> هستند و بسته به‌طور پیش‌فرض <strong>هیچ</strong> تابع سراسری تعریف نمی‌کند تا هرگز با کد شما یا بستهٔ دیگری تداخل نکند. توابعی را که لازم دارید import کنید، با نام کامل صدا بزنید، یا یک بار هنگام راه‌اندازی نام‌های کوتاه سراسری را فعال کنید:</p>
+<pre><code class="language-php">&lt;?php
+require __DIR__.'/vendor/autoload.php';
+
+use function RtlyKit\jdate;                       // راه ۱: import
+echo jdate('2026-03-21')-&gt;format('Y/m/d'), "\n";  // 1405/01/01
+
+echo \RtlyKit\jdate('2026-03-21')-&gt;format('Y/m/d'), "\n";  // راه ۲: نام کامل
+
+$skipped = \RtlyKit\Globals::register();          // راه ۳: نام‌های کوتاه سراسری
+echo \jdate('2026-03-21')-&gt;format('Y/m/d'), "\n";  // 1405/01/01
+var_dump($skipped);                               // array(0) {} (نام اشغال‌شده‌ای نبود)</code></pre>
+<p>‏<code>Globals::register()</code> هرگز تابع موجودی را بازنویسی نمی‌کند و هرگز استثنا پرتاب نمی‌کند؛ نام‌هایی را که رد کرده برمی‌گرداند تا ثبتشان کنید. در Blade یا <code>\RtlyKit\jdate(...)</code> را صدا بزنید یا سراسری‌ها را از <code>AppServiceProvider::register()</code> ثبت کنید. ارائه‌دهندهٔ سرویس لاراول آن‌ها را برایتان ثبت نمی‌کند. به <a href="helpers-and-globals.html">توابع کمکی و سراسری‌ها</a> نگاه کنید.</p>
+
+<h3 id="which-exception">کدام استثنا را بگیرم؟</h3>
+<p>برای کل کتابخانه <code>RtlyKit\Exceptions\RtlyKitThrowable</code> (یا <code>RtlyKitException</code>) را بگیرید، یا یک زیرکلاس مشخص مثل <code>InvalidDateException</code>. اعتبارسنج‌ها اصلاً استثنا پرتاب نمی‌کنند و به <code>try</code> نیاز ندارند. بر اساس <code>getErrorCode()</code> تصمیم بگیرید، نه متن پیام. جزئیات در <a href="error-handling.html">مدیریت خطا</a>.</p>
+
+<h2 id="calendars-faq">تقویم‌ها</h2>
+
+<h3 id="weekday">شمارهٔ روز هفته در جلالی و هجری فرق دارد</h3>
+<p>عمدی است. <code>Jalali::getDayOfWeek()</code> (و نشانهٔ قالب <code>w</code>) از شنبه، اولین روز هفتهٔ ایرانی، می‌شمارد: شنبه ۰ و جمعه ۶. <code>Hijri</code> و <code>Hebrew</code> مثل <code>date('w')</code> در PHP از یکشنبه شروع می‌کنند، پس شنبه ۶ است. برای یک روز، 2026-03-21 (شنبه):</p>
+<pre><code class="language-php">use function RtlyKit\{jdate, hdate, hebrew_date};
+
+echo jdate('2026-03-21')-&gt;getDayOfWeek(), ' ',
+     hdate('2026-03-21')-&gt;getDayOfWeek(), ' ',
+     hebrew_date('2026-03-21')-&gt;getDayOfWeek(), "\n";   // 0 6 6</code></pre>
+<p>اگر شماره‌گذاری یکسان می‌خواهید، با <code>toGregorian()-&gt;format('w')</code> از طریق میلادی بگیرید.</p>
+
+<h3 id="string-year">jdate('1405-01-01') و jdate('2026-03-21') هر دو کار می‌کنند، اما سال میلادیِ ۹۹۹ نه</h3>
+<p>رشته‌ای به شکل <code>Y/m/d</code> یا <code>Y-m-d</code> اگر سالش کمتر از ۱۷۰۰ باشد تاریخِ خودِ همان تقویم خوانده می‌شود (برای <code>Hijri</code> هم همین؛ برای <code>Hebrew</code> سال ۳۰۰۰ یا بیشتر)، وگرنه میلادی. پس تاریخ میلادیِ واقعی با سال کوچک اشتباه خوانده می‌شود. به‌جای رشته یک <code>DateTimeImmutable</code> بدهید که هیچ‌گاه بازتفسیر نمی‌شود:</p>
+<pre><code class="language-php">use function RtlyKit\jdate;
+
+echo jdate('2026-03-21')-&gt;format('Y/m/d'), "\n";                              // 1405/01/01 (سال &gt;= 1700: میلادی)
+echo jdate('1405-01-01')-&gt;toGregorian()-&gt;format('Y-m-d'), "\n";               // 2026-03-21 (سال &lt; 1700: جلالی)
+echo jdate('0999-01-01')-&gt;format('Y/m/d'), "\n";                              // 0999/01/01 (سال جلالی 999)
+echo jdate(new DateTimeImmutable('0999-01-01'))-&gt;format('Y/m/d'), "\n";       // 0377/10/11 (سال میلادی 999)</code></pre>
+<p>ارقام فارسی و عربی ابتدا نرمال می‌شوند، پس <code>'۱۴۰۴/۰۱/۰۱'</code> کار می‌کند. رشتهٔ خالی <code>InvalidDateException</code> پرتاب می‌کند و <code>null</code> یعنی «اکنون».</p>
+
+<h3 id="digits-output">format() رقم انگلیسی چاپ می‌کند. رقم فارسی چطور؟</h3>
+<p>قالب‌بندی عمداً رقم لاتین برمی‌گرداند تا نتیجه برای پایگاه داده و URL امن باشد. هنگام نمایش، خروجی را تبدیل کنید:</p>
+<pre><code class="language-php">use function RtlyKit\{jdate, to_persian};
+
+echo jdate('2026-03-21')-&gt;format('Y/m/d'), "\n";               // 1405/01/01
+echo to_persian(jdate('2026-03-21')-&gt;format('Y/m/d')), "\n";   // ۱۴۰۵/۰۱/۰۱</code></pre>
+<p>‏<code>Hijri::format()</code> هم با آرگومان <code>$digits</code> (‏<code>latin</code>، <code>persian</code> یا <code>arabic</code>) می‌تواند خودش رقم را تولید کند.</p>
+
+<h3 id="invalid-date">jdate('1404/12/30') استثنا می‌دهد ولی 1403/12/30 نه</h3>
+<p>اسفند فقط در سال کبیسه ۳۰ روز دارد. ۱۴۰۳ کبیسه و ۱۴۰۴ غیرکبیسه است؛ پس ۱۴۰۴/۱۲/۳۰ وجود ندارد و <code>InvalidDateException</code> با کد <code>invalid_date</code> پرتاب می‌شود. ماه ۱۳ یا روز ۳۱ در ماه‌های نیمهٔ دوم سال (مثل ۱۴۰۴/۰۷/۳۱) هم همین‌طور است.</p>
+
+<h3 id="today-wrong">«امروز» برای کاربرانم یک روز اختلاف دارد</h3>
+<p>‏<code>jdate()</code> بدون آرگومان از منطقهٔ زمانی پیش‌فرض PHP (‏<code>date_default_timezone_get()</code>، روی سرورها اغلب UTC) استفاده می‌کند. نزدیک نیمه‌شب به وقت تهران، آن روز جلالیِ قبل یا بعد است. یک <code>DateTimeZone</code> بدهید یا منطقهٔ زمانی پیش‌فرض برنامه را تنظیم کنید. آرگومان منطقهٔ زمانی یک لحظهٔ ورودی را تبدیل می‌کند:</p>
+<pre><code class="language-php">use function RtlyKit\jdate;
+
+$utc = new DateTimeImmutable('2026-03-20 22:00', new DateTimeZone('UTC'));
+
+echo jdate($utc)-&gt;format('Y/m/d H:i'), "\n";                                       // 1404/12/29 22:00
+echo jdate($utc, new DateTimeZone('Asia/Tehran'))-&gt;format('Y/m/d H:i'), "\n";    // 1405/01/01 01:30</code></pre>
+
+<h3 id="out-of-range">برای سال دور آینده یا عدد بسیار بزرگ <code>InvalidDateException</code> می‌گیرم</h3>
+<p>هر تقویم بازهٔ ثابتی دارد (جلالی ‎-620 تا 9377، هجری 1 تا 9665، عبری 3762 تا 13759؛ میلادی 1 تا 9999) و مقدارهای بسیار بزرگ در <code>add*()</code> و timestampها رد می‌شوند. عمدی است: استثنا می‌گیرید، نه تاریخ سرریزشده. به <a href="limits.html#calendars">محدودیت‌ها</a> نگاه کنید.</p>
+
+<h3 id="hijri-differs">تاریخ هجری یک روز با اعلام محلی ما فرق دارد</h3>
+<p>‏<code>Hijri</code> از تقویم ام‌القری (تقویم مدنی عربستان) استفاده می‌کند که از پیش محاسبه می‌شود. مراجع محلی رؤیت هلال، از جمله ایران، ممکن است ماه را یک یا دو روز دیرتر شروع کنند. جدول داخلی سال‌های ۱۳۰۰ تا ۱۵۰۰ هجری قمری را پوشش می‌دهد؛ بیرون از آن و برای <code>HijriVariant::Tabular</code> تاریخ حسابی است و ممکن است یک یا دو روز با رؤیت فرق کند. به <a href="hijri.html">تقویم هجری</a> و <a href="accuracy-and-data.html">دقت و داده‌ها</a> نگاه کنید.</p>
+
+<h2 id="carbon-laravel">Carbon و لاراول</h2>
+
+<h3 id="macros-missing">روی شیء Carbon خطای «undefined method toJalali()» می‌گیرم</h3>
+<p>ماکروهای Carbon (‏<code>toJalali</code>، <code>jformat</code>، <code>createFromJalali</code>، <code>toHijri</code>، <code>toHebrew</code>، <code>createFromHijri</code>، <code>createFromHebrew</code>) فقط وقتی ثبت می‌شوند که <code>nesbot/carbon</code> (نسخهٔ ۳) نصب باشد. Composer آن را فقط پیشنهاد می‌کند، پس خودتان نصب کنید: <code>composer require nesbot/carbon</code>. ماکروها وقتی فایل توابع کمکیِ بسته توسط autoloader در Composer بارگذاری شود (و دوباره هنگام boot توسط ارائه‌دهندهٔ لاراول) برای <code>Carbon</code> و <code>CarbonImmutable</code> ثبت می‌شوند. کلاس <code>Illuminate\Support\Carbon</code> لاراول از Carbon ارث می‌برد، پس آن هم کار می‌کند:</p>
+<pre><code class="language-php">use Carbon\Carbon;
+
+echo Carbon::parse('2026-03-21')-&gt;toJalali()-&gt;format('Y/m/d'), "\n";   // 1405/01/01
+echo Carbon::createFromJalali(1405, 1, 1)-&gt;toDateString(), "\n";       // 2026-03-21
+var_dump(Carbon::hasMacro('toJalali'));                                // bool(true)</code></pre>
+<p>اگر <code>hasMacro()</code> مقدار false داد، Carbon نصب نیست یا نسخهٔ major پشتیبانی‌نشده است. به <a href="carbon-macros.html">ماکروهای Carbon</a> نگاه کنید.</p>
+
+<h3 id="rules-missing">قواعد اعتبارسنجی لاراول (national_code، sheba و ...) پیدا نمی‌شوند</h3>
+<p>با کشف خودکار بسته (auto-discovery) ارائه‌دهندهٔ سرویس خودش ثبت می‌شود. اگر کشف خودکار را برای این بسته خاموش کرده‌اید (<code>dont-discover</code>) یا پیکربندیِ کش‌شدهٔ قدیمی دارید، <code>RtlyKit\Laravel\RtlyKitServiceProvider</code> را دستی ثبت کنید و کش‌ها را پاک کنید. نام قواعد: <code>national_code</code>، <code>sheba</code>، <code>bank_card</code>، <code>iran_mobile</code> (با نام مستعار <code>mobile</code>)، <code>postal_code</code> و <code>vehicle_plate</code> است. پیام‌ها به فارسی، انگلیسی و عربی همراه بسته‌اند و از <code>app()-&gt;getLocale()</code> پیروی می‌کنند؛ خطوط <code>lang/{locale}/validation.php</code> خودتان همچنان اولویت دارند. به <a href="laravel-setup.html">راه‌اندازی لاراول</a> نگاه کنید.</p>
+
+<h3 id="cast-errors">مدل الکوئنت هنگام انتساب تاریخ <code>InvalidDateException</code> پرتاب می‌کند</h3>
+<p>‏<code>JalaliCast</code> یک <code>Jalali</code>، هر <code>DateTimeInterface</code>، timestamp یونیکس، رشتهٔ میلادی یا رشتهٔ جلالی مثل <code>1404/01/15 10:30</code> را می‌پذیرد (ارقام فارسی و جداکنندهٔ <code>/</code> یا <code>-</code> مجاز است). هر چیز دیگر خطاست: تاریخ غیرممکن، متن بی‌معنی و مقادیر غیرسکالر (مثل آرایه) هنگام انتساب <code>InvalidDateException</code> پرتاب می‌کنند. <code>null</code> و رشتهٔ خالی به <code>null</code> تبدیل می‌شوند. آن را در Form Request یا کنترلر بگیرید:</p>
+<pre><code class="language-php">$post-&gt;published_at = '1404/01/15 10:30';   // ذخیره می‌شود: 2025-04-04 10:30:00
+$post-&gt;published_at = '1404/13/45';         // InvalidDateException (invalid_date)
+$post-&gt;published_at = 'hello';              // InvalidDateException (invalid_date)
+$post-&gt;published_at = ['x'];                // InvalidDateException (invalid_date)</code></pre>
+<p>ستون را یک <code>datetime</code> میلادیِ عادی نگه دارید: cast مقدار <code>Y-m-d H:i:s</code> را می‌نویسد و آن را به‌صورت یک <code>Jalali</code> تغییرناپذیر می‌خواند. cast هیچ تبدیل منطقهٔ زمانی انجام نمی‌دهد. به <a href="laravel-validation-and-cast.html">اعتبارسنجی و cast در لاراول</a> نگاه کنید.</p>
+
+<h2 id="validation-faq">اعتبارسنج‌ها و داده</h2>
+
+<h3 id="leading-zero">is_national_code(13542419) برابر false است ولی نسخهٔ رشته‌ای true</h3>
+<p>یک <code>int</code> صفرهای ابتدایی را از قبل از دست داده است: <code>0013542419</code> شده <code>13542419</code>، هشت رقم. اعتبارسنج‌ها عدد صحیح را به رشته تبدیل می‌کنند ولی نمی‌توانند صفرها را برگردانند. شناسه‌ها را همه‌جا (فیلد فرم، JSON، ستون پایگاه داده) به‌صورت رشته نگه دارید:</p>
+<pre><code class="language-php">use function RtlyKit\is_national_code;
+
+var_dump(is_national_code(13542419));       // bool(false)
+var_dump(is_national_code('0013542419'));   // bool(true)</code></pre>
+
+<h3 id="null-bank">برای کارت یا شبای معتبر، getBankName() مقدار null می‌دهد</h3>
+<p>جدول‌های BIN، کد شبا و اپراتور فقط ورودی‌هایی دارند که دست‌کم دو منبع تأیید کرده‌اند؛ پس عمداً ناقص‌اند (۳۹ BIN و ۳۸ کد شبا). <code>null</code> یعنی «نامعلوم»، نه «نامعتبر»؛ اعتبار کارت از چک‌سام Luhn و اعتبار شبا از mod-97 می‌آید، مستقل از جدول‌ها. دربارهٔ <code>NationalCode::getLocation()</code> (۵۴۷ پیش‌شماره) هم همین است و محلی که می‌دهد جای صدور است، نه زادگاه. هرگز به‌خاطر <code>null</code> بودن یک نام، کاربر را رد نکنید. به <a href="accuracy-and-data.html">دقت و داده‌ها</a> نگاه کنید.</p>
+
+<h3 id="what-validators-throw">چرا اعتبارسنج حتی برای null یا آرایه استثنا نمی‌دهد؟</h3>
+<p>عمدی است: اعتبارسنج‌ها <code>mixed</code> می‌گیرند و با <code>false</code> یا <code>Result</code> نامعتبر پاسخ می‌دهند (‏<code>invalid_type</code> برای مقادیر غیرسکالر، ‏<code>input_too_long</code> بالاتر از ۴۰۹۶ بایت)؛ پس می‌توانید ورودی خام درخواست را مستقیم بدهید. به <a href="validators-overview.html">مرور اعتبارسنج‌ها</a> نگاه کنید.</p>
+
+<h2 id="numbers-faq">عدد و متن</h2>
+
+<h3 id="format-float">format_number(1234567.891) دنبالهٔ بلندی از رقم چاپ می‌کند</h3>
+<p>‏<code>float</code> در PHP نمی‌تواند 1234567.891 را دقیق نگه دارد و قالب‌بند مقدار دقیقِ ذخیره‌شده را چاپ می‌کند. اعشار را به‌صورت <strong>رشته</strong> بدهید یا پیش‌تر گرد کنید:</p>
+<pre><code class="language-php">use function RtlyKit\format_number;
+
+echo format_number('1234567.891'), "\n";   // ۱٬۲۳۴٬۵۶۷٫۸۹۱
+echo format_number(1234567.891), "\n";     // ۱٬۲۳۴٬۵۶۷٫۸۹۱۰۰۰۰۰۰۰۶۱۴۶۷</code></pre>
+
+<h3 id="words-limits">number_to_words() برای 1.5، برای اعداد بزرگ عربی و برای زبان‌های دیگر استثنا می‌دهد</h3>
+<p>اعداد به حروف فقط برای اعداد صحیح تعریف شده‌اند (‏<code>1.5</code>، <code>NaN</code> و <code>INF</code> استثنای <code>InvalidNumberException</code> می‌دهند؛ <code>float</code> صحیحی مثل <code>3.0</code> پذیرفته است). فارسی تا ۲۱ رقم می‌رود و عربی تا 999,999,999 به شکل شمارشِ مذکر و بدون اعراب پایانی. فقط <code>fa</code> و <code>ar</code> وجود دارند؛ هر زبان دیگر <code>UnsupportedLocaleException</code> پرتاب می‌کند. به <a href="number-words.html">اعداد به حروف</a> و <a href="limits.html#numbers">محدودیت‌ها</a> نگاه کنید.</p>
+
+<h2 id="prayer-faq">اوقات شرعی و تعطیلات</h2>
+
+<h3 id="prayer-timezone">اوقات شرعی در منطقهٔ زمانی اشتباه است یا یک ساعت جابه‌جا</h3>
+<p>زمان‌ها به‌صورت HH:MM و به <strong>وقت محلیِ منطقهٔ زمانی محاسبه‌گر</strong> هستند، برای روز تقویمیِ محلیِ تاریخی که می‌دهید. <code>PrayerTimes::forCity()</code> از منطقهٔ خود شهر استفاده می‌کند. محاسبه‌گری که با <code>new PrayerTimes()</code> و بدون منطقه ساخته شود از پیش‌فرض PHP (‏<code>date_default_timezone_get()</code>، که در یک کانتینر تازه <code>UTC</code> است) استفاده می‌کند، پس یک <code>DateTimeZone</code> بدهید. ساعت تابستانی برای هر رویداد جداگانه اعمال می‌شود؛ پس جدولی که از تغییر ساعت عبور کند دو طرفش درست است (ظهر قاهره در 2026-10-08 و 2026-10-31):</p>
+<pre><code class="language-php">use RtlyKit\Prayer\PrayerTimes;
+
+$cairo = PrayerTimes::forCity('cairo', PrayerTimes::METHOD_EGYPT);
+
+echo $cairo-&gt;getTimes(new DateTimeImmutable('2026-10-08'))['dhuhr'], ' ',   // 12:43 (ساعت تابستانی)
+     $cairo-&gt;getTimes(new DateTimeImmutable('2026-10-31'))['dhuhr'], "\n";   // 11:39 (ساعت استاندارد)</code></pre>
+<p>تاریخی که در منطقهٔ دیگری بدهید ابتدا به منطقهٔ محاسبه‌گر تبدیل می‌شود: 2026-03-20 23:30 به وقت UTC و 2026-03-21 03:00 به وقت Asia/Tehran هر دو اوقات ۲۱ مارس را برای تهران می‌دهند.</p>
+
+<h3 id="prayer-null">بعضی از اوقات شرعی null هستند</h3>
+<p>در عرض‌های جغرافیایی بالا ممکن است خورشید در یک روز هرگز به زاویهٔ لازم برای فجر، طلوع، مغرب یا عشا نرسد و آن مقدارها <code>null</code> باشند (و عصر در شب قطبی <code>null</code> است). این یک نتیجه است، نه خطا. در رابط کاربری آن را مدیریت کنید:</p>
+<pre><code class="language-php">use RtlyKit\Prayer\PrayerTimes;
+
+$oslo = new PrayerTimes(69.65, 18.96, PrayerTimes::METHOD_MWL, PrayerTimes::ASR_STANDARD, new DateTimeZone('Europe/Oslo'));
+echo json_encode($oslo-&gt;getTimes(new DateTimeImmutable('2026-06-21'))), "\n";
+// {"fajr":null,"sunrise":null,"dhuhr":"12:46","asr":"17:58","maghrib":null,"isha":null}</code></pre>
+
+<h3 id="next-prayer">nextPrayer() زمانی برگرداند که مال فرداست</h3>
+<p>پس از عشا، <code>nextPrayer()</code> به فجر فردا می‌رود. نتیجه کلید <code>date</code> (‏<code>Y-m-d</code>) دارد که می‌گوید آن نماز مال کدام روز است:</p>
+<pre><code class="language-php">use RtlyKit\Prayer\PrayerTimes;
+
+$next = PrayerTimes::forCity('tehran')-&gt;nextPrayer(new DateTimeImmutable('2026-03-21 23:00', new DateTimeZone('Asia/Tehran')));
+echo json_encode($next), "\n";   // {"name":"fajr","time":"04:42","date":"2026-03-22"}</code></pre>
+
+<h3 id="prayer-differs">اوقات من چند دقیقه با مسجد یا برنامهٔ دیگر فرق دارد</h3>
+<p>مراجع مختلف زاویه‌های گرگ‌ومیش و گردکردن متفاوتی دارند. برای روش‌های راستی‌آزمایی‌شده محاسبه تا حدود یک دقیقه با جدول‌های منتشرشده می‌خواند، اما زاویه‌های کراچی، MWL و ISNA و نیز عشا و عصرِ روش تهران با جدول رسمی سنجیده نشده‌اند. روشی را برگزینید که جامعهٔ شما دنبال می‌کند، ضریب عصر را تنظیم کنید (‏<code>ASR_HANAFI</code> عصر را دیرتر می‌کند) و برای جاهای مرتفع آرگومان ارتفاع را بدهید. به <a href="prayer-times.html">اوقات شرعی</a> و <a href="accuracy-and-data.html#prayer-status">دقت و داده‌ها</a> نگاه کنید.</p>
+
+<h3 id="holiday-off">یک مناسبت مذهبی یک روز با تقویم رسمی فرق دارد</h3>
+<p>مناسبت‌های اسلامی از تقویم هجری محاسبه می‌شوند، در حالی که ایران آن‌ها را با رؤیت هلال اعلام می‌کند؛ پس ممکن است ۱ یا ۲ روز اختلاف داشته باشند. تعطیلات ثابت جلالی (مثل نوروز و ۲۲ بهمن) دقیق‌اند. بیرون از ۱۳۰۰ تا ۱۵۰۰ هجری قمری فقط تعطیلات ثابت گزارش می‌شود. اگر دقت برای حقوق و مهلت‌ها حیاتی است، از سمت خودتان فهرست بازنویسی را از اعلام رسمی اضافه کنید. به <a href="holidays.html">تعطیلات</a> نگاه کنید.</p>

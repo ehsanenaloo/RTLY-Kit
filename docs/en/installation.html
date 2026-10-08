@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en" dir="ltr" data-i18n="{&quot;dark&quot;:&quot;Dark mode&quot;,&quot;light&quot;:&quot;Light mode&quot;,&quot;to_dark&quot;:&quot;Switch to dark theme&quot;,&quot;to_light&quot;:&quot;Switch to light theme&quot;,&quot;copy&quot;:&quot;Copy&quot;,&quot;copied&quot;:&quot;Copied&quot;,&quot;copy_failed&quot;:&quot;Selected. Press copy.&quot;,&quot;copy_label&quot;:&quot;Copy the code example above&quot;,&quot;no_results&quot;:&quot;No guide matches. Try a shorter word.&quot;,&quot;loading&quot;:&quot;The search index is still loading. Try again in a moment.&quot;,&quot;results&quot;:&quot;Search results&quot;,&quot;status&quot;:&quot;%d of %d guides shown&quot;,&quot;suggest&quot;:&quot;English version&quot;,&quot;search_label&quot;:&quot;Search the guide&quot;,&quot;search_placeholder&quot;:&quot;Search the guide&quot;}" data-search-index="search-index.js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Installation | RTLY-Kit User guide</title>
+<meta name="description" content="Requirements, installation with Composer or Docker, optional Carbon and Laravel integration, supported versions, how to verify the install and how to remove the package cleanly.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="Installation | RTLY-Kit User guide">
+<meta property="og:description" content="Requirements, installation with Composer or Docker, optional Carbon and Laravel integration, supported versions, how to verify the install and how to remove the package cleanly.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="en_US">
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+<link rel="alternate" hreflang="fa" href="../fa/installation.html">
+<link rel="stylesheet" href="../styles.css">
+<script>try{var t=localStorage.getItem("rtly-docs-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<script defer src="../app.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a><header class="site-header"><div class="shell header-inner"><a class="brand" href="index.html"><img src="../assets/logo.svg" width="34" height="34" alt=""><span><span class="name">RTLY-Kit</span><small>User guide</small></span></a><nav class="top-nav" aria-label="Primary"><a href="index.html">Overview</a><a href="quick-start.html">Quick start</a><a href="all.html">All guides</a><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">GitHub &#8599;</a></nav><div class="header-tools"><span data-search-host></span><button type="button" class="icon-button" data-theme-toggle hidden>Theme</button><a class="icon-button" href="../fa/installation.html" hreflang="fa" lang="fa" aria-label="تغییر به فارسی">فارسی</a></div></div></header>
+<main id="main">
+<div class="shell page-intro"><nav class="breadcrumbs" aria-label="Breadcrumb"><ol><li><a href="index.html">Home</a></li><li><a href="all.html#group-start">Getting started</a></li><li aria-current="page">Installation</li></ol></nav><h1>Installation</h1><p class="lead">Requirements, installation with Composer or Docker, optional Carbon and Laravel integration, supported versions, how to verify the install and how to remove the package cleanly.</p></div>
+<div class="shell doc-layout has-toc">
+<aside class="sidebar"><details open><summary>Browse the guides</summary><nav aria-label="Guides"><a href="all.html">All guides</a><p>Getting started</p><a href="quick-start.html">Quick start</a><a href="installation.html" aria-current="page">Installation</a><p>Calendars</p><a href="jalali.html">Jalali calendar</a><a href="hijri.html">Hijri calendar</a><a href="hebrew.html">Hebrew calendar</a><a href="convert-and-compare.html">Convert and compare dates</a><a href="carbon-macros.html">Carbon macros</a><p>Validation</p><a href="validators-overview.html">Validators overview</a><a href="national-code.html">National code</a><a href="sheba-and-bank-card.html">Sheba and bank card</a><a href="mobile-postal-plate.html">Mobile, postal code and plate</a><p>Numbers and text</p><a href="digits-and-format.html">Digits and number formatting</a><a href="number-words.html">Number to words</a><a href="text-tools.html">Text tools</a><p>Holidays and prayer times</p><a href="holidays.html">Iranian holidays</a><a href="prayer-times.html">Prayer times</a><p>Laravel</p><a href="laravel-setup.html">Laravel setup</a><a href="laravel-validation-and-cast.html">Validation rules and Eloquent cast</a><p>Reference</p><a href="helpers-and-globals.html">Helpers and globals</a><a href="error-handling.html">Error handling</a><a href="api-stability.html">API stability</a><a href="accuracy-and-data.html">Accuracy and data</a><a href="benchmarks.html">Benchmarks</a><a href="limits.html">Limits</a><a href="troubleshooting-faq.html">Troubleshooting and FAQ</a><a href="upgrade.html">Upgrade guide</a></nav></details></aside>
+<article class="prose">
+<details class="toc-inline"><summary>On this page</summary><ol><li><a href="#requirements">Requirements</a></li><li><a href="#composer">Install with Composer</a><ol><li><a href="#optional">Optional packages</a></li></ol></li><li><a href="#docker">Install without PHP on your machine (Docker)</a></li><li><a href="#versions">Supported versions</a></li><li><a href="#verify">Verify the installation</a><ol><li><a href="#problems">If something fails</a></li></ol></li><li><a href="#uninstall">Uninstall</a></li></ol></details>
+<h2 id="requirements">Requirements<a class="anchor" href="#requirements" aria-label="Link to this section">#</a></h2>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Table"><table>
+<thead><tr><th scope="col">Requirement</th><th scope="col">Status</th><th scope="col">Notes</th></tr></thead>
+<tbody>
+<tr><td>PHP <code>^8.2</code></td><td>Required</td><td>Tested in CI on PHP 8.2, 8.3 and 8.4</td></tr>
+<tr><td><code>ext-mbstring</code></td><td>Required</td><td>Enabled in standard PHP builds; used by <code>ordinal()</code>, <code>Slugify</code> and the text tools</td></tr>
+<tr><td>Composer 2</td><td>Required to install</td><td>Handles autoloading; the package has no required Composer dependency</td></tr>
+<tr><td><code>nesbot/carbon</code> ^3.0</td><td>Optional</td><td>Enables the <a href="carbon-macros.html">Carbon macros</a></td></tr>
+<tr><td><code>illuminate/support</code> ^11 or ^12</td><td>Optional</td><td>Laravel auto-discovery, facade, validation rules and the Eloquent cast (<a href="laravel-setup.html">Laravel setup</a>)</td></tr>
+</tbody>
+</table></div>
+<p>That is all. In particular, <code>ext-calendar</code>, <code>ext-intl</code> and any database are <strong>not</strong> needed: the three calendars are implemented in pure PHP, and the Umm al-Qura table ships inside the package.</p>
+
+<h2 id="composer">Install with Composer<a class="anchor" href="#composer" aria-label="Link to this section">#</a></h2>
+<pre tabindex="0"><code class="language-bash">composer require enaxon/rtly-kit</code></pre>
+<p>Make sure your entry script loads Composer's autoloader, once:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">&lt;?php
+require</span> __DIR__.<span class="tok-s">'/vendor/autoload.php'</span>;</code></pre>
+<p>The autoloader maps the <code>RtlyKit\</code> namespace to the package's <code>src/</code> directory and also loads one helper file that defines the namespaced helper functions (<code>RtlyKit\jdate()</code> and the others). No global function is defined by that file; see <a href="helpers-and-globals.html">Helpers and globals</a> for the opt-in short names.</p>
+<h3 id="optional">Optional packages<a class="anchor" href="#optional" aria-label="Link to this section">#</a></h3>
+<pre tabindex="0"><code class="language-bash">composer require nesbot/carbon          # Carbon macros: toJalali(), createFromJalali(), ...
+composer require illuminate/support     # only in non-Laravel projects that want the Laravel pieces</code></pre>
+<p>Both integrations activate on their own. The Carbon macros register when the autoloader finds Carbon. In a Laravel application the service provider and the <code>Jalali</code> facade alias are found by package auto-discovery, so nothing is added to <code>config/app.php</code>. After installing into an existing Laravel project run <code>php artisan package:discover</code> if your deployment caches discovery.</p>
+
+<h2 id="docker">Install without PHP on your machine (Docker)<a class="anchor" href="#docker" aria-label="Link to this section">#</a></h2>
+<p>If PHP and Composer are not installed locally, run them from official images. From your project directory:</p>
+<pre tabindex="0"><code class="language-bash">docker run --rm -v "$PWD":/app -w /app composer:2 require enaxon/rtly-kit
+docker run --rm -v "$PWD":/app -w /app php:8.3-cli php quick.php</code></pre>
+<p>The first command installs the package into <code>vendor/</code>; the second runs a script such as the one in <a href="quick-start.html">Quick start</a> with PHP 8.3 (the official CLI image includes <code>mbstring</code>). To work on the library itself, clone the repository and use its <code>docker-compose.yml</code>:</p>
+<pre tabindex="0"><code class="language-bash">docker compose -f tools/docker-compose.yml run --rm php composer install
+docker compose -f tools/docker-compose.yml run --rm php composer test
+docker compose -f tools/docker-compose.yml run --rm php php -r 'require "vendor/autoload.php"; echo RtlyKit\jdate("2026-03-21")-&gt;format("Y/m/d");'</code></pre>
+
+<h2 id="versions">Supported versions<a class="anchor" href="#versions" aria-label="Link to this section">#</a></h2>
+<ul>
+<li><strong>PHP</strong> 8.2, 8.3 and 8.4 (CI matrix). Newer 8.x releases are expected to work but are not yet in the matrix.</li>
+<li><strong>Laravel</strong> 11 and 12.</li>
+<li><strong>Carbon</strong> 3.</li>
+<li><strong>Versioning.</strong> Before 1.0.0 a minor release may contain breaking changes. Each one is listed in the upgrade guide with migration steps (<a href="upgrade.html">Upgrade</a>), and the compatibility promise and the list of internal classes are in <a href="api-stability.html">API stability</a>. Until 1.0.0, pin the minor version in your <code>composer.json</code> constraint (a tilde constraint such as <code>~0.x.y</code> with the version you tested) and read the upgrade guide before raising it.</li>
+</ul>
+
+<h2 id="verify">Verify the installation<a class="anchor" href="#verify" aria-label="Link to this section">#</a></h2>
+<p>Create <code>verify.php</code> in your project root:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">&lt;?php
+require</span> __DIR__.<span class="tok-s">'/vendor/autoload.php'</span>;
+
+<span class="tok-k">echo</span> PHP_VERSION, <span class="tok-s">"\n"</span>;
+<span class="tok-k">echo</span> extension_loaded(<span class="tok-s">'mbstring'</span>) ? <span class="tok-s">"mbstring: yes\n"</span> : <span class="tok-s">"mbstring: NO\n"</span>;
+<span class="tok-k">echo</span> \RtlyKit\jdate(<span class="tok-s">'2026-03-21'</span>)-&gt;format(<span class="tok-s">'Y/m/d'</span>), <span class="tok-s">"\n"</span>;   <span class="tok-c">// 1405/01/01</span></code></pre>
+<p>Run <code>php verify.php</code>. The last line must print <code>1405/01/01</code>; a PHP version below 8.2 or <code>mbstring: NO</code> means the environment does not meet the requirements. Two Composer commands help as well:</p>
+<pre tabindex="0"><code class="language-bash">composer show enaxon/rtly-kit            # installed version and metadata
+composer check-platform-reqs          # checks PHP and extensions against every installed package</code></pre>
+<h3 id="problems">If something fails<a class="anchor" href="#problems" aria-label="Link to this section">#</a></h3>
+<ul>
+<li><code>Class "RtlyKit\..." not found</code> or <code>Call to undefined function RtlyKit\jdate()</code>: <code>vendor/autoload.php</code> was not required, or Composer's autoloader is stale; run <code>composer dump-autoload</code>.</li>
+<li><code>Call to undefined function jdate()</code> (without the namespace): the short global names are opt-in. Use <code>use function RtlyKit\jdate;</code> or call <code>\RtlyKit\Globals::register()</code>.</li>
+<li>Composer refuses to install and mentions the PHP version or <code>ext-mbstring</code>: install PHP 8.2 or newer, or enable <code>mbstring</code> in <code>php.ini</code>.</li>
+<li>More cases: <a href="troubleshooting-faq.html">Troubleshooting and FAQ</a>.</li>
+</ul>
+
+<h2 id="uninstall">Uninstall<a class="anchor" href="#uninstall" aria-label="Link to this section">#</a></h2>
+<ol>
+<li>Remove the package: <code>composer remove enaxon/rtly-kit</code>. This also regenerates the autoloader.</li>
+<li>Delete your own usages: <code>use RtlyKit\...</code> and <code>use function RtlyKit\...</code> lines, calls to <code>\RtlyKit\Globals::register()</code>, and any catch blocks for <code>RtlyKit\Exceptions\*</code>. Search your code for <code>RtlyKit</code> to find them all.</li>
+<li>Carbon projects: the macros (<code>toJalali</code>, <code>jformat</code>, <code>toHijri</code>, <code>toHebrew</code>, <code>createFromJalali</code>, <code>createFromHijri</code>, <code>createFromHebrew</code>) disappear with the package; replace calls to them first.</li>
+<li>Laravel projects: remove the <code>national_code</code>, <code>sheba</code>, <code>bank_card</code>, <code>iran_mobile</code>, <code>mobile</code>, <code>postal_code</code> and <code>vehicle_plate</code> validation rules from your form requests, the <code>JalaliCast</code> from your models, any use of the <code>Jalali</code> facade, and any translation files you copied from the package. Then run <code>php artisan optimize:clear</code>. Data your application already wrote to the database is not touched by removing the package, so check how a cast stored it before you drop the cast.</li>
+</ol>
+<p>The package installs nothing outside <code>vendor/</code> (apart from the Composer lock and autoload metadata), so there is nothing else to clean up.</p>
+<nav class="reading-footer" aria-label="Previous and next page"><a class="prev" rel="prev" href="quick-start.html"><small>Previous</small>Quick start</a><a class="next" rel="next" href="jalali.html"><small>Next</small>Jalali calendar</a></nav>
+</article>
+<nav class="toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#requirements">Requirements</a></li><li><a href="#composer">Install with Composer</a><ol><li><a href="#optional">Optional packages</a></li></ol></li><li><a href="#docker">Install without PHP on your machine (Docker)</a></li><li><a href="#versions">Supported versions</a></li><li><a href="#verify">Verify the installation</a><ol><li><a href="#problems">If something fails</a></li></ol></li><li><a href="#uninstall">Uninstall</a></li></ol></nav>
+</div>
+</main>
+<footer class="footer"><div class="shell footer-inner"><p>RTLY-Kit user guide · MIT licensed</p><div><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">Repository on GitHub &#8599;</a><a href="https://github.com/ehsanenaloo/RTLY-Kit/issues" rel="noopener noreferrer">Report an issue &#8599;</a></div></div></footer>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!--
+title: بنچمارک
+description: یک ریزبنچمارک کوچک و صادقانه از RTLY-Kit در برابر morilog/jalali، با روش کامل، محدودیت‌ها و یک دستور برای تکرار آن روی ماشین خودتان.
+group: reference
+order: 50
+-->
+<div class="warn"><strong>ابتدا این را بخوانید.</strong> این‌ها ریزبنچمارک سه سناریوی کوچک‌اند که یک بار روی یک ماشین اجرا شده‌اند. هزینهٔ نسبی را برای همین بار کاری نشان می‌دهند، نه حکم کلی. پیش از نقل هر عددی، خودتان با دستور زیر دوباره اجرا کنید.</div>
+
+<h2 id="what">چه چیزی مقایسه شده</h2>
+<p>پکیج <a href="https://github.com/morilog/jalali">morilog/jalali</a> نسخهٔ 3.5.0 (پرکاربردترین پکیج جلالی) در برابر RTLY-Kit روی سه عملیات:</p>
+<table>
+<thead><tr><th>سناریو</th><th>RTLY-Kit</th><th>morilog/jalali</th></tr></thead>
+<tbody>
+<tr><td>رشتهٔ میلادی به جلالی <code>Y/m/d</code></td><td><code>Jalali::make('2025-03-21')-&gt;format('Y/m/d')</code></td><td><code>Jalalian::fromDateTime('2025-03-21')-&gt;format('Y/m/d')</code></td></tr>
+<tr><td>جلالی <code>y/m/d</code> به میلادی <code>Y-m-d</code></td><td><code>Jalali::create(1404, m, d)-&gt;toGregorian()-&gt;format('Y-m-d')</code></td><td><code>(new Jalalian(1404, m, d))-&gt;toCarbon()-&gt;format('Y-m-d')</code></td></tr>
+<tr><td><code>addDays</code> و سپس قالب‌بندی</td><td><code>Jalali::create(1404, 1, 1)-&gt;addDays(n)-&gt;format('Y/m/d')</code></td><td><code>(new Jalalian(1404, 1, 1))-&gt;addDays(n)-&gt;format('Y/m/d')</code></td></tr>
+</tbody>
+</table>
+<p>سمت RTLY-Kit هر سناریو، همان‌طور که در برنامه می‌نویسید:</p>
+<pre><code class="language-php">&lt;?php
+require __DIR__.'/vendor/autoload.php';
+
+use RtlyKit\Calendar\Jalali;
+
+echo Jalali::make('2025-03-21')-&gt;format('Y/m/d'), "\n";                       // 1404/01/01
+echo Jalali::create(1404, 1, 1)-&gt;toGregorian()-&gt;format('Y-m-d'), "\n";       // 2025-03-21
+echo Jalali::create(1404, 1, 1)-&gt;addDays(100)-&gt;format('Y/m/d'), "\n";        // 1404/04/08</code></pre>
+
+<h2 id="results">نتیجه‌ها</h2>
+<p>یک اجرا، میانهٔ ۵ تکرار از ۲۰٬۰۰۰ تکرارِ حلقه. محیط: PHP 8.2.30 در حالت CLI داخل Docker روی ویندوز ۱۱، با <code>opcache.enable_cli=1</code>.</p>
+<table>
+<thead><tr><th>سناریو</th><th>RTLY-Kit (µs/op)</th><th>morilog/jalali (µs/op)</th><th>نسبت</th></tr></thead>
+<tbody>
+<tr><td>رشتهٔ میلادی به جلالی <code>Y/m/d</code></td><td>13.33</td><td>153.84</td><td>11.5x</td></tr>
+<tr><td>جلالی <code>y/m/d</code> به میلادی <code>Y-m-d</code></td><td>12.80</td><td>58.55</td><td>4.6x</td></tr>
+<tr><td><code>addDays</code> + قالب‌بندی</td><td>33.18</td><td>479.04</td><td>14.4x</td></tr>
+</tbody>
+</table>
+<p>اوج حافظهٔ کل فرایند، با بارگذاری هر دو کتابخانه، ۴ مگابایت (MiB) بود.</p>
+<p>یک اجرای قبلیِ موردی، بدون opcache و با ترکیب دیگری از سناریوها، فاصلهٔ بیشتری نشان داد (حدود ۲۵ برابر). همین پراکندگی خودش درس است: نسبت به سناریو و پیکربندی PHP بستگی دارد.</p>
+
+<h2 id="correctness">راستی‌آزمایی درستی</h2>
+<p>برای تک‌تکِ روزها از 1900-01-01 تا 2099-12-27 (۷۳٬۰۰۰ روز پیاپی) تاریخ جلالیِ RTLY-Kit با نتیجهٔ <code>CalendarUtils::toJalali</code> در morilog یکسان است: ۰ اختلاف. هر دو قاعدهٔ حسابی کبیسهٔ ۳۳ساله را پیاده می‌کنند؛ پس توافق یعنی این دو با هم سازگارند. این به معنای انطباق هیچ‌کدام با تقویم نجومی رسمی ایران در دوردست از زمان حاضر <strong>نیست</strong> (به <a href="accuracy-and-data.html">دقت و داده‌ها</a> نگاه کنید).</p>
+
+<h2 id="why">چرا تفاوت دارند؟</h2>
+<p>این را پروفایل نکرده‌ایم؛ پس موارد زیر محتمل‌اند، نه اثبات‌شده. RTLY-Kit یک <code>DateTimeImmutable</code> ساده را می‌پوشاند و با حساب اعداد صحیح تبدیل می‌کند. morilog شیءهای Carbon می‌سازد و دستکاری می‌کند که بسیار بزرگ‌ترند (پارس و ماشین‌آلات زبان‌محلی)؛ پس بخشی از فاصله انتخابِ معماری است، نه فقط الگوریتم تبدیل. اگر همه‌جا از Carbon استفاده می‌کنید، فاصلهٔ مربوط به شما شاید کمتر باشد.</p>
+
+<h2 id="reproduce">تکرار آزمایش</h2>
+<p>بنچمارک در مخزن، در پوشهٔ <code>tools/benchmark</code> است. <code>composer.json</code> آن، RTLY-Kit را از درخت کاری و <code>morilog/jalali</code> را در پوشهٔ <code>vendor/</code> خودش نصب می‌کند (که جزو بسته نیست). اسکریپت نسخهٔ PHP، تنظیمات opcache و JIT و میانهٔ تکرارها را چاپ می‌کند.</p>
+<pre><code class="language-bash">docker compose -f tools/docker-compose.yml run --rm php sh -c 'cd tools/benchmark &amp;&amp; composer install -n &amp;&amp; php -d opcache.enable_cli=1 run.php 20000 5'</code></pre>
+<p>عددهای ماشین‌های مختلف با هم قابل مقایسه نیستند.</p>
+
+<h2 id="limitations">محدودیت‌ها</h2>
+<ul>
+<li>سه سناریو؛ هیچ بار کاری سنگین در قالب‌بندی، پارس یا آرایه‌های حجیم نیست.</li>
+<li>یک ماشین و یک ساخت PHP؛ Docker روی ویندوز نویز اضافه می‌کند.</li>
+<li>جز اوج کل حافظه، حافظهٔ هر شیء اندازه‌گیری نشده است.</li>
+<li>فقط morilog/jalali سنجیده شد؛ پکیج‌های دیگر سنجیده نشدند.</li>
+</ul>

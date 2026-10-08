@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en" dir="ltr" data-i18n="{&quot;dark&quot;:&quot;Dark mode&quot;,&quot;light&quot;:&quot;Light mode&quot;,&quot;to_dark&quot;:&quot;Switch to dark theme&quot;,&quot;to_light&quot;:&quot;Switch to light theme&quot;,&quot;copy&quot;:&quot;Copy&quot;,&quot;copied&quot;:&quot;Copied&quot;,&quot;copy_failed&quot;:&quot;Selected. Press copy.&quot;,&quot;copy_label&quot;:&quot;Copy the code example above&quot;,&quot;no_results&quot;:&quot;No guide matches. Try a shorter word.&quot;,&quot;loading&quot;:&quot;The search index is still loading. Try again in a moment.&quot;,&quot;results&quot;:&quot;Search results&quot;,&quot;status&quot;:&quot;%d of %d guides shown&quot;,&quot;suggest&quot;:&quot;English version&quot;,&quot;search_label&quot;:&quot;Search the guide&quot;,&quot;search_placeholder&quot;:&quot;Search the guide&quot;}" data-search-index="search-index.js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Carbon macros | RTLY-Kit User guide</title>
+<meta name="description" content="Optional Carbon integration: convert any Carbon instance to Jalali, Hijri or Hebrew and create Carbon dates from calendar components, with the exact macro list, return types and errors.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="Carbon macros | RTLY-Kit User guide">
+<meta property="og:description" content="Optional Carbon integration: convert any Carbon instance to Jalali, Hijri or Hebrew and create Carbon dates from calendar components, with the exact macro list, return types and errors.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="en_US">
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+<link rel="alternate" hreflang="fa" href="../fa/carbon-macros.html">
+<link rel="stylesheet" href="../styles.css">
+<script>try{var t=localStorage.getItem("rtly-docs-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<script defer src="../app.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a><header class="site-header"><div class="shell header-inner"><a class="brand" href="index.html"><img src="../assets/logo.svg" width="34" height="34" alt=""><span><span class="name">RTLY-Kit</span><small>User guide</small></span></a><nav class="top-nav" aria-label="Primary"><a href="index.html">Overview</a><a href="quick-start.html">Quick start</a><a href="all.html">All guides</a><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">GitHub &#8599;</a></nav><div class="header-tools"><span data-search-host></span><button type="button" class="icon-button" data-theme-toggle hidden>Theme</button><a class="icon-button" href="../fa/carbon-macros.html" hreflang="fa" lang="fa" aria-label="تغییر به فارسی">فارسی</a></div></div></header>
+<main id="main">
+<div class="shell page-intro"><nav class="breadcrumbs" aria-label="Breadcrumb"><ol><li><a href="index.html">Home</a></li><li><a href="all.html#group-calendars">Calendars</a></li><li aria-current="page">Carbon macros</li></ol></nav><h1>Carbon macros</h1><p class="lead">Optional Carbon integration: convert any Carbon instance to Jalali, Hijri or Hebrew and create Carbon dates from calendar components, with the exact macro list, return types and errors.</p></div>
+<div class="shell doc-layout has-toc">
+<aside class="sidebar"><details open><summary>Browse the guides</summary><nav aria-label="Guides"><a href="all.html">All guides</a><p>Getting started</p><a href="quick-start.html">Quick start</a><a href="installation.html">Installation</a><p>Calendars</p><a href="jalali.html">Jalali calendar</a><a href="hijri.html">Hijri calendar</a><a href="hebrew.html">Hebrew calendar</a><a href="convert-and-compare.html">Convert and compare dates</a><a href="carbon-macros.html" aria-current="page">Carbon macros</a><p>Validation</p><a href="validators-overview.html">Validators overview</a><a href="national-code.html">National code</a><a href="sheba-and-bank-card.html">Sheba and bank card</a><a href="mobile-postal-plate.html">Mobile, postal code and plate</a><p>Numbers and text</p><a href="digits-and-format.html">Digits and number formatting</a><a href="number-words.html">Number to words</a><a href="text-tools.html">Text tools</a><p>Holidays and prayer times</p><a href="holidays.html">Iranian holidays</a><a href="prayer-times.html">Prayer times</a><p>Laravel</p><a href="laravel-setup.html">Laravel setup</a><a href="laravel-validation-and-cast.html">Validation rules and Eloquent cast</a><p>Reference</p><a href="helpers-and-globals.html">Helpers and globals</a><a href="error-handling.html">Error handling</a><a href="api-stability.html">API stability</a><a href="accuracy-and-data.html">Accuracy and data</a><a href="benchmarks.html">Benchmarks</a><a href="limits.html">Limits</a><a href="troubleshooting-faq.html">Troubleshooting and FAQ</a><a href="upgrade.html">Upgrade guide</a></nav></details></aside>
+<article class="prose">
+<details class="toc-inline"><summary>On this page</summary><ol><li><a href="#overview">What this gives you</a></li><li><a href="#registration">How registration works</a></li><li><a href="#list">Macro reference</a></li><li><a href="#to-calendar">From Carbon to a calendar</a></li><li><a href="#from-calendar">From calendar components to Carbon</a></li><li><a href="#errors">Errors</a></li><li><a href="#known">Limits and cautions</a></li></ol></details>
+<h2 id="overview">What this gives you<a class="anchor" href="#overview" aria-label="Link to this section">#</a></h2>
+<p>If <code>nesbot/carbon</code> is installed, RTLY-Kit registers a small set of macros on <code>Carbon\Carbon</code> and <code>Carbon\CarbonImmutable</code>. They let you move between Carbon and the calendar classes in one call, in both directions. Carbon is <strong>optional</strong>: RTLY-Kit does not require it, and without Carbon nothing is registered and nothing breaks. Laravel applications already ship Carbon, so the macros are available there with no extra step (see also <a href="laravel-setup.html">Laravel setup</a>).</p>
+<p><strong>Prerequisites.</strong> RTLY-Kit installed (<a href="installation.html">Installation</a>) and Carbon 3 (<code>composer require nesbot/carbon</code>; Carbon 3 is the supported version).</p>
+
+<h2 id="registration">How registration works<a class="anchor" href="#registration" aria-label="Link to this section">#</a></h2>
+<p>Composer loads the package's helper file on autoload. That file boots the integration, which checks whether the Carbon classes exist and, if so, registers the macros once. You do not call anything yourself:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">&lt;?php
+require</span> <span class="tok-s">'vendor/autoload.php'</span>;
+
+<span class="tok-k">use</span> Carbon\Carbon;
+<span class="tok-k">use</span> Carbon\CarbonImmutable;
+<span class="tok-k">use</span> RtlyKit\Calendar\HijriVariant;
+<span class="tok-k">use</span> RtlyKit\Calendar\Jalali;
+
+var_dump(Carbon::hasMacro(<span class="tok-s">'toJalali'</span>));   <span class="tok-c">// bool(true)</span></code></pre>
+<div class="callout note" role="note"><strong>Install Carbon with Composer.</strong> The macros are registered when Composer's autoloader starts and Carbon's classes can be found. A Carbon copy that is not on the same autoloader (for example a bundled phar) is not detected. The registration classes are internal; rely on the macro names, which are part of the public API.</div>
+
+<h2 id="list">Macro reference<a class="anchor" href="#list" aria-label="Link to this section">#</a></h2>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Table"><table>
+<thead><tr><th scope="col">Macro</th><th scope="col">Kind</th><th scope="col">Returns</th><th scope="col">Notes</th></tr></thead>
+<tbody>
+<tr><td><code>toJalali()</code></td><td>instance</td><td><code>Jalali</code></td><td>Same instant and time zone as the Carbon object</td></tr>
+<tr><td><code>jformat($format = 'Y/m/d H:i:s')</code></td><td>instance</td><td><code>string</code></td><td>Shortcut for <code>toJalali()-&gt;format($format)</code>; tokens as in <a href="jalali.html#format">Jalali formatting</a></td></tr>
+<tr><td><code>toHijri(?HijriVariant $variant = null)</code></td><td>instance</td><td><code>Hijri</code></td><td>Umm al-Qura unless a variant is given</td></tr>
+<tr><td><code>toHebrew()</code></td><td>instance</td><td><code>Hebrew</code></td><td></td></tr>
+<tr><td><code>createFromJalali($y, $m, $d, $h = 0, $i = 0, $s = 0, $tz = null)</code></td><td>static</td><td>the class you called it on</td><td><code>Carbon::</code> returns <code>Carbon</code>; <code>CarbonImmutable::</code> returns <code>CarbonImmutable</code></td></tr>
+<tr><td><code>createFromHijri($y, $m, $d, $h = 0, $i = 0, $s = 0, $tz = null, ?HijriVariant $variant = null)</code></td><td>static</td><td>the class you called it on</td><td>Variant defaults to Umm al-Qura</td></tr>
+<tr><td><code>createFromHebrew($y, $m, $d, $h = 0, $i = 0, $s = 0, $tz = null)</code></td><td>static</td><td>the class you called it on</td><td>Ordinal month numbering, see <a href="hebrew.html#months">Hebrew months</a></td></tr>
+</tbody>
+</table></div>
+<p>The <code>$tz</code> argument accepts a <code>DateTimeZone</code>, a time zone identifier string, or <code>null</code> (then the PHP default zone applies, not the zone of any existing Carbon object).</p>
+
+<h2 id="to-calendar">From Carbon to a calendar<a class="anchor" href="#to-calendar" aria-label="Link to this section">#</a></h2>
+<pre tabindex="0"><code class="language-php"><span class="tok-v">$c</span> = Carbon::create(<span class="tok-n">2026</span>, <span class="tok-n">3</span>, <span class="tok-n">21</span>, <span class="tok-n">12</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-s">'UTC'</span>);
+
+<span class="tok-k">echo</span> <span class="tok-v">$c</span>-&gt;toJalali();                           <span class="tok-c">// 1405/01/01 12:00:00</span>
+<span class="tok-k">echo</span> get_class(<span class="tok-v">$c</span>-&gt;toJalali());                <span class="tok-c">// RtlyKit\Calendar\Jalali</span>
+<span class="tok-k">echo</span> <span class="tok-v">$c</span>-&gt;jformat(<span class="tok-s">'l j F Y'</span>);                   <span class="tok-c">// شنبه 1 فروردین 1405</span>
+<span class="tok-k">echo</span> <span class="tok-v">$c</span>-&gt;jformat();                            <span class="tok-c">// 1405/01/01 12:00:00</span>
+<span class="tok-k">echo</span> <span class="tok-v">$c</span>-&gt;toHijri()-&gt;format(<span class="tok-s">'j F Y'</span>, <span class="tok-s">'en'</span>);     <span class="tok-c">// 2 Shawwal 1447</span>
+<span class="tok-k">echo</span> <span class="tok-v">$c</span>-&gt;toHebrew()-&gt;format(<span class="tok-s">'j F Y'</span>);          <span class="tok-c">// 3 Nisan 5786</span></code></pre>
+<p>The result is a calendar object, not a Carbon object, so use the calendar API from there (Persian digits, for example, via <code>$c-&gt;toJalali()-&gt;format('Y/m/d', true)</code>). Because a calendar object is a normal value, you can keep working with it and go back at any time with <code>toGregorian()</code>:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">echo</span> Carbon::now(<span class="tok-s">'UTC'</span>)-&gt;setDate(<span class="tok-n">2026</span>, <span class="tok-n">3</span>, <span class="tok-n">21</span>)-&gt;toJalali()-&gt;addMonths(<span class="tok-n">1</span>)-&gt;format(<span class="tok-s">'Y/m/d'</span>);  <span class="tok-c">// 1405/02/01</span></code></pre>
+<p>Calling the calendar's <code>make()</code> directly with a Carbon instance is equivalent, because Carbon is a <code>DateTimeInterface</code>:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">echo</span> Jalali::make(<span class="tok-v">$c</span>)-&gt;format(<span class="tok-s">'Y/m/d H:i'</span>);                                   <span class="tok-c">// 1405/01/01 12:00</span>
+<span class="tok-k">echo</span> Jalali::make(Carbon::create(<span class="tok-n">2026</span>, <span class="tok-n">3</span>, <span class="tok-n">21</span>, <span class="tok-n">22</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-s">'UTC'</span>), <span class="tok-k">new</span> DateTimeZone(<span class="tok-s">'Asia/Tehran'</span>))-&gt;format(<span class="tok-s">'Y/m/d H:i'</span>);  <span class="tok-c">// 1405/01/02 01:30</span></code></pre>
+
+<h2 id="from-calendar">From calendar components to Carbon<a class="anchor" href="#from-calendar" aria-label="Link to this section">#</a></h2>
+<pre tabindex="0"><code class="language-php"><span class="tok-v">$a</span> = Carbon::createFromJalali(<span class="tok-n">1405</span>, <span class="tok-n">1</span>, <span class="tok-n">1</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-s">'UTC'</span>);
+<span class="tok-k">echo</span> get_class(<span class="tok-v">$a</span>), <span class="tok-s">' '</span>, <span class="tok-v">$a</span>-&gt;toDateTimeString();      <span class="tok-c">// Carbon\Carbon 2026-03-21 00:00:00</span>
+
+<span class="tok-v">$b</span> = CarbonImmutable::createFromJalali(<span class="tok-n">1405</span>, <span class="tok-n">1</span>, <span class="tok-n">1</span>, <span class="tok-n">8</span>, <span class="tok-n">30</span>, <span class="tok-n">0</span>, <span class="tok-s">'Asia/Tehran'</span>);
+<span class="tok-k">echo</span> get_class(<span class="tok-v">$b</span>), <span class="tok-s">' '</span>, <span class="tok-v">$b</span>-&gt;toIso8601String();       <span class="tok-c">// Carbon\CarbonImmutable 2026-03-21T08:30:00+03:30</span>
+
+<span class="tok-k">echo</span> Carbon::createFromHijri(<span class="tok-n">1446</span>, <span class="tok-n">9</span>, <span class="tok-n">1</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-s">'UTC'</span>)-&gt;toDateString();   <span class="tok-c">// 2025-03-01</span>
+<span class="tok-k">echo</span> Carbon::createFromHebrew(<span class="tok-n">5786</span>, <span class="tok-n">1</span>, <span class="tok-n">1</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-s">'UTC'</span>)-&gt;toDateString();  <span class="tok-c">// 2025-09-23</span></code></pre>
+<p>Pass the Tabular Hijri variant as the last argument of <code>createFromHijri()</code>: <code>Carbon::createFromHijri(1446, 10, 1, 0, 0, 0, 'UTC', HijriVariant::Tabular)</code>.</p>
+
+<h2 id="errors">Errors<a class="anchor" href="#errors" aria-label="Link to this section">#</a></h2>
+<p>The macros validate through the calendar classes, so invalid or out-of-range input throws <code>RtlyKit\Exceptions\InvalidDateException</code> (never a Carbon <code>InvalidFormatException</code> for these cases), and so does an unknown time zone identifier:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">use</span> RtlyKit\Exceptions\RtlyKitThrowable;
+
+<span class="tok-v">$cases</span> = [
+    <span class="tok-k">fn</span> () =&gt; Carbon::createFromJalali(<span class="tok-n">1404</span>, <span class="tok-n">12</span>, <span class="tok-n">30</span>),
+    <span class="tok-k">fn</span> () =&gt; Carbon::createFromJalali(<span class="tok-n">1404</span>, <span class="tok-n">1</span>, <span class="tok-n">1</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-s">'Nowhere/Land'</span>),
+    <span class="tok-k">fn</span> () =&gt; Carbon::createFromHijri(<span class="tok-n">9999</span>, <span class="tok-n">1</span>, <span class="tok-n">1</span>),
+    <span class="tok-k">fn</span> () =&gt; Carbon::createFromHebrew(<span class="tok-n">1</span>, <span class="tok-n">1</span>, <span class="tok-n">1</span>),
+];
+<span class="tok-k">foreach</span> (<span class="tok-v">$cases</span> <span class="tok-k">as</span> <span class="tok-v">$f</span>) {
+    <span class="tok-k">try</span> { <span class="tok-v">$f</span>(); }
+    <span class="tok-k">catch</span> (RtlyKitThrowable <span class="tok-v">$e</span>) { <span class="tok-k">echo</span> get_class(<span class="tok-v">$e</span>), <span class="tok-s">': '</span>, <span class="tok-v">$e</span>-&gt;getMessage(), <span class="tok-s">"\n"</span>; }
+}
+<span class="tok-c">// RtlyKit\Exceptions\InvalidDateException: Invalid Jalali date: 1404/12/30</span>
+<span class="tok-c">// RtlyKit\Exceptions\InvalidDateException: Unknown timezone: Nowhere/Land</span>
+<span class="tok-c">// RtlyKit\Exceptions\InvalidDateException: Invalid Hijri date: 9999/1/1</span>
+<span class="tok-c">// RtlyKit\Exceptions\InvalidDateException: Invalid Hebrew date: 1/1/1</span></code></pre>
+<p>Supported ranges are those of the calendars: Jalali -620..9377, Hijri 1..9665, Hebrew 3762..13759.</p>
+
+<h2 id="known">Limits and cautions<a class="anchor" href="#known" aria-label="Link to this section">#</a></h2>
+<div class="callout known" role="note"><strong>Known limitation.</strong> The macros inherit the accuracy of the calendar classes: Jalali is the arithmetic 33-year rule (not the astronomical official calendar), and Hijri Umm al-Qura data for AH 1300 to 1500 comes from ICU/CLDR and is not verified month by month against the official publication. Day boundaries are civil midnight.</div>
+<ul>
+<li>Macros are global per class: if another package defines a macro with the same name (<code>toJalali</code>, <code>toHijri</code> ...), whichever registers last wins. Use the calendar classes directly (<code>Jalali::make($carbon)</code>) when you need certainty.</li>
+<li>Time zones travel with the object: <code>toJalali()</code> uses the Carbon object's own zone, so normalise the zone before converting if the calendar day matters.</li>
+<li>Weekday numbers differ between calendars; do not feed <code>getDayOfWeek()</code> of one calendar into another. See <a href="convert-and-compare.html">Convert and compare dates</a>.</li>
+</ul>
+<nav class="reading-footer" aria-label="Previous and next page"><a class="prev" rel="prev" href="convert-and-compare.html"><small>Previous</small>Convert and compare dates</a><a class="next" rel="next" href="validators-overview.html"><small>Next</small>Validators overview</a></nav>
+</article>
+<nav class="toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#overview">What this gives you</a></li><li><a href="#registration">How registration works</a></li><li><a href="#list">Macro reference</a></li><li><a href="#to-calendar">From Carbon to a calendar</a></li><li><a href="#from-calendar">From calendar components to Carbon</a></li><li><a href="#errors">Errors</a></li><li><a href="#known">Limits and cautions</a></li></ol></nav>
+</div>
+</main>
+<footer class="footer"><div class="shell footer-inner"><p>RTLY-Kit user guide · MIT licensed</p><div><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">Repository on GitHub &#8599;</a><a href="https://github.com/ehsanenaloo/RTLY-Kit/issues" rel="noopener noreferrer">Report an issue &#8599;</a></div></div></footer>
+</body>
+</html>

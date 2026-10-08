@@ -1,0 +1,38 @@
+name: Data correction
+description: A holiday, bank BIN, Sheba code, prefix, Hijri month or city entry is wrong or missing
+labels: [data]
+body:
+  - type: dropdown
+    id: table
+    attributes:
+      label: Which data
+      options:
+        - Holidays
+        - Bank BIN
+        - Sheba bank code
+        - National-code prefix
+        - Mobile operator prefix
+        - Hijri (Umm al-Qura) month
+        - Prayer-time city
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: current
+    attributes:
+      label: Current value
+    validations:
+      required: true
+  - type: textarea
+    id: correct
+    attributes:
+      label: Correct value
+    validations:
+      required: true
+  - type: textarea
+    id: sources
+    attributes:
+      label: Sources (at least two independent ones)
+      description: Links to official or authoritative publications. See resources/data/SOURCES.md.
+    validations:
+      required: true

@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en" dir="ltr" data-i18n="{&quot;dark&quot;:&quot;Dark mode&quot;,&quot;light&quot;:&quot;Light mode&quot;,&quot;to_dark&quot;:&quot;Switch to dark theme&quot;,&quot;to_light&quot;:&quot;Switch to light theme&quot;,&quot;copy&quot;:&quot;Copy&quot;,&quot;copied&quot;:&quot;Copied&quot;,&quot;copy_failed&quot;:&quot;Selected. Press copy.&quot;,&quot;copy_label&quot;:&quot;Copy the code example above&quot;,&quot;no_results&quot;:&quot;No guide matches. Try a shorter word.&quot;,&quot;loading&quot;:&quot;The search index is still loading. Try again in a moment.&quot;,&quot;results&quot;:&quot;Search results&quot;,&quot;status&quot;:&quot;%d of %d guides shown&quot;,&quot;suggest&quot;:&quot;English version&quot;,&quot;search_label&quot;:&quot;Search the guide&quot;,&quot;search_placeholder&quot;:&quot;Search the guide&quot;}" data-search-index="search-index.js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Helpers and globals | RTLY-Kit User guide</title>
+<meta name="description" content="The 27 namespaced helper functions, how to import them, and the opt-in Globals::register() that adds short global names without ever overwriting yours.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="Helpers and globals | RTLY-Kit User guide">
+<meta property="og:description" content="The 27 namespaced helper functions, how to import them, and the opt-in Globals::register() that adds short global names without ever overwriting yours.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="en_US">
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+<link rel="alternate" hreflang="fa" href="../fa/helpers-and-globals.html">
+<link rel="stylesheet" href="../styles.css">
+<script>try{var t=localStorage.getItem("rtly-docs-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<script defer src="../app.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a><header class="site-header"><div class="shell header-inner"><a class="brand" href="index.html"><img src="../assets/logo.svg" width="34" height="34" alt=""><span><span class="name">RTLY-Kit</span><small>User guide</small></span></a><nav class="top-nav" aria-label="Primary"><a href="index.html">Overview</a><a href="quick-start.html">Quick start</a><a href="all.html">All guides</a><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">GitHub &#8599;</a></nav><div class="header-tools"><span data-search-host></span><button type="button" class="icon-button" data-theme-toggle hidden>Theme</button><a class="icon-button" href="../fa/helpers-and-globals.html" hreflang="fa" lang="fa" aria-label="تغییر به فارسی">فارسی</a></div></div></header>
+<main id="main">
+<div class="shell page-intro"><nav class="breadcrumbs" aria-label="Breadcrumb"><ol><li><a href="index.html">Home</a></li><li><a href="all.html#group-reference">Reference</a></li><li aria-current="page">Helpers and globals</li></ol></nav><h1>Helpers and globals</h1><p class="lead">The 27 namespaced helper functions, how to import them, and the opt-in Globals::register() that adds short global names without ever overwriting yours.</p></div>
+<div class="shell doc-layout has-toc">
+<aside class="sidebar"><details open><summary>Browse the guides</summary><nav aria-label="Guides"><a href="all.html">All guides</a><p>Getting started</p><a href="quick-start.html">Quick start</a><a href="installation.html">Installation</a><p>Calendars</p><a href="jalali.html">Jalali calendar</a><a href="hijri.html">Hijri calendar</a><a href="hebrew.html">Hebrew calendar</a><a href="convert-and-compare.html">Convert and compare dates</a><a href="carbon-macros.html">Carbon macros</a><p>Validation</p><a href="validators-overview.html">Validators overview</a><a href="national-code.html">National code</a><a href="sheba-and-bank-card.html">Sheba and bank card</a><a href="mobile-postal-plate.html">Mobile, postal code and plate</a><p>Numbers and text</p><a href="digits-and-format.html">Digits and number formatting</a><a href="number-words.html">Number to words</a><a href="text-tools.html">Text tools</a><p>Holidays and prayer times</p><a href="holidays.html">Iranian holidays</a><a href="prayer-times.html">Prayer times</a><p>Laravel</p><a href="laravel-setup.html">Laravel setup</a><a href="laravel-validation-and-cast.html">Validation rules and Eloquent cast</a><p>Reference</p><a href="helpers-and-globals.html" aria-current="page">Helpers and globals</a><a href="error-handling.html">Error handling</a><a href="api-stability.html">API stability</a><a href="accuracy-and-data.html">Accuracy and data</a><a href="benchmarks.html">Benchmarks</a><a href="limits.html">Limits</a><a href="troubleshooting-faq.html">Troubleshooting and FAQ</a><a href="upgrade.html">Upgrade guide</a></nav></details></aside>
+<article class="prose">
+<details class="toc-inline"><summary>On this page</summary><ol><li><a href="#why">Why helpers live in a namespace</a></li><li><a href="#import">Using the helpers</a></li><li><a href="#reference">All helpers</a><ol><li><a href="#reference-calendar">Calendars</a></li><li><a href="#reference-digits">Digits and numbers</a></li><li><a href="#reference-text">Text</a></li><li><a href="#reference-bool">Validation: yes/no</a></li><li><a href="#reference-result">Validation: structured result</a></li><li><a href="#reference-dates">Holidays and prayer times</a></li></ol></li><li><a href="#globals">Opt-in global names: Globals::register()</a><ol><li><a href="#collision">Collision demo</a></li></ol></li><li><a href="#choosing">Which style should I use?</a></li></ol></details>
+<h2 id="why">Why helpers live in a namespace<a class="anchor" href="#why" aria-label="Link to this section">#</a></h2>
+<p>Names such as <code>is_mobile()</code>, <code>ordinal()</code> or <code>to_english()</code> are short and generic. PHP has no way to "override" a global function: if two packages (or your application and a package) declare the same global name, the second declaration is a fatal error. A library that defines globals unconditionally can therefore break an application that was working before it was installed.</p>
+<p>RTLY-Kit avoids the problem by design:</p>
+<ul>
+<li>All 27 helpers are defined in the <code>RtlyKit</code> namespace. Composer loads them automatically, and they can never collide with anything.</li>
+<li>Short global names are <strong>opt-in</strong> through <code>\RtlyKit\Globals::register()</code>, which only defines names that are still free.</li>
+<li>The Laravel service provider does not register globals either. See <a href="laravel-setup.html#provider">Laravel setup</a>.</li>
+</ul>
+
+<h2 id="import">Using the helpers<a class="anchor" href="#import" aria-label="Link to this section">#</a></h2>
+<p>Import the ones you need with <code>use function</code>, then call them by their short name. Or call them fully qualified:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">use</span> <span class="tok-k">function</span> RtlyKit\jdate;
+<span class="tok-k">use</span> <span class="tok-k">function</span> RtlyKit\is_national_code;
+
+<span class="tok-k">echo</span> jdate(<span class="tok-s">'2025-03-21'</span>)-&gt;format(<span class="tok-s">'Y/m/d'</span>);       <span class="tok-c">// 1404/01/01</span>
+var_dump(is_national_code(<span class="tok-s">'0013542419'</span>));         <span class="tok-c">// bool(true)</span>
+<span class="tok-k">echo</span> \RtlyKit\to_persian_digits(<span class="tok-n">1404</span>);            <span class="tok-c">// ۱۴۰۴</span>
+
+<span class="tok-c">// Several at once (PHP group use):</span>
+<span class="tok-k">use</span> <span class="tok-k">function</span> RtlyKit\{hdate, hebrew_date, number_to_words};
+<span class="tok-k">echo</span> hdate(<span class="tok-s">'2025-03-21'</span>)-&gt;format(<span class="tok-s">'Y/m/d'</span>);       <span class="tok-c">// 1446/09/21</span>
+<span class="tok-k">echo</span> hebrew_date(<span class="tok-s">'2025-03-21'</span>)-&gt;format(<span class="tok-s">'Y/m/d'</span>); <span class="tok-c">// 5785/06/21</span>
+<span class="tok-k">echo</span> number_to_words(<span class="tok-n">1404</span>);                       <span class="tok-c">// یک هزار و چهارصد و چهار</span></code></pre>
+<p>The helpers are thin wrappers: each calls the matching class, so you can always use the class directly when you need more control (for example <code>Jalali::create()</code> with a time zone).</p>
+
+<h2 id="reference">All helpers<a class="anchor" href="#reference" aria-label="Link to this section">#</a></h2>
+<p>Parameter and return types are exactly those of the source. <code>mixed</code> inputs never throw: invalid input simply gives <code>false</code> or an invalid <code>Result</code>.</p>
+
+<h3 id="reference-calendar">Calendars<a class="anchor" href="#reference-calendar" aria-label="Link to this section">#</a></h3>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Table"><table>
+<thead><tr><th scope="col">Helper</th><th scope="col">Signature</th><th scope="col">Delegates to</th></tr></thead>
+<tbody>
+<tr><td><code>jdate</code></td><td><code>jdate(DateTimeInterface|string|int|null $time = null, ?DateTimeZone $timezone = null): Jalali</code></td><td><code>Jalali::make()</code>, see <a href="jalali.html">Jalali</a></td></tr>
+<tr><td><code>hdate</code></td><td><code>hdate(DateTimeInterface|string|int|null $time = null, ?DateTimeZone $timezone = null): Hijri</code></td><td><code>Hijri::make()</code>, see <a href="hijri.html">Hijri</a></td></tr>
+<tr><td><code>hebrew_date</code></td><td><code>hebrew_date(DateTimeInterface|string|int|null $time = null, ?DateTimeZone $timezone = null): Hebrew</code></td><td><code>Hebrew::make()</code>, see <a href="hebrew.html">Hebrew</a></td></tr>
+</tbody>
+</table></div>
+
+<h3 id="reference-digits">Digits and numbers<a class="anchor" href="#reference-digits" aria-label="Link to this section">#</a></h3>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Table"><table>
+<thead><tr><th scope="col">Helper</th><th scope="col">Signature</th><th scope="col">Example</th></tr></thead>
+<tbody>
+<tr><td><code>to_persian_digits</code></td><td><code>(string|int|float $value): string</code></td><td><code>to_persian_digits(1404)</code> gives <code>۱۴۰۴</code></td></tr>
+<tr><td><code>to_english_digits</code></td><td><code>(string $value): string</code></td><td><code>to_english_digits('۱۴۰۴')</code> gives <code>1404</code></td></tr>
+<tr><td><code>to_persian</code></td><td><code>(string|int|float $value): string</code></td><td>short alias of <code>to_persian_digits</code>; <code>to_persian('12.5')</code> gives <code>۱۲.۵</code></td></tr>
+<tr><td><code>to_english</code></td><td><code>(string $value): string</code></td><td>short alias of <code>to_english_digits</code>; <code>to_english('٣٤')</code> gives <code>34</code></td></tr>
+<tr><td><code>number_to_words</code></td><td><code>(int|float|string $number, string $locale = 'fa'): string</code></td><td><code>number_to_words(25, 'ar')</code> gives <code>خمسة وعشرون</code></td></tr>
+<tr><td><code>format_number</code></td><td><code>(int|float|string $number): string</code></td><td><code>format_number(1234567)</code> gives <code>۱٬۲۳۴٬۵۶۷</code></td></tr>
+<tr><td><code>ordinal</code></td><td><code>(int|float $number): string</code></td><td><code>ordinal(3)</code> gives <code>سوم</code></td></tr>
+</tbody>
+</table></div>
+<p>See <a href="digits-and-format.html">digits and formatting</a> and <a href="number-words.html">number words</a>.</p>
+
+<h3 id="reference-text">Text<a class="anchor" href="#reference-text" aria-label="Link to this section">#</a></h3>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Table"><table>
+<thead><tr><th scope="col">Helper</th><th scope="col">Signature</th><th scope="col">Example</th></tr></thead>
+<tbody>
+<tr><td><code>normalize_text</code></td><td><code>(string $text): string</code></td><td><code>normalize_text('كتاب ي')</code> gives <code>کتاب ی</code> (Arabic kaf and yeh become Persian)</td></tr>
+<tr><td><code>contains_rtl</code></td><td><code>(string $text): bool</code></td><td><code>contains_rtl('abc سلام')</code> gives <code>true</code></td></tr>
+<tr><td><code>text_direction</code></td><td><code>(string $text): string</code></td><td><code>text_direction('سلام')</code> gives <code>rtl</code>, <code>text_direction('hello')</code> gives <code>ltr</code></td></tr>
+</tbody>
+</table></div>
+<p>See <a href="text-tools.html">text tools</a>.</p>
+
+<h3 id="reference-bool">Validation: yes/no<a class="anchor" href="#reference-bool" aria-label="Link to this section">#</a></h3>
+<p>Each returns <code>bool</code> and accepts <code>mixed</code>.</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Table"><table>
+<thead><tr><th scope="col">Helper</th><th scope="col">Signature</th><th scope="col">Example</th></tr></thead>
+<tbody>
+<tr><td><code>is_national_code</code></td><td><code>(mixed $value): bool</code></td><td><code>is_national_code('0013542419')</code> gives <code>true</code></td></tr>
+<tr><td><code>is_sheba</code></td><td><code>(mixed $value): bool</code></td><td><code>is_sheba('IR062960000000100324200001')</code> gives <code>true</code></td></tr>
+<tr><td><code>is_bank_card</code></td><td><code>(mixed $value): bool</code></td><td><code>is_bank_card('6037997535328737')</code> gives <code>true</code></td></tr>
+<tr><td><code>is_mobile</code></td><td><code>(mixed $value): bool</code></td><td><code>is_mobile('09123456789')</code> gives <code>true</code></td></tr>
+<tr><td><code>is_postal_code</code></td><td><code>(mixed $value): bool</code></td><td><code>is_postal_code('1676543210')</code> gives <code>true</code></td></tr>
+<tr><td><code>is_vehicle_plate</code></td><td><code>(mixed $value): bool</code></td><td><code>is_vehicle_plate('12ب345-67')</code> gives <code>true</code></td></tr>
+</tbody>
+</table></div>
+
+<h3 id="reference-result">Validation: structured result<a class="anchor" href="#reference-result" aria-label="Link to this section">#</a></h3>
+<p>Each returns a <code>RtlyKit\Validation\Result</code> with the methods <code>valid()</code>, <code>invalid()</code>, <code>isValid()</code>, <code>errors()</code> and <code>details()</code>. See <a href="validators-overview.html">validators overview</a>.</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Table"><table>
+<thead><tr><th scope="col">Helper</th><th scope="col">Signature</th></tr></thead>
+<tbody>
+<tr><td><code>validate_national_code</code></td><td><code>(mixed $value): Result</code></td></tr>
+<tr><td><code>validate_sheba</code></td><td><code>(mixed $value): Result</code></td></tr>
+<tr><td><code>validate_bank_card</code></td><td><code>(mixed $value): Result</code></td></tr>
+<tr><td><code>validate_mobile</code></td><td><code>(mixed $value): Result</code></td></tr>
+<tr><td><code>validate_postal_code</code></td><td><code>(mixed $value): Result</code></td></tr>
+<tr><td><code>validate_vehicle_plate</code></td><td><code>(mixed $value): Result</code></td></tr>
+</tbody>
+</table></div>
+<pre tabindex="0"><code class="language-php"><span class="tok-v">$r</span> = \RtlyKit\validate_national_code(<span class="tok-s">'1234567890'</span>);
+var_dump(<span class="tok-v">$r</span>-&gt;isValid());   <span class="tok-c">// bool(false)</span></code></pre>
+
+<h3 id="reference-dates">Holidays and prayer times<a class="anchor" href="#reference-dates" aria-label="Link to this section">#</a></h3>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Table"><table>
+<thead><tr><th scope="col">Helper</th><th scope="col">Signature</th><th scope="col">Notes</th></tr></thead>
+<tbody>
+<tr><td><code>is_iran_holiday</code></td><td><code>(Jalali|int $year, ?int $month = null, ?int $day = null): bool</code></td><td>wraps <code>IranHolidays::isHoliday()</code>; <code>is_iran_holiday(1404, 11, 22)</code> gives <code>true</code>. See <a href="holidays.html">holidays</a>.</td></tr>
+<tr><td><code>prayer_times</code></td><td><code>(string $city = 'tehran', string $method = 'Tehran'): array</code></td><td>times for today in the city's time zone, as <code>{"fajr", "sunrise", "dhuhr", "asr", "maghrib", "isha"}</code>. Unknown city or method throws <code>InvalidPrayerConfigException</code>. See <a href="prayer-times.html">prayer times</a>.</td></tr>
+</tbody>
+</table></div>
+<p>Together that is 3 + 7 + 3 + 6 + 6 + 2 = 27 helpers, the same list that <code>Globals::NAMES</code> holds.</p>
+
+<h2 id="globals">Opt-in global names: Globals::register()<a class="anchor" href="#globals" aria-label="Link to this section">#</a></h2>
+<p>If you prefer the short global names (for example in a legacy code base, a template engine, or a script), call this once during bootstrap:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-v">$skipped</span> = \RtlyKit\Globals::register();</code></pre>
+<p>What it guarantees:</p>
+<ul>
+<li><strong>Only free names are defined.</strong> A name is defined only if no function with that name exists. An existing function is never overwritten.</li>
+<li><strong>It reports what it skipped.</strong> The return value is a <code>list&lt;string&gt;</code> of the names that were <em>not</em> defined because another function already uses them. An empty list means everything was registered.</li>
+<li><strong>It never throws</strong> and never triggers a redeclaration error, whatever the situation.</li>
+<li><strong>It is idempotent.</strong> Call it as many times as you like. A name that is RTLY-Kit's own earlier definition is not reported as skipped, so a second call returns the same list as the first.</li>
+<li><strong>Namespaced functions always work</strong>, whether or not a global name was skipped.</li>
+<li><code>\RtlyKit\Globals::NAMES</code> is the constant listing all 27 names.</li>
+</ul>
+
+<h3 id="collision">Collision demo<a class="anchor" href="#collision" aria-label="Link to this section">#</a></h3>
+<p>The application already has its own <code>is_mobile()</code> (a user-agent check). The package does not break it, does not overwrite it, and tells you about it:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">require</span> <span class="tok-s">'vendor/autoload.php'</span>;
+
+<span class="tok-c">// The application already owns a global function with the same name.</span>
+<span class="tok-k">function</span> is_mobile(string <span class="tok-v">$ua</span>): bool { <span class="tok-k">return</span> str_contains(<span class="tok-v">$ua</span>, <span class="tok-s">'Mobi'</span>); }
+
+<span class="tok-v">$skipped</span> = \RtlyKit\Globals::register();
+var_dump(<span class="tok-v">$skipped</span>);
+<span class="tok-c">// array(1) { [0]=&gt; string(9) "is_mobile" }</span>
+
+var_dump(is_mobile(<span class="tok-s">'Mozilla/5.0 (iPhone) Mobile'</span>));   <span class="tok-c">// bool(true)   the application's own function</span>
+var_dump(\RtlyKit\is_mobile(<span class="tok-s">'09123456789'</span>));           <span class="tok-c">// bool(true)   the Iranian phone-number check, always available</span>
+<span class="tok-k">echo</span> jdate(<span class="tok-s">'2025-03-21'</span>)-&gt;format(<span class="tok-s">'Y/m/d'</span>), <span class="tok-s">"\n"</span>;       <span class="tok-c">// 1404/01/01   free name: registered as a global</span>
+var_dump(\RtlyKit\Globals::register());                <span class="tok-c">// idempotent: same list, array(1) { [0]=&gt; string(9) "is_mobile" }</span></code></pre>
+<p>A sensible policy is to log the list and carry on:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-v">$skipped</span> = \RtlyKit\Globals::register();
+<span class="tok-k">if</span> (<span class="tok-v">$skipped</span> !== []) {
+    error_log(<span class="tok-s">'RTLY-Kit globals skipped: '</span> . implode(<span class="tok-s">', '</span>, <span class="tok-v">$skipped</span>));
+}</code></pre>
+<div class="callout note" role="note"><strong>Note.</strong> A PHP file's own top-level function declarations are hoisted, so a global that is declared later in the same file as the call still counts as "already defined". If a name matters to you, declare it before calling <code>register()</code>, or just rely on the namespaced function.</div>
+
+<h2 id="choosing">Which style should I use?<a class="anchor" href="#choosing" aria-label="Link to this section">#</a></h2>
+<ul>
+<li><strong>Libraries and new applications:</strong> namespaced imports (<code>use function RtlyKit\jdate;</code>). They are explicit, greppable and collision-free.</li>
+<li><strong>Legacy code, scripts and templates:</strong> call <code>Globals::register()</code> once and keep the old short style.</li>
+<li><strong>Laravel:</strong> either way; the provider adds no globals, so call <code>Globals::register()</code> in <code>AppServiceProvider::register()</code> if you want them, or import the namespaced ones in Blade and classes.</li>
+</ul>
+<nav class="reading-footer" aria-label="Previous and next page"><a class="prev" rel="prev" href="laravel-validation-and-cast.html"><small>Previous</small>Validation rules and Eloquent cast</a><a class="next" rel="next" href="error-handling.html"><small>Next</small>Error handling</a></nav>
+</article>
+<nav class="toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#why">Why helpers live in a namespace</a></li><li><a href="#import">Using the helpers</a></li><li><a href="#reference">All helpers</a><ol><li><a href="#reference-calendar">Calendars</a></li><li><a href="#reference-digits">Digits and numbers</a></li><li><a href="#reference-text">Text</a></li><li><a href="#reference-bool">Validation: yes/no</a></li><li><a href="#reference-result">Validation: structured result</a></li><li><a href="#reference-dates">Holidays and prayer times</a></li></ol></li><li><a href="#globals">Opt-in global names: Globals::register()</a><ol><li><a href="#collision">Collision demo</a></li></ol></li><li><a href="#choosing">Which style should I use?</a></li></ol></nav>
+</div>
+</main>
+<footer class="footer"><div class="shell footer-inner"><p>RTLY-Kit user guide · MIT licensed</p><div><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">Repository on GitHub &#8599;</a><a href="https://github.com/ehsanenaloo/RTLY-Kit/issues" rel="noopener noreferrer">Report an issue &#8599;</a></div></div></footer>
+</body>
+</html>

@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en" dir="ltr" data-i18n="{&quot;dark&quot;:&quot;Dark mode&quot;,&quot;light&quot;:&quot;Light mode&quot;,&quot;to_dark&quot;:&quot;Switch to dark theme&quot;,&quot;to_light&quot;:&quot;Switch to light theme&quot;,&quot;copy&quot;:&quot;Copy&quot;,&quot;copied&quot;:&quot;Copied&quot;,&quot;copy_failed&quot;:&quot;Selected. Press copy.&quot;,&quot;copy_label&quot;:&quot;Copy the code example above&quot;,&quot;no_results&quot;:&quot;No guide matches. Try a shorter word.&quot;,&quot;loading&quot;:&quot;The search index is still loading. Try again in a moment.&quot;,&quot;results&quot;:&quot;Search results&quot;,&quot;status&quot;:&quot;%d of %d guides shown&quot;,&quot;suggest&quot;:&quot;English version&quot;,&quot;search_label&quot;:&quot;Search the guide&quot;,&quot;search_placeholder&quot;:&quot;Search the guide&quot;}" data-search-index="search-index.js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prayer times | RTLY-Kit User guide</title>
+<meta name="description" content="Compute Fajr, sunrise, Dhuhr, Asr, Maghrib and Isha for any location with six calculation methods, with an honest per-method verification status.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="Prayer times | RTLY-Kit User guide">
+<meta property="og:description" content="Compute Fajr, sunrise, Dhuhr, Asr, Maghrib and Isha for any location with six calculation methods, with an honest per-method verification status.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="en_US">
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+<link rel="alternate" hreflang="fa" href="../fa/prayer-times.html">
+<link rel="stylesheet" href="../styles.css">
+<script>try{var t=localStorage.getItem("rtly-docs-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<script defer src="../app.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a><header class="site-header"><div class="shell header-inner"><a class="brand" href="index.html"><img src="../assets/logo.svg" width="34" height="34" alt=""><span><span class="name">RTLY-Kit</span><small>User guide</small></span></a><nav class="top-nav" aria-label="Primary"><a href="index.html">Overview</a><a href="quick-start.html">Quick start</a><a href="all.html">All guides</a><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">GitHub &#8599;</a></nav><div class="header-tools"><span data-search-host></span><button type="button" class="icon-button" data-theme-toggle hidden>Theme</button><a class="icon-button" href="../fa/prayer-times.html" hreflang="fa" lang="fa" aria-label="تغییر به فارسی">فارسی</a></div></div></header>
+<main id="main">
+<div class="shell page-intro"><nav class="breadcrumbs" aria-label="Breadcrumb"><ol><li><a href="index.html">Home</a></li><li><a href="all.html#group-dates-and-times">Holidays and prayer times</a></li><li aria-current="page">Prayer times</li></ol></nav><h1>Prayer times</h1><p class="lead">Compute Fajr, sunrise, Dhuhr, Asr, Maghrib and Isha for any location with six calculation methods, with an honest per-method verification status.</p></div>
+<div class="shell doc-layout has-toc">
+<aside class="sidebar"><details open><summary>Browse the guides</summary><nav aria-label="Guides"><a href="all.html">All guides</a><p>Getting started</p><a href="quick-start.html">Quick start</a><a href="installation.html">Installation</a><p>Calendars</p><a href="jalali.html">Jalali calendar</a><a href="hijri.html">Hijri calendar</a><a href="hebrew.html">Hebrew calendar</a><a href="convert-and-compare.html">Convert and compare dates</a><a href="carbon-macros.html">Carbon macros</a><p>Validation</p><a href="validators-overview.html">Validators overview</a><a href="national-code.html">National code</a><a href="sheba-and-bank-card.html">Sheba and bank card</a><a href="mobile-postal-plate.html">Mobile, postal code and plate</a><p>Numbers and text</p><a href="digits-and-format.html">Digits and number formatting</a><a href="number-words.html">Number to words</a><a href="text-tools.html">Text tools</a><p>Holidays and prayer times</p><a href="holidays.html">Iranian holidays</a><a href="prayer-times.html" aria-current="page">Prayer times</a><p>Laravel</p><a href="laravel-setup.html">Laravel setup</a><a href="laravel-validation-and-cast.html">Validation rules and Eloquent cast</a><p>Reference</p><a href="helpers-and-globals.html">Helpers and globals</a><a href="error-handling.html">Error handling</a><a href="api-stability.html">API stability</a><a href="accuracy-and-data.html">Accuracy and data</a><a href="benchmarks.html">Benchmarks</a><a href="limits.html">Limits</a><a href="troubleshooting-faq.html">Troubleshooting and FAQ</a><a href="upgrade.html">Upgrade guide</a></nav></details></aside>
+<article class="prose">
+<details class="toc-inline"><summary>On this page</summary><ol><li><a href="#overview">Overview</a></li><li><a href="#quick">Quick start</a></li><li><a href="#construct">Creating a calculator</a></li><li><a href="#methods">Methods and angles</a></li><li><a href="#asr">Asr schools</a></li><li><a href="#makkah-isha">Makkah: Isha in Ramadan</a></li><li><a href="#elevation">Elevation</a></li><li><a href="#dst">Time zones and daylight saving</a></li><li><a href="#next">The next prayer</a></li><li><a href="#high-latitude">High latitudes</a></li><li><a href="#errors">Exceptions</a></li><li><a href="#verification">Verification status</a></li></ol></details>
+<h2 id="overview">Overview<a class="anchor" href="#overview" aria-label="Link to this section">#</a></h2>
+<p><code>RtlyKit\Prayer\PrayerTimes</code> calculates the six daily times from astronomical equations, with no network access and no data file. The solar declination and equation of time come from the low-precision series in Jean Meeus, <em>Astronomical Algorithms</em> (the same equations as the NOAA Solar Calculator). The hour angle comes from spherical trigonometry, Asr from the shadow-length factor, and sunrise/sunset from an altitude of -0.833 degrees (refraction plus the sun's semi-diameter). The Fajr, Maghrib and Isha angles are the published conventions of each method, not values derived from other software.</p>
+<p>Results are strings in <code>HH:MM</code> format in the local time of the calculator's time zone, rounded to the nearest minute.</p>
+
+<h2 id="quick">Quick start<a class="anchor" href="#quick" aria-label="Link to this section">#</a></h2>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">use</span> RtlyKit\Prayer\PrayerTimes;
+
+<span class="tok-v">$tz</span>  = <span class="tok-k">new</span> DateTimeZone(<span class="tok-s">'Asia/Tehran'</span>);
+<span class="tok-v">$day</span> = <span class="tok-k">new</span> DateTimeImmutable(<span class="tok-s">'2026-03-21 12:00'</span>, <span class="tok-v">$tz</span>);
+
+<span class="tok-v">$times</span> = PrayerTimes::forCity(<span class="tok-s">'tehran'</span>)-&gt;getTimes(<span class="tok-v">$day</span>);
+<span class="tok-k">echo</span> json_encode(<span class="tok-v">$times</span>);
+<span class="tok-c">// {"fajr":"04:43","sunrise":"06:07","dhuhr":"12:12","asr":"15:39","maghrib":"18:35","isha":"19:22"}</span></code></pre>
+<p>If you omit the date, <code>getTimes()</code> uses today in the calculator's time zone. The date you pass selects the <em>local calendar day</em> of that zone. There is also a namespaced shortcut that returns the same array for today: <code>\RtlyKit\prayer_times('tehran', 'Tehran')</code> (see <a href="helpers-and-globals.html">helpers and globals</a>).</p>
+
+<h2 id="construct">Creating a calculator<a class="anchor" href="#construct" aria-label="Link to this section">#</a></h2>
+<p>There are two ways to build one.</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-c">// 1) A built-in city: coordinates and time zone are filled in.</span>
+<span class="tok-v">$p</span> = PrayerTimes::forCity(<span class="tok-s">'mecca'</span>, PrayerTimes::METHOD_MAKKAH);
+
+<span class="tok-c">// 2) Your own coordinates.</span>
+<span class="tok-v">$p</span> = <span class="tok-k">new</span> PrayerTimes(
+    latitude:  <span class="tok-n">35.6892</span>,
+    longitude: <span class="tok-n">51.3890</span>,
+    method:    PrayerTimes::METHOD_TEHRAN,   <span class="tok-c">// default</span>
+    asrFactor: PrayerTimes::ASR_STANDARD,    <span class="tok-c">// default</span>
+    timezone:  <span class="tok-k">new</span> DateTimeZone(<span class="tok-s">'Asia/Tehran'</span>), <span class="tok-c">// default: date_default_timezone_get()</span>
+    elevation: <span class="tok-n">0.0</span>,                          <span class="tok-c">// metres, default 0</span>
+);</code></pre>
+<p><code>forCity()</code> knows these names (case-insensitive): <code>tehran</code>, <code>mashhad</code>, <code>isfahan</code>, <code>shiraz</code>, <code>tabriz</code>, <code>qom</code>, <code>mecca</code>, <code>medina</code>, <code>riyadh</code>, <code>istanbul</code>, <code>cairo</code>, <code>dubai</code>, <code>baghdad</code>, <code>jakarta</code>. Anything else throws, so for other cities use the constructor with your own coordinates.</p>
+
+<h2 id="methods">Methods and angles<a class="anchor" href="#methods" aria-label="Link to this section">#</a></h2>
+<p>The method decides the sun's depression angle for Fajr and Isha (and, for Tehran, Maghrib). Use the class constants rather than strings.</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Table"><table>
+<thead><tr><th scope="col">Constant</th><th scope="col">Fajr</th><th scope="col">Maghrib</th><th scope="col">Isha</th></tr></thead>
+<tbody>
+<tr><td><code>METHOD_TEHRAN</code> (<code>Tehran</code>, default)</td><td>17.7 degrees</td><td>sun at 4.5 degrees below the horizon</td><td>14 degrees</td></tr>
+<tr><td><code>METHOD_MWL</code> (<code>MWL</code>)</td><td>18 degrees</td><td>sunset</td><td>17 degrees</td></tr>
+<tr><td><code>METHOD_ISNA</code> (<code>ISNA</code>)</td><td>15 degrees</td><td>sunset</td><td>15 degrees</td></tr>
+<tr><td><code>METHOD_EGYPT</code> (<code>Egypt</code>)</td><td>19.5 degrees</td><td>sunset</td><td>17.5 degrees</td></tr>
+<tr><td><code>METHOD_MAKKAH</code> (<code>Makkah</code>)</td><td>18.5 degrees</td><td>sunset</td><td>Maghrib + 90 min (+120 min in Ramadan)</td></tr>
+<tr><td><code>METHOD_KARACHI</code> (<code>Karachi</code>)</td><td>18 degrees</td><td>sunset</td><td>18 degrees</td></tr>
+</tbody>
+</table></div>
+<p>The same Tehran day computed with each method (only Fajr, Maghrib and Isha differ; sunrise, Dhuhr and Asr do not depend on the method):</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">foreach</span> ([<span class="tok-s">'Tehran'</span>, <span class="tok-s">'MWL'</span>, <span class="tok-s">'ISNA'</span>, <span class="tok-s">'Egypt'</span>, <span class="tok-s">'Makkah'</span>, <span class="tok-s">'Karachi'</span>] <span class="tok-k">as</span> <span class="tok-v">$m</span>) {
+    <span class="tok-k">echo</span> str_pad(<span class="tok-v">$m</span>, <span class="tok-n">8</span>), json_encode(PrayerTimes::forCity(<span class="tok-s">'tehran'</span>, <span class="tok-v">$m</span>)-&gt;getTimes(<span class="tok-v">$day</span>)), <span class="tok-s">"\n"</span>;
+}
+<span class="tok-c">// Tehran  {"fajr":"04:43","sunrise":"06:07","dhuhr":"12:12","asr":"15:39","maghrib":"18:35","isha":"19:22"}</span>
+<span class="tok-c">// MWL     {"fajr":"04:42","sunrise":"06:07","dhuhr":"12:12","asr":"15:39","maghrib":"18:17","isha":"19:37"}</span>
+<span class="tok-c">// ISNA    {"fajr":"04:57","sunrise":"06:07","dhuhr":"12:12","asr":"15:39","maghrib":"18:17","isha":"19:27"}</span>
+<span class="tok-c">// Egypt   {"fajr":"04:34","sunrise":"06:07","dhuhr":"12:12","asr":"15:39","maghrib":"18:17","isha":"19:40"}</span>
+<span class="tok-c">// Makkah  {"fajr":"04:39","sunrise":"06:07","dhuhr":"12:12","asr":"15:39","maghrib":"18:17","isha":"19:47"}</span>
+<span class="tok-c">// Karachi {"fajr":"04:42","sunrise":"06:07","dhuhr":"12:12","asr":"15:39","maghrib":"18:17","isha":"19:42"}</span></code></pre>
+<p>Dhuhr is solar noon (the sun crossing the meridian); no safety offset is added to any time.</p>
+
+<h2 id="asr">Asr schools<a class="anchor" href="#asr" aria-label="Link to this section">#</a></h2>
+<p>Asr begins when an object's shadow equals its noon shadow plus a multiple of its height. <code>ASR_STANDARD</code> (1, one times the height) is used by the Shafi'i, Maliki, Hanbali and Ja'fari schools; <code>ASR_HANAFI</code> (2, twice the height) gives a later time.</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-v">$hanafi</span> = PrayerTimes::forCity(<span class="tok-s">'tehran'</span>, <span class="tok-s">'Tehran'</span>, PrayerTimes::ASR_HANAFI);
+<span class="tok-k">echo</span> <span class="tok-v">$hanafi</span>-&gt;getTimes(<span class="tok-v">$day</span>)[<span class="tok-s">'asr'</span>];   <span class="tok-c">// 16:32  (standard: 15:39)</span></code></pre>
+
+<h2 id="makkah-isha">Makkah: Isha in Ramadan<a class="anchor" href="#makkah-isha" aria-label="Link to this section">#</a></h2>
+<p>The Umm al-Qura convention sets Isha at 90 minutes after Maghrib, and at 120 minutes during Ramadan. The calculator picks 120 when the local calendar date falls in Ramadan of the package's own Umm al-Qura Hijri table (month 9), and 90 otherwise. The decision follows the civil date, not a sunset-based Islamic day.</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-v">$mk</span> = PrayerTimes::forCity(<span class="tok-s">'mecca'</span>, <span class="tok-s">'Makkah'</span>);
+<span class="tok-k">foreach</span> ([<span class="tok-s">'2026-02-20'</span>, <span class="tok-s">'2026-03-01'</span>, <span class="tok-s">'2026-03-21'</span>] <span class="tok-k">as</span> <span class="tok-v">$s</span>) {
+    <span class="tok-v">$t</span> = <span class="tok-v">$mk</span>-&gt;getTimes(<span class="tok-k">new</span> DateTimeImmutable(<span class="tok-v">$s</span>, <span class="tok-k">new</span> DateTimeZone(<span class="tok-s">'Asia/Riyadh'</span>)));
+    <span class="tok-k">echo</span> <span class="tok-v">$s</span>, <span class="tok-s">' maghrib '</span>, <span class="tok-v">$t</span>[<span class="tok-s">'maghrib'</span>], <span class="tok-s">' isha '</span>, <span class="tok-v">$t</span>[<span class="tok-s">'isha'</span>], <span class="tok-s">"\n"</span>;
+}
+<span class="tok-c">// 2026-02-20 maghrib 18:21 isha 20:21   (+120, Ramadan)</span>
+<span class="tok-c">// 2026-03-01 maghrib 18:25 isha 20:25   (+120, Ramadan)</span>
+<span class="tok-c">// 2026-03-21 maghrib 18:32 isha 20:02   (+90, after Ramadan)</span></code></pre>
+
+<h2 id="elevation">Elevation<a class="anchor" href="#elevation" aria-label="Link to this section">#</a></h2>
+<p>The <code>elevation</code> argument is the observer's height in metres. It lowers the sunrise/sunset altitude by the geometric dip <code>0.0347 * sqrt(h)</code> degrees, so sunrise is earlier and sunset later on a mountain. Negative values are treated as 0. It affects sunrise, sunset and the times derived from sunset only.</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-v">$a</span> = <span class="tok-k">new</span> PrayerTimes(<span class="tok-n">35.6892</span>, <span class="tok-n">51.3890</span>, <span class="tok-s">'Tehran'</span>, <span class="tok-n">1</span>, <span class="tok-v">$tz</span>);
+<span class="tok-v">$b</span> = <span class="tok-k">new</span> PrayerTimes(<span class="tok-n">35.6892</span>, <span class="tok-n">51.3890</span>, <span class="tok-s">'Tehran'</span>, <span class="tok-n">1</span>, <span class="tok-v">$tz</span>, <span class="tok-n">1500.0</span>);
+<span class="tok-v">$d</span> = <span class="tok-k">new</span> DateTimeImmutable(<span class="tok-s">'2026-06-21'</span>, <span class="tok-v">$tz</span>);
+<span class="tok-k">echo</span> <span class="tok-v">$a</span>-&gt;getTimes(<span class="tok-v">$d</span>)[<span class="tok-s">'sunrise'</span>], <span class="tok-s">"\n"</span>; <span class="tok-c">// 04:49</span>
+<span class="tok-k">echo</span> <span class="tok-v">$b</span>-&gt;getTimes(<span class="tok-v">$d</span>)[<span class="tok-s">'sunrise'</span>], <span class="tok-s">"\n"</span>; <span class="tok-c">// 04:41</span></code></pre>
+<p>For the Tehran method, Maghrib is defined by the 4.5-degree angle, not by sunset, so it does not change with elevation (19:45 in both cases above).</p>
+
+<h2 id="dst">Time zones and daylight saving<a class="anchor" href="#dst" aria-label="Link to this section">#</a></h2>
+<p>Each time is converted using the zone's real UTC offset at that instant, so a daylight-saving change in the middle of the year is handled without any extra work. Berlin changes on 2026-03-29:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-v">$tzb</span> = <span class="tok-k">new</span> DateTimeZone(<span class="tok-s">'Europe/Berlin'</span>);
+<span class="tok-v">$ber</span> = <span class="tok-k">new</span> PrayerTimes(<span class="tok-n">52.52</span>, <span class="tok-n">13.405</span>, <span class="tok-s">'MWL'</span>, <span class="tok-n">1</span>, <span class="tok-v">$tzb</span>);
+<span class="tok-k">foreach</span> ([<span class="tok-s">'2026-03-28'</span>, <span class="tok-s">'2026-03-29'</span>] <span class="tok-k">as</span> <span class="tok-v">$s</span>) {
+    <span class="tok-k">echo</span> <span class="tok-v">$s</span>, <span class="tok-s">' '</span>, json_encode(<span class="tok-v">$ber</span>-&gt;getTimes(<span class="tok-k">new</span> DateTimeImmutable(<span class="tok-v">$s</span>, <span class="tok-v">$tzb</span>))), <span class="tok-s">"\n"</span>;
+}
+<span class="tok-c">// 2026-03-28 {"fajr":"03:51","sunrise":"05:50","dhuhr":"12:11","asr":"15:39","maghrib":"18:34","isha":"20:26"}</span>
+<span class="tok-c">// 2026-03-29 {"fajr":"04:48","sunrise":"06:48","dhuhr":"13:11","asr":"16:40","maghrib":"19:35","isha":"21:28"}</span></code></pre>
+<p>Pass the zone that your users read the clock in. If you leave it out, <code>date_default_timezone_get()</code> is used.</p>
+
+<h2 id="next">The next prayer<a class="anchor" href="#next" aria-label="Link to this section">#</a></h2>
+<p><code>nextPrayer()</code> returns the first prayer strictly after a moment (default: now). After Isha it rolls over to tomorrow's Fajr, and <code>date</code> tells you which day the returned prayer falls on.</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-v">$p</span> = PrayerTimes::forCity(<span class="tok-s">'tehran'</span>);
+<span class="tok-k">echo</span> json_encode(<span class="tok-v">$p</span>-&gt;nextPrayer(<span class="tok-k">new</span> DateTimeImmutable(<span class="tok-s">'2026-03-21 10:00'</span>, <span class="tok-v">$tz</span>)));
+<span class="tok-c">// {"name":"dhuhr","time":"12:12","date":"2026-03-21"}</span>
+<span class="tok-k">echo</span> json_encode(<span class="tok-v">$p</span>-&gt;nextPrayer(<span class="tok-k">new</span> DateTimeImmutable(<span class="tok-s">'2026-03-21 20:00'</span>, <span class="tok-v">$tz</span>)));
+<span class="tok-c">// {"name":"fajr","time":"04:42","date":"2026-03-22"}</span></code></pre>
+<p>Note that the sunrise counts as an entry in this sequence (the order is fajr, sunrise, dhuhr, asr, maghrib, isha).</p>
+
+<h2 id="high-latitude">High latitudes<a class="anchor" href="#high-latitude" aria-label="Link to this section">#</a></h2>
+<p>Far from the equator the sun may never reach an angle (no real night in summer). The affected times are returned as <code>null</code> rather than a misleading clamped value. Tromso, 21 June:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-v">$osl</span> = <span class="tok-k">new</span> PrayerTimes(<span class="tok-n">69.65</span>, <span class="tok-n">18.96</span>, <span class="tok-s">'MWL'</span>, <span class="tok-n">1</span>, <span class="tok-k">new</span> DateTimeZone(<span class="tok-s">'Europe/Oslo'</span>));
+<span class="tok-k">echo</span> json_encode(<span class="tok-v">$osl</span>-&gt;getTimes(<span class="tok-k">new</span> DateTimeImmutable(<span class="tok-s">'2026-06-21'</span>, <span class="tok-k">new</span> DateTimeZone(<span class="tok-s">'Europe/Oslo'</span>))));
+<span class="tok-c">// {"fajr":null,"sunrise":null,"dhuhr":"12:46","asr":"17:58","maghrib":null,"isha":null}</span></code></pre>
+<p>Handle the <code>null</code> case in your UI. The library does not apply a high-latitude rule such as "angle-based" or "one-seventh of the night".</p>
+
+<h2 id="errors">Exceptions<a class="anchor" href="#errors" aria-label="Link to this section">#</a></h2>
+<p>Invalid configuration throws <code>InvalidPrayerConfigException</code>, which extends <code>RtlyKitException</code> (and therefore <code>\InvalidArgumentException</code>), for example:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">new</span> PrayerTimes(<span class="tok-n">35</span>, <span class="tok-n">51</span>, <span class="tok-s">'Foo'</span>);
+<span class="tok-c">// Unknown calculation method: Foo. Available: MWL, ISNA, Egypt, Makkah, Karachi, Tehran</span>
+<span class="tok-k">new</span> PrayerTimes(<span class="tok-n">35</span>, <span class="tok-n">51</span>, <span class="tok-s">'MWL'</span>, <span class="tok-n">3</span>);
+<span class="tok-c">// Invalid Asr factor: 3 (use 1 or 2)</span>
+PrayerTimes::forCity(<span class="tok-s">'paris'</span>);
+<span class="tok-c">// Unknown city: paris</span></code></pre>
+<p>See <a href="error-handling.html">Error handling</a> for catching all library errors with one <code>catch</code>.</p>
+
+<h2 id="verification">Verification status<a class="anchor" href="#verification" aria-label="Link to this section">#</a></h2>
+<p>The angles are conventions, so the meaningful check is to compare our output for a city and date with the timetable published by the authority that defines the method. Tolerance used: within about 1 minute counts as agreement. Aggregator websites are deliberately not counted as verification, because they use the same published angles.</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Table"><table>
+<thead><tr><th scope="col">Method</th><th scope="col">Status</th><th scope="col">Maximum deviation</th><th scope="col">Reference and gaps</th></tr></thead>
+<tbody>
+<tr><td>Tehran</td><td>Verified for Fajr, sunrise, Dhuhr and Maghrib</td><td>1 min (Shiraz), 0 elsewhere</td><td>Institute of Geophysics, University of Tehran, tables for 1405: Tehran, Mashhad, Isfahan and Shiraz on four dates. The tables publish no Asr and no Isha, so the 14-degree Isha and Asr are <strong>not covered</strong> by a reference table.</td></tr>
+<tr><td>Makkah</td><td>Verified, including Ramadan Isha</td><td>1 min</td><td>Umm Al-Qura Calendar: five dates outside Ramadan, and two Ramadan 1447 dates that confirm Isha = Maghrib + 120.</td></tr>
+<tr><td>Sunrise and sunset</td><td>Verified</td><td>1 min</td><td>11 city/date pairs against timeanddate.</td></tr>
+<tr><td>Egypt</td><td>Consistent, weaker evidence</td><td>1 min</td><td>Dar al-Ifta, Cairo: three dates in one season. The publisher does not name the angle source.</td></tr>
+<tr><td>Karachi</td><td>Unverified</td><td>n/a</td><td>No official timetable found.</td></tr>
+<tr><td>MWL</td><td>Unverified</td><td>n/a</td><td>The method defines angles only and publishes no city timetables.</td></tr>
+<tr><td>ISNA</td><td>Unverified</td><td>n/a</td><td>Same as MWL.</td></tr>
+</tbody>
+</table></div>
+<div class="callout known" role="note"><strong>Known limitation.</strong> Unverified does not mean wrong: Karachi, MWL and ISNA use the published angles with the same solar model that matches the verified methods. It means no official timetable was available to compare against. Also not tested: Asr under the Hanafi convention, high latitudes, elevation, and dates outside those listed. For religious or legal use, check against your local authority's timetable.</div>
+<p>The Tehran method matches the Institute of Geophysics tables, but the angles 17.7 degrees (Fajr) and 4.5 degrees (Maghrib) were confirmed here only by this numerical agreement, not from the authority's own description of its method.</p>
+<nav class="reading-footer" aria-label="Previous and next page"><a class="prev" rel="prev" href="holidays.html"><small>Previous</small>Iranian holidays</a><a class="next" rel="next" href="laravel-setup.html"><small>Next</small>Laravel setup</a></nav>
+</article>
+<nav class="toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#overview">Overview</a></li><li><a href="#quick">Quick start</a></li><li><a href="#construct">Creating a calculator</a></li><li><a href="#methods">Methods and angles</a></li><li><a href="#asr">Asr schools</a></li><li><a href="#makkah-isha">Makkah: Isha in Ramadan</a></li><li><a href="#elevation">Elevation</a></li><li><a href="#dst">Time zones and daylight saving</a></li><li><a href="#next">The next prayer</a></li><li><a href="#high-latitude">High latitudes</a></li><li><a href="#errors">Exceptions</a></li><li><a href="#verification">Verification status</a></li></ol></nav>
+</div>
+</main>
+<footer class="footer"><div class="shell footer-inner"><p>RTLY-Kit user guide · MIT licensed</p><div><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">Repository on GitHub &#8599;</a><a href="https://github.com/ehsanenaloo/RTLY-Kit/issues" rel="noopener noreferrer">Report an issue &#8599;</a></div></div></footer>
+</body>
+</html>

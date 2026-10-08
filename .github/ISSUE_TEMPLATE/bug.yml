@@ -1,0 +1,36 @@
+name: Bug report
+description: Something returns a wrong result or throws unexpectedly
+labels: [bug]
+body:
+  - type: textarea
+    id: snippet
+    attributes:
+      label: Minimal reproducing snippet
+      render: php
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected result and its source
+      description: Link a published calendar page, official table or standard.
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual result
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: RTLY-Kit version
+    validations:
+      required: true
+  - type: input
+    id: php
+    attributes:
+      label: PHP version (and Laravel/Carbon if relevant)
+    validations:
+      required: true

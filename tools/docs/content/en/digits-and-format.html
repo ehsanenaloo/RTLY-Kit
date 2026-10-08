@@ -1,0 +1,108 @@
+<!--
+title: Digits and number formatting
+description: Convert between English, Persian and Arabic-Indic digits, format numbers with Persian separators, and build Persian ordinals, with every cap and edge case spelled out.
+group: numbers-text
+order: 10
+-->
+<h2 id="digits">Digits</h2>
+<p><code>RtlyKit\Number\Digits</code> converts between the three digit sets used in Iranian software: English (<code>0-9</code>), Persian (<code>۰-۹</code>, U+06F0 to U+06F9) and Arabic-Indic (<code>٠-٩</code>, U+0660 to U+0669). The class is pure string replacement: it never throws, never touches other characters, and does not change decimal or thousands separators.</p>
+<pre><code class="language-php">&lt;?php
+require 'vendor/autoload.php';
+
+use RtlyKit\Number\Digits;
+
+echo Digits::toPersian('Tel 0912 / 2024'), "\n";   // Tel ۰۹۱۲ / ۲۰۲۴
+echo Digits::toPersian(1234.5), "\n";              // ۱۲۳۴.۵
+echo Digits::toArabic(2026), "\n";                 // ٢٠٢٦
+echo Digits::toEnglish('۱۲۳ ٤٥٦ abc'), "\n";        // 123 456 abc
+echo Digits::arabicToPersian('٠١٢ 345'), "\n";      // ۰۱۲ 345</code></pre>
+
+<table>
+<thead><tr><th>Method</th><th>Input</th><th>What it does</th></tr></thead>
+<tbody>
+<tr><td><code>toPersian($value)</code></td><td>string, int, float</td><td>English digits become Persian. Persian and Arabic-Indic digits that are already in a string are left as they are</td></tr>
+<tr><td><code>toArabic($value)</code></td><td>string, int, float</td><td>English digits become Arabic-Indic</td></tr>
+<tr><td><code>toEnglish($value)</code></td><td>string</td><td>Persian and Arabic-Indic digits both become English</td></tr>
+<tr><td><code>arabicToPersian($value)</code></td><td>string</td><td>Only Arabic-Indic digits become Persian; English digits stay</td></tr>
+<tr><td><code>convert($value, $to)</code></td><td>string</td><td>Any digit set to English first, then to the target</td></tr>
+</tbody>
+</table>
+
+<h3 id="convert">convert()</h3>
+<p><code>convert()</code> normalizes to English first and then renders the target set. The target name is case-insensitive: <code>persian</code>, <code>fa</code> and <code>farsi</code> give Persian digits; <code>arabic</code> and <code>ar</code> give Arabic-Indic digits; anything else, including a typo, gives English.</p>
+<pre><code class="language-php">echo Digits::convert('۱۲۳', 'ar'), "\n";        // ١٢٣
+echo Digits::convert('123', 'fa'), "\n";        // ۱۲۳
+echo Digits::convert('٣٤٥', 'FARSI'), "\n";     // ۳۴۵
+echo Digits::convert('۱۲۳', 'x'), "\n";         // 123</code></pre>
+<div class="note"><strong>Numbers as input.</strong> <code>toPersian()</code> and <code>toArabic()</code> accept <code>int</code> and <code>float</code> and convert them with a plain <code>(string)</code> cast, so the decimal separator stays a Latin dot (<code>۱۲۳۴.۵</code>) and there are no thousands separators. For human-facing numbers use <code>Format::withSeparator()</code> below. The helpers <code>to_persian_digits()</code>, <code>to_english_digits()</code>, <code>to_persian()</code> and <code>to_english()</code> wrap these methods; see <a href="helpers-and-globals.html">Helpers and globals</a>.</div>
+<p>The validators use <code>Digits::toEnglish()</code> for their normalization, so users may type in any digit set; see <a href="validators-overview.html#normalization">Normalization</a>.</p>
+
+<h2 id="separators">Number formatting</h2>
+<p><code>Format::withSeparator()</code> formats a number with thousands separators and Persian digits. By default it uses the Arabic thousands separator <code>٬</code> (U+066C) and decimal separator <code>٫</code> (U+066B), the characters Persian typography prescribes. It never rounds.</p>
+<pre><code class="language-php">use RtlyKit\Number\Format;
+
+echo Format::withSeparator(1234567), "\n";            // ۱٬۲۳۴٬۵۶۷
+echo Format::withSeparator('1,234,567.5'), "\n";      // ۱٬۲۳۴٬۵۶۷٫۵
+echo Format::withSeparator('۱٬۲۳۴٫۵'), "\n";          // ۱٬۲۳۴٫۵
+echo Format::withSeparator('0001234'), "\n";          // ۱٬۲۳۴
+echo Format::withSeparator('+12345'), "\n";           // ۱۲٬۳۴۵
+echo Format::withSeparator(1.0), "\n";                // ۱</code></pre>
+
+<h3 id="separator-input">What it accepts</h3>
+<ul>
+<li>An <code>int</code>, a finite <code>float</code>, or a numeric string with optional sign, digits in any of the three sets, and an optional fraction.</li>
+<li>In strings, these are discarded as grouping marks: <code>,</code>, <code>٬</code> (U+066C), regular spaces and the no-break space. The Arabic decimal separator <code>٫</code> (U+066B) is read as the decimal point. A plain <code>.</code> is the decimal point too.</li>
+<li>Leading zeros of the integer part are dropped, a leading <code>+</code> is dropped, and a leading <code>-</code> is kept.</li>
+</ul>
+<p>Anything that is not a plain decimal after this cleanup throws <code>InvalidNumberException</code>: <code>'abc'</code>, the empty string, scientific notation in a string (<code>'1e5'</code>) and <code>NaN</code> or <code>INF</code>. The exception carries a stable error code (<code>invalid_number</code>, <code>non_finite_number</code>, <code>input_too_long</code>) that you can read with <code>getErrorCode()</code>; see <a href="error-handling.html">Error handling</a>.</p>
+
+<h3 id="custom-separators">Custom separators</h3>
+<p>The second and third arguments replace the thousands and decimal separators. The digits are still converted to Persian:</p>
+<pre><code class="language-php">echo Format::withSeparator(1234567, ','), "\n";            // ۱,۲۳۴,۵۶۷
+echo Format::withSeparator(1234567.5, ',', '.'), "\n";     // ۱,۲۳۴,۵۶۷.۵</code></pre>
+<p>For English digits, convert the result back with <code>Digits::toEnglish()</code>.</p>
+
+<h3 id="float-precision">Floats and exactness</h3>
+<p>A <code>float</code> is expanded to 15 decimal places and trailing zeros are trimmed, so binary representation noise can show up. If you need an exact decimal, pass a <strong>string</strong>:</p>
+<pre><code class="language-php">echo Format::withSeparator(0.1 + 0.2), "\n";       // ۰٫۳
+echo Format::withSeparator(-1234567.891), "\n";    // -۱٬۲۳۴٬۵۶۷٫۸۹۱۰۰۰۰۰۰۰۶۱۴۶۷
+echo Format::withSeparator('-1234567.891'), "\n";  // -۱٬۲۳۴٬۵۶۷٫۸۹۱</code></pre>
+<div class="warn"><strong>Money and large values.</strong> Keep amounts as strings or integers (rials) end to end. Floats cannot represent most decimals exactly, and the formatter reproduces whatever digits the float actually holds.</div>
+
+<h3 id="limits">Size caps</h3>
+<table>
+<thead><tr><th>Cap</th><th>Applies to</th><th>Error code</th></tr></thead>
+<tbody>
+<tr><td>4096 bytes</td><td>a raw string input (Persian and Arabic digits are two bytes each)</td><td><code>input_too_long</code></td></tr>
+<tr><td>1000 characters</td><td>the normalized number: integer and fraction digits together</td><td><code>input_too_long</code></td></tr>
+</tbody>
+</table>
+<pre><code class="language-php">try {
+    Format::withSeparator(str_repeat('9', 1001));
+} catch (\RtlyKit\Exceptions\InvalidNumberException $e) {
+    echo $e-&gt;getMessage(), ' [', $e-&gt;getErrorCode()-&gt;value, "]\n";
+    // Number exceeds the 1000 character limit. [input_too_long]
+}</code></pre>
+<p>Exactly 1000 digits are formatted normally. All the caps in one table are in <a href="limits.html">Limits</a>. The helper <code>format_number()</code> calls <code>Format::withSeparator()</code> with the defaults.</p>
+
+<h2 id="ordinal">Ordinals</h2>
+<p><code>Format::ordinal()</code> returns the Persian ordinal word for a non-negative integer. It builds the cardinal words with <code>NumberToWords</code> (see <a href="number-words.html">Number to words</a>) and then applies the suffix rules:</p>
+<ul>
+<li>1 is the irregular «اول».</li>
+<li>A cardinal ending in «سه» becomes «سوم»; this also covers 23, 33 and so on.</li>
+<li>A cardinal ending in «ی» (as in «سی») takes a half-space and «ام».</li>
+<li>Everything else just adds «م».</li>
+</ul>
+<pre><code class="language-php">echo Format::ordinal(1), "\n";     // اول
+echo Format::ordinal(2), "\n";     // دوم
+echo Format::ordinal(3), "\n";     // سوم
+echo Format::ordinal(21), "\n";    // بیست و یکم
+echo Format::ordinal(23), "\n";    // بیست و سوم
+echo Format::ordinal(30), "\n";    // سی&zwnj;ام
+echo Format::ordinal(33), "\n";    // سی و سوم
+echo Format::ordinal(100), "\n";   // صدم
+echo Format::ordinal(1000), "\n";  // یک هزارم
+echo Format::ordinal(0), "\n";     // صفرم
+echo Format::ordinal(3.0), "\n";   // سوم</code></pre>
+<p>Integral floats like <code>3.0</code> are accepted. Negative numbers, fractions (<code>2.5</code>) and non-finite floats throw <code>InvalidNumberException</code> (<code>invalid_number</code>, or <code>non_finite_number</code> for <code>INF</code> and <code>NaN</code>). The helper is <code>ordinal()</code>.</p>
+<div class="note"><strong>Words, not digits.</strong> <code>ordinal()</code> returns the spelled-out word. It does not produce short numeric forms; build those yourself with <code>Digits::toPersian()</code> if you need them.</div>

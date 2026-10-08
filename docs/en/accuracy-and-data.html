@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en" dir="ltr" data-i18n="{&quot;dark&quot;:&quot;Dark mode&quot;,&quot;light&quot;:&quot;Light mode&quot;,&quot;to_dark&quot;:&quot;Switch to dark theme&quot;,&quot;to_light&quot;:&quot;Switch to light theme&quot;,&quot;copy&quot;:&quot;Copy&quot;,&quot;copied&quot;:&quot;Copied&quot;,&quot;copy_failed&quot;:&quot;Selected. Press copy.&quot;,&quot;copy_label&quot;:&quot;Copy the code example above&quot;,&quot;no_results&quot;:&quot;No guide matches. Try a shorter word.&quot;,&quot;loading&quot;:&quot;The search index is still loading. Try again in a moment.&quot;,&quot;results&quot;:&quot;Search results&quot;,&quot;status&quot;:&quot;%d of %d guides shown&quot;,&quot;suggest&quot;:&quot;English version&quot;,&quot;search_label&quot;:&quot;Search the guide&quot;,&quot;search_placeholder&quot;:&quot;Search the guide&quot;}" data-search-index="search-index.js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Accuracy and data | RTLY-Kit User guide</title>
+<meta name="description" content="Where every embedded data table comes from, what has been verified against what, and what has not been verified. Read it before you rely on the results in production.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="Accuracy and data | RTLY-Kit User guide">
+<meta property="og:description" content="Where every embedded data table comes from, what has been verified against what, and what has not been verified. Read it before you rely on the results in production.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="en_US">
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+<link rel="alternate" hreflang="fa" href="../fa/accuracy-and-data.html">
+<link rel="stylesheet" href="../styles.css">
+<script>try{var t=localStorage.getItem("rtly-docs-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<script defer src="../app.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a><header class="site-header"><div class="shell header-inner"><a class="brand" href="index.html"><img src="../assets/logo.svg" width="34" height="34" alt=""><span><span class="name">RTLY-Kit</span><small>User guide</small></span></a><nav class="top-nav" aria-label="Primary"><a href="index.html">Overview</a><a href="quick-start.html">Quick start</a><a href="all.html">All guides</a><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">GitHub &#8599;</a></nav><div class="header-tools"><span data-search-host></span><button type="button" class="icon-button" data-theme-toggle hidden>Theme</button><a class="icon-button" href="../fa/accuracy-and-data.html" hreflang="fa" lang="fa" aria-label="تغییر به فارسی">فارسی</a></div></div></header>
+<main id="main">
+<div class="shell page-intro"><nav class="breadcrumbs" aria-label="Breadcrumb"><ol><li><a href="index.html">Home</a></li><li><a href="all.html#group-reference">Reference</a></li><li aria-current="page">Accuracy and data</li></ol></nav><h1>Accuracy and data</h1><p class="lead">Where every embedded data table comes from, what has been verified against what, and what has not been verified. Read it before you rely on the results in production.</p></div>
+<div class="shell doc-layout has-toc">
+<aside class="sidebar"><details open><summary>Browse the guides</summary><nav aria-label="Guides"><a href="all.html">All guides</a><p>Getting started</p><a href="quick-start.html">Quick start</a><a href="installation.html">Installation</a><p>Calendars</p><a href="jalali.html">Jalali calendar</a><a href="hijri.html">Hijri calendar</a><a href="hebrew.html">Hebrew calendar</a><a href="convert-and-compare.html">Convert and compare dates</a><a href="carbon-macros.html">Carbon macros</a><p>Validation</p><a href="validators-overview.html">Validators overview</a><a href="national-code.html">National code</a><a href="sheba-and-bank-card.html">Sheba and bank card</a><a href="mobile-postal-plate.html">Mobile, postal code and plate</a><p>Numbers and text</p><a href="digits-and-format.html">Digits and number formatting</a><a href="number-words.html">Number to words</a><a href="text-tools.html">Text tools</a><p>Holidays and prayer times</p><a href="holidays.html">Iranian holidays</a><a href="prayer-times.html">Prayer times</a><p>Laravel</p><a href="laravel-setup.html">Laravel setup</a><a href="laravel-validation-and-cast.html">Validation rules and Eloquent cast</a><p>Reference</p><a href="helpers-and-globals.html">Helpers and globals</a><a href="error-handling.html">Error handling</a><a href="api-stability.html">API stability</a><a href="accuracy-and-data.html" aria-current="page">Accuracy and data</a><a href="benchmarks.html">Benchmarks</a><a href="limits.html">Limits</a><a href="troubleshooting-faq.html">Troubleshooting and FAQ</a><a href="upgrade.html">Upgrade guide</a></nav></details></aside>
+<article class="prose">
+<details class="toc-inline"><summary>On this page</summary><ol><li><a href="#principle">Our principle</a></li><li><a href="#two-source-rule">The two-source rule</a></li><li><a href="#tables">The data tables</a></li><li><a href="#status">Verification status per feature</a></li><li><a href="#prayer-status">Prayer times: status per method</a></li></ol></details>
+<h2 id="principle">Our principle<a class="anchor" href="#principle" aria-label="Link to this section">#</a></h2>
+<p>RTLY-Kit has no runtime dependency, so its reference data is embedded in the package. Most of it has no official machine-readable publication, so it was compiled from public third-party sources. This page lists them and says plainly what is verified, what is only consistent with other sources, and what is not checked at all. Where a claim is weaker than it sounds, we say so.</p>
+<div class="callout note" role="note"><strong>Note.</strong> Source lookups were done on 2026-10-07 and 2026-10-08. Banks merge and rename, operators reassign ranges and moon sightings differ, so any table can drift. The data is best-effort and is not an official registry; do not use it alone for legal or financial decisions.</div>
+
+<h2 id="two-source-rule">The two-source rule<a class="anchor" href="#two-source-rule" aria-label="Link to this section">#</a></h2>
+<p>A bank card BIN, a Sheba bank code or a national-code prefix is included only when at least two independent sources agree. An entry found in one source, or where sources conflict, is left out on purpose. Consequently <strong>a missing entry means "unknown", never "invalid"</strong>: a valid card can come back with <code>getBankName()</code> equal to <code>null</code>. Some community datasets share ancestry, so agreement is strong evidence but not fully independent confirmation. Only facts (numeric ranges and the names they map to) were taken; no source text or code was copied.</p>
+
+<h2 id="tables">The data tables<a class="anchor" href="#tables" aria-label="Link to this section">#</a></h2>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Table"><table>
+<thead><tr><th scope="col">Data</th><th scope="col">Size</th><th scope="col">Sources</th><th scope="col">Status</th></tr></thead>
+<tbody>
+<tr><td>Bank card BINs (<code>BankCard::getBankName()</code>)</td><td>39 BINs</td><td>two agreeing sources among masihgh/iranian-bank-list, ekhtebar.ir, bankavl.com; spot checks against ircards and iranian_banks</td><td>incomplete by design; the card check itself is the Luhn checksum and does not use this table</td></tr>
+<tr><td>Sheba bank codes (<code>Sheba::getBankName()</code>)</td><td>38 codes</td><td>persian-tools dataset (via iranian-sheba), pishkhanak.com, bankavl.com, nabzebourse.com, salambank.net</td><td>incomplete; the Central Bank table was not reachable, so codes 022, 052, 060/090, 061, 063-066, 069, 073, 075, 078, 079 and 095 rest on the first two sources only. The IBAN check itself is ISO 7064 mod-97-10.</td></tr>
+<tr><td>National-code place of issuance (<code>NationalCode::getLocation()</code>)</td><td>547 prefixes</td><td>three community datasets must agree on province and city (persian-tools, Iranian-national-code-generator, node-iranian-ssn); a fourth (iran-lib) may only veto</td><td>the three datasets share ancestry; no official list exists. The prefix is the place of <em>issuance</em>, not birth or residence. Other prefixes return <code>null</code>.</td></tr>
+<tr><td>Mobile operator prefixes (<code>Mobile</code>)</td><td>well-established blocks only</td><td>no specific source is cited in the code</td><td>best-effort. Number portability means a prefix never guarantees the current operator.</td></tr>
+<tr><td>Umm al-Qura month table (<code>Hijri</code>)</td><td>AH 1300-1500 (1882-11-12 to 2077-11-16)</td><td>generated from the ICU/CLDR <code>islamic-umalqura</code> calendar data; only the resulting month lengths are embedded</td><td>spot-checked against known anchors; <strong>not verified month by month against the official KACST publication</strong></td></tr>
+<tr><td>Prayer-time constants</td><td>6 methods, 14 built-in cities</td><td>Meeus <em>Astronomical Algorithms</em> and the NOAA solar equations; published method angles; approximate public city coordinates</td><td>see the per-method status below</td></tr>
+<tr><td>Holidays (<code>IranHolidays</code>)</td><td>fixed Jalali holidays plus Islamic ones</td><td>fixed dates are public law and custom; Islamic ones are computed from the Hijri table</td><td>fixed ones are exact; Islamic ones can be 1-2 days off</td></tr>
+</tbody>
+</table></div>
+<p>The data lives in <code>resources/data/*.php</code> and is not public API: its contents may be corrected in any release (see <a href="api-stability.html#internal">API stability</a>). Provenance details are kept in <code>resources/data/SOURCES.md</code> in the repository.</p>
+
+<h2 id="status">Verification status per feature<a class="anchor" href="#status" aria-label="Link to this section">#</a></h2>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Table"><table>
+<thead><tr><th scope="col">Feature</th><th scope="col">What was checked</th><th scope="col">What was not checked</th></tr></thead>
+<tbody>
+<tr><td>Jalali conversion</td><td>An independent implementation of the arithmetic 33-year leap rule. It matches <code>morilog/jalali</code> on every day from 1900-01-01 to 2099-12-27 (73,000 days, 0 mismatches), and matched the previous implementation on every supported day.</td><td>Both libraries use the same arithmetic rule, so agreement means they are consistent with each other, <strong>not</strong> that either matches the astronomical Iranian calendar far from the present.</td></tr>
+<tr><td>Hebrew calendar</td><td>Pure-PHP algorithm; known-answer tests for Rosh Hashanah 5783 to 5787 and for round trips with Gregorian dates.</td><td>No exhaustive comparison against an independent implementation is documented.</td></tr>
+<tr><td>Hijri (Umm al-Qura)</td><td>Anchors: 1 Ramadan 1446 = 2025-03-01, 1 Muharram 1447 = 2025-06-26, 1 Shawwal 1445 = 2024-04-10.</td><td>The table is not compared month by month with KACST. Outside AH 1300-1500, and for <code>HijriVariant::Tabular</code>, the date is arithmetic and can differ from observation by a day or two.</td></tr>
+<tr><td>Iranian holidays</td><td>Fixed Jalali holidays.</td><td>Islamic holidays follow the calendar, while Iran announces them by moon sighting: expect 1-2 days of difference. Outside AH 1300-1500 only the fixed holidays are reported.</td></tr>
+<tr><td>Validators</td><td>The national-code, Luhn and mod-97 checksums are public algorithms covered by known-answer tests.</td><td>Bank, operator and place names come from the incomplete tables above.</td></tr>
+<tr><td>Arabic number words</td><td>Known-answer tests.</td><td>Masculine counting form only, below 10^9, no case endings, tanwin or gender agreement. Have a native speaker review formal text.</td></tr>
+</tbody>
+</table></div>
+
+<h2 id="prayer-status">Prayer times: status per method<a class="anchor" href="#prayer-status" aria-label="Link to this section">#</a></h2>
+<p>The calculation is clean-room, from standard equations. The only meaningful external check is to compute a city and date and compare with the authority's own published timetable, within the minute rounding of both sides (the tests allow plus or minus 2 minutes). Aggregator websites were not counted, because they use the same published angles and agreement would be circular.</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Table"><table>
+<thead><tr><th scope="col">Method</th><th scope="col">Status</th><th scope="col">Largest deviation</th></tr></thead>
+<tbody>
+<tr><td>Tehran (Fajr 17.7, Maghrib 4.5)</td><td>Verified for Fajr, sunrise, Dhuhr and Maghrib against the Institute of Geophysics, University of Tehran tables for 1405 (4 cities, 4 dates). <strong>Isha (14 degrees) and Asr are not verified</strong>: those tables do not publish them.</td><td>1 minute (Shiraz), 0 elsewhere</td></tr>
+<tr><td>Makkah (Fajr 18.5, Isha 90 min, 120 in Ramadan)</td><td>Verified against the Umm Al-Qura calendar outside Ramadan (5 dates) and for Ramadan Isha (2 dates). The Ramadan rule (+120 minutes) was a bug that has been fixed.</td><td>1 minute</td></tr>
+<tr><td>Egypt (19.5 / 17.5)</td><td>Consistent with the Dar al-Ifta Cairo table (3 dates in one month). The page does not name the Survey authority as its source, so the angle authority is assumed.</td><td>1 minute</td></tr>
+<tr><td>Karachi (18 / 18), MWL (18 / 17), ISNA (15 / 15)</td><td><strong>Not verified</strong>: no official city timetable was found.</td><td>n/a</td></tr>
+</tbody>
+</table></div>
+<p>Sunrise and sunset were also spot-checked against the NOAA Solar Calculator (12 city and date pairs, all within one minute). Not tested: Asr under the Hanafi convention, high latitudes, elevation, and any date outside those listed. Different authorities use different angles; check that the method matches the one your users follow. The Makkah Ramadan decision follows the civil date, not the sunset-based Islamic day.</p>
+
+<div class="callout known" role="note"><strong>Known limitations.</strong> (1) The Umm al-Qura table is not verified month by month against KACST. (2) Iranian Islamic holidays can differ from the announcement by 1-2 days. (3) Bank, Sheba, operator and national-code tables are incomplete and derived from community datasets. (4) The Karachi, MWL and ISNA angles and the Tehran method's Isha and Asr are not verified against an official timetable. (5) Arabic number words are limited as described above.</div>
+
+<p>Found a mistake? Please open an issue on GitHub with a source. A better source is the quickest way to get a table corrected.</p>
+<nav class="reading-footer" aria-label="Previous and next page"><a class="prev" rel="prev" href="api-stability.html"><small>Previous</small>API stability</a><a class="next" rel="next" href="benchmarks.html"><small>Next</small>Benchmarks</a></nav>
+</article>
+<nav class="toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#principle">Our principle</a></li><li><a href="#two-source-rule">The two-source rule</a></li><li><a href="#tables">The data tables</a></li><li><a href="#status">Verification status per feature</a></li><li><a href="#prayer-status">Prayer times: status per method</a></li></ol></nav>
+</div>
+</main>
+<footer class="footer"><div class="shell footer-inner"><p>RTLY-Kit user guide · MIT licensed</p><div><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">Repository on GitHub &#8599;</a><a href="https://github.com/ehsanenaloo/RTLY-Kit/issues" rel="noopener noreferrer">Report an issue &#8599;</a></div></div></footer>
+</body>
+</html>

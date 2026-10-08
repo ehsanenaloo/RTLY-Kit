@@ -1,0 +1,169 @@
+<!--
+title: Error handling
+description: Which calls throw, which never do, the exception hierarchy, the stable ErrorCode values, and how to catch and log failures safely.
+group: reference
+order: 20
+-->
+<h2 id="two-styles">Two failure styles</h2>
+<p>Each function in RTLY-Kit uses exactly one of two styles, so you always know what to guard:</p>
+<ul>
+<li><strong>Validators never throw.</strong> <code>NationalCode</code>, <code>Sheba</code>, <code>BankCard</code>, <code>Mobile</code>, <code>PostalCode</code> and <code>VehiclePlate</code> (and the <code>is_*</code> / <code>validate_*</code> helpers) accept any value and answer with <code>false</code> or an invalid <code>Result</code>. See <a href="validators-overview.html">Validators overview</a>.</li>
+<li><strong>Everything else throws</strong> a <code>RtlyKit\Exceptions\RtlyKitException</code> (or a subclass) for input it cannot accept. A <code>TypeError</code>, <code>ValueError</code> or PHP <code>DateMalformed*</code> exception never escapes for bad input; that is a library bug, please report it.</li>
+</ul>
+
+<h2 id="hierarchy">Exception hierarchy</h2>
+<pre><code class="language-text">\InvalidArgumentException
+ └─ RtlyKit\Exceptions\RtlyKitException        implements RtlyKitThrowable
+     ├─ InvalidDateException
+     ├─ InvalidNumberException
+     ├─ InvalidPrayerConfigException
+     └─ UnsupportedLocaleException</code></pre>
+<p><code>RtlyKitThrowable</code> is a marker interface that declares <code>getErrorCode(): ErrorCode</code> and <code>getContext(): array</code>. Catch it (or <code>RtlyKitException</code>) to handle the whole library with one clause. Because <code>RtlyKitException</code> extends <code>\InvalidArgumentException</code>, existing <code>catch (\InvalidArgumentException)</code> and <code>catch (\LogicException)</code> code keeps working.</p>
+<table>
+<thead><tr><th>Exception</th><th>Thrown for</th></tr></thead>
+<tbody>
+<tr><td><code>InvalidDateException</code></td><td>impossible dates, years outside the supported range, blank or unparsable strings, absurd <code>add*()</code> / <code>sub*()</code> deltas, out-of-range timestamps, over-long format patterns</td></tr>
+<tr><td><code>InvalidNumberException</code></td><td>non-numeric or fractional input, <code>NaN</code> / <code>INF</code>, oversized input, numbers that are too large, unknown number words</td></tr>
+<tr><td><code>InvalidPrayerConfigException</code></td><td>unknown prayer method, unknown city, invalid Asr factor</td></tr>
+<tr><td><code>UnsupportedLocaleException</code></td><td>a locale the function does not support (for example <code>number_to_words(5, 'de')</code>)</td></tr>
+<tr><td><code>RtlyKitException</code> itself</td><td>other bad arguments, such as an invalid or over-long <code>Slugify::make()</code> separator, or a missing bundled data table</td></tr>
+</tbody>
+</table>
+
+<h2 id="error-codes">Error codes</h2>
+<p>Exception messages are meant for humans and may be reworded in any release. The <strong>error code</strong> is the stable part: it is an <code>ErrorCode</code> backed string enum, and its case names and values are public API (see <a href="api-stability.html">API stability</a>).</p>
+<table>
+<thead><tr><th>Case</th><th>Value</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td><code>InvalidArgument</code></td><td><code>invalid_argument</code></td><td>generic fallback for an invalid argument with no more specific code</td></tr>
+<tr><td><code>InvalidDate</code></td><td><code>invalid_date</code></td><td>malformed, impossible or unparsable date or time (month 13, 30 Esfand in a non-leap year, <code>'not a date'</code>, a blank string)</td></tr>
+<tr><td><code>DateOutOfRange</code></td><td><code>date_out_of_range</code></td><td>a year, date, timestamp or <code>add*()</code> / <code>sub*()</code> delta outside the supported range (see <a href="limits.html">Limits</a>)</td></tr>
+<tr><td><code>InvalidNumber</code></td><td><code>invalid_number</code></td><td>the value cannot be read as a (whole) number</td></tr>
+<tr><td><code>NumberTooLarge</code></td><td><code>number_too_large</code></td><td>number larger than the supported magnitude</td></tr>
+<tr><td><code>NonFiniteNumber</code></td><td><code>non_finite_number</code></td><td><code>NaN</code> or <code>INF</code> where a finite number is required</td></tr>
+<tr><td><code>InvalidNumberWords</code></td><td><code>invalid_number_words</code></td><td>unknown or ill-formed number words in <code>NumberToWords::fromWords()</code></td></tr>
+<tr><td><code>InputTooLong</code></td><td><code>input_too_long</code></td><td>string input over a documented size cap</td></tr>
+<tr><td><code>InvalidPrayerConfig</code></td><td><code>invalid_prayer_config</code></td><td>unknown city, calculation method or Asr factor</td></tr>
+<tr><td><code>UnsupportedLocale</code></td><td><code>unsupported_locale</code></td><td>a locale other than a supported one</td></tr>
+<tr><td><code>DataUnavailable</code></td><td><code>data_unavailable</code></td><td>a bundled data table is missing or corrupt (a packaging problem, not a user error)</td></tr>
+</tbody>
+</table>
+<div class="note"><strong>Note.</strong> The strings returned by <code>Result::errors()</code> (<code>invalid_format</code>, <code>invalid_checksum</code>, <code>invalid_type</code>, ...) are plain strings of the validators, not <code>ErrorCode</code> cases. The enum is for exceptions only.</div>
+
+<h2 id="reading-codes">Reading the code and the context</h2>
+<p>Every library exception has <code>getErrorCode()</code> and <code>getContext()</code>. The context is an array of machine-readable facts about the failure (a limit, the offending locale, the name of the argument). It never contains secrets and may be empty. This script feeds five bad inputs to <code>number_to_words()</code>:</p>
+<pre><code class="language-php">&lt;?php
+require __DIR__.'/vendor/autoload.php';
+
+use function RtlyKit\number_to_words;
+use RtlyKit\Exceptions\RtlyKitThrowable;
+
+foreach ([1.5, NAN, 'abc', str_repeat('9', 22), str_repeat('1', 5000)] as $input) {
+    try {
+        number_to_words($input);
+    } catch (RtlyKitThrowable $e) {
+        echo (new ReflectionClass($e))-&gt;getShortName(), ' ',
+            $e-&gt;getErrorCode()-&gt;value, ' ',
+            json_encode($e-&gt;getContext()), "\n";
+    }
+}
+// InvalidNumberException invalid_number []
+// InvalidNumberException non_finite_number []
+// InvalidNumberException invalid_number []
+// InvalidNumberException number_too_large {"limit":"10^21 - 1"}
+// InvalidNumberException input_too_long {"limit":4096}</code></pre>
+
+<h2 id="catching">Catching patterns</h2>
+<p>Branch on the code, not on the message. Use <code>match</code> with a <code>default</code> arm, because new cases may be added in a minor release.</p>
+<pre><code class="language-php">&lt;?php
+require __DIR__.'/vendor/autoload.php';
+
+use RtlyKit\Calendar\Jalali;
+use RtlyKit\Exceptions\{ErrorCode, InvalidDateException, RtlyKitThrowable};
+
+function category(RtlyKitThrowable $e): string
+{
+    return match ($e-&gt;getErrorCode()) {
+        ErrorCode::InvalidDate, ErrorCode::DateOutOfRange =&gt; 'date',
+        ErrorCode::InputTooLong =&gt; 'too-long',
+        default =&gt; 'other',
+    };
+}
+
+try {
+    Jalali::create(1404, 13, 1);          // there is no month 13
+} catch (RtlyKitThrowable $e) {
+    echo category($e), "\n";               // date
+}
+
+$e = InvalidDateException::because(ErrorCode::DateOutOfRange, 'Year is out of range', ['year' =&gt; 99999]);
+echo $e-&gt;getErrorCode()-&gt;value, ' ', json_encode($e-&gt;getContext()), "\n";
+// date_out_of_range {"year":99999}
+
+try {
+    Jalali::create(1404, 13, 1);
+} catch (\InvalidArgumentException $e) {   // old-style catch still works
+    echo get_class($e), ' ', $e instanceof RtlyKitThrowable ? 'is RtlyKitThrowable' : '', "\n";
+    // RtlyKit\Exceptions\InvalidDateException is RtlyKitThrowable
+}</code></pre>
+<p><code>RtlyKitException::because(ErrorCode, string $message, array $context = [], ?Throwable $previous = null)</code> is the named constructor the library itself uses to raise an exception with a specific code. You can use it for your own failures too, but code you add this way is your responsibility, not part of the library's contract.</p>
+<p>When logging, write the code and the context rather than the message text:</p>
+<pre><code class="language-php">catch (RtlyKitThrowable $e) {
+    error_log($e-&gt;getErrorCode()-&gt;value.' '.json_encode($e-&gt;getContext()));
+}</code></pre>
+
+<h2 id="never-throws">What never throws</h2>
+<p>The validators accept any PHP value. They never raise an exception for bad input, whatever its type or size:</p>
+<pre><code class="language-php">&lt;?php
+require __DIR__.'/vendor/autoload.php';
+
+use function RtlyKit\validate_national_code;
+use RtlyKit\Validation\Sheba;
+
+var_dump(Sheba::isValid(null));                                  // bool(false)
+echo json_encode(validate_national_code([])-&gt;errors()), "\n";                    // ["invalid_type"]
+echo json_encode(validate_national_code(str_repeat('1', 5000))-&gt;errors()), "\n"; // ["input_too_long"]
+echo json_encode(validate_national_code('0013542418')-&gt;errors()), "\n";          // ["invalid_checksum"]
+var_dump(validate_national_code('0013542419')-&gt;isValid());       // bool(true)</code></pre>
+<table>
+<thead><tr><th>Validator input</th><th>Result</th></tr></thead>
+<tbody>
+<tr><td><code>string</code> up to 4096 bytes</td><td>checked normally (Persian and Arabic digits are accepted)</td></tr>
+<tr><td><code>int</code>, integral finite <code>float</code></td><td>converted to a string, then checked (leading zeros are already lost in an <code>int</code>)</td></tr>
+<tr><td><code>null</code>, <code>bool</code>, arrays, objects, <code>NaN</code>, <code>INF</code>, fractional floats</td><td>invalid, error <code>invalid_type</code></td></tr>
+<tr><td><code>string</code> over 4096 bytes</td><td>invalid, error <code>input_too_long</code></td></tr>
+<tr><td>invalid UTF-8</td><td>invalid (usually <code>invalid_format</code>)</td></tr>
+</tbody>
+</table>
+<p>The Laravel validation rules and the <code>Globals::register()</code> opt-in follow the same rule: the rules return a boolean, and <code>Globals::register()</code> never throws (it returns the names it skipped).</p>
+
+<h2 id="caps">Input caps</h2>
+<p>Every call that takes untrusted text has a size cap, so a hostile input cannot cost much. Exceeding a cap raises <code>input_too_long</code>, as an exception or as a validator error. The full list is on <a href="limits.html">Limits</a>.</p>
+<table>
+<thead><tr><th>Where</th><th>Cap</th><th>On exceeding</th></tr></thead>
+<tbody>
+<tr><td>Validators</td><td>4096 bytes per string</td><td>invalid <code>Result</code>, error <code>input_too_long</code></td></tr>
+<tr><td><code>NumberToWords::convert()</code> / <code>fromWords()</code>, <code>Format</code> string input</td><td>4096 bytes per string</td><td><code>InvalidNumberException</code></td></tr>
+<tr><td><code>Format::withSeparator()</code> / <code>format_number()</code></td><td>1000 characters in the plain decimal number</td><td><code>InvalidNumberException</code></td></tr>
+<tr><td><code>Slugify::make()</code> separator</td><td>64 bytes, valid UTF-8</td><td><code>RtlyKitException</code></td></tr>
+<tr><td><code>Jalali::format()</code> pattern</td><td>256 bytes (<code>Jalali::MAX_FORMAT_LENGTH</code>)</td><td><code>InvalidDateException</code></td></tr>
+</tbody>
+</table>
+
+<h2 id="calendar-rule">The calendar range rule</h2>
+<p>Every calendar entry point (<code>make</code>, <code>create</code>, <code>createFromFormat</code>, timestamps, <code>add*</code> / <code>sub*</code>, the helpers and the Carbon macros) either returns a valid date or throws <code>InvalidDateException</code>. Nothing wraps around and no other exception type is used. The ranges are Jalali -620 to 9377, Hijri 1 to 9665 and Hebrew 3762 to 13759, all within Gregorian years 1 to 9999. See <a href="limits.html#calendars">Limits</a>.</p>
+
+<h2 id="complete-example">A complete example</h2>
+<pre><code class="language-php">use function RtlyKit\jdate;
+use function RtlyKit\number_to_words;
+use RtlyKit\Exceptions\InvalidDateException;
+use RtlyKit\Exceptions\RtlyKitThrowable;
+
+try {
+    $date  = jdate($userInput);
+    $words = number_to_words($userAmount);
+} catch (InvalidDateException $e) {
+    echo "Please enter a valid date.\n";
+} catch (RtlyKitThrowable $e) {
+    error_log($e-&gt;getErrorCode()-&gt;value.' '.json_encode($e-&gt;getContext()));
+}</code></pre>

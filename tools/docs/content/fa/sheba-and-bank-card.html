@@ -1,0 +1,104 @@
+<!--
+title: شبا و کارت بانکی
+description: اعتبارسنجی شماره شبا (IBAN) با ISO 7064 mod-97-10 و شماره کارت بانکی با چک‌سام Luhn، و تشخیص بانک صادرکننده همراه با هشدارهای صادقانهٔ داده.
+group: validation
+order: 30
+-->
+<h2 id="quick-start">شروع سریع</h2>
+<pre><code class="language-php">&lt;?php
+require 'vendor/autoload.php';
+
+use RtlyKit\Validation\BankCard;
+use RtlyKit\Validation\Sheba;
+use function RtlyKit\is_bank_card;
+use function RtlyKit\is_sheba;
+
+var_dump(Sheba::isValid('IR800170000000000000000123'));   // bool(true)
+var_dump(is_sheba('800170000000000000000123'));           // bool(true)، IR خودکار افزوده می‌شود
+var_dump(BankCard::isValid('6037-9912-3456-7893'));       // bool(true)
+var_dump(is_bank_card('۶۰۳۷۹۹۱۲۳۴۵۶۷۸۹۳'));               // bool(true)، ارقام فارسی
+
+echo Sheba::getBankName('IR800170000000000000000123'), "\n";   // بانک ملی ایران
+echo BankCard::getBankName('6219861234567898'), "\n";          // بانک سامان</code></pre>
+<p>شماره‌های این مثال‌ها ساختگی‌اند: چک‌سام را رد می‌کنند اما به حساب واقعی تعلق ندارند. هر دو کلاس <a href="validators-overview.html#contract">قرارداد <code>Validator</code></a> را پیاده می‌کنند، برای ورودی بد استثنا نمی‌اندازند و توابع کمکی <code>validate_sheba()</code> و <code>validate_bank_card()</code> را هم دارند.</p>
+
+<h2 id="sheba">شبا (IBAN)</h2>
+<h3 id="sheba-format">قالب</h3>
+<p>شمارهٔ شبا همان IBAN ایرانی است: <code>IR</code>، دو رقم کنترل و یک BBAN ۲۲ رقمی؛ روی‌هم ۲۶ نویسه. سه رقم اول BBAN بانک را مشخص می‌کند.</p>
+<pre><code class="language-text">IR 80 017 0000000000000000123
+│  │  │   └─ بقیهٔ BBAN (۱۹ رقم)
+│  │  └──── کد بانک (۳ رقم)
+│  └─────── ارقام کنترل
+└────────── کد کشور</code></pre>
+
+<h3 id="sheba-normalization">نرمال‌سازی</h3>
+<p><code>Sheba::normalize()</code> حروف را بزرگ می‌کند، ارقام فارسی و عربی را تبدیل می‌کند و فاصله، خط تیره و نیم‌فاصله را حذف می‌کند. رشتهٔ خالصِ دقیقاً ۲۴ رقمی، یعنی شکل رایج «بدون IR» که بانک‌ها چاپ می‌کنند، پیشوند <code>IR</code> می‌گیرد. هر ورودی دیگر همان‌طور که تایپ شده می‌ماند و در بررسی قالب رد می‌شود:</p>
+<pre><code class="language-php">echo Sheba::normalize('800170000000000000000123');        // IR800170000000000000000123
+echo Sheba::normalize('ir80 0170 0000');                   // IR8001700000
+echo json_encode(Sheba::validate('ir80-0170-0000-0000-0000-0001-23')-&gt;isValid());   // true</code></pre>
+
+<h3 id="sheba-checks">چه چیزی بررسی می‌شود</h3>
+<ol>
+<li>نوع و اندازه (<code>invalid_type</code>، <code>input_too_long</code>).</li>
+<li>قالب: <code>IR</code> و پس از آن دقیقاً ۲۴ رقم، وگرنه <code>invalid_format</code>.</li>
+<li>چک‌سام ISO 7064 mod-97-10: چهار نویسهٔ اول به انتها می‌روند، <code>I</code> و <code>R</code> به ۱۸ و ۲۷ تبدیل می‌شوند و عدد حاصل به پیمانهٔ ۹۷ باید برابر ۱ باشد؛ وگرنه <code>invalid_checksum</code>.</li>
+</ol>
+<p>جست‌وجوی بانک پیش از چک‌سام انجام می‌شود؛ بنابراین کد بانک حتی برای شمارهٔ دارای رقم کنترل غلط هم در <code>details()</code> هست:</p>
+<pre><code class="language-php">$r = Sheba::validate('IR060170000000000000000123');
+var_dump($r-&gt;isValid());       // bool(false)
+print_r($r-&gt;errors());         // Array ( [0] =&gt; invalid_checksum )
+echo $r-&gt;details()['bank_name']; // بانک ملی ایران
+
+$ok = Sheba::validate('IR800170000000000000000123');
+echo json_encode($ok-&gt;details(), JSON_UNESCAPED_UNICODE);
+// {"normalized":"IR800170000000000000000123","bank_code":"017","bank_name":"بانک ملی ایران"}
+
+$unknown = Sheba::validate('IR049990000000000000000123');
+var_dump($unknown-&gt;isValid(), $unknown-&gt;details()['bank_name']);   // bool(true)  NULL</code></pre>
+<p>جزئیات: <code>normalized</code>، <code>bank_code</code> (رشتهٔ سه‌رقمی، یا <code>null</code> اگر قالب رد شده باشد) و <code>bank_name</code> (یا <code>null</code> وقتی کد در جدول نیست). شبای دارای چک‌سام درست با کد بانک ناشناخته <em>معتبر</em> است؛ فقط نام ندارد.</p>
+<div class="note"><strong>نام بانک‌ها.</strong> نام‌ها همان نام بانک صادرکننده در زمان تخصیص است. کد بانک‌هایی که بعداً ادغام شده‌اند نام اولیه‌شان را نگه می‌دارد.</div>
+
+<h2 id="bank-card">شمارهٔ کارت بانکی</h2>
+<h3 id="card-format">قالب و بررسی‌ها</h3>
+<p>کارت بانکی ایران ۱۶ رقم دارد. <code>BankCard::normalize()</code> پس از تبدیل ارقام فارسی و عربی فقط رقم‌ها را نگه می‌دارد؛ پس فاصله، خط تیره و هر جداکنندهٔ دیگر آزاد است. بررسی‌ها به ترتیب:</p>
+<ol>
+<li>نوع و اندازه.</li>
+<li>دقیقاً ۱۶ رقم، وگرنه <code>invalid_format</code>.</li>
+<li>یکسان بودن هر ۱۶ رقم (مثلاً <code>0000000000000000</code>) <code>repeated_digits</code> می‌دهد.</li>
+<li>چک‌سام Luhn، وگرنه <code>invalid_checksum</code>. از سمت راست هر رقم دوم دو برابر می‌شود (اگر حاصل از ۹ بیشتر شد ۹ کم می‌شود) و مجموع ارقام باید بر ۱۰ بخش‌پذیر باشد.</li>
+</ol>
+<pre><code class="language-php">$ok = BankCard::validate('6037-9912 3456 7893');
+echo json_encode($ok-&gt;details(), JSON_UNESCAPED_UNICODE);
+// {"normalized":"6037991234567893","bin":"603799","bank_name":"بانک ملی ایران"}
+
+print_r(BankCard::validate('6037991234567890')-&gt;errors());   // [invalid_checksum]
+print_r(BankCard::validate('0000000000000000')-&gt;errors());   // [repeated_digits]
+print_r(BankCard::validate('1234')-&gt;errors());               // [invalid_format]
+
+$x = BankCard::validate('9999991234567893');   // چک‌سام درست، BIN در جدول نیست
+var_dump($x-&gt;isValid(), $x-&gt;details()['bank_name']);   // bool(true)  NULL</code></pre>
+<p>جزئیات: <code>normalized</code>، <code>bin</code> (شش رقم اول، یا <code>null</code> اگر قالب رد شده باشد) و <code>bank_name</code>. مانند شبا، جست‌وجوی BIN پیش از بررسی تکرار ارقام و چک‌سام انجام می‌شود.</p>
+<p><code>BankCard::getBankName()</code> و <code>Sheba::getBankName()</code> میان‌برهایی‌اند که فقط برای شمارهٔ <em>معتبر</em> نام را برمی‌گردانند و در غیر این صورت <code>null</code>:</p>
+<pre><code class="language-php">var_dump(BankCard::getBankName('6037991234567890'));   // NULL، چون چک‌سام رد می‌شود
+var_dump(BankCard::getBankName('6037991234567893'));   // string(26) "بانک ملی ایران"</code></pre>
+
+<h2 id="data">داده‌های تشخیص بانک</h2>
+<table>
+<thead><tr><th>جدول</th><th>کلید</th><th>تعداد مورد</th></tr></thead>
+<tbody>
+<tr><td>BIN کارت</td><td>شش رقم اول کارت</td><td>۳۹</td></tr>
+<tr><td>کد بانک شبا</td><td>سه رقم پس از <code>IRkk</code></td><td>۳۸</td></tr>
+</tbody>
+</table>
+<p>یک مورد فقط وقتی وارد جدول شده که دست‌کم دو منبع مستقل (جدول‌های عمومی پیش‌شمارهٔ بانک‌ها و مجموعه‌دادهٔ جامعهٔ توسعه‌دهندگان) بر نگاشت آن موافق باشند. موردهای تک‌منبعی یا متناقض عمداً کنار گذاشته شده‌اند.</p>
+<div class="known"><strong>محدودیت شناخته‌شده.</strong> جدول‌ها کوچک و «تا حد امکان درست»‌اند. بسیاری از کارت‌های معتبر از بانکی هستند که در فهرست نیست و برای آن‌ها <code>bank_name</code> برابر <code>null</code> است. بعضی منبع‌های جامعه ریشهٔ مشترک دارند؛ پس توافقشان قوی است اما کاملاً مستقل نیست. جدول رسمی بانک مرکزی هنگام گردآوری داده در دسترس نبود (چند کد شبا فقط با دو منبع تأیید شده است). بانک‌ها ادغام می‌شوند، نام عوض می‌کنند و بازه‌ها را دوباره تخصیص می‌دهند؛ داده در تاریخ ۲۰۲۶-۱۰-۰۷ بررسی شده و با گذر زمان قدیمی می‌شود. نام بانک را اشارهٔ نمایشی بدانید و برای تصمیم حقوقی یا مالی به کار نبرید. جزئیات در <a href="accuracy-and-data.html">دقت و داده‌ها</a> آمده است.</div>
+<p>اعتبار هیچ‌وقت به این جدول‌ها بستگی ندارد. شمارهٔ دارای چک‌سام درست معتبر است، چه بانکش شناخته باشد چه نه.</p>
+
+<h2 id="notes">نکات عملی</h2>
+<ul>
+<li>چک‌سام اشتباه تایپی را می‌گیرد، نه شمارهٔ جعلی را. نمی‌تواند بگوید کارتی وجود دارد یا حسابی به کسی تعلق دارد.</li>
+<li>شمارهٔ کارت را فقط برای قالب بررسی کنید. شمارهٔ کامل کارت را لاگ نکنید و CVV2 یا رمز دوم را ذخیره نکنید.</li>
+<li>مقدار نرمال‌شده را ذخیره کنید تا <code>6037-9912-3456-7893</code> و <code>6037991234567893</code> یک رکورد باشند.</li>
+<li>شمارهٔ کارت و شبا باید رشته بمانند. عدد ۱۶ رقمی ممکن است از دقت عدد JSON یا اعشاری بیشتر باشد.</li>
+</ul>
+<p>سقف اندازه و قاعده‌های نوع مثل همهٔ اعتبارسنج‌هاست؛ <a href="validators-overview.html#input-handling">پردازش ورودی</a> را ببینید.</p>
