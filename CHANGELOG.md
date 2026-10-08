@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-10-08
+
+### Changed
+
+- Documentation only, no code changes. The READMEs (English and Persian) are rewritten in plain language with guide screenshots, Packagist and funding badges, and a contributing section.
+- The guide is published on GitHub Pages: https://ehsanenaloo.github.io/RTLY-Kit/
+- Community files (`CONTRIBUTING.md`, `SECURITY.md`, `CODE_OF_CONDUCT.md`) moved to `.github/`, data sources to `resources/data/SOURCES.md`, and tool configs to `tools/`.
+- Added `.github/FUNDING.yml`.
+
 ## [0.1.0] - 2026-10-08
 
 ### Added
