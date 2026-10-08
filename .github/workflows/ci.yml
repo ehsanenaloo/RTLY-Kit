@@ -146,7 +146,9 @@ jobs:
           extensions: none, iconv, :mbstring
           coverage: none
           tools: composer:v2
-      - run: composer install --no-dev --no-interaction --prefer-dist --no-progress
+      # Without a lock file Composer also checks the dev tools' own extension needs
+      # (for example the tokenizer for the style fixer). Those tools are not installed here.
+      - run: composer install --no-dev --no-interaction --prefer-dist --no-progress --ignore-platform-reqs
       - run: php tools/ci/smoke.php
         env:
           RTLY_EXPECT_NO_MBSTRING: '1'
