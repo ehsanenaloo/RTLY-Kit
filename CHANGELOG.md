@@ -34,6 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - A trailing backslash in a `format()` pattern is dropped in all three calendars.
 - `IranHolidays::all()`, `allTitles()` and `allFixed()` throw `InvalidDateException` (`date_out_of_range`, context `year`, `min`, `max`) for a Jalali year outside -620 to 9377.
 - Error messages that repeat user input cut it to 40 characters and always stay valid UTF-8.
+- A date outside the supported range now reports `date_out_of_range` in all three calendars. Before, some `Jalali` paths (the range check in the constructor, `addMonths`, the converters) reported `invalid_date`. The exception type is unchanged.
 - Supported platforms: PHP 8.2 to 8.5, Laravel 11, 12 and 13 (Laravel 13 needs PHP 8.3 or newer), Carbon 3.
 - Accuracy statements follow the data checks of 2026-10-08. The Jalali conversion matches the official calendar of the University of Tehran for every year from 1206 to 1497 and the astronomical definition for 1178 to 1502. Umm al-Qura month starts match the official KACST calendar for AH 1318 to 1500. Prayer times agree within 1 to 2 minutes with published tables for Tehran, Makkah, Egypt and Karachi (Hanafi Asr), and Turkey's Fajr and Isha fit the MWL angles. The 19 Sheba codes of the Central Bank specification match the table, and the mobile prefixes lie inside the mobile blocks of the numbering plan. Details are in `resources/data/SOURCES.md`.
 
