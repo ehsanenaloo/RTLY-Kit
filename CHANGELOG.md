@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-10-09
+
+### Changed
+
+- The Composer package is now `enaxon/rtly-kit`. Install it with `composer require enaxon/rtly-kit`. The PHP namespace `RtlyKit\` and the whole API are unchanged, so your code needs no edits.
+- Rebuilt the guide search index.
+
 ## [0.2.0] - 2026-10-08
 
 ### Added
