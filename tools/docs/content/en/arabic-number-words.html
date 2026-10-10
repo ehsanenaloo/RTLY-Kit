@@ -6,7 +6,7 @@ order: 25
 -->
 <h2 id="overview">What it does</h2>
 <p>In Arabic, the form of a number depends on what it counts. «ثلاثة كتب» (three books) and «ثلاث سيارات» (three cars) use different forms of three. A number also changes with its grammatical case, and it has its own rules for 11 to 19, for 200 and for 2000. <code>NumberToWords::convert($n, 'ar', $options)</code> handles these. Without options, it gives the plain counting form, the same text as in earlier releases.</p>
-<p>The options are an <code>RtlyKit\Number\ArabicOptions</code> object, or an array with the same keys. <code>NumberToWords::ordinal()</code> writes the ordinals from 1 to 99. Persian has no options. Passing options with <code>fa</code> throws an exception.</p>
+<p>The options are an <code>RtlyKit\Number\ArabicOptions</code> object, or an array with the same keys. <code>NumberToWords::ordinal()</code> writes the ordinals from 1 to 99. Persian has no options. Passing options with <code>fa</code> throws an exception, except an empty array, which means no options in both languages. <code>ordinal()</code> accepts whole floats such as <code>3.0</code> like <code>convert()</code>; <code>1.5</code>, <code>NaN</code> and <code>INF</code> throw <code>InvalidNumberException</code>.</p>
 
 <h2 id="quick">Quick start</h2>
 <pre><code class="language-php">&lt;?php

@@ -32,8 +32,9 @@ final class ValidatorBoundaryTest extends TestCase
     {
         $this->assertSame('0499370899', NationalCode::normalize('049 937-0899'));
         $this->assertSame('0499370899', NationalCode::normalize("049\u{200C}9370899"));
-        $this->assertSame('0499370899', NationalCode::normalize("\n\t0499370899\r\n"));
-        $this->assertTrue(NationalCode::isValid("\n0499370899\n"));
+        // Tabs and newlines are not separators: they stay, and validation rejects them.
+        $this->assertFalse(NationalCode::isValid("\n\t0499370899\r\n"));
+        $this->assertFalse(NationalCode::isValid("\n0499370899\n"));
     }
 
     public function test_national_code_checksum_uses_the_right_weights(): void
@@ -56,7 +57,7 @@ final class ValidatorBoundaryTest extends TestCase
         $this->assertTrue(Sheba::isValid($valid));
         $this->assertSame(['invalid_format'], Sheba::validate('A'.$valid)->errors());
         $this->assertSame(['invalid_format'], Sheba::validate($valid.'0')->errors());
-        $this->assertTrue(Sheba::isValid("\t".$valid."\n"));
+        $this->assertSame(['invalid_format'], Sheba::validate("\t".$valid."\n")->errors());
         $this->assertTrue(Sheba::isValid('ir27 0170-0000 0010 0324 2000 01'));
         $this->assertSame($valid, Sheba::normalize(substr($valid, 2)));
         // 25 digits is not the bare 24-digit form and gets no prefix.
@@ -117,7 +118,7 @@ final class ValidatorBoundaryTest extends TestCase
 
     public function test_postal_code_boundaries(): void
     {
-        $this->assertTrue(PostalCode::isValid('1234567890'));
+        $this->assertTrue(PostalCode::isValid('1593715416'));
         $this->assertTrue(PostalCode::isValid('9999999999'));
         $this->assertSame(['invalid_format'], PostalCode::validate('0123456789')->errors());
         $this->assertSame(['invalid_length'], PostalCode::validate('123456789')->errors());
@@ -139,7 +140,7 @@ final class ValidatorBoundaryTest extends TestCase
     {
         $this->assertSame('12D34567', VehiclePlate::normalize('12d345 67'));
         $this->assertTrue(VehiclePlate::isValid('12d34567'));
-        $this->assertTrue(VehiclePlate::isValid("\t12ب34567\n"));
+        $this->assertFalse(VehiclePlate::isValid("\t12ب34567\n"));
         $this->assertSame('XYZ', VehiclePlate::validate('xyz')->details()['normalized']);
         $this->assertSame(
             ['normalized' => '12ب34567', 'two_digit' => '12', 'letter' => 'ب', 'three_digit' => '345', 'region' => '67'],

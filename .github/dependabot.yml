@@ -14,7 +14,7 @@ updates:
       dev-dependencies:
         dependency-type: development
         update-types: [minor, patch]
-    # Runtime constraints (php, ext-mbstring) are a compatibility promise, not
+    # The runtime constraint (php) is a compatibility promise, not
     # something to bump automatically.
     ignore:
       - dependency-name: php

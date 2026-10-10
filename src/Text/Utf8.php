@@ -8,7 +8,7 @@ namespace RtlyKit\Text;
  * Minimal UTF-8 helpers built on PCRE (which is always compiled into PHP) so
  * the package needs no mbstring extension.
  *
- * Invalid UTF-8 contract: {@see isValid()} reports it, {@see lower()} requires
+ * Invalid UTF-8 contract: {@see isValid()} reports it, {@see scrub()} replaces it, {@see lower()} requires
  * valid input (callers validate first) and {@see truncate()} never fails: each
  * byte that is not part of a well-formed sequence is replaced by U+FFFD before
  * cutting, so the result is always valid UTF-8.
@@ -233,13 +233,24 @@ final class Utf8
     }
 
     /**
+     * The text with every byte that is not part of a well-formed sequence replaced by U+FFFD (one per
+     * byte). Valid text is returned unchanged, so the result is always valid UTF-8.
+     */
+    public static function scrub(string $text): string
+    {
+        if (self::isValid($text)) {
+            return $text;
+        }
+
+        return preg_replace(self::SCRUB, "\u{FFFD}", $text) ?? '';
+    }
+
+    /**
      * First $chars characters of the text; invalid bytes become U+FFFD first.
      */
     public static function truncate(string $text, int $chars): string
     {
-        if (! self::isValid($text)) {
-            $text = preg_replace(self::SCRUB, "\u{FFFD}", $text) ?? '';
-        }
+        $text = self::scrub($text);
 
         return preg_match('/^.{0,'.max(0, $chars).'}/su', $text, $m) === 1 ? $m[0] : '';
     }

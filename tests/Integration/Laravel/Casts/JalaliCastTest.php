@@ -59,13 +59,55 @@ final class JalaliCastTest extends TestCase
 
     /* ---------------- JalaliCast ---------------- */
 
-    public function test_cast_get_returns_null_for_unsupported_types(): void
+    public function test_cast_get_returns_null_only_for_missing_values_and_rejects_other_types(): void
     {
         $cast = new JalaliCast();
 
-        self::assertNull($cast->get($this->model(), 'at', 1.5, []));
-        self::assertNull($cast->get($this->model(), 'at', ['2024-03-20'], []));
         self::assertNull($cast->get($this->model(), 'at', '', []));
+        self::assertNull($cast->get($this->model(), 'at', null, []));
+
+        foreach ([1.5, ['2024-03-20'], true, false, new \stdClass()] as $bad) {
+            try {
+                $cast->get($this->model(), 'published_at', $bad, []);
+                self::fail('unsupported stored value must be rejected');
+            } catch (InvalidDateException $e) {
+                self::assertSame("Cannot read the value of 'published_at' as a date.", $e->getMessage());
+                self::assertSame(['attribute' => 'published_at', 'type' => get_debug_type($bad)], $e->getContext());
+            }
+        }
+    }
+
+    public function test_get_reads_the_stored_value_as_gregorian_whatever_the_year(): void
+    {
+        $cast = new JalaliCast();
+        $m = $this->model();
+
+        // A Gregorian year below 1700 must not be read as a Jalali year.
+        foreach (['1600-01-01 00:00:00', '1650-05-05 10:00:00', '1699-12-31 23:59:59', '1700-01-01 00:00:00', '1500-06-06 06:00:00'] as $stored) {
+            $j = $cast->get($m, 'at', $stored, []);
+            self::assertInstanceOf(Jalali::class, $j);
+            self::assertSame($stored, $j->toGregorian()->format('Y-m-d H:i:s'), $stored);
+        }
+    }
+
+    public function test_historical_gregorian_dates_survive_a_round_trip(): void
+    {
+        $cast = new JalaliCast();
+        $m = $this->model();
+
+        foreach (['1600-01-01 00:00:00', '1650-05-05 10:00:00', '1699-12-31 23:59:59', '0900-01-01 00:00:00'] as $greg) {
+            $stored = $cast->set($m, 'at', new \DateTimeImmutable($greg), []);
+            self::assertSame($greg, $stored);
+            $back = $cast->get($m, 'at', $stored, []);
+            self::assertSame($greg, $back?->toGregorian()->format('Y-m-d H:i:s'));
+            self::assertSame($stored, $cast->set($m, 'at', $back, []));
+        }
+    }
+
+    public function test_get_rejects_an_unreadable_stored_string(): void
+    {
+        $this->expectException(InvalidDateException::class);
+        (new JalaliCast())->get($this->model(), 'at', 'not a date', []);
     }
 
     public function test_cast_set_rejects_unsupported_types_naming_the_attribute(): void

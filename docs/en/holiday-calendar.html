@@ -41,7 +41,7 @@
 <thead><tr><th scope="col">Source</th><th scope="col">Years</th><th scope="col">What it means</th></tr></thead>
 <tbody>
 <tr><td><code>Official</code></td><td>1394 and 1396 to 1405</td><td>The dates of the official yearly calendar of the Calendar Center at the University of Tehran, checked against a second source (time.ir)</td></tr>
-<tr><td><code>Reported</code></td><td>1380 to 1393 and 1395</td><td>Dates taken from a published list. For 1395 we used PDF digits and a news list of the official holidays. The set of holidays in these years may be incomplete, for example the Imam Reza day is missing in some of them</td></tr>
+<tr><td><code>Reported</code></td><td>1380 to 1393 and 1395</td><td>Dates taken from a published list. For 1395 we used PDF digits and a news list of the official holidays. The set of holidays in these years may be incomplete: the Imam Reza day or the Imam Hasan Askari day is missing in some of them. We have no published source to fill them, so add a day you know with <code>withHoliday()</code></td></tr>
 <tr><td><code>Estimated</code></td><td>every other year</td><td>Calculated from the Umm al-Qura table, and reported only inside AH 1300 to 1500</td></tr>
 </tbody>
 </table></div>
@@ -82,7 +82,7 @@ require</span> <span class="tok-s">'vendor/autoload.php'</span>;
 <p>The date must be within 3 days of the computed start. If you also gave a neighbouring month, the two starts must be 29 or 30 days apart. Otherwise the call throws <code>InvalidDateException</code>.</p>
 
 <h3 id="step-add-remove">3. Add or remove a day<a class="anchor" href="#step-add-remove" aria-label="Link to this section">#</a></h3>
-<p><code>withHoliday($date, $title)</code> adds a title to a day. <code>withoutHoliday($date)</code> removes the whole day, and <code>withoutHoliday($date, $title)</code> removes one title. A date is a <code>Jalali</code> object or a string such as <code>'1406/02/03'</code>.</p>
+<p><code>withHoliday($date, $title)</code> adds a title to a day. <code>withoutHoliday($date)</code> removes the whole day, and <code>withoutHoliday($date, $title)</code> removes one title. A date is a <code>Jalali</code> object or a Jalali date string such as <code>'1406/02/03'</code> (<code>YYYY/MM/DD</code> or <code>YYYY-MM-DD</code>, Persian digits allowed). A string whose year is 1700 or more is not a Jalali date and throws <code>InvalidDateException</code>, so a Gregorian date such as <code>'2027/05/05'</code> is never taken for another day. A time or free text is rejected as well.</p>
 <pre tabindex="0"><code class="language-php"><span class="tok-v">$mine</span> = <span class="tok-v">$moved</span>
     -&gt;withHoliday(<span class="tok-s">'1406/02/03'</span>, <span class="tok-s">'Company day'</span>)
     -&gt;withoutHoliday(<span class="tok-s">'1406/01/13'</span>);            <span class="tok-c">// remove Nature Day</span>
@@ -142,7 +142,7 @@ var_dump(<span class="tok-v">$mine</span>-&gt;isHoliday(<span class="tok-n">1406
     <span class="tok-s">'removed'</span> =&gt; [],                 <span class="tok-c">// '1405/02/03' or '1405/02/03' =&gt; 'Title'</span>
     <span class="tok-s">'use_official_data'</span> =&gt; <span class="tok-k">true</span>,
 ],</code></pre>
-<p>The service provider builds one <code>HolidayCalendar</code> from this block and binds it in the container. Get it with <code>app(HolidayCalendar::class)</code>. It is created the first time you ask for it, so a bad value fails at that point. Missing keys use their defaults.</p>
+<p>The service provider builds one <code>HolidayCalendar</code> from this block and binds it in the container. Get it with <code>app(HolidayCalendar::class)</code>. It is created the first time you ask for it, so a bad value fails at that point. Missing keys use their defaults. The <code>holidays</code> entry must be an array. Any other value (for example the string <code>'oops'</code>) throws <code>InvalidDateException</code> that names <code>rtly-kit.holidays</code> when the calendar is first resolved. <code>islamic_offset</code> may also be an integer-like string such as <code>'1'</code> or <code>'-2'</code>, which is what <code>env()</code> returns. Floats and other strings are rejected.</p>
 <pre tabindex="0"><code class="language-php"><span class="tok-k">use</span> RtlyKit\Holiday\HolidayCalendar;
 
 <span class="tok-v">$calendar</span> = app(HolidayCalendar::<span class="tok-k">class</span>);

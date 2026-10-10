@@ -32,7 +32,7 @@ final class DataTables
 
         $path = dirname(__DIR__, 2).'/resources/data/'.$name.'.php';
 
-        if (preg_match('/^[a-z0-9-]+$/', $name) !== 1 || ! is_file($path)) {
+        if (preg_match('/^[a-z0-9-]+$/D', $name) !== 1 || ! is_file($path)) {
             throw RtlyKitException::because(ErrorCode::DataUnavailable, sprintf("Data table '%s' is not available.", $name), ['table' => $name]);
         }
 

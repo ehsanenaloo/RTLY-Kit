@@ -95,7 +95,8 @@ echo $post-&gt;published_at-&gt;addDays(20)-&gt;format('Y/m/d'); // 1404/02/04</
 <tr><td><code>null</code> یا <code>''</code></td><td><code>null</code></td></tr>
 </tbody>
 </table>
-<p>رشته‌ای جلالی حساب می‌شود که سالش بین ۱۲۰۰ و ۱۵۹۹ باشد و جداکننده‌اش <code>/</code> یا <code>-</code>، با ساعت اختیاری <code>HH:MM</code> یا <code>HH:MM:SS</code> بعد از فاصله یا <code>T</code>. بقیهٔ رشته‌ها مثل تاریخ میلادی خوانده می‌شوند.</p>
+<p>رشته‌ای جلالی حساب می‌شود که سالش بین ۱۲۰۰ و ۱۵۹۹ باشد و جداکننده‌اش <code>/</code> یا <code>-</code>، با ساعت اختیاری <code>HH:MM</code> یا <code>HH:MM:SS</code> بعد از فاصله یا <code>T</code>. بقیهٔ رشته‌ها به <code>Jalali::make()</code> می‌روند. این متد سال کمتر از ۱۷۰۰ را جلالی می‌خواند و بقیه را میلادی، پس <code>'1650-01-01'</code> هم جلالی است.</p>
+<p>وقتی مدل ستون را می‌خواند، مقدار ذخیره‌شده همیشه میلادی خوانده می‌شود، هر سالی که باشد، پس تاریخی مثل <code>1650-05-05 10:00:00</code> بدون تغییر برمی‌گردد. مقدار ذخیره‌شده از نوع پشتیبانی‌نشده (آرایه، boolean، float یا شیء) <code>InvalidDateException</code> می‌دهد، با نام ویژگی و نوع. فقط <code>null</code> و رشتهٔ خالی <code>null</code> می‌دهند.</p>
 
 <h3 id="cast-errors">خطاها</h3>
 <p>ورودی نادرست موقع نوشتن <code>RtlyKit\Exceptions\InvalidDateException</code> می‌دهد، نه خطای خام PHP:</p>

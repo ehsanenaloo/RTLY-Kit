@@ -7,6 +7,7 @@ namespace RtlyKit\Holiday;
 use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
+use RtlyKit\Calendar\CalendarLimits;
 use RtlyKit\Calendar\Hijri;
 use RtlyKit\Calendar\Jalali;
 use RtlyKit\Exceptions\ErrorCode;
@@ -43,6 +44,9 @@ final class HolidayCalendar
 
     private const MAX_INPUT_LENGTH = 64;
 
+    /** Jalali::make() reads a text year at or above this as Gregorian; a holiday date string rejects it. */
+    private const GREGORIAN_YEAR_FROM = 1700;
+
     private const CONFIG_KEYS = ['islamic_offset', 'hijri_month_starts', 'extra', 'removed', 'use_official_data'];
 
     /**
@@ -70,7 +74,7 @@ final class HolidayCalendar
      * Build a calendar from the shape of the `holidays` entry of the Laravel config file
      * (`resources/config/rtly-kit.php`). Missing keys take their defaults; unknown keys are rejected.
      *
-     * - `islamic_offset` (int, -3..3)
+     * - `islamic_offset` (int, -3..3; an int-like string such as '1' or '-2', e.g. from env(), is cast to int)
      * - `hijri_month_starts` (map "1447-10" => "2026-03-20", the Gregorian first day of that month)
      * - `extra` (map "1405/02/03" => title or list of titles)
      * - `removed` (list of dates removing the whole day, or map "date" => title or list of titles)
@@ -93,6 +97,10 @@ final class HolidayCalendar
         }
 
         $offset = $config['islamic_offset'] ?? 0;
+        // An int-like string ('1', '-2', '+3') is accepted because env() returns strings; floats and other strings are not.
+        if (is_string($offset) && preg_match('~^[+-]?[0-9]{1,18}$~', $offset) === 1) {
+            $offset = (int) $offset;
+        }
         if (! is_int($offset)) {
             throw self::invalidOption('islamic_offset', 'an integer');
         }
@@ -105,7 +113,7 @@ final class HolidayCalendar
         $calendar = self::default()->withIslamicOffset($offset)->withOfficialData($use);
 
         foreach (self::arrayOption($config, 'hijri_month_starts') as $key => $value) {
-            if (preg_match('~^([0-9]{1,4})[-/]([0-9]{1,2})$~', (string) $key, $m) !== 1
+            if (preg_match('~^([0-9]{1,4})[-/]([0-9]{1,2})$~D', Digits::toEnglish((string) $key), $m) !== 1
                 || ! (is_string($value) || $value instanceof DateTimeInterface)) {
                 throw self::invalidOption('hijri_month_starts', 'a map of "year-month" => Gregorian date');
             }
@@ -248,7 +256,9 @@ final class HolidayCalendar
     /**
      * Add a holiday on one Jalali day (in addition to whatever else falls there).
      *
-     * @param  Jalali|string  $date  a Jalali, or a Jalali date string such as "1405/02/03"
+     * @param  Jalali|string  $date  a Jalali, or a Jalali date string "YYYY/MM/DD" or "YYYY-MM-DD" (digits may be
+     *                               Persian or Arabic). A text year of 1700 or later is not a Jalali year and is
+     *                               rejected (elsewhere such a string is read as Gregorian); a time or free text is rejected too
      *
      * @throws InvalidDateException for an invalid date or an empty, control-character or over-long title
      */
@@ -267,7 +277,8 @@ final class HolidayCalendar
 
     /**
      * Remove one title (or, without a title, every holiday) from one Jalali day, fixed ones included.
-     * Holidays added with {@see self::withHoliday()} on that day are removed as well.
+     * Holidays added with {@see self::withHoliday()} on that day are removed as well. The date is read as in
+     * {@see self::withHoliday()}: a Jalali or a Jalali date string, never a Gregorian one.
      *
      * @throws InvalidDateException for an invalid date or title
      */
@@ -319,6 +330,9 @@ final class HolidayCalendar
 
     /**
      * How the Islamic holiday dates of a Jalali year are known by this calendar (before your own overrides).
+     * For {@see HolidaySource::Reported} years (1380-1393 and 1395) the dates come from one published list and
+     * the set of holidays may be incomplete (titles such as Imam Reza or Imam Hasan Askari can be
+     * missing); use {@see self::withHoliday()} to add one you know.
      *
      * @throws InvalidDateException when the year is outside Jalali::MIN_YEAR..MAX_YEAR
      */
@@ -358,7 +372,8 @@ final class HolidayCalendar
 
     /**
      * Every holiday of a day with the origin of its date: official data, a report, an estimate, a fixed
-     * holiday or one of yours.
+     * holiday or one of yours. A day in a reported year (see {@see self::sourceOf()}) may lack a holiday that
+     * exists, so an empty answer there is not proof of a working day.
      *
      * @return list<HolidayEntry>
      */
@@ -433,6 +448,11 @@ final class HolidayCalendar
         return ! $this->isWeekend($date) && ! $this->isHoliday($date);
     }
 
+    /**
+     * The first business day (not Friday, not a holiday) after $date.
+     *
+     * @throws InvalidDateException when the search passes the last supported Jalali date (9377/12/30)
+     */
     public function nextBusinessDay(Jalali $date): Jalali
     {
         $next = $date->addDays(1);
@@ -642,8 +662,26 @@ final class HolidayCalendar
         }
 
         self::assertLength($date);
+        $normalised = CalendarLimits::normalize($date);
 
-        return Jalali::make($date, new DateTimeZone('UTC'));
+        // A holiday is a whole Jalali day: only Y/m/d or Y-m-d is read. Jalali::make() would take a year of
+        // 1700 or later as Gregorian (and free text such as 'tomorrow'), which would silently move the holiday.
+        if (preg_match('~^([0-9]{3,4})[/-]([0-9]{1,2})[/-]([0-9]{1,2})$~D', $normalised, $m) !== 1) {
+            throw InvalidDateException::because(
+                ErrorCode::InvalidDate,
+                'Expected a Jalali date as YYYY/MM/DD (or YYYY-MM-DD) or a Jalali object.',
+                ['value' => $date],
+            );
+        }
+        if ((int) $m[1] >= self::GREGORIAN_YEAR_FROM) {
+            throw InvalidDateException::because(
+                ErrorCode::InvalidDate,
+                sprintf('The year %d is not a Jalali year (a year of %d or later is read as Gregorian elsewhere); give a Jalali date such as 1405/02/03.', (int) $m[1], self::GREGORIAN_YEAR_FROM),
+                ['value' => $date],
+            );
+        }
+
+        return Jalali::create((int) $m[1], (int) $m[2], (int) $m[3], timezone: new DateTimeZone('UTC'));
     }
 
     private static function dayKey(Jalali $date): string
@@ -654,7 +692,7 @@ final class HolidayCalendar
     private static function cleanTitle(string $title): string
     {
         $title = trim($title);
-        $valid = preg_match('/^\P{Cc}+$/u', $title) === 1;
+        $valid = preg_match('/^[^\p{Cc}\x{2028}\x{2029}]+$/uD', $title) === 1;
 
         if (! $valid || preg_match_all('/./us', $title) > self::MAX_TITLE_LENGTH) {
             throw InvalidDateException::because(
@@ -693,9 +731,9 @@ final class HolidayCalendar
         }
 
         self::assertLength($date);
-        $normalised = Digits::toEnglish(trim($date));
+        $normalised = CalendarLimits::normalize($date); // Persian/Arabic digits, outer spaces; a NUL byte or empty text throws
 
-        if (preg_match('/^([0-9]{4})-([0-9]{2})-([0-9]{2})$/', $normalised, $m) !== 1
+        if (preg_match('/^([0-9]{4})-([0-9]{2})-([0-9]{2})$/D', $normalised, $m) !== 1
             || ! checkdate((int) $m[2], (int) $m[3], (int) $m[1])) {
             throw InvalidDateException::because(
                 ErrorCode::InvalidDate,

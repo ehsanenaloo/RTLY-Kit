@@ -15,3 +15,6 @@
 .*tmp.php
 /tools/benchmark/vendor/
 .php-cs-fixer.cache
+
+# Local tool output (Infection cache, coverage XML)
+/tools/build/

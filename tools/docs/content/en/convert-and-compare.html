@@ -36,7 +36,7 @@ echo Jalali::make(Hijri::make($j));                 // 1405/01/01 12:00:00</code
 $h = Hijri::make($j, $tehran);
 echo $h-&gt;getTimezone()-&gt;getName();      // Asia/Tehran
 echo $h-&gt;getHour(), ':', $h-&gt;getMinute();   // 15:30   (12:00 UTC)</code></pre>
-<div class="note"><strong>Same-class shortcut.</strong> <code>Hijri::make($hijri)</code> and <code>Hebrew::make($hebrew)</code> return the instance you pass, and ignore any time zone or variant argument. <code>Jalali::make($jalali)</code> returns it too, unless you pass a time zone. Then you get a copy in that zone. To change the variant of a Hijri date, go through the moment: <code>Hijri::make($h-&gt;toGregorian(), null, HijriVariant::Tabular)</code>.</div>
+<div class="note"><strong>Same-class shortcut.</strong> <code>Hijri::make($hijri)</code>, <code>Hebrew::make($hebrew)</code> and <code>Jalali::make($jalali)</code> return the instance you pass when you give no time zone. With a time zone you get a copy in that zone. <code>Hijri::make()</code> also takes a variant, <code>null</code> by default: <code>null</code> keeps the variant of the instance, and a variant you pass (<code>UmmAlQura</code> too) converts the date to it when it differs.</div>
 
 <h3 id="gregorian">From and to Gregorian</h3>
 <p><code>toGregorian()</code> returns the inner <code>DateTimeImmutable</code>. Passing a <code>DateTimeInterface</code> to <code>make()</code> goes the other way. The static converters work on plain integers:</p>
@@ -93,7 +93,7 @@ foreach ([Jalali::class, Hijri::class, Hebrew::class] as $class) {
 <p>These hold for every implementation:</p>
 <ul>
 <li>Instances are <code>final</code> and immutable. Modifiers return a new object.</li>
-<li>Every method that takes a date, timestamp or amount throws only <code>InvalidDateException</code> for out-of-range input, never a <code>TypeError</code> or <code>ValueError</code>.</li>
+<li>Every method that takes a date, timestamp or amount throws only <code>InvalidDateException</code> for an out-of-range or unreadable value of an accepted type, never a <code>TypeError</code> or <code>ValueError</code>. Comparisons use the whole instant, microseconds included, and <code>addMonths()</code> and <code>addYears()</code> keep the microseconds.</li>
 <li>The interface declares <code>format()</code> with the pattern only. Each class adds its own optional parameters (<code>$persianDigits</code> for Jalali, <code>$locale</code> and <code>$digits</code> for Hijri, <code>$locale</code> for Hebrew). Through the interface you can call only <code>format($pattern)</code>.</li>
 <li>Weekday numbering is not the same everywhere. Jalali starts on Saturday. Hijri and Hebrew start on Sunday.</li>
 </ul>
@@ -137,6 +137,14 @@ echo Hijri::make($nowruz)-&gt;diffInMonths($nowruz-&gt;addMonths(3));  // 3  (Hi
 echo $nowruz-&gt;diffInYears(Hijri::create(1450, 1, 1, 0, 0, 0, $utc)); // 2</code></pre>
 <p>So "how many months until X" depends on the calendar you ask in. Choose the one your users think in. The units for each calendar are in <a href="jalali.html#compare-diff">Jalali</a>, <a href="hijri.html#compare-diff">Hijri</a> and <a href="hebrew.html#compare-diff">Hebrew</a>.</p>
 
+<p><code>add*()</code> and <code>diff*()</code> are not exact opposites at the end of a short month. <code>addMonths()</code> and <code>addYears()</code> cut the day to the length of the target month. <code>diffInMonths()</code> and <code>diffInYears()</code> count whole units from the real days, so the shortened date is one day short of a full unit. Carbon behaves the same way. If you need the original date back, keep it.</p>
+<pre><code class="language-php">$start = Jalali::create(1403, 6, 31, 0, 0, 0, $utc);
+echo $start-&gt;addMonths(1);                      // 1403/07/30 00:00:00  (the day is cut to 30)
+echo $start-&gt;diffInMonths($start-&gt;addMonths(1)); // 0
+
+$leapDay = Jalali::create(1403, 12, 30, 0, 0, 0, $utc);
+echo $leapDay-&gt;addYears(1);                      // 1404/12/29 00:00:00
+echo $leapDay-&gt;diffInYears($leapDay-&gt;addYears(1)); // 0</code></pre>
 <h2 id="limits">Edge cases and limits</h2>
 <ul>
 <li><strong>Ranges.</strong> Jalali -620..9377, Hijri 1..9665, Hebrew 3762..13759. Converting into a calendar whose range does not contain the moment throws <code>InvalidDateException</code>.</li>

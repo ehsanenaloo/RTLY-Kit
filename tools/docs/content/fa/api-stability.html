@@ -45,7 +45,7 @@ order: 30
 <p>RTLY-Kit از <a href="https://semver.org/lang/fa/">نسخه‌گذاری معنایی (SemVer)</a> پیروی می‌کند.</p>
 <ul>
 <li><strong>از ۱٫۰٫۰ به بعد:</strong> تغییر ناسازگار در API عمومی فقط در نسخهٔ major می‌آید. نسخهٔ minor قابلیت، case در enum، متد و کد خطای تازه اضافه می‌کند. نسخهٔ patch فقط باگ را درست می‌کند.</li>
-<li><strong>قبل از ۱٫۰٫۰ (الان):</strong> نسخهٔ minor (<code>0.x</code>) ممکن است تغییر ناسازگار داشته باشد. هر مورد در بخش «Changed» تغییرنامه، با راه مهاجرت در <a href="upgrade.html">ارتقا</a> نوشته می‌شود. نسخهٔ patch (<code>0.x.y</code>) API عمومی را نمی‌شکند. در <code>composer.json</code> یک بازهٔ minor ثابت کنید (مثلاً <code>~0.2.0</code>) و پیش از رفتن به نسخهٔ بعد، یادداشت‌های ارتقا را بخوانید.</li>
+<li><strong>قبل از ۱٫۰٫۰ (الان):</strong> نسخهٔ minor (<code>0.x</code>) ممکن است تغییر ناسازگار داشته باشد. هر مورد در بخش «Changed» تغییرنامه، با راه مهاجرت در <a href="upgrade.html">ارتقا</a> نوشته می‌شود. نسخهٔ patch (<code>0.x.y</code>) API عمومی را نمی‌شکند. در <code>composer.json</code> یک بازهٔ minor ثابت کنید (مثلاً <code>~0.3.0</code>) و پیش از رفتن به نسخهٔ بعد، یادداشت‌های ارتقا را بخوانید.</li>
 <li>درست کردن باگی که تابع را به جواب درست می‌رساند «رفع باگ» است و «تغییر ناسازگار» نیست، حتی اگر خروجی عوض شود. مثلاً وقتی عشای روش مکه در رمضان درست شد، ۳۰ دقیقه دیرتر شد.</li>
 <li>اضافه شدن case به <code>ErrorCode</code> یا کلید به آرایهٔ <code>Result::details()</code> ناسازگار نیست. برای <code>match</code> روی <code>ErrorCode</code> شاخهٔ <code>default</code> بگذارید.</li>
 <li>اینترفیس‌ها (<code>CalendarDate</code>، <code>Validator</code>، <code>RtlyKitThrowable</code>) برای استفاده‌اند. کتابخانه ممکن است قبل از ۱٫۰٫۰ در نسخهٔ minor و بعد از آن در نسخهٔ major به آن‌ها متد اضافه کند. پس خودتان پیاده‌سازی‌شان نکنید.</li>

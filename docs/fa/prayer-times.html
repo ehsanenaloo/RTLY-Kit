@@ -61,6 +61,7 @@
     elevation: <span class="tok-n">0.0</span>,                          <span class="tok-c">// متر، پیش‌فرض ۰</span>
 );</code></pre>
 <p><code>forCity()</code> این نام‌ها را می‌شناسد (بزرگی و کوچکی حرف مهم نیست): <code>tehran</code>، <code>mashhad</code>، <code>isfahan</code>، <code>shiraz</code>، <code>tabriz</code>، <code>qom</code>، <code>mecca</code>، <code>medina</code>، <code>riyadh</code>، <code>istanbul</code>، <code>cairo</code>، <code>dubai</code>، <code>baghdad</code>، <code>jakarta</code>. نام دیگر خطا می‌دهد. برای شهرهای دیگر سازنده را با مختصات خودتان صدا بزنید.</p>
+<p>سازنده عددها را بررسی می‌کند: عرض جغرافیایی از ۹۰- تا ۹۰، طول جغرافیایی از ۱۸۰- تا ۱۸۰ و ارتفاع از ۲۰۰۰۰- تا ۲۰۰۰۰ متر. <code>NaN</code>، بی‌نهایت و مقدار بیرون از این بازه‌ها <code>InvalidPrayerConfigException</code> می‌دهند.</p>
 
 <h2 id="methods">روش‌ها و زاویه‌ها<a class="anchor" href="#methods" aria-label="پیوند به این بخش">#</a></h2>
 <p>روش، زاویهٔ فرورفتن خورشید را برای صبح و عشا (و در تهران برای مغرب) مشخص می‌کند. به‌جای رشته از ثابت‌های کلاس استفاده کنید.</p>
@@ -104,7 +105,7 @@
 <span class="tok-c">// 2026-03-21 maghrib 18:32 isha 20:02   (+90، بعد از رمضان)</span></code></pre>
 
 <h2 id="elevation">ارتفاع از سطح دریا<a class="anchor" href="#elevation" aria-label="پیوند به این بخش">#</a></h2>
-<p>آرگومان <code>elevation</code> ارتفاع ناظر از سطح دریا بر حسب متر است. ارتفاع طلوع و غروب را به اندازهٔ فرورفتگی هندسی افق کم می‌کند، یعنی <code>0.0347 * sqrt(h)</code> درجه. پس در ارتفاع، طلوع زودتر و غروب دیرتر می‌شود. مقدار منفی صفر حساب می‌شود. اثرش فقط روی طلوع و غروب و وقت‌هایی است که از غروب می‌آیند.</p>
+<p>آرگومان <code>elevation</code> ارتفاع ناظر از سطح دریا بر حسب متر است. ارتفاع طلوع و غروب را به اندازهٔ فرورفتگی هندسی افق کم می‌کند، یعنی <code>0.0347 * sqrt(h)</code> درجه. پس در ارتفاع، طلوع زودتر و غروب دیرتر می‌شود. مقدار منفی صفر حساب می‌شود (بازهٔ مجاز ۲۰۰۰۰- تا ۲۰۰۰۰ است). اثرش فقط روی طلوع و غروب و وقت‌هایی است که از غروب می‌آیند.</p>
 <pre tabindex="0"><code class="language-php"><span class="tok-v">$a</span> = <span class="tok-k">new</span> PrayerTimes(<span class="tok-n">35.6892</span>, <span class="tok-n">51.3890</span>, <span class="tok-s">'Tehran'</span>, <span class="tok-n">1</span>, <span class="tok-v">$tz</span>);
 <span class="tok-v">$b</span> = <span class="tok-k">new</span> PrayerTimes(<span class="tok-n">35.6892</span>, <span class="tok-n">51.3890</span>, <span class="tok-s">'Tehran'</span>, <span class="tok-n">1</span>, <span class="tok-v">$tz</span>, <span class="tok-n">1500.0</span>);
 <span class="tok-v">$d</span> = <span class="tok-k">new</span> DateTimeImmutable(<span class="tok-s">'2026-06-21'</span>, <span class="tok-v">$tz</span>);
@@ -121,6 +122,7 @@
 }
 <span class="tok-c">// 2026-03-28 {"fajr":"03:51","sunrise":"05:50","dhuhr":"12:11","asr":"15:39","maghrib":"18:34","isha":"20:26"}</span>
 <span class="tok-c">// 2026-03-29 {"fajr":"04:48","sunrise":"06:48","dhuhr":"13:11","asr":"16:40","maghrib":"19:35","isha":"21:28"}</span></code></pre>
+<p>منطقه می‌تواند از طول جغرافیایی‌اش خیلی دور باشد، مثل <code>Pacific/Kiritimati</code> (UTC+14 در ۱۵۷ درجهٔ غربی). محاسبه باز هم وقت‌های همان روزی را می‌دهد که خواسته‌اید و هر شش وقت در همان تاریخ محلی می‌افتند. برای همین ظهر کیریتیماتی حدود ۱۲:۲۹ است، نه حدود ۱۲:۰۰.</p>
 <p>منطقه‌ای بدهید که کاربرانتان ساعتشان را با آن می‌خوانند. اگر ندهید، <code>date_default_timezone_get()</code> به کار می‌رود.</p>
 
 <h2 id="next">نماز بعدی<a class="anchor" href="#next" aria-label="پیوند به این بخش">#</a></h2>
@@ -131,6 +133,7 @@
 <span class="tok-k">echo</span> json_encode(<span class="tok-v">$p</span>-&gt;nextPrayer(<span class="tok-k">new</span> DateTimeImmutable(<span class="tok-s">'2026-03-21 20:00'</span>, <span class="tok-v">$tz</span>)));
 <span class="tok-c">// {"name":"fajr","time":"04:42","date":"2026-03-22"}</span></code></pre>
 <p>طلوع هم در این ترتیب یک مورد است (ترتیب: fajr، sunrise، dhuhr، asr، maghrib، isha). اگر وقتی را با <code>withTune()</code> جابه‌جا کرده باشید، <code>nextPrayer()</code> با وقت‌های جابه‌جاشده کار می‌کند.</p>
+<p>تاریخ باید در سال‌های ۱ تا ۹۹۹۹ همان منطقه باشد. <code>getTimes()</code> و <code>nextPrayer()</code> بیرون از آن <code>InvalidDateException</code> می‌دهند. نمازی که تاریخ محلی‌اش بعد از ۹۹۹۹-۱۲-۳۱ (یا قبل از ۰۰۰۱-۰۱-۰۱) بیفتد وجود ندارد: در <code>getTimes()</code> همان وقت <code>null</code> است و <code>nextPrayer()</code> وقتی تا پایان ۹۹۹۹-۱۲-۳۱ نمازی نمانده باشد <code>null</code> برمی‌گرداند. وقت‌ها به نزدیک‌ترین دقیقه با اختلاف دقیق UTC منطقه گرد می‌شوند؛ منطقه‌ای که اختلاف قدیمی‌اش ثانیه دارد (مثلاً وقت متوسط محلی پیش از ۱۹۷۰) به دقیقهٔ کامل بریده نمی‌شود.</p>
 
 <h2 id="high-latitude">عرض‌های جغرافیایی بالا<a class="anchor" href="#high-latitude" aria-label="پیوند به این بخش">#</a></h2>
 <p>در عرض‌های بالا، تابستان‌ها خورشید گاهی به زاویهٔ صبح یا عشا نمی‌رسد (شب واقعی نیست). برای این حالت <code>HighLatitudeRule</code> هست. چهار قاعده دارد:</p>
@@ -155,7 +158,8 @@
 <span class="tok-c">// {"fajr":"02:45","sunrise":"03:31","dhuhr":"12:50","asr":"17:30","maghrib":"22:08","isha":"22:54"}</span>
 <span class="tok-k">echo</span> json_encode(<span class="tok-v">$sto</span>-&gt;withHighLatitudeRule(HighLatitudeRule::None)-&gt;getTimes(<span class="tok-v">$d</span>)), <span class="tok-s">"\n"</span>;
 <span class="tok-c">// {"fajr":null,"sunrise":"03:31","dhuhr":"12:50","asr":"17:30","maghrib":"22:08","isha":null}</span></code></pre>
-<p>در روز و شب قطبی، طلوع و غروب <code>null</code> می‌شوند (خورشید واقعاً طلوع یا غروب نمی‌کند). ظهر همیشه مقدار دارد. صبح و عشا با شبی مرجع حساب می‌شوند که طلوع را ساعت ۶ و غروب را ساعت ۱۸ خورشیدی فرض می‌کند. این قرارداد خود کتابخانه است، نه قرارداد منتشرشده. اگر چیز دیگری می‌خواهید، <code>None</code> را بزنید و خودتان تصمیم بگیرید.</p>
+<p>در روز و شب قطبی، طلوع و غروب <code>null</code> می‌شوند (خورشید واقعاً طلوع یا غروب نمی‌کند).ظهر همیشه مقدار دارد. صبح و عشا با شبی مرجع حساب می‌شوند که طلوع را ساعت ۶ و غروب را ساعت ۱۸ خورشیدی فرض می‌کند. این قرارداد خود کتابخانه است، نه قرارداد منتشرشده. اگر چیز دیگری می‌خواهید، <code>None</code> را بزنید و خودتان تصمیم بگیرید.</p>
+<p>شش وقت ترتیب صبح، طلوع، ظهر، عصر، مغرب، عشا را (به‌عنوان لحظه؛ عشا می‌تواند بعد از نیمه‌شب باشد و دقیقهٔ برابر مجاز است) نگه می‌دارند. نزدیک قطب‌ها هندسهٔ خورشید می‌تواند آن را بشکند، مثلاً عصر در ۸۹٫۹ درجه بعد از عشا بیفتد. وقتی که ترتیب را بشکند <code>null</code> می‌شود. در عرض‌های معمولی هیچ وقتی به این دلیل حذف نمی‌شود. تنظیم دستی دقیقه بعد از این بررسی اعمال می‌شود.</p>
 <div class="callout note" role="note"><strong>خوب است بدانید.</strong> قاعدهٔ پیش‌فرض (<code>AngleBased</code>) فقط جایی اثر می‌کند که وقتی تعریف‌نشده باشد یا از حد شبش دورتر بیفتد. شمال حدود ۴۴ تا ۴۶ درجه، نزدیک انقلاب تابستانی (ژوئن)، بعضی وقت‌های صبح و عشا با نسخه‌های ۰٫۱ فرق دارند. در جنوب ۴۴ درجه خروجی همان است. اگر خروجی قبلی را می‌خواهید، <code>withHighLatitudeRule(HighLatitudeRule::None)</code> را بزنید.</div>
 
 <h2 id="tune">تنظیم دستی دقیقه‌ها<a class="anchor" href="#tune" aria-label="پیوند به این بخش">#</a></h2>
@@ -176,6 +180,8 @@
 <span class="tok-c">// Invalid Asr factor: 3 (use 1 or 2)</span>
 PrayerTimes::forCity(<span class="tok-s">'paris'</span>);
 <span class="tok-c">// Unknown city: paris</span>
+<span class="tok-k">new</span> PrayerTimes(<span class="tok-n">95</span>, <span class="tok-n">51</span>, <span class="tok-s">'MWL'</span>);
+<span class="tok-c">// The latitude must be between -90 and 90 degrees</span>
 <span class="tok-v">$p</span>-&gt;withTune([<span class="tok-s">'fajr'</span> =&gt; <span class="tok-n">40</span>]);
 <span class="tok-c">// Tune for fajr must be an integer from -30 to 30 minutes</span>
 <span class="tok-v">$p</span>-&gt;withTune([<span class="tok-s">'foo'</span> =&gt; <span class="tok-n">1</span>]);

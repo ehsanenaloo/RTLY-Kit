@@ -17,6 +17,8 @@ use RtlyKit\Exceptions\InvalidDateException;
  * which returns the class it is called on (Carbon or CarbonImmutable).
  * Carbon 3 shares macros between Carbon and CarbonImmutable, so the closures
  * are class-agnostic and registered once per class (safe for Carbon 2 too).
+ * A macro that already exists under one of these names is left untouched, and
+ * calling register() again is harmless.
  */
 final class CarbonMacros
 {
@@ -30,6 +32,11 @@ final class CarbonMacros
     {
         if ($tz === null || $tz instanceof \DateTimeZone) {
             return $tz;
+        }
+
+        // DateTimeZone rejects a NUL byte with a ValueError, not an Exception.
+        if (str_contains($tz, "\0")) {
+            throw new InvalidDateException('Unknown timezone: '.str_replace("\0", '', $tz));
         }
 
         try {
@@ -72,80 +79,97 @@ final class CarbonMacros
         }
 
         foreach ($classes as $class) {
+            // Never replace a macro the application (or another package) already registered under the same name.
+            $missing = static fn (string $name): bool => ! $class::hasMacro($name);
+
             // Convert a Carbon instance to Jalali
-            $class::macro('toJalali', function (): Jalali {
-                /** @var \DateTimeInterface $this */
-                return Jalali::make($this);
-            });
+            if ($missing('toJalali')) {
+                $class::macro('toJalali', function (): Jalali {
+                    /** @var \DateTimeInterface $this */
+                    return Jalali::make($this);
+                });
+            }
 
             // Format as Jalali
-            $class::macro('jformat', function (string $format = 'Y/m/d H:i:s'): string {
-                /** @var \DateTimeInterface $this */
-                return Jalali::make($this)->format($format);
-            });
+            if ($missing('jformat')) {
+                $class::macro('jformat', function (string $format = 'Y/m/d H:i:s'): string {
+                    /** @var \DateTimeInterface $this */
+                    return Jalali::make($this)->format($format);
+                });
+            }
 
             // Create an instance of the called class from Jalali values
-            $class::macro('createFromJalali', static function (
-                int $year,
-                int $month,
-                int $day,
-                int $hour = 0,
-                int $minute = 0,
-                int $second = 0,
-                \DateTimeZone|string|null $tz = null,
-            ): \DateTimeInterface {
-                $jalali = Jalali::create($year, $month, $day, $hour, $minute, $second, CarbonMacros::zone($tz));
+            if ($missing('createFromJalali')) {
+                $class::macro('createFromJalali', static function (
+                    int $year,
+                    int $month,
+                    int $day,
+                    int $hour = 0,
+                    int $minute = 0,
+                    int $second = 0,
+                    \DateTimeZone|string|null $tz = null,
+                ): \DateTimeInterface {
+                    $jalali = Jalali::create($year, $month, $day, $hour, $minute, $second, CarbonMacros::zone($tz));
 
-                // At runtime Carbon binds `static` to the class the macro was called on.
-                $target = CarbonMacros::target(static::class);
+                    // At runtime Carbon binds `static` to the class the macro was called on.
+                    $target = CarbonMacros::target(static::class);
 
-                return $target::instance($jalali->toGregorian());
-            });
+                    return $target::instance($jalali->toGregorian());
+                });
+            }
 
             // Convert to Hijri (Umm al-Qura unless a variant is given)
-            $class::macro('toHijri', function (?HijriVariant $variant = null): Hijri {
-                /** @var \DateTimeInterface $this */
-                return Hijri::make($this, null, $variant ?? HijriVariant::UmmAlQura);
-            });
+            if ($missing('toHijri')) {
+                $class::macro('toHijri', function (?HijriVariant $variant = null): Hijri {
+                    /** @var \DateTimeInterface $this */
+                    return Hijri::make($this, null, $variant ?? HijriVariant::UmmAlQura);
+                });
+            }
 
             // Convert to Hebrew
-            $class::macro('toHebrew', function (): Hebrew {
-                /** @var \DateTimeInterface $this */
-                return Hebrew::make($this);
-            });
+            if ($missing('toHebrew')) {
+                $class::macro('toHebrew', function (): Hebrew {
+                    /** @var \DateTimeInterface $this */
+                    return Hebrew::make($this);
+                });
+            }
 
-            $class::macro('createFromHijri', static function (
-                int $year,
-                int $month,
-                int $day,
-                int $hour = 0,
-                int $minute = 0,
-                int $second = 0,
-                \DateTimeZone|string|null $tz = null,
-                ?HijriVariant $variant = null,
-            ): \DateTimeInterface {
-                $hijri = Hijri::create($year, $month, $day, $hour, $minute, $second, CarbonMacros::zone($tz), $variant ?? HijriVariant::UmmAlQura);
+            if ($missing('createFromHijri')) {
+                $class::macro('createFromHijri', static function (
+                    int $year,
+                    int $month,
+                    int $day,
+                    int $hour = 0,
+                    int $minute = 0,
+                    int $second = 0,
+                    \DateTimeZone|string|null $tz = null,
+                    ?HijriVariant $variant = null,
+                ): \DateTimeInterface {
+                    $hijri = Hijri::create($year, $month, $day, $hour, $minute, $second, CarbonMacros::zone($tz), $variant ?? HijriVariant::UmmAlQura);
 
-                $target = CarbonMacros::target(static::class);
+                    $target = CarbonMacros::target(static::class);
 
-                return $target::instance($hijri->toGregorian());
-            });
+                    return $target::instance($hijri->toGregorian());
+                });
+            }
 
-            $class::macro('createFromHebrew', static function (
-                int $year,
-                int $month,
-                int $day,
-                int $hour = 0,
-                int $minute = 0,
-                int $second = 0,
-                \DateTimeZone|string|null $tz = null,
-            ): \DateTimeInterface {
-                $hebrew = Hebrew::create($year, $month, $day, $hour, $minute, $second, CarbonMacros::zone($tz));
+            if ($missing('createFromHebrew')) {
+                $class::macro('createFromHebrew', static function (
+                    int $year,
+                    int $month,
+                    int $day,
+                    int $hour = 0,
+                    int $minute = 0,
+                    int $second = 0,
+                    \DateTimeZone|string|null $tz = null,
+                ): \DateTimeInterface {
+                    $hebrew = Hebrew::create($year, $month, $day, $hour, $minute, $second, CarbonMacros::zone($tz));
 
-                $target = CarbonMacros::target(static::class);
+                    $target = CarbonMacros::target(static::class);
 
-                return $target::instance($hebrew->toGregorian());
-            });
+                    return $target::instance($hebrew->toGregorian());
+                });
+            }
         }
     }
 }

@@ -37,9 +37,14 @@ final class Normalizer
      * - Arabic-Indic digits (٠-٩) → Persian digits (۰-۹); English digits are untouched
      * - tatweel (U+0640) removed; harakat (U+064B–U+065F, U+0670) removed unless disabled
      * - runs of whitespace collapsed and trimmed
+     *
+     * Invalid UTF-8: every byte that is not part of a well-formed sequence is first replaced by
+     * U+FFFD (the replacement character), then all the steps above run. The result is always valid
+     * UTF-8. This holds for {@see fixHalfSpace()} and {@see clean()} too. mbstring is not required.
      */
     public static function normalize(string $text, bool $removeDiacritics = true): string
     {
+        $text = Utf8::scrub($text);
         $text = strtr($text, self::LETTER_MAP);
         $text = Digits::arabicToPersian($text);
 
@@ -54,26 +59,33 @@ final class Normalizer
     /**
      * Clean ZWNJ (half-space) usage: collapse repeats, drop soft hyphens,
      * and remove ZWNJ next to whitespace or at the ends of the text.
+     * Invalid UTF-8 bytes become U+FFFD first (see {@see normalize()}).
      */
     public static function fixHalfSpace(string $text): string
     {
+        $text = Utf8::scrub($text);
         $text = str_replace("\u{00AD}", '', $text);
         $text = preg_replace('/\x{200C}+/u', self::ZWNJ, $text) ?? $text;
         $text = preg_replace('/\x{200C}(?=\s)|(?<=\s)\x{200C}/u', '', $text) ?? $text;
 
-        return trim($text, self::ZWNJ);
+        // trim() works on bytes and would cut the last byte of a letter such as ی (UTF-8 DB 8C).
+        return preg_replace('/^\x{200C}+|\x{200C}+$/Du', '', $text) ?? $text;
     }
 
     /**
-     * Full clean for storage / search.
+     * Full clean for storage / search. Idempotent: clean(clean($x)) === clean($x).
+     *
+     * Order matters: zero-width characters except ZWNJ (ZWSP, ZWJ, BOM) go first, so the
+     * whitespace and ZWNJ rules below see the text as it will finally read; whitespace is
+     * collapsed once more after the half-space fix, which can leave a double space behind.
      */
     public static function clean(string $text): string
     {
+        $text = Utf8::scrub($text);
+        $text = preg_replace('/[\x{200B}\x{200D}\x{FEFF}]/u', '', $text) ?? $text;
         $text = self::normalize($text);
         $text = self::fixHalfSpace($text);
-
-        // Remove zero-width characters except ZWNJ (ZWSP, ZWJ, BOM)
-        $text = preg_replace('/[\x{200B}\x{200D}\x{FEFF}]/u', '', $text) ?? $text;
+        $text = preg_replace('/\s+/u', ' ', $text) ?? $text;
 
         return trim($text);
     }

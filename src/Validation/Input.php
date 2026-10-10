@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace RtlyKit\Validation;
 
+use RtlyKit\Number\Digits;
+
 /**
  * Turns an arbitrary value into the string a validator works on.
  *
@@ -46,5 +48,45 @@ final class Input
         }
 
         return $value;
+    }
+
+    /**
+     * The characters a user may type between the digits of a number: space, NBSP, ZWNJ, LRM and RLM.
+     * Tabs, newlines, NUL and other control characters are NOT separators.
+     */
+    private const SPACES = [' ', "\u{00A0}", "\u{200C}", "\u{200E}", "\u{200F}"];
+
+    /**
+     * Remove only the allowed spacing characters (see {@see self::SPACES}). Anything else stays, so a
+     * strict anchored pattern (with the D modifier) rejects it.
+     */
+    public static function stripSpaces(string $value): string
+    {
+        return str_replace(self::SPACES, '', $value);
+    }
+
+    /**
+     * Strict digits-only reading of a number typed by a user.
+     *
+     * After Persian/Arabic digits become English, the text may hold only digits plus spaces, NBSP,
+     * ZWNJ, LRM/RLM, hyphens, parentheses and dots, and (when $allowPlus is true) one leading `+`.
+     * A hyphen cannot come first (so a negative number is rejected). Letters, other punctuation and
+     * control characters (including a trailing newline or NUL) make the whole input invalid.
+     *
+     * @return string|null  the digits, or null when the text holds anything else
+     */
+    public static function strictDigits(string $value, bool $allowPlus = false): ?string
+    {
+        $text = self::stripSpaces(Digits::toEnglish($value));
+
+        if ($allowPlus && str_starts_with($text, '+')) {
+            $text = substr($text, 1);
+        }
+
+        if (preg_match('/^[0-9()\-.]*$/D', $text) !== 1 || str_starts_with($text, '-')) {
+            return null;
+        }
+
+        return preg_replace('/\D/', '', $text) ?? '';
     }
 }

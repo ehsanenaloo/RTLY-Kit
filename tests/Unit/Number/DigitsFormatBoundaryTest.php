@@ -73,8 +73,16 @@ final class DigitsFormatBoundaryTest extends TestCase
         $this->assertSame('۷', Format::withSeparator('007'));
         $this->assertSame('۰', Format::withSeparator('000'));
         $this->assertSame('۰٫۵', Format::withSeparator('00.5'));
-        $this->assertSame('۱٬۲۳۴', Format::withSeparator("\n1234\t"));
         $this->assertSame('۱٬۲۳۴', Format::withSeparator(' 1 234 '));
+        // Tabs, newlines and NUL are not spacing: they are rejected, not trimmed.
+        foreach (["\n1234\t", "1234\n", "1234\0", "1234\n\u{00A0}"] as $bad) {
+            try {
+                Format::withSeparator($bad);
+                $this->fail('expected InvalidNumberException');
+            } catch (\RtlyKit\Exceptions\InvalidNumberException) {
+                $this->addToAssertionCount(1);
+            }
+        }
         $this->assertSame('-۱٬۲۳۴٬۵۶۷', Format::withSeparator('-1234567'));
     }
 

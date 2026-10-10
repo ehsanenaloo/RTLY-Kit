@@ -38,16 +38,18 @@ echo Jalali::today();    // today at 00:00:00</code></pre>
 <h3 id="string-rules">String semantics of <code>make()</code></h3>
 <p>Strings are handled in this order:</p>
 <ol>
-<li>Persian and Arabic digits become English digits, and the string is trimmed. An empty or blank string throws <code>InvalidDateException</code>.</li>
-<li>If the string looks like <code>Y/m/d</code> or <code>Y-m-d</code> with a 3 or 4 digit year, and optionally <code>H:i</code> or <code>H:i:s</code> after a space or <code>T</code>, and the year is below 1700, it is read as a Jalali date.</li>
-<li>Every other string, including any year from 1700 on, goes to <code>DateTimeImmutable</code> and is read as Gregorian or free text (<code>'2025-10-07'</code>, <code>'tomorrow'</code>, <code>'10 October 2025'</code>).</li>
+<li>Persian and Arabic digits become English digits, and the string is trimmed. A no-break space, a half-space (ZWNJ) and the LRM/RLM marks count as spaces, so they are trimmed too. An empty or blank string, or one with a NUL byte, throws <code>InvalidDateException</code>.</li>
+<li>If the string is exactly <code>Y/m/d</code> or <code>Y-m-d</code> with a 3 or 4 digit year, optionally followed by a space, <code>T</code> or <code>t</code>, a time (<code>H:i</code>, <code>H:i:s</code> or <code>H:i:s.u</code> with a fraction of a second) and a zone designator (<code>Z</code>, <code>+03:30</code>, <code>+0330</code> or <code>+03</code>), and the year is below 1700, it is read as a Jalali date. A designator sets the time zone of the result, and offsets must lie within ±14:00. If you also pass <code>$timezone</code>, the designator is read first and the result is then converted to that zone.</li>
+<li>If it starts like that but has anything more or less, it throws <code>InvalidDateException</code> instead of being guessed as Gregorian. Examples are a zone name after the time (<code>'1403-01-01 10:00 UTC'</code>, <code>'1403-01-01T10:00 Asia/Tehran'</code>), <code>PM</code>, one-digit minutes or seconds, and a year with a month only (<code>'1403-01'</code>). A bare run of 3 to 8 digits such as <code>'1403'</code> or <code>'14030101'</code> throws too, because PHP would read it as a clock time. So does a 5-digit year such as <code>'12345/01/01'</code> (code <code>date_out_of_range</code>). Give a <code>DateTimeImmutable</code> for such values.</li>
+<li>Every other string, including any year from 1700 on and eight digits that start with such a year (<code>'20240101'</code>), goes to <code>DateTimeImmutable</code> and is read as Gregorian or free text (<code>'2025-10-07'</code>, <code>'tomorrow'</code>, <code>'10 October 2025'</code>).</li>
 </ol>
 <pre><code class="language-php">echo Jalali::make('1403/12/30');          // 1403/12/30 00:00:00
 echo Jalali::make('۱۴۰۴/۰۷/۱۵');          // 1404/07/15 00:00:00   (Persian digits)
 echo Jalali::make('1404-07-15 08:05');    // 1404/07/15 08:05:00
+echo Jalali::make('1403-01-01T10:00:00+03:30')->toGregorian()->format('c'); // 2024-03-20T10:00:00+03:30
 echo Jalali::make('2025-10-07')-&gt;format('Y/m/d');  // 1404/07/15   (Gregorian text)
 echo Jalali::make('1700/01/01')-&gt;format('Y/m/d');  // 1078/10/12   (1700 or later is Gregorian)</code></pre>
-<div class="note"><strong>Good to know.</strong> A string such as <code>'0001-01-01'</code> or <code>'1500-06-01'</code> is read as a Jalali date, because its year is below 1700. To pass a Gregorian date before the year 1700, build a <code>DateTimeImmutable</code> and give that object to <code>make()</code>.</div>
+<div class="note"><strong>Good to know.</strong> A string such as <code>'0001-01-01'</code> or <code>'1500-06-01'</code> is read as a Jalali date, because its year is below 1700. To pass a Gregorian date before the year 1700, build a <code>DateTimeImmutable</code> and give that object to <code>make()</code>. The same goes for ISO text such as <code>'1500-06-01T10:00:00Z'</code>: it is a Jalali date, not a Gregorian one.</div>
 <p>Invalid input always raises <code>InvalidDateException</code>:</p>
 <pre><code class="language-php">foreach (['1404/12/30', '1404/13/01', '1404/07/15 25:00', '', 'garbage'] as $s) {
     try {
@@ -72,7 +74,11 @@ try {
 } catch (InvalidDateException $e) {
     echo $e-&gt;getMessage();   // Unable to parse 'abc' with format 'Y/m/d'
 }</code></pre>
+<p>Tokens that would give a wrong date are rejected with an <code>InvalidDateException</code> that names the token. They are <code>z</code>, <code>y</code>, the English names <code>F M D l</code>, the suffix <code>S</code>, and the zone and fraction tokens <code>e T P O p u v</code>. Pass the time zone as the third argument instead. The format <code>U</code> alone reads a Unix timestamp. Any other format that contains <code>U</code> throws. A NUL byte in the format or the text throws too.</p>
+<pre><code class="language-php">echo Jalali::createFromFormat('U', '1700000000', $tehran);   // 1402/08/24 01:43:20
+Jalali::createFromFormat('Y/m/d e', '1404/07/15 UTC');       // InvalidDateException: ... the 'e' token ...</code></pre>
 
+<p>A Gregorian string with an impossible day, such as <code>'2024-02-30'</code>, throws <code>InvalidDateException</code> (PHP alone would roll it over to 2024-03-01). Text has no negative years: <code>make('-0100/01/01')</code> throws, so use <code>create()</code> or a timestamp for those. <code>serialize()</code> stores only the moment (and the Hijri variant). <code>unserialize()</code> checks it again and throws <code>InvalidDateException</code> for a payload that is damaged or outside the supported range.</p>
 <h2 id="range">Supported range and errors</h2>
 <p>Supported Jalali years run from <code>Jalali::MIN_YEAR</code> = <strong>-620</strong> to <code>Jalali::MAX_YEAR</code> = <strong>9377</strong>. That is the span that maps to Gregorian years 1 to 9999. The first supported day is -620/01/01 (0001-03-21) and the last is 9377/12/30 (9999-03-20). Every entry point checks the range and throws only <code>InvalidDateException</code>, never a <code>TypeError</code>, <code>ValueError</code> or <code>DateMalformed*</code> exception. This covers <code>create()</code>, <code>make()</code>, <code>createFromFormat()</code>, integer timestamps, <code>add*()</code>, <code>sub*()</code> and the static converters.</p>
 <pre><code class="language-php">foreach ([[-621, 1, 1], [9378, 1, 1], [1404, 12, 30], [1404, 0, 1], [1404, 7, 31]] as [$y, $m, $d]) {
@@ -126,7 +132,7 @@ echo $d-&gt;format('t L z W N D');        // 30 0 200 41 4 س</code></pre>
 <table>
 <thead><tr><th>Token</th><th>Meaning</th></tr></thead>
 <tbody>
-<tr><td><code>Y</code> <code>y</code></td><td>Year, 4 digits and 2 digits</td></tr>
+<tr><td><code>Y</code> <code>y</code></td><td>Year with at least 4 digits and leading zeros, and a minus sign for negative years (<code>-0005</code>); <code>y</code> is the last two digits (-620 gives <code>80</code>)</td></tr>
 <tr><td><code>m</code> <code>n</code></td><td>Month with and without leading zero</td></tr>
 <tr><td><code>F</code> <code>M</code></td><td>Persian month name (<code>M</code> is the same as <code>F</code>, because Persian month names have no short form)</td></tr>
 <tr><td><code>d</code> <code>j</code></td><td>Day with and without leading zero</td></tr>
@@ -152,11 +158,11 @@ echo $d-&gt;format('t L z W N D');        // 30 0 200 41 4 س</code></pre>
 <tbody>
 <tr><td><code>addDays()</code> <code>subDays()</code></td><td>Whole days on the inner moment</td></tr>
 <tr><td><code>addHours()</code> <code>addMinutes()</code> <code>addSeconds()</code> and the <code>sub*</code> forms</td><td>Exact elapsed time</td></tr>
-<tr><td><code>addMonths()</code> <code>subMonths()</code></td><td>Calendar months. The day is clamped to the length of the target month</td></tr>
+<tr><td><code>addMonths()</code> <code>subMonths()</code></td><td>Calendar months. The day is clamped to the length of the target month. Zero months returns the same object, and in a DST overlap hour the original UTC offset is kept</td></tr>
 <tr><td><code>addYears()</code> <code>subYears()</code></td><td>Same as 12 months per year. <code>30 Esfand</code> in a leap year becomes <code>29 Esfand</code> in a regular year</td></tr>
-<tr><td><code>startOfDay()</code> <code>endOfDay()</code></td><td>00:00:00 and 23:59:59 of the same day</td></tr>
-<tr><td><code>startOfMonth()</code> <code>endOfMonth()</code></td><td>First day 00:00:00. Last day 23:59:59</td></tr>
-<tr><td><code>startOfYear()</code> <code>endOfYear()</code></td><td>1 Farvardin 00:00:00. Last day of Esfand 23:59:59</td></tr>
+<tr><td><code>startOfDay()</code> <code>endOfDay()</code></td><td>00:00:00 and 23:59:59.999999 (the last microsecond) of the same day</td></tr>
+<tr><td><code>startOfMonth()</code> <code>endOfMonth()</code></td><td>First day 00:00:00. Last day 23:59:59.999999</td></tr>
+<tr><td><code>startOfYear()</code> <code>endOfYear()</code></td><td>1 Farvardin 00:00:00. Last day of Esfand 23:59:59.999999</td></tr>
 </tbody>
 </table>
 <pre><code class="language-php">$x = Jalali::create(1403, 12, 30);              // last day of a leap year
@@ -190,7 +196,7 @@ var_dump($a-&gt;between(Jalali::create(1404, 1, 1), Jalali::create(1406, 1, 1)))
 <thead><tr><th>Method</th><th>Meaning</th></tr></thead>
 <tbody>
 <tr><td><code>diffInDays($other, $absolute = true)</code></td><td>Whole days, cut toward zero. With <code>false</code> the sign is that of <code>$this - $other</code></td></tr>
-<tr><td><code>diffInMonths($other, $absolute = true)</code></td><td>Whole Jalali months. The day and the time of day count (15 Farvardin to 14 Tir is 2 months)</td></tr>
+<tr><td><code>diffInMonths($other, $absolute = true)</code></td><td>Whole Jalali months. The day and the time of day count, microseconds too (15 Farvardin to 14 Tir is 2 months)</td></tr>
 <tr><td><code>diffInYears($other, $absolute = true)</code></td><td>Whole Jalali years, counted by anniversary</td></tr>
 </tbody>
 </table>

@@ -40,7 +40,7 @@
 <tr><td><code>Sheba</code></td><td><code>IR</code> و ۲۴ رقم، ISO 7064 mod-97-10، پیدا کردن بانک</td><td><a href="sheba-and-bank-card.html">شبا و کارت بانکی</a></td></tr>
 <tr><td><code>BankCard</code></td><td>۱۶ رقم، چک‌سام Luhn، تشخیص بانک از روی BIN</td><td><a href="sheba-and-bank-card.html">شبا و کارت بانکی</a></td></tr>
 <tr><td><code>Mobile</code></td><td>قالب <code>09xxxxxxxxx</code> در پنج شکل ورودی، اپراتور و تخصیص پیش‌شماره</td><td><a href="mobile-postal-plate.html">موبایل، کدپستی، پلاک</a></td></tr>
-<tr><td><code>PostalCode</code></td><td>۱۰ رقم، رقم اول غیر از <code>0</code></td><td><a href="mobile-postal-plate.html">موبایل، کدپستی، پلاک</a></td></tr>
+<tr><td><code>PostalCode</code></td><td>۱۰ رقم، بدون <code>0</code> و <code>2</code> در پنج رقم اول</td><td><a href="mobile-postal-plate.html">موبایل، کدپستی، پلاک</a></td></tr>
 <tr><td><code>VehiclePlate</code></td><td>قالب پلاک سواری، تقسیم‌شده به بخش‌ها</td><td><a href="mobile-postal-plate.html">موبایل، کدپستی، پلاک</a></td></tr>
 </tbody>
 </table></div>
@@ -80,7 +80,7 @@ print_r(<span class="tok-v">$result</span>-&gt;errors());                      <
     <span class="tok-s">'mobile'</span>        =&gt; Mobile::<span class="tok-k">class</span>,
     <span class="tok-s">'postal'</span>        =&gt; PostalCode::<span class="tok-k">class</span>,
 ];
-<span class="tok-v">$input</span> = [<span class="tok-s">'national_code'</span> =&gt; <span class="tok-s">'0499370899'</span>, <span class="tok-s">'mobile'</span> =&gt; <span class="tok-s">'0912'</span>, <span class="tok-s">'postal'</span> =&gt; <span class="tok-s">'1234567890'</span>];
+<span class="tok-v">$input</span> = [<span class="tok-s">'national_code'</span> =&gt; <span class="tok-s">'0499370899'</span>, <span class="tok-s">'mobile'</span> =&gt; <span class="tok-s">'0912'</span>, <span class="tok-s">'postal'</span> =&gt; <span class="tok-s">'1593715416'</span>];
 
 <span class="tok-k">foreach</span> (<span class="tok-v">$rules</span> <span class="tok-k">as</span> <span class="tok-v">$field</span> =&gt; <span class="tok-v">$class</span>) {
     <span class="tok-v">$result</span> = <span class="tok-v">$class</span>::validate(<span class="tok-v">$input</span>[<span class="tok-v">$field</span>]);
@@ -155,14 +155,14 @@ print_r(NationalCode::validate(<span class="tok-k">null</span>)-&gt;errors());  
 print_r(NationalCode::validate(<span class="tok-n">1.5</span>)-&gt;errors());                   <span class="tok-c">// [invalid_type]</span>
 print_r(NationalCode::validate(str_repeat(<span class="tok-s">'1'</span>, <span class="tok-n">4097</span>))-&gt;errors()); <span class="tok-c">// [input_too_long]</span>
 print_r(NationalCode::validate(<span class="tok-s">"\xff\xfe"</span>)-&gt;errors());            <span class="tok-c">// [invalid_format]</span>
-var_dump(PostalCode::validate(<span class="tok-n">1234567890</span>)-&gt;isValid());            <span class="tok-c">// bool(true)</span></code></pre>
+var_dump(PostalCode::validate(<span class="tok-n">1593715416</span>)-&gt;isValid());            <span class="tok-c">// bool(true)</span></code></pre>
 <div class="callout note" role="note"><strong>صفر اول و عدد صحیح.</strong> اگر کد ملی یا کدپستی را عدد صحیح بدهید، صفرهای اولش از بین می‌رود. <code>499370899</code> با <code>0499370899</code> یکی نیست و اعتبارسنج فقط نه رقم می‌بیند. این شماره‌ها را از فرم یا ستون پایگاه داده تا اعتبارسنج به شکل رشته نگه دارید.</div>
 
 <h2 id="normalization">یکسان‌سازی<a class="anchor" href="#normalization" aria-label="پیوند به این بخش">#</a></h2>
 <p>بعد از آن مرحله، هر اعتبارسنج رشته را با متد عمومی <code>normalize()</code> خودش یکسان می‌کند. قاعده‌های مشترک:</p>
 <ul>
 <li>رقم‌های فارسی (<code>۰-۹</code>) و عربی-هندی (<code>٠-٩</code>) با <code>Digits::toEnglish()</code> انگلیسی می‌شوند.</li>
-<li>جداکننده‌هایی که کاربر می‌تایپد حذف می‌شوند: فاصله، خط تیره و نیم‌فاصله (ZWNJ). <code>Mobile</code> و <code>BankCard</code> و <code>PostalCode</code> بیشتر پاک می‌کنند و فقط رقم‌ها را نگه می‌دارند.</li>
+<li>جداکننده‌هایی که کاربر می‌تایپد حذف می‌شوند: فاصله، فاصلهٔ ناشکن، نیم‌فاصله (ZWNJ)، نشانه‌های LRM و RLM و خط تیره. <code>Mobile</code> و <code>BankCard</code> و <code>PostalCode</code> پرانتز و نقطه را هم قبول می‌کنند و بعد فقط رقم‌ها را نگه می‌دارند. حرف، علامت‌های دیگر، خط تیره در ابتدا (عدد منفی) و نویسه‌های کنترلی مثل تب، خط جدید و NUL هرگز حذف نمی‌شوند و <code>invalid_format</code> می‌دهند.</li>
 <li>در <code>Sheba</code> حروف بزرگ می‌شوند و اگر فقط ۲۴ رقم باشد، پیشوند <code>IR</code> اضافه می‌شود.</li>
 </ul>
 <p>مقدار یکسان‌شده همیشه در <code>details()['normalized']</code> هست. همان را ذخیره کنید، نه ورودی خام را. این‌طور یک شماره هیچ‌وقت با دو املای مختلف ذخیره نمی‌شود.</p>

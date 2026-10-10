@@ -55,7 +55,7 @@ require</span> <span class="tok-s">'vendor/autoload.php'</span>;
 <ul>
 <li><strong>int:</strong> يعمل النطاق الكامل في PHP، بما فيه <code>PHP_INT_MAX</code>: «نه کوینتیلیون و دویست و بیست و سه کوادریلیون ...».</li>
 <li><strong>float:</strong> يجب أن يكون منتهيًا وصحيحًا (بلا كسر). <code>3.0</code> تعطي «سه»؛ و<code>1.5</code> تُطلق استثناءً بدل أن تُبتر بصمت.</li>
-<li><strong>string:</strong> إشارة اختيارية وأرقام من أي مجموعة أرقام. تُزال الفواصل و<code>٬</code> والمسافات، فيعمل عدد منسوخ من نموذج. ويمكن أن تكون السلاسل أطول من int في PHP، حتى 21 رقمًا بعد حذف الأصفار البادئة.</li>
+<li><strong>string:</strong> إشارة اختيارية وأرقام من أي مجموعة أرقام. تُقبل الفواصل و<code>٬</code> والمسافات فواصلَ للآلاف فقط في تجميع صحيح (مجموعة أولى من 1 إلى 3 أرقام ثم مجموعات من 3 أرقام بالضبط: <code>1 234 567</code> و<code>۱٬۲۳۴</code>)، فيعمل عدد منسوخ من نموذج. أما <code>1 2</code> أو <code>12 34</code> فتُطلق <code>invalid_number</code>. ويمكن أن تكون السلاسل أطول من int في PHP، حتى 21 رقمًا بعد حذف الأصفار البادئة.</li>
 </ul>
 <pre tabindex="0"><code class="language-php"><span class="tok-k">echo</span> NumberToWords::convert(<span class="tok-s">'۱۲۳٬۴۵۶'</span>), <span class="tok-s">"\n"</span>;        <span class="tok-c">// صد و بیست و سه هزار و چهارصد و پنجاه و شش</span>
 <span class="tok-k">echo</span> NumberToWords::convert(<span class="tok-s">'1,000,000'</span>), <span class="tok-s">"\n"</span>;      <span class="tok-c">// یک میلیون</span>
@@ -84,7 +84,7 @@ require</span> <span class="tok-s">'vendor/autoload.php'</span>;
 <p>راجع <a href="error-handling.html">معالجة الأخطاء</a> لمعرفة كيف تلتقط كل استثناءات المكتبة بنوع واحد.</p>
 
 <h2 id="arabic">العربية<a class="anchor" href="#arabic" aria-label="رابط إلى هذا القسم">#</a></h2>
-<p>مرّر <code>'ar'</code> وسيطًا ثانيًا للحصول على العربية الفصحى. تُقرأ اللغة المحلية (locale) من أول حرفين دون تمييز بين الأحرف الكبيرة والصغيرة، فتعمل <code>'ar_SA'</code> و<code>'AR'</code>، وكذلك <code>'fa_IR'</code> للفارسية.</p>
+<p>مرّر <code>'ar'</code> وسيطًا ثانيًا للحصول على العربية الفصحى. يجب أن يكون جزء اللغة من الوسم (النص قبل أول <code>-</code> أو <code>_</code> أو <code>.</code>) هو <code>ar</code> أو <code>fa</code> تمامًا دون تمييز بين الأحرف الكبيرة والصغيرة، فتعمل <code>'ar_SA'</code> و<code>'ar-EG'</code> و<code>'AR'</code>، وكذلك <code>'fa_IR'</code> للفارسية. أما <code>'arn'</code> و<code>'farsi'</code> فلا تُقبلان وتُطلقان <code>UnsupportedLocaleException</code>.</p>
 <pre tabindex="0"><code class="language-php"><span class="tok-k">echo</span> NumberToWords::convert(<span class="tok-n">11</span>, <span class="tok-s">'ar'</span>), <span class="tok-s">"\n"</span>;        <span class="tok-c">// أحد عشر</span>
 <span class="tok-k">echo</span> NumberToWords::convert(<span class="tok-n">21</span>, <span class="tok-s">'ar'</span>), <span class="tok-s">"\n"</span>;        <span class="tok-c">// واحد وعشرون</span>
 <span class="tok-k">echo</span> NumberToWords::convert(<span class="tok-n">200</span>, <span class="tok-s">'ar'</span>), <span class="tok-s">"\n"</span>;       <span class="tok-c">// مئتان</span>
@@ -115,7 +115,7 @@ var_dump(NumberToWords::fromWords(NumberToWords::convert(<span class="tok-s">'99
 
 <h3 id="from-words-rules">كيف تُقرأ الكلمات<a class="anchor" href="#from-words-rules" aria-label="رابط إلى هذا القسم">#</a></h3>
 <ul>
-<li>يُطبَّع المدخل أولًا: تتحول صور الحروف العربية إلى فارسية («ك» إلى «ک»، و«ي» إلى «ی»)، ويُعامل ZWNJ مسافةً، وتُتجاهل المسافات الزائدة.</li>
+<li>يجب أن يكون المدخل UTF-8 صالحًا، وإلا أُطلق استثناء بالرمز <code>invalid_number_words</code>. ثم يُطبَّع: تتحول صور الحروف العربية إلى فارسية («ك» إلى «ک»، و«ي» إلى «ی»)، ويُعامل ZWNJ مسافةً، وتُتجاهل المسافات الزائدة.</li>
 <li>«منفی» في البداية تجعل النتيجة سالبة؛ و«منفی صفر» هي <code>0</code>.</li>
 <li>كلمة المرتبة دون عدد قبلها تعني واحداً، فـ «هزار» هي 1000.</li>
 <li>يجب أن تكون المراتب تنازلية: «هزار هزار» أو «هزار میلیون» تُطلقان استثناءً.</li>

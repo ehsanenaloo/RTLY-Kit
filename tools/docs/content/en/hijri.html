@@ -68,8 +68,9 @@ echo Hijri::make('2025-03-31', $utc)-&gt;format('Y/m/d');    // 1446/10/02
 echo Hijri::make('2025-03-31', $utc, HijriVariant::Tabular)-&gt;format('Y/m/d'); // 1446/10/01</code></pre>
 <h3 id="string-rules">String semantics</h3>
 <ol>
-<li>Persian and Arabic digits become English digits and the string is trimmed. An empty string throws <code>InvalidDateException</code>.</li>
-<li>A string like <code>Y/m/d</code> or <code>Y-m-d</code> (3 or 4 digit year, optional <code>H:i[:s]</code>) with a year below 1700 is read as a Hijri date in the chosen variant.</li>
+<li>Persian and Arabic digits become English digits and the string is trimmed. A no-break space, a half-space (ZWNJ) and the LRM/RLM marks count as spaces. An empty string, or one with a NUL byte, throws <code>InvalidDateException</code>.</li>
+<li>A string that is exactly <code>Y/m/d</code> or <code>Y-m-d</code> (3 or 4 digit year), optionally followed by a space, <code>T</code> or <code>t</code>, <code>H:i[:s[.u]]</code> and a zone designator (<code>Z</code>, <code>+03:30</code>, <code>+0330</code> or <code>+03</code>), with a year below 1700, is read as a Hijri date in the chosen variant. A designator sets the time zone of the result, and a <code>$timezone</code> argument then converts to that zone.</li>
+<li>Text that starts like that but has anything more or less (a zone name after the time, <code>PM</code>, <code>'1446-09'</code>), a bare run of 3 to 8 digits such as <code>'1446'</code>, and a 5-digit year all throw <code>InvalidDateException</code>.</li>
 <li>Everything else, including years from 1700 on, is read as Gregorian or free text.</li>
 </ol>
 <pre><code class="language-php">echo Hijri::make('1446/09/01', $utc);   // 1446/09/01 00:00:00   (Hijri)
@@ -77,8 +78,13 @@ echo Hijri::make('1700/01/01', $utc);   // 1111/07/10 00:00:00   (Gregorian 1700
 
 try { Hijri::make('1446/02/31'); }
 catch (InvalidDateException $e) { echo $e-&gt;getMessage(); }  // Invalid Hijri date: 1446/2/31</code></pre>
-<div class="note"><strong>Good to know.</strong> <code>Hijri::make($hijriInstance)</code> returns that same instance and ignores the <code>$variant</code> argument. To show a date in another variant, go through the moment: <code>Hijri::make($h-&gt;toGregorian(), null, HijriVariant::Tabular)</code>.</div>
+<div class="note"><strong>Good to know.</strong> The <code>$variant</code> argument of <code>make()</code> is <code>null</code> by default. <code>Hijri::make($hijriInstance)</code> returns that same instance when you pass no time zone and no variant. A time zone gives a copy in that zone. A variant you pass always applies, <code>UmmAlQura</code> included, and gives the same moment in that variant when it differs: <code>Hijri::make($h, null, HijriVariant::Tabular)</code>. For every other input, <code>null</code> means <code>UmmAlQura</code>.</div>
 
+<h3 id="from-format">With a format: <code>createFromFormat()</code></h3>
+<p><code>Hijri::createFromFormat($format, $time, $timezone = null, $variant = HijriVariant::UmmAlQura)</code> works like <a href="jalali.html#from-format">the Jalali one</a>: the tokens <code>d j m n Y H G i s g h A a</code> (digits may be Persian or Arabic) and backslash escapes read the year, month and day as Hijri values. Tokens with a Gregorian or time-zone meaning throw <code>InvalidDateException</code> and name the token, and the format <code>U</code> alone reads a Unix timestamp.</p>
+<pre><code class="language-php">echo Hijri::createFromFormat('Y/m/d H:i', '1446/09/01 08:30'); // 1446/09/01 08:30:00
+</code></pre>
+<p>A Gregorian string with an impossible day, such as <code>'2024-02-30'</code>, throws <code>InvalidDateException</code> (PHP alone would roll it over to 2024-03-01). Text has no negative years: <code>make('-0100/01/01')</code> throws, so use <code>create()</code> or a timestamp for those. <code>serialize()</code> stores only the moment (and the Hijri variant). <code>unserialize()</code> checks it again and throws <code>InvalidDateException</code> for a payload that is damaged or outside the supported range.</p>
 <h2 id="range">Supported range and errors</h2>
 <p>Hijri years <code>Hijri::MIN_YEAR</code> = <strong>1</strong> to <code>Hijri::MAX_YEAR</code> = <strong>9665</strong> are supported. The first day is 1/1/1 (0622-07-19) and the last is 9665/12/last (9999-10-01), so Gregorian years 622 to 9999. Anything outside throws <code>InvalidDateException</code> from <code>create()</code>, <code>make()</code>, integer timestamps, <code>add*()</code>, <code>sub*()</code> and the converters. You never get a <code>TypeError</code> or <code>ValueError</code>.</p>
 <pre><code class="language-php">foreach ([[0, 1, 1], [9666, 1, 1], [1446, 1, 31], [1446, 13, 1]] as [$y, $m, $d]) {
@@ -121,7 +127,7 @@ echo $pm-&gt;format('g:i A', 'en');            // 3:00 PM</code></pre>
 <table>
 <thead><tr><th>Token</th><th>Meaning</th></tr></thead>
 <tbody>
-<tr><td><code>Y</code> <code>y</code> <code>m</code> <code>n</code> <code>d</code> <code>j</code></td><td>Year (4 and 2 digits), month and day with and without leading zero</td></tr>
+<tr><td><code>Y</code> <code>y</code> <code>m</code> <code>n</code> <code>d</code> <code>j</code></td><td>Year (at least 4 digits with leading zeros, and the last 2 digits), month and day with and without leading zero</td></tr>
 <tr><td><code>H</code> <code>G</code> <code>h</code> <code>g</code> <code>i</code> <code>s</code></td><td>24-hour and 12-hour clock, minutes, seconds</td></tr>
 <tr><td><code>F</code> <code>M</code></td><td>Month name in the locale</td></tr>
 <tr><td><code>l</code></td><td>Weekday name in the locale</td></tr>

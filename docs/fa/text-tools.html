@@ -33,6 +33,7 @@
 <details class="toc-inline"><summary>در این صفحه</summary><ol><li><a href="#normalizer">Normalizer</a><ol><li><a href="#normalize">normalize()</a></li><li><a href="#half-space">fixHalfSpace()</a></li><li><a href="#clean">clean()</a></li></ol></li><li><a href="#detector">Detector</a><ol><li><a href="#persian-arabic">isPersian() و isArabic()</a></li><li><a href="#direction">جهت و RTL</a></li><li><a href="#rtl-locale">isRtlLocale()</a></li></ol></li><li><a href="#slugify">Slugify</a><ol><li><a href="#slug-separator">جداکننده</a></li></ol></li></ol></details>
 <h2 id="normalizer">Normalizer<a class="anchor" href="#normalizer" aria-label="پیوند به این بخش">#</a></h2>
 <p><code>RtlyKit\Text\Normalizer</code> متن فارسی را برای مقایسه و ذخیره آماده می‌کند. ورودی کاربر معمولاً شکل‌های عربی و فارسی حرف‌ها را قاطی می‌کند (صفحه‌کلید عربی «ي» و «ك» تایپ می‌کند). گاهی اعراب و کشیده و فاصلهٔ اضافه هم دارد. آن‌وقت یک واژه روی صفحه یکسان دیده می‌شود، ولی در مقایسهٔ رشته‌ای یا جست‌وجوی پایگاه داده با هم نمی‌خوانند.</p>
+<div class="callout note" role="note"><strong>UTF-8 نامعتبر.</strong> <code>normalize()</code>، <code>fixHalfSpace()</code> و <code>clean()</code> اول هر بایتی را که بخشی از یک دنبالهٔ معتبر UTF-8 نیست با U+FFFD (نویسهٔ جایگزین) عوض می‌کنند و بعد همهٔ مرحله‌هایشان را اجرا می‌کنند. نتیجه همیشه UTF-8 معتبر است و به افزونه‌ای مثل mbstring نیازی نیست.</div>
 
 <h3 id="normalize">normalize()<a class="anchor" href="#normalize" aria-label="پیوند به این بخش">#</a></h3>
 <p><code>Normalizer::normalize($text, $removeDiacritics = true)</code> این کارها را می‌کند:</p>
@@ -76,13 +77,13 @@ require</span> <span class="tok-s">'vendor/autoload.php'</span>;
 <p>نیم‌فاصلهٔ جاافتاده را اضافه نمی‌کند و فاصله‌های معمولی را هم یکی نمی‌کند.</p>
 
 <h3 id="clean">clean()<a class="anchor" href="#clean" aria-label="پیوند به این بخش">#</a></h3>
-<p><code>Normalizer::clean()</code> نسخهٔ کامل برای ذخیره و جست‌وجوست. اول <code>normalize()</code> را اجرا می‌کند، بعد <code>fixHalfSpace()</code> را، و بعد نویسه‌های نامرئی را حذف می‌کند: فاصلهٔ بدون پهنا (U+200B)، اتصال‌دهندهٔ بدون پهنا (U+200D) و نشانهٔ ترتیب بایت (U+FEFF). ZWNJ تنها نویسهٔ بدون پهنایی است که می‌ماند.</p>
+<p><code>Normalizer::clean()</code> نسخهٔ کامل برای ذخیره و جست‌وجوست. اول نویسه‌های نامرئی را حذف می‌کند: فاصلهٔ بدون پهنا (U+200B)، اتصال‌دهندهٔ بدون پهنا (U+200D) و نشانهٔ ترتیب بایت (U+FEFF). بعد <code>normalize()</code> و <code>fixHalfSpace()</code> را اجرا می‌کند و یک بار دیگر فاصله‌های پشت‌سرهم را یکی می‌کند. ZWNJ تنها نویسهٔ بدون پهنایی است که می‌ماند. با این ترتیب <code>clean()</code> ایدمپوتنت است: تمیز کردنِ متنِ تمیز چیزی را عوض نمی‌کند.</p>
 <pre tabindex="0"><code class="language-php"><span class="tok-v">$c</span> = <span class="tok-s">"كتاب\u{200B}ي  ١٢٣"</span>;
 <span class="tok-k">echo</span> Normalizer::clean(<span class="tok-v">$c</span>), <span class="tok-s">"\n"</span>;   <span class="tok-c">// کتابی ۱۲۳</span></code></pre>
 <p>اگر فقط <code>normalize()</code> را روی همین متن بزنید، فاصلهٔ نامرئی وسط واژه می‌ماند. برای همین <code>clean()</code> هست. متنی را که کاربر وارد کرده، پیش از ذخیره یا نمایه‌سازی، با آن تمیز کنید.</p>
 
 <h2 id="detector">Detector<a class="anchor" href="#detector" aria-label="پیوند به این بخش">#</a></h2>
-<p><code>RtlyKit\Text\Detector</code> دربارهٔ خط، زبان و جهت متن جواب می‌دهد. همهٔ متدها استاتیک‌اند و خطا پرتاب نمی‌کنند.</p>
+<p><code>RtlyKit\Text\Detector</code> دربارهٔ خط، زبان و جهت متن جواب می‌دهد. همهٔ متدها استاتیک‌اند و خطا پرتاب نمی‌کنند. UTF-8 نامعتبر مثل <code>Normalizer</code> رفتار می‌شود: هر بایت بد به U+FFFD (نویسه‌ای خنثی، نه حرف و نه راست‌به‌چپ) تبدیل می‌شود، پس جواب فقط به بخش معتبر متن بستگی دارد.</p>
 
 <h3 id="persian-arabic">isPersian() و isArabic()<a class="anchor" href="#persian-arabic" aria-label="پیوند به این بخش">#</a></h3>
 <p>هر دو روش تقریبی‌اند و برای متنی با خط عربی کار می‌کنند. فارسی از حرف‌هایی شناخته می‌شود که فقط در فارسی هستند (<code>پ چ ژ گ</code>، شکل فارسی <code>ک</code> و <code>ی</code> و رقم‌های فارسی). عربی از <code>ي ك ى ة</code> و رقم‌های عربی-هندی شناخته می‌شود. حرف‌های مشترک، مثل «ه» و شکل‌های همزه، حساب نمی‌شوند. اگر حرف‌های ویژهٔ فارسی دست‌کم به اندازهٔ حرف‌های ویژهٔ عربی باشند، متن فارسی است. پس در حالت مساوی یا وقتی هیچ حرف تمایزی نباشد هم فارسی حساب می‌شود.</p>
@@ -100,8 +101,8 @@ var_dump(Detector::isPersian(<span class="tok-s">''</span>));            <span c
 
 <h3 id="direction">جهت و RTL<a class="anchor" href="#direction" aria-label="پیوند به این بخش">#</a></h3>
 <ul>
-<li><code>containsRtl($text)</code>: آیا متن نویسه‌ای از یک خط راست‌به‌چپ دارد (عبری، عربی و ضمیمه‌هایش، سریانی، تانا، نکو و غیره، شکل‌های نمایشی عربی) یا نشانهٔ RLM.</li>
-<li><code>direction($text)</code>: <code>'rtl'</code> یا <code>'ltr'</code> بر اساس <strong>اولین حرف قوی</strong>، طبق قاعدهٔ دوسویهٔ یونیکد. رقم، نشانه‌گذاری و فاصله خنثی‌اند. متنی که هیچ حرفی ندارد <code>'ltr'</code> می‌دهد.</li>
+<li><code>containsRtl($text)</code>: آیا متن نویسه‌ای از یک خط راست‌به‌چپ دارد (عبری، عربی و ضمیمه‌هایش، سریانی، تانا، نکو و غیره، شکل‌های نمایشی عربی) یا یکی از کنترل‌های صریح راست‌به‌چپ: RLM‏ (U+200F)، RLE‏ (U+202B)، RLO‏ (U+202E) و RLI‏ (U+2067). <code>direction()</code> این کنترل‌ها را حساب نمی‌کند و فقط به اولین حرف نگاه می‌کند.</li>
+<li><code>direction($text)</code>: <code>'rtl'</code> یا <code>'ltr'</code> بر اساس <strong>اولین حرف قوی</strong>، طبق قاعدهٔ دوسویهٔ یونیکد. رقم، نشانه‌گذاری و فاصله خنثی‌اند. متنی که هیچ حرفی ندارد <code>'ltr'</code> می‌دهد. همان خط‌هایی را راست‌به‌چپ می‌داند که <code>containsRtl()</code> می‌داند، از جمله خط‌های تاریخی مثل فینیقی، اوستایی و نبطی.</li>
 <li><code>isHebrew($text)</code>: آیا متن حرف عبری دارد.</li>
 </ul>
 <pre tabindex="0"><code class="language-php">var_dump(Detector::containsRtl(<span class="tok-s">'abc'</span>));           <span class="tok-c">// bool(false)</span>
@@ -112,7 +113,7 @@ var_dump(Detector::isHebrew(<span class="tok-s">'שלום'</span>));            
 <p>توابع کمکی <code>contains_rtl()</code> و <code>text_direction()</code> همان <code>containsRtl()</code> و <code>direction()</code> هستند. برای صفت <code>dir</code> در HTML، روی متنی که کاربر نوشته از <code>direction()</code> استفاده کنید.</p>
 
 <h3 id="rtl-locale">isRtlLocale()<a class="anchor" href="#rtl-locale" aria-label="پیوند به این بخش">#</a></h3>
-<p><code>isRtlLocale($locale)</code> می‌گوید یک برچسب زبان راست‌به‌چپ نوشته می‌شود یا نه. برچسب را با <code>-</code>، <code>_</code>، <code>.</code> و <code>@</code> می‌شکند، به بزرگی و کوچکی حرف و فاصله‌های دو سر توجه نمی‌کند، و اگر زبان راست‌به‌چپ باشد (<code>fa</code>، <code>ar</code>، <code>he</code>، <code>ur</code>، <code>ps</code>، <code>ug</code>، <code>dv</code>، <code>ckb</code>، <code>azb</code> و ...) یا زیربرچسب خطش <code>Arab</code> یا <code>Hebr</code> باشد، <code>true</code> می‌دهد.</p>
+<p><code>isRtlLocale($locale)</code> می‌گوید یک برچسب زبان راست‌به‌چپ نوشته می‌شود یا نه. برچسب را با <code>-</code> و <code>_</code> می‌شکند (پسوند <code>.UTF-8</code> یا <code>@euro</code> نادیده گرفته می‌شود) و به بزرگی و کوچکی حرف و فاصله‌های دو سر توجه نمی‌کند. زیربرچسب چهارحرفیِ خط تعیین‌کننده است: <code>Arab</code>، <code>Hebr</code> و خط‌های راست‌به‌چپ دیگر <code>true</code> می‌دهند و هر خط دیگری <code>false</code>، حتی برای زبانی راست‌به‌چپ (<code>fa-Latn</code>، <code>ar-Latn</code> و <code>sd-Deva</code> برابر <code>false</code> هستند). اگر زیربرچسب خط نباشد، زبان تصمیم می‌گیرد: <code>fa</code>، <code>ar</code>، <code>he</code>، <code>ur</code>، <code>ps</code>، <code>ug</code>، <code>dv</code>، <code>ckb</code>، <code>azb</code> و ... <code>true</code> می‌دهند.</p>
 <pre tabindex="0"><code class="language-php">var_dump(Detector::isRtlLocale(<span class="tok-s">'fa_IR'</span>));     <span class="tok-c">// bool(true)</span>
 var_dump(Detector::isRtlLocale(<span class="tok-s">'ar-SA'</span>));     <span class="tok-c">// bool(true)</span>
 var_dump(Detector::isRtlLocale(<span class="tok-s">'ckb-IQ'</span>));    <span class="tok-c">// bool(true)</span>
@@ -125,9 +126,9 @@ var_dump(Detector::isRtlLocale(<span class="tok-s">''</span>));          <span c
 <p><code>Slugify::make($text, $separator = '-')</code> عنوان را به اسلاگ مناسب نشانی اینترنتی تبدیل می‌کند و حرف‌های فارسی و عربی را همان‌طور خوانا نگه می‌دارد. به لاتین تبدیل نمی‌کند.</p>
 <ol>
 <li>متن را با <code>Normalizer::normalize()</code> یکسان می‌کند.</li>
-<li>فاصله و نیم‌فاصله را به جداکننده تبدیل می‌کند.</li>
+<li>فاصله و نیم‌فاصله را به جداکننده تبدیل می‌کند. اگر خود متن نویسهٔ U+0001 داشته باشد، اول حذف می‌شود تا هرگز جداکننده حساب نشود.</li>
 <li>هر چیزی را که حرف (از هر خط)، نشانهٔ ترکیبی، رقم (از هر دسته)، خط تیره یا زیرخط نیست حذف می‌کند. نشانه‌گذاری و اموجی می‌رود.</li>
-<li>خط تیره، زیرخط و جداکنندهٔ تکراری را یکی می‌کند و جداکننده را از دو سر برمی‌دارد.</li>
+<li>خط تیره، زیرخط و جداکنندهٔ تکراری را یکی می‌کند و جداکننده را از دو سر برمی‌دارد. این کار پیش از گذاشتن متنِ جداکننده انجام می‌شود، پس متنی که با جداکننده برابر است یا آن را دارد حفظ می‌شود: <code>Slugify::make('maxx', 'x')</code> برابر <code>maxx</code> است.</li>
 <li>نتیجه را با UTF-8 به حرف کوچک تبدیل می‌کند.</li>
 </ol>
 <pre tabindex="0"><code class="language-php"><span class="tok-k">use</span> RtlyKit\Text\Slugify;

@@ -35,7 +35,7 @@ jobs:
   verify:
     name: Verify tag
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 90
     permissions:
       contents: read
       actions: read
@@ -97,32 +97,47 @@ jobs:
           SHA: ${{ steps.meta.outputs.sha }}
         run: |
           set -eu
+          # Only the newest `push` run of ci.yml for this exact commit counts.
+          # A run cancelled by a later push (ci.yml cancels in-progress runs) and a
+          # stale pull_request run on the same commit must not decide the outcome.
+          # ci.yml has no workflow_dispatch trigger, so `push` is the only event.
           # CI runs on the push to main that produced this commit. Wait for it
-          # (up to ~20 minutes) instead of failing a tag pushed right after the merge.
+          # (up to ~75 minutes: the mutation job alone may take an hour) instead of failing a tag pushed right after the merge.
           attempt=0
+          missing=0
           while :; do
-            runs=$(gh run list --workflow ci.yml --commit "$SHA" --repo "$GITHUB_REPOSITORY" \
-              --json status,conclusion --jq '.[] | "\(.status):\(.conclusion)"')
-            if [ -z "$runs" ]; then
-              echo "::error::No CI run found for $SHA"
-              exit 1
+            latest=$(gh run list --workflow ci.yml --commit "$SHA" --limit 100 --repo "$GITHUB_REPOSITORY" \
+              --json status,conclusion,event,createdAt,url \
+              | jq -r '[.[] | select(.event == "push")] | sort_by(.createdAt) | last // empty
+                       | "\(.status):\(.conclusion):\(.url)"')
+            if [ -z "$latest" ]; then
+              missing=$((missing + 1))
+              if [ "$missing" -ge 4 ]; then
+                echo "::error::No CI run on a push was found for $SHA. The tagged commit needs a green CI run on a push to main."
+                exit 1
+              fi
+              echo "No CI push run for $SHA yet ($missing/4)..."
+              sleep 30
+              continue
             fi
-            if printf '%s\n' "$runs" | grep -Eq '^completed:(failure|cancelled|timed_out|startup_failure|action_required)$'; then
-              echo "::error::CI is not green for $SHA:"
-              printf '%s\n' "$runs"
-              exit 1
-            fi
-            if printf '%s\n' "$runs" | grep -q '^completed:success$' \
-              && ! printf '%s\n' "$runs" | grep -Eq '^(queued|in_progress|waiting|pending|requested):'; then
-              echo "CI is green for $SHA"
-              exit 0
-            fi
+            state=${latest%%:*}
+            rest=${latest#*:}
+            conclusion=${rest%%:*}
+            url=${rest#*:}
+            case "$state:$conclusion" in
+              completed:success)
+                echo "CI is green for $SHA ($url)"
+                exit 0 ;;
+              completed:*)
+                echo "::error::The newest CI push run for $SHA ended as '$conclusion' ($url). Re-run it or push a fix; the tagged commit needs a green CI run."
+                exit 1 ;;
+            esac
             attempt=$((attempt + 1))
-            if [ "$attempt" -ge 40 ]; then
+            if [ "$attempt" -ge 150 ]; then
               echo "::error::CI for $SHA did not finish in time"
               exit 1
             fi
-            echo "Waiting for CI ($attempt/40)..."
+            echo "Waiting for CI ($attempt/150)..."
             sleep 30
           done
 
@@ -170,13 +185,13 @@ jobs:
         run: |
           set -eu
           list=$(tar -tzf "dist/rtly-kit-$VERSION.tar.gz")
-          for required in composer.json LICENSE README.md CHANGELOG.md src/; do
+          for required in composer.json LICENSE README.md CHANGELOG.md src/ resources/data/ resources/lang/ resources/config/; do
             if ! printf '%s\n' "$list" | grep -q "^rtly-kit-$VERSION/$required"; then
               echo "::error::Archive is missing $required"
               exit 1
             fi
           done
-          for forbidden in tests/ docs/ tools/ .github/ .gitattributes composer.lock; do
+          for forbidden in tests/ docs/ tools/ .github/ .gitattributes .editorconfig .gitignore composer.lock CLAUDE[.]md technical[-]docs [.]claude tools/build; do
             if printf '%s\n' "$list" | grep -q "^rtly-kit-$VERSION/$forbidden"; then
               echo "::error::Archive must not contain $forbidden"
               exit 1

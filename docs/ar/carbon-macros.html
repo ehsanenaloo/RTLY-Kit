@@ -36,7 +36,7 @@
 <p><strong>المتطلبات.</strong> تثبيت RTLY-Kit (<a href="installation.html">التثبيت</a>) وCarbon 3 (<code>composer require nesbot/carbon</code>؛ الإصدار 3 هو المدعوم).</p>
 
 <h2 id="registration">كيف يعمل التسجيل<a class="anchor" href="#registration" aria-label="رابط إلى هذا القسم">#</a></h2>
-<p>يحمّل Composer ملف المساعدة في الحزمة عند التحميل التلقائي. يُقلع هذا الملف التكامل، فيتحقق من وجود فئات Carbon وإن وُجدت سجّل الماكروات مرة واحدة. لا تستدعي أنت شيئًا:</p>
+<p>يحمّل Composer ملف المساعدة في الحزمة عند التحميل التلقائي. يُقلع هذا الملف التكامل، فيتحقق من وجود فئات Carbon وإن وُجدت سجّل الماكروات مرة واحدة. وإن وُجد ماكرو بأحد هذه الأسماء من قبل، سواء كان لك أو من حزمة أخرى، فيبقى كما هو وتُضاف الناقصة فقط. واستدعاء <code>CarbonMacros::register()</code> مرة أخرى آمن. لا تستدعي أنت شيئًا:</p>
 <pre tabindex="0"><code class="language-php"><span class="tok-k">&lt;?php
 require</span> <span class="tok-s">'vendor/autoload.php'</span>;
 

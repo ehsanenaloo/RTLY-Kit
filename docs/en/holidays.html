@@ -84,7 +84,7 @@ var_dump(is_iran_holiday(<span class="tok-n">1404</span>, <span class="tok-n">1<
 <ul>
 <li><code>isWeekend($date)</code> is <code>true</code> only on Friday.</li>
 <li><code>isBusinessDay($date)</code> is <code>true</code> when the day is neither a weekend nor a holiday.</li>
-<li><code>nextBusinessDay($date)</code> returns the first business day after the given date.</li>
+<li><code>nextBusinessDay($date)</code> returns the first business day after the given date. At the very end of the supported range (Jalali 9377/12/30) there is no next day, so it throws <code>InvalidDateException</code>.</li>
 </ul>
 <pre tabindex="0"><code class="language-php"><span class="tok-k">foreach</span> ([Jalali::create(<span class="tok-n">1404</span>, <span class="tok-n">11</span>, <span class="tok-n">20</span>), Jalali::create(<span class="tok-n">1404</span>, <span class="tok-n">11</span>, <span class="tok-n">21</span>), Jalali::create(<span class="tok-n">1404</span>, <span class="tok-n">11</span>, <span class="tok-n">22</span>)] <span class="tok-k">as</span> <span class="tok-v">$d</span>) {
     <span class="tok-k">echo</span> <span class="tok-v">$d</span>-&gt;toDateString(),

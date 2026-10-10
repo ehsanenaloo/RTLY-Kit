@@ -55,7 +55,7 @@ require</span> <span class="tok-s">'vendor/autoload.php'</span>;
 <ul>
 <li><strong>int:</strong> the whole PHP range works, including <code>PHP_INT_MAX</code>: «نه کوینتیلیون و دویست و بیست و سه کوادریلیون ...».</li>
 <li><strong>float:</strong> must be finite and whole. <code>3.0</code> gives «سه». <code>1.5</code> throws and is not silently cut.</li>
-<li><strong>string:</strong> an optional sign and digits in any digit set. Commas, <code>٬</code> and spaces are removed, so a number copied from a form works. Strings can be longer than a PHP int, up to 21 digits after leading zeros are dropped.</li>
+<li><strong>string:</strong> an optional sign and digits in any digit set. Commas, <code>٬</code>, spaces and no-break spaces are accepted as thousands separators only in proper grouping (a first group of 1 to 3 digits, then groups of exactly 3: <code>1 234 567</code>, <code>۱٬۲۳۴</code>), so a number copied from a form works. <code>1 2</code> or <code>12 34</code> throws <code>invalid_number</code>. A tab, newline or NUL anywhere in the text makes it invalid. Strings can be longer than a PHP int, up to 21 digits after leading zeros are dropped.</li>
 </ul>
 <pre tabindex="0"><code class="language-php"><span class="tok-k">echo</span> NumberToWords::convert(<span class="tok-s">'۱۲۳٬۴۵۶'</span>), <span class="tok-s">"\n"</span>;        <span class="tok-c">// صد و بیست و سه هزار و چهارصد و پنجاه و شش</span>
 <span class="tok-k">echo</span> NumberToWords::convert(<span class="tok-s">'1,000,000'</span>), <span class="tok-s">"\n"</span>;      <span class="tok-c">// یک میلیون</span>
@@ -84,7 +84,7 @@ require</span> <span class="tok-s">'vendor/autoload.php'</span>;
 <p>See <a href="error-handling.html">Error handling</a> to catch every library exception with one type.</p>
 
 <h2 id="arabic">Arabic<a class="anchor" href="#arabic" aria-label="Link to this section">#</a></h2>
-<p>Pass <code>'ar'</code> as the second argument for Modern Standard Arabic. The locale is matched on its first two letters, ignoring case. So <code>'ar_SA'</code> and <code>'AR'</code> work, and <code>'fa_IR'</code> works for Persian.</p>
+<p>Pass <code>'ar'</code> as the second argument for Modern Standard Arabic. The language part of the locale (the text before the first <code>-</code>, <code>_</code> or <code>.</code>) must be exactly <code>ar</code> or <code>fa</code>, ignoring case. So <code>'ar_SA'</code>, <code>'ar-EG'</code> and <code>'AR'</code> work, and <code>'fa_IR'</code> works for Persian. <code>'arn'</code> and <code>'farsi'</code> are not accepted and throw <code>UnsupportedLocaleException</code>.</p>
 <pre tabindex="0"><code class="language-php"><span class="tok-k">echo</span> NumberToWords::convert(<span class="tok-n">11</span>, <span class="tok-s">'ar'</span>), <span class="tok-s">"\n"</span>;        <span class="tok-c">// أحد عشر</span>
 <span class="tok-k">echo</span> NumberToWords::convert(<span class="tok-n">21</span>, <span class="tok-s">'ar'</span>), <span class="tok-s">"\n"</span>;        <span class="tok-c">// واحد وعشرون</span>
 <span class="tok-k">echo</span> NumberToWords::convert(<span class="tok-n">200</span>, <span class="tok-s">'ar'</span>), <span class="tok-s">"\n"</span>;       <span class="tok-c">// مئتان</span>
@@ -116,7 +116,7 @@ var_dump(NumberToWords::fromWords(NumberToWords::convert(<span class="tok-s">'99
 
 <h3 id="from-words-rules">How words are read<a class="anchor" href="#from-words-rules" aria-label="Link to this section">#</a></h3>
 <ul>
-<li>The input is cleaned first. Arabic letter variants become Persian («ك» to «ک», «ي» to «ی»), a ZWNJ counts as a space, and extra whitespace is ignored.</li>
+<li>The input must be valid UTF-8, otherwise it throws with the code <code>invalid_number_words</code>. It is then cleaned. Arabic letter variants become Persian («ك» to «ک», «ي» to «ی»), a ZWNJ counts as a space, and extra whitespace is ignored.</li>
 <li>A leading «منفی» makes the result negative. «منفی صفر» is <code>0</code>.</li>
 <li>A scale word with no number before it means one, so «هزار» is 1000.</li>
 <li>Scales must go from large to small. «هزار هزار» and «هزار میلیون» throw.</li>

@@ -84,7 +84,7 @@ function to_english_digits(string $value): string
 }
 
 /**
- * Convert any digits to Persian digits (short alias of to_persian_digits).
+ * Convert English digits to Persian digits (short alias of to_persian_digits; Arabic-Indic digits are left as they are, see Digits::convert()).
  */
 function to_persian(string|int|float $value): string
 {

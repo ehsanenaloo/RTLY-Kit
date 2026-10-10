@@ -68,8 +68,9 @@ echo Hijri::make('2025-03-31', $utc)-&gt;format('Y/m/d');    // 1446/10/02
 echo Hijri::make('2025-03-31', $utc, HijriVariant::Tabular)-&gt;format('Y/m/d'); // 1446/10/01</code></pre>
 <h3 id="string-rules">دلالات السلاسل النصية</h3>
 <ol>
-<li>تتحول الأرقام الفارسية والعربية إلى أرقام إنجليزية وتُقصّ المسافات من الطرفين؛ والسلاسل الفارغة تُطلق <code>InvalidDateException</code>.</li>
-<li>السلسلة بالصيغة <code>Y/m/d</code> أو <code>Y-m-d</code> (سنة من 3 أو 4 أرقام، و<code>H:i[:s]</code> اختياري) وسنتها <strong>أقل من 1700</strong> تُقرأ تاريخًا هجريًا في النمط المختار.</li>
+<li>تتحول الأرقام الفارسية والعربية إلى أرقام إنجليزية وتُقصّ المسافات من الطرفين، وتُعامَل المسافة غير القابلة للكسر وZWNJ وLRM وRLM معاملة المسافة؛ والسلاسل الفارغة أو التي فيها بايت NUL تُطلق <code>InvalidDateException</code>.</li>
+<li>السلسلة بالصيغة الدقيقة <code>Y/m/d</code> أو <code>Y-m-d</code> (سنة من 3 أو 4 أرقام، يليها اختياريًا مسافة أو <code>T</code> أو <code>t</code> و<code>H:i[:s[.u]]</code> وعلامة منطقة <code>Z</code> أو <code>+03:30</code> أو <code>+0330</code> أو <code>+03</code>) وسنتها <strong>أقل من 1700</strong> تُقرأ تاريخًا هجريًا في النمط المختار. تحدّد العلامة المنطقة الزمنية للنتيجة، ثم يحوّلها الوسيط <code>$timezone</code> إلى منطقته.</li>
+<li>النص الذي يبدأ هكذا وفيه زيادة أو نقص (اسم منطقة زمنية بعد الوقت أو <code>PM</code> أو <code>'1446-09'</code>) والسلسلة من 3 إلى 8 أرقام فقط مثل <code>'1446'</code> والسنة من 5 أرقام، كلها تُطلق <code>InvalidDateException</code>.</li>
 <li>كل ما عدا ذلك، بما فيه السنوات 1700 فما فوق، يُحلَّل تاريخًا ميلاديًا أو نصًا حرًّا.</li>
 </ol>
 <pre><code class="language-php">echo Hijri::make('1446/09/01', $utc);   // 1446/09/01 00:00:00   (هجري)
@@ -77,8 +78,13 @@ echo Hijri::make('1700/01/01', $utc);   // 1111/07/10 00:00:00   (الميلاد
 
 try { Hijri::make('1446/02/31'); }
 catch (InvalidDateException $e) { echo $e-&gt;getMessage(); }  // Invalid Hijri date: 1446/2/31</code></pre>
-<div class="note"><strong>النمط عند تمرير كائن هجري.</strong> تُرجع <code>Hijri::make($hijriInstance)</code> النسخة نفسها وتتجاهل الوسيط <code>$variant</code>. وإذا أردت التعبير عن التاريخ بنمط آخر، فمرّره عبر اللحظة: <code>Hijri::make($h-&gt;toGregorian(), null, HijriVariant::Tabular)</code>.</div>
+<div class="note"><strong>النمط عند تمرير كائن هجري.</strong> القيمة الافتراضية للوسيط <code>$variant</code> في <code>make()</code> هي <code>null</code>. تُرجع <code>Hijri::make($hijriInstance)</code> النسخة نفسها إذا لم تمرّر منطقة زمنية ولا نمطًا. وتمرير منطقة يعطيك نسخة في تلك المنطقة. والنمط الذي تمرّره يُطبَّق دائمًا، ومنه <code>UmmAlQura</code>، فيعطيك اللحظة نفسها بذلك النمط إذا اختلف: <code>Hijri::make($h, null, HijriVariant::Tabular)</code>. وفي بقية أنواع المُدخَل تعني <code>null</code> النمط <code>UmmAlQura</code>.</div>
 
+<h3 id="from-format">بصيغة محددة: <code>createFromFormat()</code></h3>
+<p>تعمل <code>Hijri::createFromFormat($format, $time, $timezone = null, $variant = HijriVariant::UmmAlQura)</code> مثل <a href="jalali.html#from-format">نظيرتها الجلالية</a>: تقرأ الرموز <code>d j m n Y H G i s g h A a</code> (ويجوز أن تكون الأرقام فارسية أو عربية) وحروف الهروب بالشرطة المائلة العكسية السنةَ والشهر واليوم قيمًا هجرية. وأي رمز له معنى ميلادي أو معنى منطقة زمنية يُلقي <code>InvalidDateException</code> ويذكر الرمز، والصيغة <code>U</code> وحدها تقرأ طابعًا زمنيًا.</p>
+<pre><code class="language-php">echo Hijri::createFromFormat('Y/m/d H:i', '1446/09/01 08:30'); // 1446/09/01 08:30:00
+</code></pre>
+<p>تُلقي السلسلة الميلادية ذات اليوم المستحيل، مثل <code>'2024-02-30'</code>، <code>InvalidDateException</code> (أما PHP وحدها فتنقلها إلى 2024-03-01). لا سنوات سالبة في النص: يُلقي <code>make('-0100/01/01')</code> استثناءً، فاستخدم <code>create()</code> أو الطابع الزمني لها. يحفظ <code>serialize()</code> اللحظة فقط (ومعها نوع التقويم في الهجري). ويتحقق <code>unserialize()</code> منها من جديد ويُلقي <code>InvalidDateException</code> عند بيانات تالفة أو خارج النطاق المدعوم.</p>
 <h2 id="range">النطاق المدعوم والأخطاء</h2>
 <p>السنوات الهجرية المدعومة من <code>Hijri::MIN_YEAR</code> = <strong>1</strong> إلى <code>Hijri::MAX_YEAR</code> = <strong>9665</strong>: أول يوم هو 1/1/1 (0622-07-19) وآخر يوم هو 9665/12/آخر يوم (9999-10-01)، أي السنوات الميلادية من 622 إلى 9999. وأي قيمة خارج ذلك تُطلق <code>InvalidDateException</code> من <code>create()</code> و<code>make()</code> والطوابع الزمنية الصحيحة و<code>add*()</code>/<code>sub*()</code> ودوال التحويل؛ ولا تُطلق أبدًا <code>TypeError</code> أو <code>ValueError</code>.</p>
 <pre><code class="language-php">foreach ([[0, 1, 1], [9666, 1, 1], [1446, 1, 31], [1446, 13, 1]] as [$y, $m, $d]) {
@@ -121,7 +127,7 @@ echo $pm-&gt;format('g:i A', 'en');            // 3:00 PM</code></pre>
 <table>
 <thead><tr><th>الرمز</th><th>المعنى</th></tr></thead>
 <tbody>
-<tr><td><code>Y</code> <code>y</code> <code>m</code> <code>n</code> <code>d</code> <code>j</code></td><td>السنة (4 أرقام ورقمان)، والشهر واليوم مع صفر بادئ وبدونه</td></tr>
+<tr><td><code>Y</code> <code>y</code> <code>m</code> <code>n</code> <code>d</code> <code>j</code></td><td>السنة (4 أرقام على الأقل مع أصفار بادئة، وآخر رقمين)، والشهر واليوم مع صفر بادئ وبدونه</td></tr>
 <tr><td><code>H</code> <code>G</code> <code>h</code> <code>g</code> <code>i</code> <code>s</code></td><td>نظام 24 ساعة ونظام 12 ساعة، والدقائق، والثواني</td></tr>
 <tr><td><code>F</code> <code>M</code></td><td>اسم الشهر بحسب اللغة</td></tr>
 <tr><td><code>l</code></td><td>اسم يوم الأسبوع بحسب اللغة</td></tr>

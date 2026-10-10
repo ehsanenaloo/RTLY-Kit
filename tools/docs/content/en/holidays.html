@@ -57,7 +57,7 @@ echo count(IranHolidays::all(1404));    // 26 (fixed + Islamic holidays, one ent
 <ul>
 <li><code>isWeekend($date)</code> is <code>true</code> only on Friday.</li>
 <li><code>isBusinessDay($date)</code> is <code>true</code> when the day is neither a weekend nor a holiday.</li>
-<li><code>nextBusinessDay($date)</code> returns the first business day after the given date.</li>
+<li><code>nextBusinessDay($date)</code> returns the first business day after the given date. At the very end of the supported range (Jalali 9377/12/30) there is no next day, so it throws <code>InvalidDateException</code>.</li>
 </ul>
 <pre><code class="language-php">foreach ([Jalali::create(1404, 11, 20), Jalali::create(1404, 11, 21), Jalali::create(1404, 11, 22)] as $d) {
     echo $d-&gt;toDateString(),

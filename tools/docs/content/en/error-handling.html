@@ -8,7 +8,7 @@ order: 20
 <p>Each function in RTLY-Kit uses one of two styles, so you always know what to guard:</p>
 <ul>
 <li><strong>Validators never throw.</strong> <code>NationalCode</code>, <code>Sheba</code>, <code>BankCard</code>, <code>Mobile</code>, <code>PostalCode</code> and <code>VehiclePlate</code> (and the <code>is_*</code> and <code>validate_*</code> helpers) accept any value and answer with <code>false</code> or an invalid <code>Result</code>. See <a href="validators-overview.html">Validators overview</a>.</li>
-<li><strong>Everything else throws</strong> a <code>RtlyKit\Exceptions\RtlyKitException</code> (or a subclass) for input it cannot accept. A <code>TypeError</code>, <code>ValueError</code> or PHP <code>DateMalformed*</code> exception never escapes for bad input. If you see one, it is a library bug, and we would like a report.</li>
+<li><strong>Everything else throws</strong> a <code>RtlyKit\Exceptions\RtlyKitException</code> (or a subclass) for a value of an accepted type that it cannot use. A <code>TypeError</code>, <code>ValueError</code> or PHP <code>DateMalformed*</code> exception never escapes for such a value. If you see one, it is a library bug, and we would like a report. A value of a type the signature does not accept, such as an array passed as a date, is rejected by PHP itself with a <code>TypeError</code>.</li>
 </ul>
 
 <h2 id="hierarchy">Exception hierarchy</h2>

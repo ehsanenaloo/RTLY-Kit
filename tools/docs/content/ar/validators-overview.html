@@ -13,7 +13,7 @@ order: 10
 <tr><td><code>Sheba</code></td><td><code>IR</code> + 24 رقماً، وفق ISO 7064 mod-97-10، مع البحث عن المصرف</td><td><a href="sheba-and-bank-card.html">شبا والبطاقة المصرفية</a></td></tr>
 <tr><td><code>BankCard</code></td><td>16 رقماً، ومجموع تحقق Luhn، والبحث عن المصرف عبر BIN</td><td><a href="sheba-and-bank-card.html">شبا والبطاقة المصرفية</a></td></tr>
 <tr><td><code>Mobile</code></td><td>صيغة <code>09xxxxxxxxx</code> في خمسة أشكال للإدخال، وتلميح بالمشغّل</td><td><a href="mobile-postal-plate.html">الجوال والرمز البريدي واللوحة</a></td></tr>
-<tr><td><code>PostalCode</code></td><td>10 أرقام، والرقم الأول ليس <code>0</code></td><td><a href="mobile-postal-plate.html">الجوال والرمز البريدي واللوحة</a></td></tr>
+<tr><td><code>PostalCode</code></td><td>10 أرقام، دون <code>0</code> أو <code>2</code> في الأرقام الخمسة الأولى</td><td><a href="mobile-postal-plate.html">الجوال والرمز البريدي واللوحة</a></td></tr>
 <tr><td><code>VehiclePlate</code></td><td>صيغة لوحة السيارة الخاصة، مع تحليلها إلى أجزائها</td><td><a href="mobile-postal-plate.html">الجوال والرمز البريدي واللوحة</a></td></tr>
 </tbody>
 </table>
@@ -53,7 +53,7 @@ $rules = [
     'mobile'        =&gt; Mobile::class,
     'postal'        =&gt; PostalCode::class,
 ];
-$input = ['national_code' =&gt; '0499370899', 'mobile' =&gt; '0912', 'postal' =&gt; '1234567890'];
+$input = ['national_code' =&gt; '0499370899', 'mobile' =&gt; '0912', 'postal' =&gt; '1593715416'];
 
 foreach ($rules as $field =&gt; $class) {
     $result = $class::validate($input[$field]);
@@ -128,14 +128,14 @@ print_r(NationalCode::validate(null)-&gt;errors());                  // [invalid
 print_r(NationalCode::validate(1.5)-&gt;errors());                   // [invalid_type]
 print_r(NationalCode::validate(str_repeat('1', 4097))-&gt;errors()); // [input_too_long]
 print_r(NationalCode::validate("\xff\xfe")-&gt;errors());            // [invalid_format]
-var_dump(PostalCode::validate(1234567890)-&gt;isValid());            // bool(true)</code></pre>
+var_dump(PostalCode::validate(1593715416)-&gt;isValid());            // bool(true)</code></pre>
 <div class="note"><strong>الأصفار البادئة.</strong> إذا مرّرت الرقم الوطني أو الرمز البريدي على أنه عدد صحيح فستضيع الأصفار البادئة: <code>499370899</code> ليس <code>0499370899</code>، وأداة التحقق لا ترى إلا تسعة أرقام. أبقِ هذه المعرّفات سلاسل نصية من النموذج أو من عمود قاعدة البيانات حتى تصل إلى أداة التحقق.</div>
 
 <h2 id="normalization">التطبيع</h2>
 <p>بعد البوابة، تطبّع كل أداة تحقق السلسلة بدالتها العامة <code>normalize()</code>. وتشترك في هذه القواعد:</p>
 <ul>
 <li>الأرقام الفارسية (<code>۰-۹</code>) والعربية الهندية (<code>٠-٩</code>) تتحول إلى أرقام إنجليزية باستخدام <code>Digits::toEnglish()</code>.</li>
-<li>تُحذف الفواصل التي يكتبها المستخدمون: المسافات والواصلات والنصف مسافة (ZWNJ). أما <code>Mobile</code> و<code>BankCard</code> و<code>PostalCode</code> فتذهب أبعد وتُبقي الأرقام فقط.</li>
+<li>تُحذف الفواصل التي يكتبها المستخدمون: المسافات والمسافات غير القابلة للكسر والنصف مسافة (ZWNJ) وعلامتا LRM وRLM والواصلات. أما <code>Mobile</code> و<code>BankCard</code> و<code>PostalCode</code> فتقبل الأقواس والنقاط أيضًا ثم تُبقي الأرقام فقط. والحروف وعلامات الترقيم الأخرى والواصلة في البداية (العدد السالب) وأحرف التحكم مثل التبويب والسطر الجديد وNUL لا تُحذف أبدًا وتعطي <code>invalid_format</code>.</li>
 <li>تحوّل <code>Sheba</code> النص أيضًا إلى أحرف كبيرة وتضيف البادئة <code>IR</code> إلى سلسلة مجردة من 24 رقمًا.</li>
 </ul>
 <p>تُرجَع القيمة المطبَّعة دائمًا في <code>details()['normalized']</code>. خزّنها هي لا المدخل الخام، كي لا يُحفظ الرقم نفسه بصيغتين.</p>

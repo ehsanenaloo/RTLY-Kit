@@ -36,7 +36,7 @@ echo Jalali::make(Hijri::make($j));                 // 1405/01/01 12:00:00</code
 $h = Hijri::make($j, $tehran);
 echo $h-&gt;getTimezone()-&gt;getName();      // Asia/Tehran
 echo $h-&gt;getHour(), ':', $h-&gt;getMinute();   // 15:30   (ساعت 12:00 UTC)</code></pre>
-<div class="note"><strong>میان‌بر برای هم‌کلاس.</strong> <code>Hijri::make($hijri)</code> و <code>Hebrew::make($hebrew)</code> همان شیئی را که داده‌اید برمی‌گردانند (منطقهٔ زمانی یا گونه نادیده گرفته می‌شود). <code>Jalali::make($jalali)</code> هم همین‌طور است، مگر اینکه منطقه بدهید. آن‌وقت نسخه‌ای در آن منطقه می‌گیرید. برای عوض کردن گونهٔ یک تاریخ هجری از لحظه شروع کنید: <code>Hijri::make($h-&gt;toGregorian(), null, HijriVariant::Tabular)</code>.</div>
+<div class="note"><strong>میان‌بر برای هم‌کلاس.</strong> اگر منطقهٔ زمانی ندهید، <code>Hijri::make($hijri)</code> و <code>Hebrew::make($hebrew)</code> و <code>Jalali::make($jalali)</code> همان شیئی را که داده‌اید برمی‌گردانند. با منطقه، نسخه‌ای در آن منطقه می‌گیرید. <code>Hijri::make()</code> گونه هم می‌گیرد و پیش‌فرضش <code>null</code> است: <code>null</code> گونهٔ خودِ شیء را نگه می‌دارد و گونه‌ای که بدهید (حتی <code>UmmAlQura</code>) اگر فرق داشته باشد تاریخ را به همان گونه تبدیل می‌کند.</div>
 
 <h3 id="gregorian">از میلادی و به میلادی</h3>
 <p>متد <code>toGregorian()</code> همان <code>DateTimeImmutable</code> زیرین را می‌دهد. برای مسیر برعکس، <code>DateTimeInterface</code> را به <code>make()</code> بدهید. تبدیل‌های استاتیک هم روی عدد ساده کار می‌کنند:</p>
@@ -93,7 +93,7 @@ foreach ([Jalali::class, Hijri::class, Hebrew::class] as $class) {
 <p>این‌ها برای هر سه کلاس برقرار است:</p>
 <ul>
 <li>شیءها <code>final</code> و تغییرناپذیرند. متدهایی که تاریخ را عوض می‌کنند شیء تازه می‌دهند.</li>
-<li>هر متدی که تاریخ یا زمان یونیکس یا مقدار جابه‌جایی بگیرد، برای ورودی بیرون از بازه فقط <code>InvalidDateException</code> می‌دهد. <code>TypeError</code> یا <code>ValueError</code> بیرون نمی‌آید.</li>
+<li>هر متدی که تاریخ یا زمان یونیکس یا مقدار جابه‌جایی بگیرد، برای مقدار بیرون از بازه یا ناخوانا از نوع پذیرفته‌شده فقط <code>InvalidDateException</code> می‌دهد. <code>TypeError</code> یا <code>ValueError</code> بیرون نمی‌آید. مقایسه روی کل لحظه انجام می‌شود، با میکروثانیه، و <code>addMonths()</code> و <code>addYears()</code> میکروثانیه را نگه می‌دارند.</li>
 <li>در قرارداد، <code>format()</code> فقط الگو می‌گیرد. هر کلاس پارامترهای اختیاری خودش را آخر آن اضافه می‌کند (<code>$persianDigits</code> برای جلالی، <code>$locale</code> و <code>$digits</code> برای هجری، <code>$locale</code> برای عبری). از راه اینترفیس فقط <code>format($pattern)</code> را می‌توانید صدا بزنید.</li>
 <li>شمارهٔ روز هفته یکسان <em>نیست</em>. جلالی از شنبه شروع می‌کند. هجری و عبری از یکشنبه.</li>
 </ul>
@@ -137,6 +137,14 @@ echo Hijri::make($nowruz)-&gt;diffInMonths($nowruz-&gt;addMonths(3));  // 3  (م
 echo $nowruz-&gt;diffInYears(Hijri::create(1450, 1, 1, 0, 0, 0, $utc)); // 2</code></pre>
 <p>پس جواب «چند ماه مانده» به تقویمی که می‌پرسید بستگی دارد. همان تقویمی را بردارید که کاربرانتان با آن فکر می‌کنند. جدول واحدها برای هر تقویم در <a href="jalali.html#compare-diff">جلالی</a>، <a href="hijri.html#compare-diff">هجری</a> و <a href="hebrew.html#compare-diff">عبری</a> هست.</p>
 
+<p>متدهای <code>add*()</code> و <code>diff*()</code> در آخرِ ماه‌های کوتاه دقیقاً عکس هم نیستند. <code>addMonths()</code> و <code>addYears()</code> روز را به طول ماهِ مقصد کوتاه می‌کنند، اما <code>diffInMonths()</code> و <code>diffInYears()</code> واحدهای کامل را از روزهای واقعی می‌شمارند؛ پس تاریخِ کوتاه‌شده یک روز کمتر از یک واحد کامل است. Carbon هم همین‌طور رفتار می‌کند. اگر تاریخ اصلی را لازم دارید، آن را نگه دارید.</p>
+<pre><code class="language-php">$start = Jalali::create(1403, 6, 31, 0, 0, 0, $utc);
+echo $start-&gt;addMonths(1);                      // 1403/07/30 00:00:00  (the day is cut to 30)
+echo $start-&gt;diffInMonths($start-&gt;addMonths(1)); // 0
+
+$leapDay = Jalali::create(1403, 12, 30, 0, 0, 0, $utc);
+echo $leapDay-&gt;addYears(1);                      // 1404/12/29 00:00:00
+echo $leapDay-&gt;diffInYears($leapDay-&gt;addYears(1)); // 0</code></pre>
 <h2 id="limits">موارد مرزی و محدودیت‌ها</h2>
 <ul>
 <li><strong>بازه‌ها.</strong> جلالی ‎-۶۲۰ تا ۹۳۷۷، هجری ۱ تا ۹۶۶۵، عبری ۳۷۶۲ تا ۱۳۷۵۹. اگر تقویم مقصد آن لحظه را در بازهٔ خود نداشته باشد، <code>InvalidDateException</code> می‌گیرید.</li>

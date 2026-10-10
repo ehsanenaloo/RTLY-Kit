@@ -19,7 +19,8 @@ use RtlyKit\Validation\Sheba;
  * (for example 022, 052, 059-066, 069-079, 090, 095) are not in it.
  *
  * Our table uses the short bank names; the official name is allowed to be longer
- * when ours is its beginning (010 and 019).
+ * when ours is its beginning (010), or shorter when the official row is the beginning of ours (013:
+ * the specification prints «بانک رفاه», the card table and ours use the full name «بانک رفاه کارگران»).
  */
 final class ShebaOfficialCodesTest extends TestCase
 {
@@ -57,7 +58,10 @@ final class ShebaOfficialCodesTest extends TestCase
         $name = Sheba::getBankName(self::makeSheba($code));
 
         $this->assertNotNull($name, "code {$code} missing from our table");
-        $this->assertStringStartsWith($name, $officialName, "code {$code}");
+        $this->assertTrue(
+            str_starts_with($officialName, $name) || str_starts_with($name, $officialName),
+            "code {$code}: '{$name}' vs official '{$officialName}'",
+        );
     }
 
     /** The conflict between aggregator pages is settled by the official table: 051 is the credit institution. */

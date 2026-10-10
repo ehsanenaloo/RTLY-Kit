@@ -55,7 +55,7 @@ print_r(validate_national_code(<span class="tok-s">'0499370898'</span>)-&gt;erro
 <p>تجري الفحوص بهذا الترتيب وتتوقف عند أول فشل:</p>
 <ol>
 <li><strong>النوع والحجم.</strong> تُقبل النصوص و<code>int</code> و<code>float</code> ذو القيمة الصحيحة؛ وأي شيء آخر هو <code>invalid_type</code>، والنص الذي يزيد على 4096 بايت هو <code>input_too_long</code>.</li>
-<li><strong>التطبيع.</strong> تتحول الأرقام الفارسية والعربية إلى إنجليزية؛ وتُحذف المسافات والشرطات والمسافات الصفرية (ZWNJ) ويُقصّ الطرفان.</li>
+<li><strong>التطبيع.</strong> تتحول الأرقام الفارسية والعربية إلى إنجليزية؛ وتُحذف المسافات والمسافات غير القابلة للكسر والمسافات الصفرية (ZWNJ) وعلامتا LRM وRLM والشرطات.</li>
 <li><strong>الصيغة.</strong> 10 أرقام بالضبط، وإلا <code>invalid_format</code>.</li>
 <li><strong>الأرقام المكررة.</strong> تمرّ الأرقام من <code>0000000000</code> إلى <code>9999999999</code> من الحساب بمحض المصادفة لكنها ليست أرقامًا حقيقية، فتُرجع <code>repeated_digits</code>.</li>
 <li><strong>رقم التحقق</strong> (قاعدة mod-11 أدناه)، وإلا <code>invalid_checksum</code>.</li>
@@ -83,7 +83,7 @@ print_r(NationalCode::validate(<span class="tok-s">'abc'</span>)-&gt;errors()); 
 <tr><td>4097 نويسة</td><td><code>input_too_long</code></td></tr>
 </tbody>
 </table></div>
-<p>لا تُعامل فواصلَ إلا المسافات والشرطات وZWNJ. أما الشرطات المائلة والنقاط والحروف فلا تُحذف وتسبب <code>invalid_format</code>.</p>
+<p>لا تُعامل فواصلَ إلا المسافات والمسافات غير القابلة للكسر وZWNJ وLRM وRLM والشرطات. أما الشرطات المائلة والنقاط والحروف وأحرف التحكم (التبويب والسطر الجديد وNUL، حتى في نهاية النص) فلا تُحذف وتسبب <code>invalid_format</code>.</p>
 <p>للحصول على الصيغة المنظَّفة دون تحقق، استدعِ <code>NationalCode::normalize()</code>:</p>
 <pre tabindex="0"><code class="language-php"><span class="tok-k">echo</span> NationalCode::normalize(<span class="tok-s">' ۰۴۹-۹۳۷ ۰۸۹۹ '</span>);   <span class="tok-c">// 0499370899</span></code></pre>
 

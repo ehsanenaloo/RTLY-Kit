@@ -57,7 +57,7 @@ echo count(IranHolidays::all(1404));    // 26 (ثابت و مذهبی، یک و�
 <ul>
 <li><code>isWeekend($date)</code> فقط روز <strong>جمعه</strong> <code>true</code> است.</li>
 <li><code>isBusinessDay($date)</code> وقتی <code>true</code> است که روز نه آخر هفته باشد و نه تعطیل رسمی.</li>
-<li><code>nextBusinessDay($date)</code> اولین روز کاری بعد از تاریخ داده‌شده را می‌دهد (خود آن روز حساب نمی‌شود).</li>
+<li><code>nextBusinessDay($date)</code> اولین روز کاری بعد از تاریخ داده‌شده را می‌دهد (خود آن روز حساب نمی‌شود). در انتهای بازهٔ پشتیبانی‌شده (۹۳۷۷/۱۲/۳۰ جلالی) روز بعدی وجود ندارد و <code>InvalidDateException</code> می‌دهد.</li>
 </ul>
 <pre><code class="language-php">foreach ([Jalali::create(1404, 11, 20), Jalali::create(1404, 11, 21), Jalali::create(1404, 11, 22)] as $d) {
     echo $d-&gt;toDateString(),

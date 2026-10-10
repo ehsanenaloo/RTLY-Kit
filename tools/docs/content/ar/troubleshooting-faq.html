@@ -129,7 +129,7 @@ echo format_number('123456789.123456789'), "\n";      // ۱۲۳٬۴۵۶٬۷۸۹�
 <h2 id="prayer-faq">أوقات الصلاة والعطل</h2>
 
 <h3 id="prayer-timezone">أوقات الصلاة بمنطقة زمنية خاطئة أو متقدمة بساعة</h3>
-<p>الأوقات بصيغة HH:MM بالتوقيت المحلي للمنطقة الزمنية الخاصة بالحاسبة، لليوم التقويمي المحلي للتاريخ الذي تمرّره. تستخدم <code>PrayerTimes::forCity()</code> منطقة المدينة نفسها. أما الحاسبة المبنية بـ <code>new PrayerTimes()</code> دون منطقة فتستخدم الافتراضية في PHP (<code>date_default_timezone_get()</code>، وهي <code>UTC</code> في حاوية جديدة)، فمرّر <code>DateTimeZone</code>. ويُطبَّق التوقيت الصيفي لكل حدث على حدة، فجدول يعبر تغيير الساعة صحيح على جانبيه (الظهر في القاهرة بتاريخي 2026-10-08 و2026-10-31):</p>
+<p>الأوقات بصيغة HH:MM بالتوقيت المحلي للمنطقة الزمنية الخاصة بالحاسبة، لليوم التقويمي المحلي للتاريخ الذي تمرّره. تستخدم <code>PrayerTimes::forCity()</code> منطقة المدينة نفسها. أما الحاسبة المبنية بـ <code>new PrayerTimes()</code> دون منطقة فتستخدم الافتراضية في PHP (<code>date_default_timezone_get()</code>، وهي <code>UTC</code> في حاوية جديدة)، فمرّر <code>DateTimeZone</code>. والمنطقة البعيدة عن خط طولها (مثل <code>Pacific/Kiritimati</code>) تعطي أيضًا أوقات التاريخ الذي طلبته، وكلها في ذلك التاريخ المحلي. ويُطبَّق التوقيت الصيفي لكل حدث على حدة، فجدول يعبر تغيير الساعة صحيح على جانبيه (الظهر في القاهرة بتاريخي 2026-10-08 و2026-10-31):</p>
 <pre><code class="language-php">use RtlyKit\Prayer\PrayerTimes;
 
 $cairo = PrayerTimes::forCity('cairo', PrayerTimes::METHOD_EGYPT);

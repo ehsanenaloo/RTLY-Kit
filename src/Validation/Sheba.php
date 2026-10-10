@@ -50,13 +50,19 @@ final class Sheba implements Validator
         $sheba = self::normalize($input);
         $details['normalized'] = $sheba;
 
-        if (preg_match('/^IR\d{24}$/', $sheba) !== 1) {
+        if (preg_match('/^IR\d{24}$/D', $sheba) !== 1) {
             return Result::invalid('invalid_format', $details);
         }
 
         $bankCode = substr($sheba, 4, 3);
         $details['bank_code'] = $bankCode;
         $details['bank_name'] = self::banks()[$bankCode] ?? null;
+
+        // ISO 13616 / ISO 7064 mod 97-10 only produces check digits 02..98.
+        $check = (int) substr($sheba, 2, 2);
+        if ($check < 2 || $check > 98) {
+            return Result::invalid('invalid_checksum', $details);
+        }
 
         // Move "IRkk" to the end with letters converted (I=18, R=27) and check mod 97.
         $rearranged = substr($sheba, 4).'1827'.substr($sheba, 2, 2);
@@ -77,16 +83,17 @@ final class Sheba implements Validator
     }
 
     /**
-     * Uppercase, strip spaces/hyphens, convert Persian/Arabic digits.
+     * Uppercase, strip spaces, NBSP, ZWNJ, LRM/RLM and hyphens, convert Persian/Arabic digits.
      * A bare 24-digit string (the common "without IR" form) gets the `IR`
-     * prefix; any other input is left as typed so it fails validation.
+     * prefix; any other input is left as typed so it fails validation (a tab, newline
+     * or NUL is not stripped).
      */
     public static function normalize(string $sheba): string
     {
-        $sheba = strtoupper(Digits::toEnglish(trim($sheba)));
-        $sheba = str_replace([' ', '-', "\u{200C}"], '', $sheba);
+        $sheba = strtoupper(Digits::toEnglish($sheba));
+        $sheba = str_replace('-', '', Input::stripSpaces($sheba));
 
-        if (preg_match('/^\d{24}$/', $sheba) === 1) {
+        if (preg_match('/^\d{24}$/D', $sheba) === 1) {
             return 'IR'.$sheba;
         }
 

@@ -23,15 +23,32 @@ use RtlyKit\Exceptions\InvalidDateException;
  * exactly the years that lie inside Gregorian years 1..9999 (a Hebrew year
  * starts in September/October). Anything outside throws
  * {@see InvalidDateException} (create(), add*()/sub*(), make()); isValid()
- * is false. The pure arithmetic helpers daysInYear()/daysInMonth()/monthName()
- * accept years 1..MAX_YEAR.
+ * is false. The pure arithmetic helpers daysInYear()/daysInMonth() accept
+ * years 1..MAX_YEAR; monthName() checks only the month number.
  *
  * String parsing in {@see self::make()}: Persian/Arabic digits are normalised
- * first; `Y/m/d` or `Y-m-d` (4-digit year, optional ` H:i[:s]`) with a year of
- * 3000 or more is read as a HEBREW date using the ordinal month numbering
- * below (`5785/01/10`); every other string is parsed as Gregorian/free-form
- * text. Invalid Hebrew dates and empty/whitespace strings throw
- * {@see InvalidDateException}; `null` means "now".
+ * first, and a no-break space, ZWNJ or LRM/RLM mark counts as a space. The exact
+ * form `Y/m/d` or `Y-m-d` (4-5 digit year), optionally followed by a space, `T`
+ * or `t` and `H:i[:s[.u]]` and a zone designator (`Z`, `+HH:MM`, `+HHMM`,
+ * `+HH`; within +-14:00), with a year of 3000 or more, is read as a HEBREW date
+ * using the ordinal month numbering below (`5785/01/10`, `13759/01/01`,
+ * `5785-01-10T10:00:00Z`). A designator sets the zone of the result, and a
+ * $timezone argument then converts to that zone. Text that starts like such a
+ * date but is not exactly that shape (a zone name after the time,
+ * `5785/01/10 10:00 PM`) and a bare run of 3-8 digits
+ * (`5785`) throw {@see InvalidDateException}; every other string, including
+ * eight digits that start with a year below 3000 (`20240101`), is parsed as
+ * Gregorian/free-form text. Invalid Hebrew dates, empty/whitespace strings and
+ * strings with a NUL byte throw {@see InvalidDateException}; `null` means "now".
+ *
+ * Given a Hebrew instance, make() returns it when no zone is given and converts
+ * it to the zone otherwise (same instant).
+ * endOfDay()/endOfMonth()/endOfYear() end at 23:59:59.999999.
+ *
+ * createFromFormat() works as on Jalali (the month is the ordinal number; `Y`
+ * reads up to 4 digits). An impossible Gregorian day in text (`2024-02-30`)
+ * throws instead of rolling over. format(): `Y` has at least 4 digits, `y` uses
+ * floor modulo. Serialising keeps only the instant; unserialize() re-checks the range.
  *
  * Weekday numbering: `getDayOfWeek()` / `w` are Sunday-first (0 = Sunday ..
  * 6 = Saturday), unlike {@see Jalali::getDayOfWeek()} (0 = Saturday).
@@ -111,10 +128,15 @@ final class Hebrew implements CalendarDate
         return new self($instant);
     }
 
+    private function restoreFrom(DateTimeImmutable $instant, array $data): void
+    {
+        $this->__construct($instant);
+    }
+
     public static function make(DateTimeInterface|CalendarDate|string|int|null $time = null, ?DateTimeZone $timezone = null): static
     {
         if ($time instanceof self) {
-            return $time;
+            return $timezone === null ? $time : new self($time->gregorian->setTimezone($timezone));
         }
         if ($time instanceof CalendarDate) {
             $time = $time->toGregorian();
@@ -134,9 +156,12 @@ final class Hebrew implements CalendarDate
         }
         if (is_string($time)) {
             $normalized = CalendarLimits::normalize($time);
-            $own = CalendarLimits::matchOwnFormat($normalized);
-            if ($own !== null && $own[0] >= self::OWN_YEAR_MIN) {
-                return self::create($own[0], $own[1], $own[2], $own[3], $own[4], $own[5], $timezone);
+            $own = CalendarLimits::matchOwnFormat($normalized, static fn (int $year): bool => $year >= self::OWN_YEAR_MIN, true);
+            if ($own !== null) {
+                // A zone designator in the text is read first; $timezone then converts the result.
+                $created = self::create($own[0], $own[1], $own[2], $own[3], $own[4], $own[5], $own[7] ?? $timezone)->plusMicroseconds($own[6]);
+
+                return $own[7] !== null && $timezone !== null ? self::make($created, $timezone) : $created;
             }
 
             return new self(CalendarLimits::parseGregorian($normalized, $timezone));
@@ -175,6 +200,27 @@ final class Hebrew implements CalendarDate
         $dateString = sprintf('%04d-%02d-%02d %02d:%02d:%02d', $gy, $gm, $gd, $hour, $minute, $second);
 
         return new self(CalendarLimits::parseGregorian($dateString, $timezone));
+    }
+
+    /**
+     * Reads year, month and day as Hebrew values, like {@see Jalali::createFromFormat()}.
+     * The month is the ordinal month number of {@see self::create()}. Tokens
+     * `d j m n Y H G i s g h A a` and backslash escapes work; tokens with a
+     * Gregorian or time-zone meaning (`z e T P O p u v y F M D l S`, and `U`
+     * mixed with others) throw {@see InvalidDateException} naming the token; the
+     * format `U` alone reads a Unix timestamp. `Y` reads at most 4 digits, so
+     * years from 10000 cannot be read this way (use create()).
+     *
+     * @throws InvalidDateException
+     */
+    public static function createFromFormat(string $format, string $time, ?DateTimeZone $timezone = null): static
+    {
+        $read = CalendarLimits::readFormat($format, $time);
+        if (is_int($read)) {
+            return self::make($read, $timezone);
+        }
+
+        return self::create($read[0], $read[1], $read[2], $read[3], $read[4], $read[5], $timezone);
     }
 
     /* -----------------------------------------------------------------
@@ -220,8 +266,8 @@ final class Hebrew implements CalendarDate
                 continue;
             }
             $out .= match ($c) {
-                'Y' => sprintf('%04d', $this->year),
-                'y' => sprintf('%02d', $this->year % 100),
+                'Y' => $this->yearText(),
+                'y' => $this->shortYearText(),
                 'm' => sprintf('%02d', $this->month),
                 'n' => (string) $this->month,
                 'd' => sprintf('%02d', $this->day),
@@ -239,7 +285,7 @@ final class Hebrew implements CalendarDate
                 'h' => sprintf('%02d', $this->hour % 12 === 0 ? 12 : $this->hour % 12),
                 'S' => '',
                 'W' => $this->gregorian->format('W'),
-                'c' => sprintf('%04d-%02d-%02dT%02d:%02d:%02d', $this->year, $this->month, $this->day, $this->hour, $this->minute, $this->second)
+                'c' => sprintf('%s-%02d-%02dT%02d:%02d:%02d', $this->yearText(), $this->month, $this->day, $this->hour, $this->minute, $this->second)
                     .$this->gregorian->format('P'),
                 'r' => $this->gregorian->format('r'),
                 'U', 'e', 'T', 'P', 'p', 'O', 'Z', 'I', 'u', 'v' => $this->gregorian->format($c),
@@ -300,6 +346,10 @@ final class Hebrew implements CalendarDate
         // A year has 12 or 13 months; this bound is far beyond MIN_YEAR..MAX_YEAR.
         CalendarLimits::delta($months, 13 * (self::MAX_YEAR - self::MIN_YEAR + 2), 'months');
 
+        if ($months === 0) {
+            return $this;
+        }
+
         $target = $this->monthIndex() + $months;
         if ($target < 0) {
             throw InvalidDateException::because(ErrorCode::DateOutOfRange, 'Hebrew year out of the supported range.');
@@ -325,16 +375,26 @@ final class Hebrew implements CalendarDate
         if ($y < self::MIN_YEAR || $y > self::MAX_YEAR) {
             throw InvalidDateException::because(ErrorCode::DateOutOfRange, "Hebrew year out of the supported range: {$y}");
         }
-        $m = $this->month;
-        $fromLeap = self::isLeapYear($this->year);
-        $toLeap = self::isLeapYear($y);
-        if ($fromLeap && ! $toLeap) {
-            $m = $m <= 6 ? $m : ($m === 7 ? 6 : $m - 1);
-        } elseif (! $fromLeap && $toLeap) {
-            $m = $m <= 5 ? $m : $m + 1;
+        if ($years === 0) {
+            return $this;
         }
 
-        return $this->rebuild($y, $m);
+        return $this->rebuild($y, self::monthInYear($this->month, $this->year, $y));
+    }
+
+    /** The month that corresponds to $month of $fromYear in $toYear (Adar / Adar I / Adar II across leap and regular years). */
+    private static function monthInYear(int $month, int $fromYear, int $toYear): int
+    {
+        $fromLeap = self::isLeapYear($fromYear);
+        $toLeap = self::isLeapYear($toYear);
+        if ($fromLeap && ! $toLeap) {
+            return $month <= 6 ? $month : ($month === 7 ? 6 : $month - 1);
+        }
+        if (! $fromLeap && $toLeap) {
+            return $month <= 5 ? $month : $month + 1;
+        }
+
+        return $month;
     }
 
     public function startOfDay(): static
@@ -344,7 +404,7 @@ final class Hebrew implements CalendarDate
 
     public function endOfDay(): static
     {
-        return self::create($this->year, $this->month, $this->day, 23, 59, 59, $this->getTimezone());
+        return self::create($this->year, $this->month, $this->day, 23, 59, 59, $this->getTimezone())->atLastMicrosecond();
     }
 
     public function startOfMonth(): static
@@ -354,7 +414,7 @@ final class Hebrew implements CalendarDate
 
     public function endOfMonth(): static
     {
-        return self::create($this->year, $this->month, self::daysInMonth($this->year, $this->month), 23, 59, 59, $this->getTimezone());
+        return self::create($this->year, $this->month, self::daysInMonth($this->year, $this->month), 23, 59, 59, $this->getTimezone())->atLastMicrosecond();
     }
 
     public function startOfYear(): static
@@ -366,7 +426,7 @@ final class Hebrew implements CalendarDate
     {
         $m = self::monthsInYear($this->year);
 
-        return self::create($this->year, $m, self::daysInMonth($this->year, $m), 23, 59, 59, $this->getTimezone());
+        return self::create($this->year, $m, self::daysInMonth($this->year, $m), 23, 59, 59, $this->getTimezone())->atLastMicrosecond();
     }
 
     private function rebuild(int $year, int $month): static
@@ -376,7 +436,7 @@ final class Hebrew implements CalendarDate
         }
         $day = min($this->day, self::daysInMonth($year, $month));
 
-        return self::create($year, $month, $day, $this->hour, $this->minute, $this->second, $this->getTimezone());
+        return $this->settle(self::create($year, $month, $day, $this->hour, $this->minute, $this->second, $this->getTimezone()));
     }
 
     /* -----------------------------------------------------------------
@@ -396,45 +456,58 @@ final class Hebrew implements CalendarDate
         return self::monthsBefore($this->year) + $this->month - 1;
     }
 
-    private function coerce(CalendarDate|DateTimeInterface $other, ?DateTimeZone $tz = null): self
-    {
-        return self::make(self::instantOf($other), $tz);
-    }
-
     /**
      * Whole Hebrew months between two instants (Adar I / Adar II count as
-     * separate months; day and time-of-day count).
+     * separate months; day and time-of-day count, microseconds included).
+     * Works for any two valid instants, whatever their time zones.
+     *
+     * Not an exact inverse of addMonths() at a clamped month end (like Carbon):
+     * the result is one less when the day was clamped to a shorter month.
      */
     public function diffInMonths(CalendarDate|DateTimeInterface $other, bool $absolute = true): int
     {
-        $other = $this->coerce($other, $this->getTimezone());
+        $g = $this->instantInOwnZone($other);
+        [$oy, $om, $od] = self::hebrewFields((int) $g->format('Y'), (int) $g->format('n'), (int) $g->format('j'));
 
-        [$lo, $hi] = $this->getTimestamp() <= $other->getTimestamp() ? [$this, $other] : [$other, $this];
-
-        $months = $hi->monthIndex() - $lo->monthIndex();
-        if ([$hi->day, $hi->hour, $hi->minute, $hi->second] < [$lo->day, $lo->hour, $lo->minute, $lo->second]) {
-            $months--;
-        }
-
-        return $absolute || $lo === $other ? $months : -$months;
+        return $this->monthsBetween(
+            $this->monthIndex(),
+            [$this->day, ...self::clockOf($this->gregorian)],
+            self::monthsBefore($oy) + $om - 1,
+            [$od, ...self::clockOf($g)],
+            $this->gregorian <= $g,
+            $absolute,
+        );
     }
 
     /**
      * Whole Hebrew years between two instants (a year is 12 or 13 months, so
-     * this is anniversary-based rather than months / 12).
+     * this is anniversary-based rather than months / 12). Works for any two
+     * valid instants, whatever their time zones.
+     *
+     * Not an exact inverse of addYears() when the day is clamped to a shorter
+     * month of the target year (like Carbon); the anniversary is the clamped day.
      */
     public function diffInYears(CalendarDate|DateTimeInterface $other, bool $absolute = true): int
     {
-        $other = $this->coerce($other, $this->getTimezone());
+        $g = $this->instantInOwnZone($other);
+        [$oy, $om, $od] = self::hebrewFields((int) $g->format('Y'), (int) $g->format('n'), (int) $g->format('j'));
 
-        [$lo, $hi] = $this->getTimestamp() <= $other->getTimestamp() ? [$this, $other] : [$other, $this];
+        $thisIsLower = $this->gregorian <= $g;
+        [$ly, $lm, $ld, $lg, $hy, $hm, $hd, $hg] = $thisIsLower
+            ? [$this->year, $this->month, $this->day, $this->gregorian, $oy, $om, $od, $g]
+            : [$oy, $om, $od, $g, $this->year, $this->month, $this->day, $this->gregorian];
 
-        $years = $hi->year - $lo->year;
-        if ($years > 0 && $lo->addYears($years)->getTimestamp() > $hi->getTimestamp()) {
-            $years--;
+        $years = $hy - $ly;
+        if ($years > 0) {
+            // The lower date's anniversary in the higher date's year (day clamped to that month's length).
+            $am = self::monthInYear($lm, $ly, $hy);
+            $ad = $hy <= self::MAX_YEAR ? min($ld, self::daysInMonth($hy, $am)) : $ld;
+            if ([$am, $ad, ...self::clockOf($lg)] > [$hm, $hd, ...self::clockOf($hg)]) {
+                $years--;
+            }
         }
 
-        return $absolute || $lo === $other ? $years : -$years;
+        return $absolute || ! $thisIsLower ? $years : -$years;
     }
 
     /* -----------------------------------------------------------------
@@ -476,7 +549,14 @@ final class Hebrew implements CalendarDate
         if ($month < 1 || $month > self::monthsInYear($year)) {
             throw new InvalidDateException("Invalid Hebrew month: {$month}");
         }
-        $len = self::daysInYear($year) % 10; // 3 deficient, 4 regular, 5 complete
+
+        return self::monthLength($year, $month);
+    }
+
+    /** Month length from the year arithmetic alone (no range check on the year). */
+    private static function monthLength(int $year, int $month): int
+    {
+        $len = (self::newYearJdn($year + 1) - self::newYearJdn($year)) % 10; // 3 deficient, 4 regular, 5 complete
 
         return match (self::slot($year, $month)) {
             0, 4, 5, 7, 9, 11 => 30,
@@ -490,6 +570,20 @@ final class Hebrew implements CalendarDate
      * @return array{0: int, 1: int, 2: int} [hebrewYear, ordinalMonth, day]
      */
     public static function gregorianToHebrew(int $gy, int $gm, int $gd): array
+    {
+        $fields = self::hebrewFields($gy, $gm, $gd);
+        self::assertArithmeticYear($fields[0]);
+
+        return $fields;
+    }
+
+    /**
+     * Hebrew fields of a Gregorian date without checking the Hebrew year
+     * (the last days of Gregorian 9999 fall in Hebrew year 13760).
+     *
+     * @return array{0: int, 1: int, 2: int}
+     */
+    private static function hebrewFields(int $gy, int $gm, int $gd): array
     {
         CalendarLimits::gregorianDate($gy, $gm, $gd);
         $jdn = Jdn::fromGregorian($gy, $gm, $gd);
@@ -511,7 +605,7 @@ final class Hebrew implements CalendarDate
         $offset = $jdn - self::newYearJdn($y);
         $months = self::monthsInYear($y);
         for ($m = 1; $m <= $months; $m++) {
-            $len = self::daysInMonth($y, $m);
+            $len = self::monthLength($y, $m);
             if ($offset < $len) {
                 return [$y, $m, $offset + 1];
             }

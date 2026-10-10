@@ -32,7 +32,7 @@ echo BankCard::getBankName('6219861234567898'), "\n";          // بانک سا�
 └────────── country code</code></pre>
 
 <h3 id="sheba-normalization">Cleaning the input</h3>
-<p><code>Sheba::normalize()</code> upper-cases the text, converts Persian and Arabic digits, and removes spaces, hyphens and half-spaces. A bare string of exactly 24 digits, the form that banks often print without <code>IR</code>, gets the <code>IR</code> prefix. Any other input stays as typed and then fails the format check:</p>
+<p><code>Sheba::normalize()</code> upper-cases the text, converts Persian and Arabic digits, and removes spaces, non-breaking spaces, half-spaces, the LRM and RLM marks and hyphens. A tab, newline or NUL is not removed, so it fails the format check. A bare string of exactly 24 digits, the form that banks often print without <code>IR</code>, gets the <code>IR</code> prefix. Any other input stays as typed and then fails the format check:</p>
 <pre><code class="language-php">echo Sheba::normalize('800170000000000000000123');        // IR800170000000000000000123
 echo Sheba::normalize('ir80 0170 0000');                   // IR8001700000
 echo json_encode(Sheba::validate('ir80-0170-0000-0000-0000-0001-23')-&gt;isValid());   // true</code></pre>
@@ -41,7 +41,7 @@ echo json_encode(Sheba::validate('ir80-0170-0000-0000-0000-0001-23')-&gt;isValid
 <ol>
 <li>Type and size (<code>invalid_type</code>, <code>input_too_long</code>).</li>
 <li>Format: <code>IR</code> followed by exactly 24 digits, otherwise <code>invalid_format</code>.</li>
-<li>Checksum: ISO 7064 mod-97-10. The first four characters move to the end, <code>I</code> and <code>R</code> become 18 and 27, and the resulting number modulo 97 must equal 1. Otherwise the error is <code>invalid_checksum</code>.</li>
+<li>Checksum: ISO 7064 mod-97-10. The first four characters move to the end, <code>I</code> and <code>R</code> become 18 and 27, and the resulting number modulo 97 must equal 1. Otherwise the error is <code>invalid_checksum</code>. The standard only produces check digits from 02 to 98, so <code>00</code>, <code>01</code> and <code>99</code> are <code>invalid_checksum</code> even when the modulo comes out right.</li>
 </ol>
 <p>The bank lookup runs before the checksum. So the bank code is in <code>details()</code> even for a number with a wrong check digit:</p>
 <pre><code class="language-php">$r = Sheba::validate('IR060170000000000000000123');
@@ -60,7 +60,7 @@ var_dump($unknown-&gt;isValid(), $unknown-&gt;details()['bank_name']);   // bool
 
 <h2 id="bank-card">Bank card number</h2>
 <h3 id="card-format">Format and checks</h3>
-<p>An Iranian bank card has 16 digits. <code>BankCard::normalize()</code> keeps only the digits after converting Persian and Arabic ones, so spaces, hyphens and other separators are fine. The checks run in this order:</p>
+<p>An Iranian bank card has 16 digits. <code>BankCard::normalize()</code> converts Persian and Arabic digits and keeps only the digits, so spaces, non-breaking spaces, half-spaces, hyphens, parentheses and dots between them are fine. Letters, other punctuation, control characters and a leading hyphen make the input <code>invalid_format</code>. The checks run in this order:</p>
 <ol>
 <li>Type and size.</li>
 <li>Exactly 16 digits, otherwise <code>invalid_format</code>.</li>

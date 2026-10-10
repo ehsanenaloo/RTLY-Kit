@@ -14,7 +14,7 @@ order: 15
 <thead><tr><th>المصدر</th><th>السنوات</th><th>المعنى</th></tr></thead>
 <tbody>
 <tr><td><code>Official</code></td><td>1394 و1396 إلى 1405</td><td>تواريخ التقويم السنوي الرسمي لمركز التقويم في جامعة طهران، وقد قورنت بمصدر ثانٍ (time.ir)</td></tr>
-<tr><td><code>Reported</code></td><td>1380 إلى 1393 و1395</td><td>تواريخ مأخوذة من قائمة منشورة. وللسنة 1395 استعملنا أرقام ملف PDF وقائمة إخبارية بالعطل الرسمية. وقد تكون مجموعة العطل في هذه السنوات ناقصة، فيوم الإمام الرضا مثلًا غير موجود في بعضها</td></tr>
+<tr><td><code>Reported</code></td><td>1380 إلى 1393 و1395</td><td>تواريخ مأخوذة من قائمة منشورة. وللسنة 1395 استعملنا أرقام ملف PDF وقائمة إخبارية بالعطل الرسمية. وقد تكون مجموعة العطل في هذه السنوات ناقصة، فيوم الإمام الرضا أو يوم الإمام الحسن العسكري غير موجود في بعضها. ولا نملك مصدرًا منشورًا لإكمالها، فأضف يومًا تعرفه بـ <code>withHoliday()</code></td></tr>
 <tr><td><code>Estimated</code></td><td>كل سنة أخرى</td><td>تُحسب من جدول أم القرى، وتُعرض داخل السنوات الهجرية 1300 إلى 1500 فقط</td></tr>
 </tbody>
 </table>
@@ -55,7 +55,7 @@ echo implode(', ', $moved-&gt;getTitles(1406, 3, 27));   // عاشورای حس�
 <p>يجب أن يكون التاريخ ضمن 3 أيام من البداية المحسوبة. وإذا أعطيت أيضًا بداية شهر مجاور، فيجب أن يفصل بين البدايتين 29 أو 30 يومًا. وإلا أثارت الدالة <code>InvalidDateException</code>.</p>
 
 <h3 id="step-add-remove">3. إضافة يوم أو حذفه</h3>
-<p>تضيف <code>withHoliday($date, $title)</code> عنوانًا إلى يوم. وتحذف <code>withoutHoliday($date)</code> اليوم كله، وتحذف <code>withoutHoliday($date, $title)</code> عنوانًا واحدًا. والتاريخ كائن <code>Jalali</code> أو نص مثل <code>'1406/02/03'</code>.</p>
+<p>تضيف <code>withHoliday($date, $title)</code> عنوانًا إلى يوم. وتحذف <code>withoutHoliday($date)</code> اليوم كله، وتحذف <code>withoutHoliday($date, $title)</code> عنوانًا واحدًا. والتاريخ كائن <code>Jalali</code> أو نص جلالي مثل <code>'1406/02/03'</code> (<code>YYYY/MM/DD</code> أو <code>YYYY-MM-DD</code>، وتُقبل الأرقام الفارسية). والنص الذي سنته 1700 أو أكثر ليس تاريخًا جلاليًا ويُثير <code>InvalidDateException</code>، فلا يُؤخذ تاريخ ميلادي مثل <code>'2027/05/05'</code> بدل يوم آخر. ويُرفض كذلك النص الذي فيه وقت أو الكلام الحر.</p>
 <pre><code class="language-php">$mine = $moved
     -&gt;withHoliday('1406/02/03', 'Company day')
     -&gt;withoutHoliday('1406/01/13');            // حذف يوم الطبيعة
@@ -115,7 +115,7 @@ foreach ($cal-&gt;statusOf(1405, 1, 1) as $entry) {
     'removed' =&gt; [],                 // '1405/02/03' أو '1405/02/03' =&gt; 'Title'
     'use_official_data' =&gt; true,
 ],</code></pre>
-<p>يبني مزوّد الخدمة <code>HolidayCalendar</code> واحدًا من هذا القسم ويربطه في الحاوية. احصل عليه بـ <code>app(HolidayCalendar::class)</code>. يُنشأ عند أول طلب، فالقيمة الخاطئة تفشل عندئذ. والمفاتيح الناقصة تأخذ قيمها الافتراضية.</p>
+<p>يبني مزوّد الخدمة <code>HolidayCalendar</code> واحدًا من هذا القسم ويربطه في الحاوية. احصل عليه بـ <code>app(HolidayCalendar::class)</code>. يُنشأ عند أول طلب، فالقيمة الخاطئة تفشل عندئذ. والمفاتيح الناقصة تأخذ قيمها الافتراضية. يجب أن يكون المدخل <code>holidays</code> مصفوفة، وأي قيمة أخرى (مثل النص <code>'oops'</code>) تُثير <code>InvalidDateException</code> يذكر اسم <code>rtly-kit.holidays</code> عند أول طلب للتقويم. ويجوز أن تكون <code>islamic_offset</code> نصًا عدديًا مثل <code>'1'</code> أو <code>'-2'</code>، وهو ما تُرجعه <code>env()</code>. أما الأعداد العشرية والنصوص الأخرى فتُرفض.</p>
 <pre><code class="language-php">use RtlyKit\Holiday\HolidayCalendar;
 
 $calendar = app(HolidayCalendar::class);

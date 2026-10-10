@@ -135,7 +135,7 @@ echo format_number('123456789.123456789'), "\n";      // ۱۲۳٬۴۵۶٬۷۸۹�
 <h2 id="prayer-faq">اوقات شرعی و تعطیلات</h2>
 
 <h3 id="prayer-timezone">اوقات شرعی در منطقهٔ زمانی اشتباه است یا یک ساعت فرق دارد</h3>
-<p>وقت‌ها به شکل HH:MM و به <strong>وقت محلی منطقهٔ زمانی محاسبه‌گر</strong> هستند، برای روز تقویمی محلیِ تاریخی که می‌دهید. <code>PrayerTimes::forCity()</code> منطقهٔ خود شهر را به کار می‌برد. محاسبه‌گری که با <code>new PrayerTimes()</code> و بدون منطقه ساخته شود از پیش‌فرض PHP استفاده می‌کند (<code>date_default_timezone_get()</code>، که در یک کانتینر تازه <code>UTC</code> است). پس یک <code>DateTimeZone</code> بدهید. ساعت تابستانی برای هر رویداد جدا اعمال می‌شود. پس جدولی که از تغییر ساعت رد می‌شود در دو طرف درست است (ظهر قاهره در 2026-10-08 و 2026-10-31):</p>
+<p>وقت‌ها به شکل HH:MM و به <strong>وقت محلی منطقهٔ زمانی محاسبه‌گر</strong> هستند، برای روز تقویمی محلیِ تاریخی که می‌دهید. <code>PrayerTimes::forCity()</code> منطقهٔ خود شهر را به کار می‌برد. محاسبه‌گری که با <code>new PrayerTimes()</code> و بدون منطقه ساخته شود از پیش‌فرض PHP استفاده می‌کند (<code>date_default_timezone_get()</code>، که در یک کانتینر تازه <code>UTC</code> است). پس یک <code>DateTimeZone</code> بدهید. منطقه‌ای که از طول جغرافیایی‌اش دور است (مثلاً <code>Pacific/Kiritimati</code>) هم وقت‌های همان تاریخی را می‌دهد که خواسته‌اید و همه در همان تاریخ محلی هستند. ساعت تابستانی برای هر رویداد جدا اعمال می‌شود. پس جدولی که از تغییر ساعت رد می‌شود در دو طرف درست است (ظهر قاهره در 2026-10-08 و 2026-10-31):</p>
 <pre><code class="language-php">use RtlyKit\Prayer\PrayerTimes;
 
 $cairo = PrayerTimes::forCity('cairo', PrayerTimes::METHOD_EGYPT);

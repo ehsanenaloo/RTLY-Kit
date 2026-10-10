@@ -59,7 +59,7 @@ var_dump(is_bank_card(<span class="tok-s">'۶۰۳۷۹۹۱۲۳۴۵۶۷۸۹۳'</sp
 └────────── کد کشور</code></pre>
 
 <h3 id="sheba-normalization">یکسان‌سازی<a class="anchor" href="#sheba-normalization" aria-label="پیوند به این بخش">#</a></h3>
-<p><code>Sheba::normalize()</code> حرف‌ها را بزرگ می‌کند، رقم‌های فارسی و عربی را انگلیسی می‌کند و فاصله، خط تیره و نیم‌فاصله را حذف می‌کند. رشته‌ای که دقیقاً ۲۴ رقم باشد (شکلی که بانک‌ها معمولاً بدون <code>IR</code> چاپ می‌کنند) پیشوند <code>IR</code> می‌گیرد. ورودی دیگر همان‌طور که تایپ شده می‌ماند و در بررسی قالب رد می‌شود:</p>
+<p><code>Sheba::normalize()</code> حرف‌ها را بزرگ می‌کند، رقم‌های فارسی و عربی را انگلیسی می‌کند و فاصله، فاصلهٔ ناشکن، نیم‌فاصله، نشانه‌های LRM و RLM و خط تیره را حذف می‌کند. تب، خط جدید و NUL حذف نمی‌شوند و در بررسی قالب رد می‌شوند. رشته‌ای که دقیقاً ۲۴ رقم باشد (شکلی که بانک‌ها معمولاً بدون <code>IR</code> چاپ می‌کنند) پیشوند <code>IR</code> می‌گیرد. ورودی دیگر همان‌طور که تایپ شده می‌ماند و در بررسی قالب رد می‌شود:</p>
 <pre tabindex="0"><code class="language-php"><span class="tok-k">echo</span> Sheba::normalize(<span class="tok-s">'800170000000000000000123'</span>);        <span class="tok-c">// IR800170000000000000000123</span>
 <span class="tok-k">echo</span> Sheba::normalize(<span class="tok-s">'ir80 0170 0000'</span>);                   <span class="tok-c">// IR8001700000</span>
 <span class="tok-k">echo</span> json_encode(Sheba::validate(<span class="tok-s">'ir80-0170-0000-0000-0000-0001-23'</span>)-&gt;isValid());   <span class="tok-c">// true</span></code></pre>
@@ -68,7 +68,7 @@ var_dump(is_bank_card(<span class="tok-s">'۶۰۳۷۹۹۱۲۳۴۵۶۷۸۹۳'</sp
 <ol>
 <li>نوع و اندازه (<code>invalid_type</code>، <code>input_too_long</code>).</li>
 <li>قالب: <code>IR</code> و بعد دقیقاً ۲۴ رقم، وگرنه <code>invalid_format</code>.</li>
-<li>چک‌سام ISO 7064 mod-97-10: چهار نویسهٔ اول به آخر می‌روند، <code>I</code> و <code>R</code> به ۱۸ و ۲۷ تبدیل می‌شوند و عدد به‌دست‌آمده بر ۹۷ باید باقیمانده ۱ بدهد. وگرنه <code>invalid_checksum</code>.</li>
+<li>چک‌سام ISO 7064 mod-97-10: چهار نویسهٔ اول به آخر می‌روند، <code>I</code> و <code>R</code> به ۱۸ و ۲۷ تبدیل می‌شوند و عدد به‌دست‌آمده بر ۹۷ باید باقیمانده ۱ بدهد. وگرنه <code>invalid_checksum</code>. استاندارد فقط رقم‌های کنترل ۰۲ تا ۹۸ تولید می‌کند. پس <code>00</code> و <code>01</code> و <code>99</code> حتی با باقیمانده درست هم <code>invalid_checksum</code> هستند.</li>
 </ol>
 <p>پیدا کردن بانک پیش از چک‌سام انجام می‌شود. برای همین حتی اگر رقم کنترل غلط باشد، کد بانک در <code>details()</code> هست:</p>
 <pre tabindex="0"><code class="language-php"><span class="tok-v">$r</span> = Sheba::validate(<span class="tok-s">'IR060170000000000000000123'</span>);
@@ -87,7 +87,7 @@ var_dump(<span class="tok-v">$unknown</span>-&gt;isValid(), <span class="tok-v">
 
 <h2 id="bank-card">شمارهٔ کارت بانکی<a class="anchor" href="#bank-card" aria-label="پیوند به این بخش">#</a></h2>
 <h3 id="card-format">قالب و بررسی‌ها<a class="anchor" href="#card-format" aria-label="پیوند به این بخش">#</a></h3>
-<p>کارت بانکی ایران ۱۶ رقم دارد. <code>BankCard::normalize()</code> بعد از تبدیل رقم‌های فارسی و عربی، فقط رقم‌ها را نگه می‌دارد. پس فاصله و خط تیره و هر جداکنندهٔ دیگر مشکلی ندارد. بررسی‌ها به این ترتیب‌اند:</p>
+<p>کارت بانکی ایران ۱۶ رقم دارد. <code>BankCard::normalize()</code> بعد از تبدیل رقم‌های فارسی و عربی، فقط رقم‌ها را نگه می‌دارد. پس فاصله، فاصلهٔ ناشکن، نیم‌فاصله، خط تیره، پرانتز و نقطه بین رقم‌ها مشکلی ندارد. حرف، علامت‌های دیگر، نویسه‌های کنترلی و خط تیره در ابتدا <code>invalid_format</code> می‌دهد. بررسی‌ها به این ترتیب‌اند:</p>
 <ol>
 <li>نوع و اندازه.</li>
 <li>دقیقاً ۱۶ رقم، وگرنه <code>invalid_format</code>.</li>

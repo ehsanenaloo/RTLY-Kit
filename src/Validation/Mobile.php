@@ -5,13 +5,14 @@ declare(strict_types=1);
 namespace RtlyKit\Validation;
 
 use RtlyKit\Contracts\Validator;
-use RtlyKit\Number\Digits;
 
 /**
  * Iranian mobile number validator (national form 09xxxxxxxxx).
  *
  * Accepted input forms: 09121234567, 9121234567, 989121234567, +989121234567,
- * 00989121234567, with Persian/Arabic digits, spaces, dashes or parentheses.
+ * 00989121234567, with Persian/Arabic digits and, between the digits, spaces, NBSP, ZWNJ,
+ * LRM/RLM, hyphens, parentheses or dots. Any other character (letters, other punctuation,
+ * a newline or NUL, a leading hyphen) makes the input invalid (`invalid_format`).
  *
  * Validity only checks the shape: 09 + 9 digits whose third digit is 0-4 or 9
  * (blocks 090x-094x and 099x are allocated to mobile networks). The operator
@@ -134,7 +135,7 @@ final class Mobile implements Validator
         $mobile = self::normalize($input);
         $details['normalized'] = $mobile;
 
-        if (preg_match('/^09[0-49]\d{8}$/', $mobile) !== 1) {
+        if (preg_match('/^09[0-49]\d{8}$/D', $mobile) !== 1) {
             return Result::invalid('invalid_format', $details);
         }
 
@@ -154,10 +155,23 @@ final class Mobile implements Validator
     /**
      * Normalize to the national form `09xxxxxxxxx` where possible.
      * Input that cannot be mapped is returned as plain digits.
+     *
+     * Besides the digits (Persian/Arabic are converted), the input may hold only spaces, NBSP, ZWNJ,
+     * LRM/RLM, hyphens, parentheses, dots and one leading `+` that starts a `+98` number. Letters, other
+     * punctuation, control characters (a trailing newline or NUL included) and a leading hyphen
+     * (a negative number) give an empty string, which {@see self::validate()} reports as `invalid_format`.
      */
     public static function normalize(string $mobile): string
     {
-        $digits = preg_replace('/\D/', '', Digits::toEnglish($mobile)) ?? '';
+        $digits = Input::strictDigits($mobile, true);
+
+        if ($digits === null) {
+            return '';
+        }
+
+        if (str_starts_with(Input::stripSpaces($mobile), '+') && ! str_starts_with($digits, '98')) {
+            return '';
+        }
 
         if (str_starts_with($digits, '0098') && strlen($digits) === 14) {
             return '0'.substr($digits, 4);

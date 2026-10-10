@@ -37,7 +37,8 @@ final class IranHolidays
     }
 
     /**
-     * How the Islamic holiday dates of a Jalali year are known.
+     * How the Islamic holiday dates of a Jalali year are known. In a {@see HolidaySource::Reported} year
+     * (1380-1393, 1395) the set of holidays may be incomplete.
      *
      * @throws InvalidDateException when the year is outside Jalali::MIN_YEAR..MAX_YEAR
      */

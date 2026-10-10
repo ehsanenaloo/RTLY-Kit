@@ -28,7 +28,7 @@ print_r(validate_national_code('0499370898')-&gt;errors());  // Array ( [0] =&gt
 <p>بررسی‌ها به همین ترتیب انجام می‌شوند و با اولین مشکل متوقف می‌شوند:</p>
 <ol>
 <li><strong>نوع و اندازه.</strong> رشته، <code>int</code> و <code>float</code>ِ صحیح قبول می‌شود. چیز دیگر <code>invalid_type</code> می‌دهد و رشتهٔ بیشتر از ۴۰۹۶ بایت <code>input_too_long</code>.</li>
-<li><strong>یکسان‌سازی.</strong> رقم‌های فارسی و عربی انگلیسی می‌شوند. فاصله، خط تیره و نیم‌فاصله (ZWNJ) حذف می‌شوند و دو سر رشته تمیز می‌شود.</li>
+<li><strong>یکسان‌سازی.</strong> رقم‌های فارسی و عربی انگلیسی می‌شوند. فاصله، فاصلهٔ ناشکن، نیم‌فاصله (ZWNJ)، نشانه‌های LRM و RLM و خط تیره حذف می‌شوند.</li>
 <li><strong>قالب.</strong> دقیقاً ۱۰ رقم، وگرنه <code>invalid_format</code>.</li>
 <li><strong>رقم‌های تکراری.</strong> <code>0000000000</code> تا <code>9999999999</code> در حساب جور درمی‌آیند، ولی کد واقعی نیستند. برای همین <code>repeated_digits</code> می‌دهند.</li>
 <li><strong>رقم کنترل</strong> (قاعدهٔ پیمانهٔ ۱۱ در بخش بعد)، وگرنه <code>invalid_checksum</code>.</li>
@@ -56,7 +56,7 @@ print_r(NationalCode::validate('abc')-&gt;errors());          // [invalid_format
 <tr><td>۴۰۹۷ نویسه</td><td><code>input_too_long</code></td></tr>
 </tbody>
 </table>
-<p>فقط فاصله، خط تیره و ZWNJ جداکننده حساب می‌شوند. اسلش، نقطه و حرف حذف نمی‌شوند و <code>invalid_format</code> می‌دهند.</p>
+<p>فقط فاصله، فاصلهٔ ناشکن، ZWNJ، LRM، RLM و خط تیره جداکننده حساب می‌شوند. اسلش، نقطه، حرف و نویسه‌های کنترلی (تب، خط جدید یا NUL، حتی در انتهای متن) حذف نمی‌شوند و <code>invalid_format</code> می‌دهند.</p>
 <p>اگر فقط شکل تمیز را می‌خواهید، بدون اعتبارسنجی، از <code>NationalCode::normalize()</code> استفاده کنید:</p>
 <pre><code class="language-php">echo NationalCode::normalize(' ۰۴۹-۹۳۷ ۰۸۹۹ ');   // 0499370899</code></pre>
 

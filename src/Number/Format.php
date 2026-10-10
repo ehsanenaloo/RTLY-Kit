@@ -25,7 +25,9 @@ final class Format
      * Format a number with Persian digits and thousand separators, preserving decimals.
      *
      * Accepts English/Persian/Arabic digits and common separators in strings
-     * ("1,234.5", "۱٬۲۳۴٫۵"). Never rounds a string. A float is written with its
+     * ("1,234.5", "۱٬۲۳۴٫۵"). Separators (comma, ٬, space, no-break space) are accepted in the
+     * integer part only in proper grouping: a first group of 1 to 3 digits, then groups of exactly 3
+     * ("1 234 567"); "1 2" or "12 34" is rejected. The fraction holds digits only. Never rounds a string. A float is written with its
      * shortest round-trip decimal form (-1234567.891 gives "-۱٬۲۳۴٬۵۶۷٫۸۹۱", not
      * binary noise), limited to 15 significant digits so that 0.1 + 0.2 reads
      * "۰٫۳", and without an exponent; negative zero is "۰". Pass a string when
@@ -48,7 +50,8 @@ final class Format
             throw new InvalidNumberException(sprintf('Number exceeds the %d character limit.', self::MAX_NUMBER_CHARS), errorCode: ErrorCode::InputTooLong, context: ['limit' => self::MAX_NUMBER_CHARS]);
         }
 
-        if (preg_match('/^([+-]?)(\d+)(?:\.(\d+))?$/', $plain, $m) !== 1) {
+        // The D modifier: without it `$` also matches before a trailing newline.
+        if (preg_match('/^([+-]?)(\d+)(?:\.(\d+))?$/D', $plain, $m) !== 1) {
             throw new InvalidNumberException(sprintf("'%s' is not a valid number.", Utf8::truncate(is_string($number) ? $number : $plain, 40)));
         }
 
@@ -57,7 +60,9 @@ final class Format
         $int = preg_replace('/\B(?=(\d{3})+(?!\d))/', "\x01", $int) ?? $int;
         $int = str_replace("\x01", $separator, $int);
 
-        $sign = $m[1] === '-' ? '-' : '';
+        // Zero has no sign: "-0", "-0.0" and -0.0 all read "۰".
+        $isZero = trim($m[2], '0') === '' && trim($m[3] ?? '', '0') === '';
+        $sign = $m[1] === '-' && ! $isZero ? '-' : '';
         $out = $sign.$int.(isset($m[3]) ? $decimalSeparator.$m[3] : '');
 
         return Digits::toPersian($out);
@@ -166,8 +171,14 @@ final class Format
             throw new InvalidNumberException(sprintf('Input exceeds the %d byte limit.', self::MAX_INPUT_BYTES), errorCode: ErrorCode::InputTooLong, context: ['limit' => self::MAX_INPUT_BYTES]);
         }
 
-        $s = Digits::toEnglish(trim($number));
+        // No trim(): it would also strip "\n", "\0" and tabs. Only spaces and NBSP around the number are ignored,
+        // and separators inside it must be proper thousands grouping ("1 234", not "1 2").
+        $plain = Grouping::plain(Digits::toEnglish($number), true);
 
-        return str_replace([',', "\u{066C}", ' ', "\u{00A0}", "\u{066B}"], ['', '', '', '', '.'], $s);
+        if ($plain === null) {
+            throw new InvalidNumberException(sprintf("'%s' is not a valid number.", Utf8::truncate($number, 40)));
+        }
+
+        return $plain;
     }
 }

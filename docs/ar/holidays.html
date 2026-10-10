@@ -84,7 +84,7 @@ var_dump(is_iran_holiday(<span class="tok-n">1404</span>, <span class="tok-n">1<
 <ul>
 <li>تكون <code>isWeekend($date)</code> مساوية لـ <code>true</code> يوم <strong>الجمعة</strong> فقط.</li>
 <li>تكون <code>isBusinessDay($date)</code> مساوية لـ <code>true</code> عندما لا يكون اليوم عطلة أسبوعية ولا عطلة رسمية.</li>
-<li>تُرجع <code>nextBusinessDay($date)</code> أول يوم عمل يأتي بعد التاريخ المعطى بشكل صارم.</li>
+<li>تُرجع <code>nextBusinessDay($date)</code> أول يوم عمل يأتي بعد التاريخ المعطى بشكل صارم. وفي نهاية النطاق المدعوم (9377/12/30 جلالي) لا يوجد يوم تالٍ، فتُثير <code>InvalidDateException</code>.</li>
 </ul>
 <pre tabindex="0"><code class="language-php"><span class="tok-k">foreach</span> ([Jalali::create(<span class="tok-n">1404</span>, <span class="tok-n">11</span>, <span class="tok-n">20</span>), Jalali::create(<span class="tok-n">1404</span>, <span class="tok-n">11</span>, <span class="tok-n">21</span>), Jalali::create(<span class="tok-n">1404</span>, <span class="tok-n">11</span>, <span class="tok-n">22</span>)] <span class="tok-k">as</span> <span class="tok-v">$d</span>) {
     <span class="tok-k">echo</span> <span class="tok-v">$d</span>-&gt;toDateString(),

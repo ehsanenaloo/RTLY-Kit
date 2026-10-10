@@ -95,7 +95,10 @@ final class NumberToWords
      *
      * Input caps: a string longer than 4096 bytes is rejected before any
      * processing; floats must be finite and integral (3.0 is accepted, 1.5 is
-     * rejected instead of being silently truncated).
+     * rejected instead of being silently truncated). In a string, thousands separators
+     * (comma, ٬, space, no-break space) are accepted only in proper grouping: a first
+     * group of 1 to 3 digits, then groups of exactly 3 ("1 234 567"); "1 2" or "12 34"
+     * is rejected with `invalid_number`. An empty options array means no options.
      *
      * @param ArabicOptions|array<array-key, mixed>|null $options Arabic only
      *
@@ -105,6 +108,11 @@ final class NumberToWords
     public static function convert(int|float|string $number, string $locale = 'fa', ArabicOptions|array|null $options = null): string
     {
         $lang = self::language($locale);
+
+        // An empty array means "no options" for both locales.
+        if ($options === []) {
+            $options = null;
+        }
 
         if ($lang === 'ar') {
             $resolved = ArabicOptions::resolve($options);
@@ -122,6 +130,8 @@ final class NumberToWords
      * Convert a positive integer from 1 to 99 to an Arabic ordinal word
      * (الأول، الثانية عشرة، الحادي والعشرون).
      *
+     * Whole finite floats (3.0) are accepted like in {@see convert()}; a fractional float
+     * is rejected (`invalid_number`) and NaN or infinity too (`non_finite_number`).
      * Only the `gender`, `case` and `definite` options apply. Ordinals above
      * 99 are not supported. The default locale is `ar`; Persian ordinals are
      * produced by {@see Format::ordinal()}.
@@ -131,7 +141,7 @@ final class NumberToWords
      * @throws InvalidNumberException when the value is not an integer from 1 to 99 or an option is invalid
      * @throws UnsupportedLocaleException when the locale is not `ar`
      */
-    public static function ordinal(int|string $number, string $locale = 'ar', ArabicOptions|array|null $options = null): string
+    public static function ordinal(int|float|string $number, string $locale = 'ar', ArabicOptions|array|null $options = null): string
     {
         $lang = self::language($locale);
         if ($lang !== 'ar') {
@@ -158,7 +168,8 @@ final class NumberToWords
 
     private static function language(string $locale): string
     {
-        $lang = strtolower(substr($locale, 0, 2));
+        // The primary language subtag (before '-', '_' or '.') must be exactly 'fa' or 'ar', ignoring case.
+        $lang = strtolower(substr($locale, 0, strcspn($locale, '-_.')));
 
         if ($lang !== 'fa' && $lang !== 'ar') {
             throw new UnsupportedLocaleException(sprintf("Unsupported locale '%s' (use 'fa' or 'ar').", Utf8::truncate($locale, 40)), context: ['locale' => Utf8::truncate($locale, 40)]);
@@ -217,6 +228,10 @@ final class NumberToWords
     {
         if (strlen($words) > self::MAX_INPUT_BYTES) {
             throw new InvalidNumberException('Input is too long.', errorCode: ErrorCode::InputTooLong, context: ['limit' => self::MAX_INPUT_BYTES]);
+        }
+
+        if (! Utf8::isValid($words)) {
+            throw new InvalidNumberException('Number words must be valid UTF-8.', errorCode: ErrorCode::InvalidNumberWords);
         }
 
         $text = Normalizer::normalize(str_replace("\u{200C}", ' ', $words));
@@ -346,11 +361,11 @@ final class NumberToWords
             throw new InvalidNumberException('Input is too long.', errorCode: ErrorCode::InputTooLong, context: ['limit' => self::MAX_INPUT_BYTES]);
         }
 
-        $raw = is_int($number)
-            ? (string) $number
-            : str_replace([',', '٬', ' ', "\u{00A0}"], '', Digits::toEnglish(trim($number)));
+        // Separators (comma, ٬, space, no-break space) only in proper thousands grouping: "1 234" yes, "1 2" no.
+        $raw = is_int($number) ? (string) $number : Grouping::plain(Digits::toEnglish($number), false);
 
-        if (preg_match('/^([+-]?)(\d+)$/', $raw, $m) !== 1) {
+        // The D modifier: without it `$` also matches before a trailing newline. Tabs, newlines and NUL are not separators.
+        if ($raw === null || preg_match('/^([+-]?)(\d+)$/D', $raw, $m) !== 1) {
             throw new InvalidNumberException(sprintf("'%s' is not a valid integer.", is_int($number) ? (string) $number : Utf8::truncate($number, 40)));
         }
 

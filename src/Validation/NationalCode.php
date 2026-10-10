@@ -56,11 +56,11 @@ final class NationalCode implements Validator
         $code = self::normalize($input);
         $details['normalized'] = $code;
 
-        if (preg_match('/^\d{10}$/', $code) !== 1) {
+        if (preg_match('/^\d{10}$/D', $code) !== 1) {
             return Result::invalid('invalid_format', $details);
         }
 
-        if (preg_match('/^(\d)\1{9}$/', $code) === 1) {
+        if (preg_match('/^(\d)\1{9}$/D', $code) === 1) {
             return Result::invalid('repeated_digits', $details);
         }
 
@@ -98,10 +98,12 @@ final class NationalCode implements Validator
     }
 
     /**
-     * Normalize the code (convert Persian/Arabic digits, drop spaces and hyphens).
+     * Normalize the code (convert Persian/Arabic digits, drop spaces, NBSP, ZWNJ, LRM/RLM and hyphens).
+     * Nothing else is removed: a tab, newline, NUL or any other character stays in the result,
+     * so {@see self::validate()} rejects it as `invalid_format`.
      */
     public static function normalize(string $code): string
     {
-        return str_replace([' ', '-', "\u{200C}"], '', trim(Digits::toEnglish($code)));
+        return str_replace('-', '', Input::stripSpaces(Digits::toEnglish($code)));
     }
 }

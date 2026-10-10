@@ -5,8 +5,9 @@ declare(strict_types=1);
 /*
  * Umm al-Qura month-length table, AH 1300-1500 (1882-11-12 .. 2077-11-16 CE).
  *
- * Generated from the ICU/CLDR "islamic-umalqura" calendar data; not verified
- * month-by-month against the official KACST publication (see resources/data/SOURCES.md).
+ * Generated from the ICU/CLDR "islamic-umalqura" calendar data. AH 1318-1500 was
+ * checked month by month against KACST; AH 1300-1317 rests on the ICU/CLDR data
+ * (see resources/data/SOURCES.md).
  *
  * 'months': one entry per Hijri year starting at 'first_year'. Bit 0 = Muharram
  * ... bit 11 = Dhu al-Hijjah; a set bit means a 30-day month, otherwise 29.

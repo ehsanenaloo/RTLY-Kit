@@ -92,7 +92,7 @@ final class RtlyKitServiceProviderTest extends TestCase
     public function test_rules_accept_valid_values(): void
     {
         self::assertTrue($this->passes(
-            ['n' => '0013542419', 'm' => '09121234567', 'm2' => '09121234567', 'p' => '1234567890'],
+            ['n' => '0013542419', 'm' => '09121234567', 'm2' => '09121234567', 'p' => '1593715416'],
             ['n' => 'required|national_code', 'm' => 'iran_mobile', 'm2' => 'mobile', 'p' => 'postal_code'],
         ));
     }
@@ -112,7 +112,7 @@ final class RtlyKitServiceProviderTest extends TestCase
 
     public function test_numeric_input_is_accepted(): void
     {
-        self::assertTrue($this->passes(['p' => 1234567890], ['p' => 'postal_code']));
+        self::assertTrue($this->passes(['p' => 1593715416], ['p' => 'postal_code']));
     }
 
     public function test_facade_resolves_jalali(): void

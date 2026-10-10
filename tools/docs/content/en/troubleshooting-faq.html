@@ -129,7 +129,7 @@ echo format_number('123456789.123456789'), "\n";      // ۱۲۳٬۴۵۶٬۷۸۹�
 <h2 id="prayer-faq">Prayer times and holidays</h2>
 
 <h3 id="prayer-timezone">The prayer times are in the wrong time zone or shifted by an hour</h3>
-<p>Times are HH:MM in the local time of the time zone of the calculator, for the local calendar day of the date you pass. <code>PrayerTimes::forCity()</code> uses the zone of the city. A calculator built with <code>new PrayerTimes()</code> and no zone uses the PHP default (<code>date_default_timezone_get()</code>, which is <code>UTC</code> in a fresh container), so pass a <code>DateTimeZone</code>. Daylight saving is applied for each event, so a table across a clock change is right on both sides (Cairo's Dhuhr on 2026-10-08 and 2026-10-31):</p>
+<p>Times are HH:MM in the local time of the time zone of the calculator, for the local calendar day of the date you pass. <code>PrayerTimes::forCity()</code> uses the zone of the city. A calculator built with <code>new PrayerTimes()</code> and no zone uses the PHP default (<code>date_default_timezone_get()</code>, which is <code>UTC</code> in a fresh container), so pass a <code>DateTimeZone</code>. A zone far from its longitude (for example <code>Pacific/Kiritimati</code>) still gives the times of the date you ask for, all on that local date. Daylight saving is applied for each event, so a table across a clock change is right on both sides (Cairo's Dhuhr on 2026-10-08 and 2026-10-31):</p>
 <pre><code class="language-php">use RtlyKit\Prayer\PrayerTimes;
 
 $cairo = PrayerTimes::forCity('cairo', PrayerTimes::METHOD_EGYPT);

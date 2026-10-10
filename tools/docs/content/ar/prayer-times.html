@@ -34,6 +34,7 @@ $p = new PrayerTimes(
     elevation: 0.0,                          // metres, default 0
 );</code></pre>
 <p>تعرف <code>forCity()</code> هذه الأسماء (دون حساسية لحالة الأحرف): <code>tehran</code> و<code>mashhad</code> و<code>isfahan</code> و<code>shiraz</code> و<code>tabriz</code> و<code>qom</code> و<code>mecca</code> و<code>medina</code> و<code>riyadh</code> و<code>istanbul</code> و<code>cairo</code> و<code>dubai</code> و<code>baghdad</code> و<code>jakarta</code>. وأي اسم آخر يُثير استثناءً؛ للمدن الأخرى استخدم المُنشئ مع إحداثياتك.</p>
+<p>يفحص المُنشئ الأرقام: خط العرض من -90 إلى 90، وخط الطول من -180 إلى 180، والارتفاع من -20000 إلى 20000 متر. القيمة <code>NaN</code> أو اللانهاية أو أي قيمة خارج هذه المجالات تُثير <code>InvalidPrayerConfigException</code>.</p>
 
 <h2 id="methods">الطرق والزوايا</h2>
 <p>تحدد الطريقة زاوية انخفاض الشمس للفجر والعشاء (وللمغرب أيضًا في طريقة طهران). استخدم ثوابت الصنف بدلًا من النصوص.</p>
@@ -77,7 +78,7 @@ foreach (['2026-02-20', '2026-03-01', '2026-03-21'] as $s) {
 // 2026-03-21 maghrib 18:32 isha 20:02   (+90, after Ramadan)</code></pre>
 
 <h2 id="elevation">الارتفاع عن سطح البحر</h2>
-<p>الوسيط <code>elevation</code> هو ارتفاع الراصد بالأمتار. يخفض ارتفاع الشروق والغروب بالانخفاض الهندسي للأفق <code>0.0347 * sqrt(h)</code> درجة، فيصبح الشروق أبكر والغروب أكثر تأخرًا على الجبل. القيم السالبة تُعامل على أنها 0. ويؤثر في الشروق والغروب والأوقات المشتقة من الغروب فقط.</p>
+<p>الوسيط <code>elevation</code> هو ارتفاع الراصد بالأمتار. يخفض ارتفاع الشروق والغروب بالانخفاض الهندسي للأفق <code>0.0347 * sqrt(h)</code> درجة، فيصبح الشروق أبكر والغروب أكثر تأخرًا على الجبل. القيم السالبة تُعامل على أنها 0 (المجال المقبول من -20000 إلى 20000). ويؤثر في الشروق والغروب والأوقات المشتقة من الغروب فقط.</p>
 <pre><code class="language-php">$a = new PrayerTimes(35.6892, 51.3890, 'Tehran', 1, $tz);
 $b = new PrayerTimes(35.6892, 51.3890, 'Tehran', 1, $tz, 1500.0);
 $d = new DateTimeImmutable('2026-06-21', $tz);
@@ -94,6 +95,7 @@ foreach (['2026-03-28', '2026-03-29'] as $s) {
 }
 // 2026-03-28 {"fajr":"03:51","sunrise":"05:50","dhuhr":"12:11","asr":"15:39","maghrib":"18:34","isha":"20:26"}
 // 2026-03-29 {"fajr":"04:48","sunrise":"06:48","dhuhr":"13:11","asr":"16:40","maghrib":"19:35","isha":"21:28"}</code></pre>
+<p>قد تبعد المنطقة الزمنية كثيرًا عن خط طولها، مثل <code>Pacific/Kiritimati</code> (UTC+14 عند خط الطول 157 غربًا). تُرجع المكتبة مع ذلك أوقات اليوم المطلوب، وتقع الأوقات الستة كلها في ذلك التاريخ المحلي. لذلك يكون الظهر في كيريتيماتي نحو 12:29 لا نحو 12:00.</p>
 <p>مرّر المنطقة التي يقرأ مستخدموك الساعة بحسبها. وإذا أهملتها يُستخدم <code>date_default_timezone_get()</code>.</p>
 
 <h2 id="next">الصلاة التالية</h2>
@@ -109,6 +111,7 @@ $osl = new PrayerTimes(59.91, 10.75, 'MWL', 1, $tzo);
 echo json_encode($osl-&gt;nextPrayer(new DateTimeImmutable('2026-06-21 23:30', $tzo)));
 // {"name":"isha","time":"00:12","date":"2026-06-22"}</code></pre>
 <p>الشروق عنصر في هذا التسلسل (الترتيب: fajr وsunrise وdhuhr وasr وmaghrib وisha).</p>
+<p>يجب أن يقع التاريخ في السنوات من 1 إلى 9999 للمنطقة. خارج ذلك تُثير <code>getTimes()</code> و<code>nextPrayer()</code> الاستثناء <code>InvalidDateException</code>. والصلاة التي يقع تاريخها المحلي بعد 9999-12-31 (أو قبل 0001-01-01) غير موجودة: في <code>getTimes()</code> يكون ذلك الوقت <code>null</code>، وتُرجع <code>nextPrayer()</code> القيمة <code>null</code> حين لا تبقى صلاة حتى نهاية 9999-12-31. وتُقرَّب الأوقات إلى أقرب دقيقة بحسب فرق UTC الدقيق للمنطقة، فالمنطقة ذات الفرق القديم الذي فيه ثوانٍ (مثل التوقيت المحلي المتوسط قبل 1970) لا يُقتطع فرقها إلى دقائق كاملة.</p>
 
 <h2 id="high-latitude">خطوط العرض العالية</h2>
 <p>في الصيف، بعيدًا عن خط الاستواء، قد لا تبلغ الشمس زاوية الفجر أو العشاء أصلًا، أو تبلغها في ساعة بعيدة جدًا عن الشروق والغروب. تعالج المكتبة ذلك بقاعدة من <code>RtlyKit\Prayer\HighLatitudeRule</code> تختارها بـ <code>withHighLatitudeRule()</code> (تُرجع حاسبة جديدة):</p>
@@ -145,6 +148,7 @@ echo json_encode($osl-&gt;withHighLatitudeRule(HighLatitudeRule::None)-&gt;getTi
 <pre><code class="language-php">$tro = new PrayerTimes(69.65, 18.96, 'MWL', 1, $tzo);
 echo json_encode($tro-&gt;getTimes($day)), "\n";
 // {"fajr":"03:10","sunrise":null,"dhuhr":"12:46","asr":"17:58","maghrib":null,"isha":"22:10"}</code></pre>
+<p>تحافظ الأوقات الستة على الترتيب: الفجر، الشروق، الظهر، العصر، المغرب، العشاء (كلحظات؛ وقد يقع العشاء بعد منتصف الليل، ويجوز تساوي الدقائق). وقرب القطبين قد تكسر هندسة الشمس هذا الترتيب، كأن يقع العصر بعد العشاء عند 89.9 درجة. والوقت الذي يكسر الترتيب يصبح <code>null</code>. وفي خطوط العرض المعتادة لا يُحذف أي وقت لهذا السبب. ويُطبَّق الضبط اليدوي للدقائق بعد هذا الفحص.</p>
 
 <h2 id="tune">ضبط الدقائق يدويًا</h2>
 <p>تعتمد بعض المساجد والجهات هامش احتياط في بعض الأوقات. استعمل <code>withTune()</code> لإضافة دقائق (من -30 إلى +30) إلى أي من الأوقات الستة: <code>fajr</code> و<code>sunrise</code> و<code>dhuhr</code> و<code>asr</code> و<code>maghrib</code> و<code>isha</code>. تُرجع الدالة حاسبة جديدة، وما لم تذكره يبقى صفرًا؛ فاستدعاؤها يستبدل أي ضبط سابق، و<code>withTune([])</code> يمسحه. وتدخل الدقائق المضافة في <code>nextPrayer()</code> أيضًا.</p>
@@ -162,6 +166,8 @@ new PrayerTimes(35, 51, 'MWL', 3);
 // Invalid Asr factor: 3 (use 1 or 2)
 PrayerTimes::forCity('paris');
 // Unknown city: paris
+new PrayerTimes(95, 51, 'MWL');
+// The latitude must be between -90 and 90 degrees
 PrayerTimes::forCity('tehran')-&gt;withTune(['fajr' =&gt; 31]);
 // Tune for fajr must be an integer from -30 to 30 minutes</code></pre>
 <p>انظر <a href="error-handling.html">معالجة الأخطاء</a> لالتقاط كل أخطاء المكتبة بعبارة <code>catch</code> واحدة.</p>

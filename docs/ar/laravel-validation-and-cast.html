@@ -122,7 +122,8 @@
 <tr><td><code>null</code> أو <code>''</code></td><td><code>null</code></td></tr>
 </tbody>
 </table></div>
-<p>تُقرأ السلسلة جلالية إذا كانت سنتها بين 1200 و1599 وكان الفاصل <code>/</code> أو <code>-</code>، مع وقت اختياري <code>HH:MM</code> أو <code>HH:MM:SS</code> بعد مسافة أو <code>T</code>. وأي سلسلة أخرى تمرّ عبر محلِّل التواريخ العادي على أنها ميلادية.</p>
+<p>تُقرأ السلسلة جلالية إذا كانت سنتها بين 1200 و1599 وكان الفاصل <code>/</code> أو <code>-</code>، مع وقت اختياري <code>HH:MM</code> أو <code>HH:MM:SS</code> بعد مسافة أو <code>T</code>. وأي سلسلة أخرى تذهب إلى <code>Jalali::make()</code>، وهي تقرأ السنة الأقل من 1700 جلالية وما عداها ميلادية، فـ <code>'1650-01-01'</code> تبقى جلالية.</p>
+<p>وحين يقرأ النموذج العمود تُقرأ القيمة المخزَّنة دائمًا ميلادية مهما كانت السنة، فيعود تاريخ مثل <code>1650-05-05 10:00:00</code> دون تغيير. وتُطلق القيمة المخزَّنة من نوع غير مدعوم (مصفوفة أو منطقي أو عدد عشري أو كائن) الاستثناء <code>InvalidDateException</code> مع اسم السمة والنوع. ولا يُعطي <code>null</code> إلا القيمتان <code>null</code> والسلسلة الفارغة.</p>
 
 <h3 id="cast-errors">الأخطاء<a class="anchor" href="#cast-errors" aria-label="رابط إلى هذا القسم">#</a></h3>
 <p>المدخل السيئ يُطلق <code>RtlyKit\Exceptions\InvalidDateException</code> لحظة إسناده، ولا يظهر خطأ PHP خام أبدًا:</p>

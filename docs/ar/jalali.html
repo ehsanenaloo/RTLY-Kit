@@ -65,16 +65,17 @@ require</span> <span class="tok-s">'vendor/autoload.php'</span>;
 <h3 id="string-rules">دلالات السلاسل النصية في <code>make()</code><a class="anchor" href="#string-rules" aria-label="رابط إلى هذا القسم">#</a></h3>
 <p>تُعالَج السلاسل النصية بهذا الترتيب:</p>
 <ol>
-<li>تُحوَّل الأرقام الفارسية والعربية إلى أرقام إنجليزية، وتُقصّ المسافات من الطرفين. السلسلة الفارغة أو المكوّنة من مسافات فقط تُطلق <code>InvalidDateException</code>.</li>
-<li>إذا كانت السلسلة بالصيغة <code>Y/m/d</code> أو <code>Y-m-d</code> بسنة من 3 أو 4 أرقام، يليها اختياريًا <code>H:i</code> أو <code>H:i:s</code> (يفصلهما مسافة أو <code>T</code>)، <strong>وكانت السنة أقل من 1700</strong>، فإنها تُقرأ تاريخًا <em>جلاليًا</em>.</li>
-<li>كل سلسلة أخرى، بما فيها أي سنة 1700 أو أكبر، تُمرَّر إلى <code>DateTimeImmutable</code> وتُقرأ تاريخًا ميلاديًا أو نصًا حرًّا (<code>'2025-10-07'</code> و<code>'tomorrow'</code> و<code>'10 October 2025'</code>).</li>
+<li>تُحوَّل الأرقام الفارسية والعربية إلى أرقام إنجليزية، وتُقصّ المسافات من الطرفين. وتُعامَل المسافة غير القابلة للكسر (NBSP) والفاصل غير الرابط (ZWNJ) وعلامتا LRM وRLM معاملة المسافة. السلسلة الفارغة أو المكوّنة من مسافات فقط، أو التي فيها بايت NUL، تُطلق <code>InvalidDateException</code>.</li>
+<li>إذا كانت السلسلة بالصيغة الدقيقة <code>Y/m/d</code> أو <code>Y-m-d</code> بسنة من 3 أو 4 أرقام، يليها اختياريًا مسافة أو <code>T</code> أو <code>t</code> ثم وقت (<code>H:i</code> أو <code>H:i:s</code> أو <code>H:i:s.u</code> بكسر الثانية) ثم علامة منطقة زمنية (<code>Z</code> أو <code>+03:30</code> أو <code>+0330</code> أو <code>+03</code>)، <strong>وكانت السنة أقل من 1700</strong>، فإنها تُقرأ تاريخًا <em>جلاليًا</em>. تحدّد العلامة المنطقة الزمنية للنتيجة، ويجب أن يقع فرق التوقيت ضمن ±14:00. وإذا مررت <code>$timezone</code> أيضًا فتُقرأ العلامة أولًا ثم تُحوَّل النتيجة إلى تلك المنطقة.</li>
+<li>إذا بدأت السلسلة هكذا وفيها زيادة أو نقص فإنها تُطلق <code>InvalidDateException</code> بدل أن تُخمَّن ميلادية. أمثلة: اسم منطقة زمنية بعد الوقت (<code>'1403-01-01 10:00 UTC'</code> و<code>'1403-01-01T10:00 Asia/Tehran'</code>) و<code>PM</code> ودقائق أو ثوانٍ من رقم واحد وسنة مع شهر فقط (<code>'1403-01'</code>). وتُطلق الخطأ نفسه سلسلة من 3 إلى 8 أرقام فقط مثل <code>'1403'</code> أو <code>'14030101'</code> لأن PHP يقرؤها وقتًا، وكذلك السنة من 5 أرقام مثل <code>'12345/01/01'</code> (الرمز <code>date_out_of_range</code>). مرّر <code>DateTimeImmutable</code> لمثل هذه القيم.</li>
+<li>كل سلسلة أخرى، بما فيها أي سنة 1700 أو أكبر وثمانية أرقام تبدأ بمثل هذه السنة (<code>'20240101'</code>)، تُمرَّر إلى <code>DateTimeImmutable</code> وتُقرأ تاريخًا ميلاديًا أو نصًا حرًّا (<code>'2025-10-07'</code> و<code>'tomorrow'</code> و<code>'10 October 2025'</code>).</li>
 </ol>
 <pre tabindex="0"><code class="language-php"><span class="tok-k">echo</span> Jalali::make(<span class="tok-s">'1403/12/30'</span>);          <span class="tok-c">// 1403/12/30 00:00:00</span>
 <span class="tok-k">echo</span> Jalali::make(<span class="tok-s">'۱۴۰۴/۰۷/۱۵'</span>);          <span class="tok-c">// 1404/07/15 00:00:00   (أرقام فارسية)</span>
 <span class="tok-k">echo</span> Jalali::make(<span class="tok-s">'1404-07-15 08:05'</span>);    <span class="tok-c">// 1404/07/15 08:05:00</span>
 <span class="tok-k">echo</span> Jalali::make(<span class="tok-s">'2025-10-07'</span>)-&gt;format(<span class="tok-s">'Y/m/d'</span>);  <span class="tok-c">// 1404/07/15   (نص ميلادي)</span>
 <span class="tok-k">echo</span> Jalali::make(<span class="tok-s">'1700/01/01'</span>)-&gt;format(<span class="tok-s">'Y/m/d'</span>);  <span class="tok-c">// 1078/10/12   (السنة 1700 فما فوق تُقرأ ميلادية)</span></code></pre>
-<div class="callout note" role="note"><strong>حدّ السنة 1700.</strong> تُقرأ سلسلة مثل <code>'0001-01-01'</code> أو <code>'1500-06-01'</code> على أنها تاريخ جلالي. إذا أردت تاريخًا ميلاديًا قبل السنة 1700، فأنشئ كائن <code>DateTimeImmutable</code> ومرّره إلى <code>make()</code>.</div>
+<div class="callout note" role="note"><strong>حدّ السنة 1700.</strong> تُقرأ سلسلة مثل <code>'0001-01-01'</code> أو <code>'1500-06-01'</code> على أنها تاريخ جلالي. إذا أردت تاريخًا ميلاديًا قبل السنة 1700، فأنشئ كائن <code>DateTimeImmutable</code> ومرّره إلى <code>make()</code>. وكذلك نص ISO مثل <code>'1500-06-01T10:00:00Z'</code>: يُقرأ تاريخًا جلاليًا لا ميلاديًا.</div>
 <p>المدخلات غير الصالحة تُطلق دائمًا <code>InvalidDateException</code>:</p>
 <pre tabindex="0"><code class="language-php"><span class="tok-k">foreach</span> ([<span class="tok-s">'1404/12/30'</span>, <span class="tok-s">'1404/13/01'</span>, <span class="tok-s">'1404/07/15 25:00'</span>, <span class="tok-s">''</span>, <span class="tok-s">'garbage'</span>] <span class="tok-k">as</span> <span class="tok-v">$s</span>) {
     <span class="tok-k">try</span> {
@@ -99,7 +100,11 @@ require</span> <span class="tok-s">'vendor/autoload.php'</span>;
 } <span class="tok-k">catch</span> (InvalidDateException <span class="tok-v">$e</span>) {
     <span class="tok-k">echo</span> <span class="tok-v">$e</span>-&gt;getMessage();   <span class="tok-c">// Unable to parse 'abc' with format 'Y/m/d'</span>
 }</code></pre>
+<p>تُرفض الرموز التي تعطي تاريخًا خاطئًا بـ <code>InvalidDateException</code> تذكر الرمز في رسالتها. وهي <code>z</code> و<code>y</code> وأسماء الأشهر والأيام الإنجليزية <code>F M D l</code> واللاحقة <code>S</code> ورموز المنطقة الزمنية وكسر الثانية <code>e T P O p u v</code>. مرّر المنطقة الزمنية بدلًا منها في الوسيط الثالث. والصيغة <code>U</code> وحدها تقرأ طابعًا زمنيًا يونكسيًا، وأي صيغة أخرى فيها <code>U</code> تُطلق خطأً. وبايت NUL في الصيغة أو النص يُطلق خطأً أيضًا.</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">echo</span> Jalali::createFromFormat(<span class="tok-s">'U'</span>, <span class="tok-s">'1700000000'</span>, <span class="tok-v">$tehran</span>);   <span class="tok-c">// 1402/08/24 01:43:20</span>
+Jalali::createFromFormat(<span class="tok-s">'Y/m/d e'</span>, <span class="tok-s">'1404/07/15 UTC'</span>);       <span class="tok-c">// InvalidDateException: ... the 'e' token ...</span></code></pre>
 
+<p>تُلقي السلسلة الميلادية ذات اليوم المستحيل، مثل <code>'2024-02-30'</code>، <code>InvalidDateException</code> (أما PHP وحدها فتنقلها إلى 2024-03-01). لا سنوات سالبة في النص: يُلقي <code>make('-0100/01/01')</code> استثناءً، فاستخدم <code>create()</code> أو الطابع الزمني لها. يحفظ <code>serialize()</code> اللحظة فقط (ومعها نوع التقويم في الهجري). ويتحقق <code>unserialize()</code> منها من جديد ويُلقي <code>InvalidDateException</code> عند بيانات تالفة أو خارج النطاق المدعوم.</p>
 <h2 id="range">النطاق المدعوم والأخطاء<a class="anchor" href="#range" aria-label="رابط إلى هذا القسم">#</a></h2>
 <p>السنوات الجلالية المدعومة من <code>Jalali::MIN_YEAR</code> = <strong>-620</strong> إلى <code>Jalali::MAX_YEAR</code> = <strong>9377</strong>. وهذا هو النطاق الذي يقابل السنوات الميلادية من 1 إلى 9999 بالضبط: أول يوم مدعوم هو -620/01/01 (0001-03-21) وآخر يوم هو 9377/12/30 (9999-03-20). تتحقق كل نقطة دخول من النطاق ولا تُطلق إلا <code>InvalidDateException</code> (ولا تُطلق أبدًا <code>TypeError</code> أو <code>ValueError</code> أو استثناءات <code>DateMalformed*</code>)، ويشمل ذلك <code>create()</code> و<code>make()</code> و<code>createFromFormat()</code> والطوابع الزمنية الصحيحة و<code>add*()</code>/<code>sub*()</code> ودوال التحويل الساكنة.</p>
 <pre tabindex="0"><code class="language-php"><span class="tok-k">foreach</span> ([[-<span class="tok-n">621</span>, <span class="tok-n">1</span>, <span class="tok-n">1</span>], [<span class="tok-n">9378</span>, <span class="tok-n">1</span>, <span class="tok-n">1</span>], [<span class="tok-n">1404</span>, <span class="tok-n">12</span>, <span class="tok-n">30</span>], [<span class="tok-n">1404</span>, <span class="tok-n">0</span>, <span class="tok-n">1</span>], [<span class="tok-n">1404</span>, <span class="tok-n">7</span>, <span class="tok-n">31</span>]] <span class="tok-k">as</span> [<span class="tok-v">$y</span>, <span class="tok-v">$m</span>, <span class="tok-v">$d</span>]) {
@@ -153,7 +158,7 @@ require</span> <span class="tok-s">'vendor/autoload.php'</span>;
 <div class="table-wrap" tabindex="0" role="region" aria-label="جدول"><table>
 <thead><tr><th scope="col">الرمز</th><th scope="col">المعنى</th></tr></thead>
 <tbody>
-<tr><td><code>Y</code> <code>y</code></td><td>السنة، من 4 أرقام ومن رقمين</td></tr>
+<tr><td><code>Y</code> <code>y</code></td><td>السنة بأربعة أرقام على الأقل مع أصفار بادئة وعلامة سالب للسنوات السالبة (<code>-0005</code>)؛ و<code>y</code> آخر رقمين (السنة -620 تعطي <code>80</code>)</td></tr>
 <tr><td><code>m</code> <code>n</code></td><td>الشهر مع صفر بادئ وبدونه</td></tr>
 <tr><td><code>F</code> <code>M</code></td><td>اسم الشهر بالفارسية (<code>M</code> مطابق لـ <code>F</code>: فأسماء الأشهر الفارسية لا اختصار لها)</td></tr>
 <tr><td><code>d</code> <code>j</code></td><td>اليوم مع صفر بادئ وبدونه</td></tr>
@@ -179,11 +184,11 @@ require</span> <span class="tok-s">'vendor/autoload.php'</span>;
 <tbody>
 <tr><td><code>addDays()</code> <code>subDays()</code></td><td>أيام كاملة على اللحظة الأساسية</td></tr>
 <tr><td><code>addHours()</code> <code>addMinutes()</code> <code>addSeconds()</code> وصيغ <code>sub*</code></td><td>زمن منقضٍ فعلي</td></tr>
-<tr><td><code>addMonths()</code> <code>subMonths()</code></td><td>أشهر تقويمية؛ ويُ<strong>قصَّر</strong> اليوم إلى طول الشهر الهدف</td></tr>
+<tr><td><code>addMonths()</code> <code>subMonths()</code></td><td>أشهر تقويمية؛ ويُ<strong>قصَّر</strong> اليوم إلى طول الشهر الهدف. مع صفر شهر تُرجع الكائن نفسه، وفي الساعة المكرَّرة عند تغيير التوقيت يبقى فرق التوقيت الأصلي</td></tr>
 <tr><td><code>addYears()</code> <code>subYears()</code></td><td>مثل 12 شهرًا لكل سنة؛ و<code>30 Esfand</code> في سنة كبيسة يصير <code>29 Esfand</code> في سنة عادية</td></tr>
-<tr><td><code>startOfDay()</code> <code>endOfDay()</code></td><td>00:00:00 و23:59:59 من اليوم نفسه</td></tr>
-<tr><td><code>startOfMonth()</code> <code>endOfMonth()</code></td><td>اليوم الأول 00:00:00؛ واليوم الأخير 23:59:59</td></tr>
-<tr><td><code>startOfYear()</code> <code>endOfYear()</code></td><td>1 Farvardin 00:00:00؛ وآخر يوم من Esfand عند 23:59:59</td></tr>
+<tr><td><code>startOfDay()</code> <code>endOfDay()</code></td><td>00:00:00 و23:59:59.999999 (آخر ميكروثانية) من اليوم نفسه</td></tr>
+<tr><td><code>startOfMonth()</code> <code>endOfMonth()</code></td><td>اليوم الأول 00:00:00؛ واليوم الأخير 23:59:59.999999</td></tr>
+<tr><td><code>startOfYear()</code> <code>endOfYear()</code></td><td>1 Farvardin 00:00:00؛ وآخر يوم من Esfand عند 23:59:59.999999</td></tr>
 </tbody>
 </table></div>
 <pre tabindex="0"><code class="language-php"><span class="tok-v">$x</span> = Jalali::create(<span class="tok-n">1403</span>, <span class="tok-n">12</span>, <span class="tok-n">30</span>);              <span class="tok-c">// آخر يوم في سنة كبيسة</span>
@@ -217,7 +222,7 @@ var_dump(<span class="tok-v">$a</span>-&gt;between(Jalali::create(<span class="t
 <thead><tr><th scope="col">الدالة</th><th scope="col">الدلالة</th></tr></thead>
 <tbody>
 <tr><td><code>diffInDays($other, $absolute = true)</code></td><td>أيام كاملة، مقطوعة نحو الصفر. ومع <code>false</code> تكون الإشارة إشارة <code>$this - $other</code></td></tr>
-<tr><td><code>diffInMonths($other, $absolute = true)</code></td><td>أشهر <em>جلالية</em> كاملة؛ ويُحتسب اليوم ووقت اليوم (من 15 Farvardin إلى 14 Tir شهران)</td></tr>
+<tr><td><code>diffInMonths($other, $absolute = true)</code></td><td>أشهر <em>جلالية</em> كاملة؛ ويُحتسب اليوم ووقت اليوم والميكروثانية أيضًا (من 15 Farvardin إلى 14 Tir شهران)</td></tr>
 <tr><td><code>diffInYears($other, $absolute = true)</code></td><td>سنوات جلالية كاملة، على أساس الذكرى السنوية</td></tr>
 </tbody>
 </table></div>

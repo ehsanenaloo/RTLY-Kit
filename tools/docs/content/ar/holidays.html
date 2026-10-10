@@ -57,7 +57,7 @@ echo count(IranHolidays::all(1404));    // 26 (عطل ثابتة وإسلامي�
 <ul>
 <li>تكون <code>isWeekend($date)</code> مساوية لـ <code>true</code> يوم <strong>الجمعة</strong> فقط.</li>
 <li>تكون <code>isBusinessDay($date)</code> مساوية لـ <code>true</code> عندما لا يكون اليوم عطلة أسبوعية ولا عطلة رسمية.</li>
-<li>تُرجع <code>nextBusinessDay($date)</code> أول يوم عمل يأتي بعد التاريخ المعطى بشكل صارم.</li>
+<li>تُرجع <code>nextBusinessDay($date)</code> أول يوم عمل يأتي بعد التاريخ المعطى بشكل صارم. وفي نهاية النطاق المدعوم (9377/12/30 جلالي) لا يوجد يوم تالٍ، فتُثير <code>InvalidDateException</code>.</li>
 </ul>
 <pre><code class="language-php">foreach ([Jalali::create(1404, 11, 20), Jalali::create(1404, 11, 21), Jalali::create(1404, 11, 22)] as $d) {
     echo $d-&gt;toDateString(),

@@ -157,6 +157,33 @@ final class CarbonMacrosTest extends TestCase
         $this->assertSame('Asia/Tehran', CarbonMacros::zone('Asia/Tehran')?->getName());
     }
 
+    public function test_a_timezone_name_with_a_nul_byte_is_an_invalid_date_not_a_value_error(): void
+    {
+        foreach (["x\0y", "\0", "Asia/Tehran\0"] as $name) {
+            try {
+                CarbonMacros::zone($name);
+                $this->fail('expected an exception');
+            } catch (InvalidDateException $e) {
+                $this->assertStringNotContainsString("\0", $e->getMessage());
+            }
+        }
+
+        $this->expectException(InvalidDateException::class);
+        Carbon::createFromJalali(1403, 1, 1, 0, 0, 0, "x\0y");
+    }
+
+    public function test_create_from_hijri_and_hebrew_reject_a_nul_timezone(): void
+    {
+        foreach (['createFromHijri' => [1446, 9, 1], 'createFromHebrew' => [5785, 1, 1]] as $macro => $date) {
+            try {
+                Carbon::$macro(...[...$date, 0, 0, 0, "x\0y"]);
+                $this->fail("{$macro} should throw");
+            } catch (InvalidDateException) {
+                $this->addToAssertionCount(1);
+            }
+        }
+    }
+
     /* ---------------- Support ---------------- */
 
     public function test_carbon_macros_target_rejects_non_carbon_classes(): void

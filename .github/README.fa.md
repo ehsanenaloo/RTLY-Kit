@@ -234,7 +234,7 @@ try {
 }
 ```
 
-ورودی نامعتبر هیچ‌وقت `TypeError` یا `ValueError` خام بیرون نمی‌دهد. سال بیرون از بازهٔ پشتیبانی‌شده `InvalidDateException` می‌دهد. فهرست کامل در [راهنمای خطاها](https://ehsanenaloo.github.io/RTLY-Kit/fa/error-handling.html).
+مقداری از نوع پذیرفته‌شده که کتابخانه نتواند به کار ببرد، مثل سال بیرون از بازهٔ پشتیبانی‌شده، یک استثنای کتابخانه می‌دهد (برای تاریخ `InvalidDateException`) و هیچ‌وقت `TypeError` یا `ValueError` خام بیرون نمی‌دهد. مقداری از نوعی که متد قبول نمی‌کند، مثل آرایه به‌جای تاریخ، را خود PHP با `TypeError` رد می‌کند. فهرست کامل در [راهنمای خطاها](https://ehsanenaloo.github.io/RTLY-Kit/fa/error-handling.html).
 
 ---
 

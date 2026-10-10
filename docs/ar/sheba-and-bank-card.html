@@ -59,7 +59,7 @@ var_dump(is_bank_card(<span class="tok-s">'۶۰۳۷۹۹۱۲۳۴۵۶۷۸۹۳'</sp
 └────────── country code</code></pre>
 
 <h3 id="sheba-normalization">التطبيع<a class="anchor" href="#sheba-normalization" aria-label="رابط إلى هذا القسم">#</a></h3>
-<p>تحوّل <code>Sheba::normalize()</code> النص إلى أحرف كبيرة، وتحوّل الأرقام الفارسية والعربية، وتحذف المسافات والشرطات والمسافات الصفرية. أما النص المكوّن من 24 رقمًا بالضبط، وهي الصيغة الشائعة «بدون IR» التي تطبعها المصارف، فتُضاف إليه البادئة <code>IR</code>. وأي مُدخَل آخر يُترك كما كُتب ثم يفشل في فحص الصيغة:</p>
+<p>تحوّل <code>Sheba::normalize()</code> النص إلى أحرف كبيرة، وتحوّل الأرقام الفارسية والعربية، وتحذف المسافات والمسافات غير القابلة للكسر والمسافات الصفرية وعلامتي LRM وRLM والشرطات. أما التبويب والسطر الجديد وNUL فلا تُحذف وتفشل في فحص الصيغة. أما النص المكوّن من 24 رقمًا بالضبط، وهي الصيغة الشائعة «بدون IR» التي تطبعها المصارف، فتُضاف إليه البادئة <code>IR</code>. وأي مُدخَل آخر يُترك كما كُتب ثم يفشل في فحص الصيغة:</p>
 <pre tabindex="0"><code class="language-php"><span class="tok-k">echo</span> Sheba::normalize(<span class="tok-s">'800170000000000000000123'</span>);        <span class="tok-c">// IR800170000000000000000123</span>
 <span class="tok-k">echo</span> Sheba::normalize(<span class="tok-s">'ir80 0170 0000'</span>);                   <span class="tok-c">// IR8001700000</span>
 <span class="tok-k">echo</span> json_encode(Sheba::validate(<span class="tok-s">'ir80-0170-0000-0000-0000-0001-23'</span>)-&gt;isValid());   <span class="tok-c">// true</span></code></pre>
@@ -68,7 +68,7 @@ var_dump(is_bank_card(<span class="tok-s">'۶۰۳۷۹۹۱۲۳۴۵۶۷۸۹۳'</sp
 <ol>
 <li>النوع والحجم (<code>invalid_type</code> و<code>input_too_long</code>).</li>
 <li>الصيغة: <code>IR</code> يليه 24 رقمًا بالضبط، وإلا <code>invalid_format</code>.</li>
-<li>المجموع الاختباري: ISO 7064 mod-97-10. تُنقل النويسات الأربع الأولى إلى النهاية، ويتحول <code>I</code> و<code>R</code> إلى 18 و27، ويجب أن يساوي العدد الناتج بالنسبة إلى 97 القيمة 1؛ وإلا <code>invalid_checksum</code>.</li>
+<li>المجموع الاختباري: ISO 7064 mod-97-10. تُنقل النويسات الأربع الأولى إلى النهاية، ويتحول <code>I</code> و<code>R</code> إلى 18 و27، ويجب أن يساوي العدد الناتج بالنسبة إلى 97 القيمة 1؛ وإلا <code>invalid_checksum</code>. ولا يُنتج المعيار إلا أرقام تحقق من 02 إلى 98، فتكون <code>00</code> و<code>01</code> و<code>99</code> <code>invalid_checksum</code> حتى لو كان باقي القسمة صحيحًا.</li>
 </ol>
 <p>يجري البحث عن المصرف قبل المجموع الاختباري، فيكون رمز المصرف موجودًا في <code>details()</code> حتى مع رقم تحقق خاطئ:</p>
 <pre tabindex="0"><code class="language-php"><span class="tok-v">$r</span> = Sheba::validate(<span class="tok-s">'IR060170000000000000000123'</span>);
@@ -87,7 +87,7 @@ var_dump(<span class="tok-v">$unknown</span>-&gt;isValid(), <span class="tok-v">
 
 <h2 id="bank-card">رقم البطاقة المصرفية<a class="anchor" href="#bank-card" aria-label="رابط إلى هذا القسم">#</a></h2>
 <h3 id="card-format">الصيغة والفحوص<a class="anchor" href="#card-format" aria-label="رابط إلى هذا القسم">#</a></h3>
-<p>تتكون البطاقة المصرفية الإيرانية من 16 رقمًا. وتُبقي <code>BankCard::normalize()</code> على الأرقام فقط بعد تحويل الفارسية والعربية منها، فالمسافات والشرطات وسائر الفواصل مسموح بها. والفحوص بالترتيب:</p>
+<p>تتكون البطاقة المصرفية الإيرانية من 16 رقمًا. وتُبقي <code>BankCard::normalize()</code> على الأرقام فقط بعد تحويل الفارسية والعربية منها، فالمسافات والمسافات غير القابلة للكسر والمسافات الصفرية والشرطات والأقواس والنقاط بين الأرقام مسموح بها. أما الحروف وعلامات الترقيم الأخرى وأحرف التحكم والشرطة في البداية فتعطي <code>invalid_format</code>. والفحوص بالترتيب:</p>
 <ol>
 <li>النوع والحجم.</li>
 <li>16 رقمًا بالضبط، وإلا <code>invalid_format</code>.</li>

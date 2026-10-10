@@ -50,12 +50,18 @@ echo Hebrew::make('5785/01/10', $utc);                       // 5785/01/10 00:00
 echo Hebrew::make('0001-09-06')-&gt;format('Y/m/d');            // 3762/01/01</code></pre>
 <h3 id="string-rules">دلالات السلاسل النصية</h3>
 <ol>
-<li>تتحول الأرقام الفارسية والعربية إلى أرقام إنجليزية؛ وتُقصّ المسافات من الطرفين؛ والسلسلة الفارغة تُطلق <code>InvalidDateException</code>.</li>
-<li>السلسلة بالصيغة <code>Y/m/d</code> أو <code>Y-m-d</code> (و<code>H:i[:s]</code> اختياري) وسنتها <strong>3000 أو أكثر</strong> تُقرأ تاريخًا <em>عبريًا</em>، بالترقيم الترتيبي للأشهر الموصوف أعلاه. (العتبة معاكسة لما في Jalali وHijri اللذين يقرآن السنوات <em>الأقل</em> من 1700 تاريخًا لهما.)</li>
-<li>كل سلسلة أخرى تُحلَّل تاريخًا ميلاديًا أو نصًا حرًّا.</li>
+<li>تتحول الأرقام الفارسية والعربية إلى أرقام إنجليزية؛ وتُقصّ المسافات من الطرفين، وتُعامَل المسافة غير القابلة للكسر وZWNJ وLRM وRLM معاملة المسافة؛ والسلسلة الفارغة أو التي فيها بايت NUL تُطلق <code>InvalidDateException</code>.</li>
+<li>السلسلة بالصيغة الدقيقة <code>Y/m/d</code> أو <code>Y-m-d</code> (سنة من 4 أو 5 أرقام، يليها اختياريًا مسافة أو <code>T</code> أو <code>t</code> و<code>H:i[:s[.u]]</code> وعلامة منطقة <code>Z</code> أو <code>+03:30</code> أو <code>+0330</code> أو <code>+03</code>؛ تحدّد العلامة المنطقة الزمنية للنتيجة ثم يحوّلها <code>$timezone</code>) وسنتها <strong>3000 أو أكثر</strong> تُقرأ تاريخًا <em>عبريًا</em>، بالترقيم الترتيبي للأشهر الموصوف أعلاه. وتعمل السنة من 5 أرقام حتى <code>'13759/01/01'</code>، ويعيد <code>make()</code> قراءة ناتج <code>toDateString()</code>. (العتبة معاكسة لما في Jalali وHijri اللذين يقرآن السنوات <em>الأقل</em> من 1700 تاريخًا لهما.)</li>
+<li>النص الذي يبدأ هكذا وفيه زيادة أو نقص (اسم منطقة زمنية بعد الوقت أو <code>PM</code>) والسلسلة من 3 إلى 8 أرقام فقط مثل <code>'5785'</code> تُطلق <code>InvalidDateException</code>.</li>
+<li>كل سلسلة أخرى تُحلَّل تاريخًا ميلاديًا أو نصًا حرًّا، ومنها ثمانية أرقام تبدأ بسنة أقل من 3000 (<code>'20240101'</code>).</li>
 </ol>
 <p>فـ <code>'5785/01/10'</code> عبري، و<code>'2025-10-07'</code> ميلادي، أما <code>'3000/01/01'</code> فتُقرأ سنة عبرية 3000 وهي أقل من الحد الأدنى المدعوم، ولذلك تُطلق <code>Invalid Hebrew date: 3000/1/1</code>.</p>
 
+<h3 id="from-format">بصيغة محددة: <code>createFromFormat()</code></h3>
+<p>تعمل <code>Hebrew::createFromFormat($format, $time, $timezone = null)</code> مثل <a href="jalali.html#from-format">نظيرتها الجلالية</a>، بالسنة العبرية ورقم الشهر الترتيبي كما في <code>create()</code>. الرموز المقبولة <code>d j m n Y H G i s g h A a</code> وحروف الهروب بالشرطة المائلة العكسية؛ وغيرها يُلقي <code>InvalidDateException</code> ويذكر الرمز، والصيغة <code>U</code> وحدها تقرأ طابعًا زمنيًا. يقرأ <code>Y</code> أربعة أرقام على الأكثر، فالسنوات من 10000 تُنشأ بـ<code>create()</code>.</p>
+<pre><code class="language-php">echo Hebrew::createFromFormat('Y-n-j', '5784-13-29'); // 5784/13/29 00:00:00 (الشهر 13 في السنة الكبيسة)
+</code></pre>
+<p>تُلقي السلسلة الميلادية ذات اليوم المستحيل، مثل <code>'2024-02-30'</code>، <code>InvalidDateException</code> (أما PHP وحدها فتنقلها إلى 2024-03-01). لا سنوات سالبة في النص: يُلقي <code>make('-0100/01/01')</code> استثناءً، فاستخدم <code>create()</code> أو الطابع الزمني لها. يحفظ <code>serialize()</code> اللحظة فقط (ومعها نوع التقويم في الهجري). ويتحقق <code>unserialize()</code> منها من جديد ويُلقي <code>InvalidDateException</code> عند بيانات تالفة أو خارج النطاق المدعوم.</p>
 <h2 id="range">النطاق المدعوم والأخطاء</h2>
 <p>السنوات العبرية المدعومة من <code>Hebrew::MIN_YEAR</code> = <strong>3762</strong> إلى <code>Hebrew::MAX_YEAR</code> = <strong>13759</strong>. وهي بالضبط السنوات الواقعة داخل السنوات الميلادية من 1 إلى 9999: أول يوم هو 1 Tishrei 3762 (0001-09-06) وآخر يوم هو آخر يوم من Elul 13759 (9999-11-03). وأي قيمة خارج ذلك تُطلق <code>InvalidDateException</code>؛ بينما تُرجع <code>isValid()</code> القيمة false.</p>
 <pre><code class="language-php">foreach ([[3761, 1, 1], [13760, 1, 1], [5785, 13, 1], [5785, 3, 31]] as [$y, $m, $d]) {
@@ -92,7 +98,7 @@ echo Hebrew::create(5784, 7, 15, 0, 0, 0, $utc)-&gt;format('j F');   // 15 Adar 
 <table>
 <thead><tr><th>الرمز</th><th>المعنى</th></tr></thead>
 <tbody>
-<tr><td><code>Y y m n d j</code></td><td>السنة، والشهر (الترتيبي)، واليوم</td></tr>
+<tr><td><code>Y y m n d j</code></td><td>السنة (4 أرقام على الأقل و5 من السنة 10000؛ و<code>y</code> آخر رقمين)، والشهر (الترتيبي)، واليوم</td></tr>
 <tr><td><code>H G h g i s</code></td><td>الوقت من اليوم (نظام 24 ساعة و12 ساعة)</td></tr>
 <tr><td><code>F M</code></td><td>اسم الشهر بحسب اللغة (Adar I/II أو Adar بحسب الحال)</td></tr>
 <tr><td><code>l</code></td><td>اسم يوم الأسبوع بحسب اللغة</td></tr>

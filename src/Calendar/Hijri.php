@@ -44,11 +44,31 @@ use RtlyKit\Number\Digits;
  * {@see InvalidDateException}, as do absurd add*()/sub*() deltas.
  *
  * String parsing in {@see self::make()}: Persian/Arabic digits are normalised
- * first; `Y/m/d` or `Y-m-d` (3-4 digit year, optional ` H:i[:s]`) with a year
- * below 1700 is read as a HIJRI date in the chosen variant (`1446/09/01`);
- * every other string (including years of 1700 or later) is parsed as
- * Gregorian/free-form text. Invalid Hijri dates and empty/whitespace strings
- * throw {@see InvalidDateException}; `null` means "now".
+ * first, and a no-break space, ZWNJ or LRM/RLM mark counts as a space. The exact
+ * form `Y/m/d` or `Y-m-d` (3-4 digit year), optionally followed by a space, `T`
+ * or `t` and `H:i[:s[.u]]` and a zone designator (`Z`, `+HH:MM`, `+HHMM`,
+ * `+HH`; within +-14:00), with a year below 1700, is read as a HIJRI date in the
+ * chosen variant (`1446/09/01`, `1446-09-01T10:00:00Z`). A designator sets the
+ * zone of the result, and a $timezone argument then converts to that zone. Text
+ * that starts like such a date but is not exactly that shape (a zone name after
+ * the time, `1446/09/01 10:00 PM`), a bare run
+ * of 3-8 digits and a 5-digit year throw {@see InvalidDateException}. Every other
+ * string (including years of 1700 or later) is parsed as Gregorian/free-form
+ * text. Invalid Hijri dates, empty/whitespace strings and strings with a NUL
+ * byte throw {@see InvalidDateException}; `null` means "now".
+ *
+ * The variant argument is null by default. Given a Hijri instance, make()
+ * returns it when no zone is given and the variant is null or equal to the
+ * instance's own. A time zone converts the instance to that zone, and a variant
+ * that differs (UmmAlQura or Tabular, given explicitly) converts it to that
+ * variant, both for the same instant. For any other input null means UmmAlQura.
+ * endOfDay()/endOfMonth()/endOfYear() end at 23:59:59.999999.
+ *
+ * createFromFormat() works as on Jalali (tokens d j m n Y H G i s g h A a; other
+ * tokens throw; `U` alone is a timestamp) and takes the variant last.
+ * An impossible Gregorian day in text (`2024-02-30`) throws instead of rolling
+ * over. format(): `Y` has at least 4 digits, `y` uses floor modulo. Serialising
+ * keeps the instant and the variant; unserialize() re-checks both.
  *
  * Weekday numbering: `getDayOfWeek()` / `w` are Sunday-first (0 = Sunday ..
  * 6 = Saturday), unlike {@see Jalali::getDayOfWeek()} (0 = Saturday).
@@ -115,14 +135,37 @@ final class Hijri implements CalendarDate
         return new self($instant, $this->variant);
     }
 
+    /** @return array<string, string> */
+    private function serialExtra(): array
+    {
+        return ['variant' => $this->variant->value];
+    }
+
+    private function restoreFrom(DateTimeImmutable $instant, array $data): void
+    {
+        $variant = $data['variant'] ?? null;
+        $variant = $variant instanceof HijriVariant ? $variant : (is_string($variant) ? HijriVariant::tryFrom($variant) : null);
+        if ($variant === null) {
+            throw InvalidDateException::because(ErrorCode::InvalidDate, 'Cannot unserialize the date: unknown Hijri variant.');
+        }
+        $this->__construct($instant, $variant);
+    }
+
     public static function make(
         DateTimeInterface|CalendarDate|string|int|null $time = null,
         ?DateTimeZone $timezone = null,
-        HijriVariant $variant = HijriVariant::UmmAlQura,
+        ?HijriVariant $variant = null,
     ): static {
         if ($time instanceof self) {
-            return $time;
+            // null keeps the variant of the instance; any variant given (UmmAlQura too) applies.
+            $target = $variant ?? $time->variant;
+            if ($timezone === null && $target === $time->variant) {
+                return $time;
+            }
+
+            return new self($timezone === null ? $time->gregorian : $time->gregorian->setTimezone($timezone), $target);
         }
+        $variant ??= HijriVariant::UmmAlQura;
         if ($time instanceof CalendarDate) {
             $time = $time->toGregorian();
         }
@@ -141,9 +184,12 @@ final class Hijri implements CalendarDate
         }
         if (is_string($time)) {
             $normalized = CalendarLimits::normalize($time);
-            $own = CalendarLimits::matchOwnFormat($normalized);
-            if ($own !== null && $own[0] < self::OWN_YEAR_LIMIT) {
-                return self::create($own[0], $own[1], $own[2], $own[3], $own[4], $own[5], $timezone, $variant);
+            $own = CalendarLimits::matchOwnFormat($normalized, static fn (int $year): bool => $year < self::OWN_YEAR_LIMIT);
+            if ($own !== null) {
+                // A zone designator in the text is read first; $timezone then converts the result.
+                $created = self::create($own[0], $own[1], $own[2], $own[3], $own[4], $own[5], $own[7] ?? $timezone, $variant)->plusMicroseconds($own[6]);
+
+                return $own[7] !== null && $timezone !== null ? self::make($created, $timezone) : $created;
             }
 
             return new self(CalendarLimits::parseGregorian($normalized, $timezone), $variant);
@@ -183,6 +229,30 @@ final class Hijri implements CalendarDate
         $dateString = sprintf('%04d-%02d-%02d %02d:%02d:%02d', $gy, $gm, $gd, $hour, $minute, $second);
 
         return new self(CalendarLimits::parseGregorian($dateString, $timezone), $variant);
+    }
+
+    /**
+     * Reads year, month and day as Hijri values (in the given variant), like
+     * {@see Jalali::createFromFormat()}: tokens `d j m n Y H G i s g h A a` and
+     * backslash escapes work; tokens with a Gregorian or time-zone meaning
+     * (`z e T P O p u v y F M D l S`, and `U` mixed with others) throw
+     * {@see InvalidDateException} naming the token; the format `U` alone reads a
+     * Unix timestamp. `Y` reads at most 4 digits.
+     *
+     * @throws InvalidDateException
+     */
+    public static function createFromFormat(
+        string $format,
+        string $time,
+        ?DateTimeZone $timezone = null,
+        HijriVariant $variant = HijriVariant::UmmAlQura,
+    ): static {
+        $read = CalendarLimits::readFormat($format, $time);
+        if (is_int($read)) {
+            return self::make($read, $timezone, $variant);
+        }
+
+        return self::create($read[0], $read[1], $read[2], $read[3], $read[4], $read[5], $timezone, $variant);
     }
 
     /* -----------------------------------------------------------------
@@ -243,8 +313,8 @@ final class Hijri implements CalendarDate
                 continue;
             }
             $out .= match ($c) {
-                'Y' => sprintf('%04d', $this->year),
-                'y' => sprintf('%02d', $this->year % 100),
+                'Y' => $this->yearText(),
+                'y' => $this->shortYearText(),
                 'm' => sprintf('%02d', $this->month),
                 'n' => (string) $this->month,
                 'd' => sprintf('%02d', $this->day),
@@ -262,7 +332,7 @@ final class Hijri implements CalendarDate
                 'h' => sprintf('%02d', $this->hour % 12 === 0 ? 12 : $this->hour % 12),
                 'S' => '',
                 'W' => $this->gregorian->format('W'),
-                'c' => sprintf('%04d-%02d-%02dT%02d:%02d:%02d', $this->year, $this->month, $this->day, $this->hour, $this->minute, $this->second)
+                'c' => sprintf('%s-%02d-%02dT%02d:%02d:%02d', $this->yearText(), $this->month, $this->day, $this->hour, $this->minute, $this->second)
                     .$this->gregorian->format('P'),
                 'r' => $this->gregorian->format('r'),
                 'U', 'e', 'T', 'P', 'p', 'O', 'Z', 'I', 'u', 'v' => $this->gregorian->format($c),
@@ -330,6 +400,10 @@ final class Hijri implements CalendarDate
     {
         CalendarLimits::delta($months, (self::MAX_YEAR - self::MIN_YEAR + 2) * 12, 'months');
 
+        if ($months === 0) {
+            return $this;
+        }
+
         $total = $this->year * 12 + ($this->month - 1) + $months;
         $year = intdiv($total, 12);
         $month = $total - $year * 12;
@@ -343,7 +417,7 @@ final class Hijri implements CalendarDate
         }
         $day = min($this->day, self::daysInMonth($year, $month, $this->variant));
 
-        return self::create($year, $month, $day, $this->hour, $this->minute, $this->second, $this->getTimezone(), $this->variant);
+        return $this->settle(self::create($year, $month, $day, $this->hour, $this->minute, $this->second, $this->getTimezone(), $this->variant));
     }
 
     public function addYears(int $years): static
@@ -360,7 +434,7 @@ final class Hijri implements CalendarDate
 
     public function endOfDay(): static
     {
-        return self::create($this->year, $this->month, $this->day, 23, 59, 59, $this->getTimezone(), $this->variant);
+        return self::create($this->year, $this->month, $this->day, 23, 59, 59, $this->getTimezone(), $this->variant)->atLastMicrosecond();
     }
 
     public function startOfMonth(): static
@@ -372,7 +446,7 @@ final class Hijri implements CalendarDate
     {
         $last = self::daysInMonth($this->year, $this->month, $this->variant);
 
-        return self::create($this->year, $this->month, $last, 23, 59, 59, $this->getTimezone(), $this->variant);
+        return self::create($this->year, $this->month, $last, 23, 59, 59, $this->getTimezone(), $this->variant)->atLastMicrosecond();
     }
 
     public function startOfYear(): static
@@ -384,7 +458,7 @@ final class Hijri implements CalendarDate
     {
         $last = self::daysInMonth($this->year, 12, $this->variant);
 
-        return self::create($this->year, 12, $last, 23, 59, 59, $this->getTimezone(), $this->variant);
+        return self::create($this->year, 12, $last, 23, 59, 59, $this->getTimezone(), $this->variant)->atLastMicrosecond();
     }
 
     /* -----------------------------------------------------------------
@@ -397,31 +471,35 @@ final class Hijri implements CalendarDate
         return $this->year * 12 + $this->month;
     }
 
-    /** Re-express $other in this instance's variant (and optionally a timezone). */
-    private function coerce(CalendarDate|DateTimeInterface $other, ?DateTimeZone $tz = null): self
-    {
-        return self::make(self::instantOf($other), $tz, $this->variant);
-    }
-
     /**
-     * Whole Hijri months between two instants (day and time-of-day count).
+     * Whole Hijri months between two instants (day and time-of-day count,
+     * microseconds included). Works for any two valid instants, whatever
+     * their time zones; the months are counted in this instance's variant.
+     *
+     * Not an exact inverse of addMonths() at a clamped month end (like Carbon):
+     * 30 Muharram plus one month is 29 Safar, and diffInMonths() between those
+     * two is 0, because day 29 is before day 30.
      */
     public function diffInMonths(CalendarDate|DateTimeInterface $other, bool $absolute = true): int
     {
-        $other = $this->coerce($other, $this->getTimezone());
+        $g = $this->instantInOwnZone($other);
+        [$oy, $om, $od] = self::gregorianToHijri((int) $g->format('Y'), (int) $g->format('n'), (int) $g->format('j'), $this->variant);
 
-        [$lo, $hi] = $this->getTimestamp() <= $other->getTimestamp() ? [$this, $other] : [$other, $this];
-
-        $months = $hi->monthIndex() - $lo->monthIndex();
-        if ([$hi->day, $hi->hour, $hi->minute, $hi->second] < [$lo->day, $lo->hour, $lo->minute, $lo->second]) {
-            $months--;
-        }
-
-        return $absolute || $lo === $other ? $months : -$months;
+        return $this->monthsBetween(
+            $this->monthIndex(),
+            [$this->day, ...self::clockOf($this->gregorian)],
+            $oy * 12 + $om,
+            [$od, ...self::clockOf($g)],
+            $this->gregorian <= $g,
+            $absolute,
+        );
     }
 
     /**
      * Whole Hijri years between two instants (month, day and time count).
+     *
+     * Not an exact inverse of addYears() when the day is clamped to a shorter
+     * month of the target year (like Carbon).
      */
     public function diffInYears(CalendarDate|DateTimeInterface $other, bool $absolute = true): int
     {

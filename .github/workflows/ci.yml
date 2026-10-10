@@ -153,7 +153,8 @@ jobs:
         env:
           RTLY_EXPECT_NO_MBSTRING: '1'
 
-  # Mutation testing: slow, so it runs on pushes to main and on demand, not on pull requests.
+  # Mutation testing: slow, so it runs on pushes to main, not on pull requests. The `ci` job below
+  # waits for it, so a push to main is green only when mutation testing passed.
   mutation:
     name: Mutation testing
     if: ${{ github.event_name != 'pull_request' }}
@@ -172,19 +173,35 @@ jobs:
       - run: composer install --no-interaction --prefer-dist --no-progress
       - run: composer mutation
 
-  # One stable name for branch protection: green only when every job above passed.
+  # One stable name for branch protection and for the release gate: green only when
+  # every job above passed. Mutation testing is slow, so it is skipped on pull requests;
+  # that is the only job allowed to be skipped, and only there. On a push to main it
+  # must succeed like every other job.
   ci:
     name: CI result
     if: ${{ always() }}
-    needs: [test, test-os, test-lowest, test-laravel, test-minimal]
+    needs: [test, test-os, test-lowest, test-laravel, test-minimal, mutation]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - name: Require every job to have succeeded
         env:
-          RESULTS: ${{ join(needs.*.result, ' ') }}
+          NEEDS: ${{ toJSON(needs) }}
+          EVENT: ${{ github.event_name }}
         run: |
-          echo "Job results: $RESULTS"
-          for r in $RESULTS; do
-            [ "$r" = "success" ] || { echo "A required job did not succeed ($r)."; exit 1; }
-          done
+          set -euo pipefail
+          printf '%s\n' "$NEEDS" | jq -r 'to_entries[] | "\(.key) \(.value.result)"' > results.txt
+          cat results.txt
+          [ -s results.txt ] || { echo "::error::No job results found."; exit 1; }
+          fail=0
+          while read -r job result; do
+            if [ "$result" = "success" ]; then
+              continue
+            fi
+            if [ "$job" = "mutation" ] && [ "$result" = "skipped" ] && [ "$EVENT" = "pull_request" ]; then
+              continue
+            fi
+            echo "::error::Job '$job' did not succeed ($result)."
+            fail=1
+          done < results.txt
+          exit "$fail"

@@ -80,6 +80,7 @@ require</span> __DIR__.<span class="tok-s">'/vendor/autoload.php'</span>;
 <tr><td><code>Hebrew</code> / <code>hebrew_date()</code></td><td>3000 or more</td><td>Gregorian</td></tr>
 </tbody>
 </table></div>
+<p>The text must have exactly the shape <code>Y/m/d</code> or <code>Y-m-d</code>, with an optional time (<code>H:i</code>, <code>H:i:s</code> or <code>H:i:s.u</code> after a space, <code>T</code> or <code>t</code>) and an optional zone designator (<code>Z</code>, <code>+03:30</code>, <code>+0330</code> or <code>+03</code>, within ±14:00) that sets the time zone. Text that starts like a date of the calendar but has more (a zone name such as <code>UTC</code>, <code>PM</code>) or less, a bare run of 3 to 8 digits, and a 5-digit year in Jalali or Hijri all throw <code>InvalidDateException</code>. Hebrew accepts years of 4 or 5 digits (up to 13759). A no-break space, ZWNJ, LRM and RLM count as spaces.</p>
 <p>To pass a real Gregorian date below the threshold (for example the year 999), use a <code>DateTimeImmutable</code>. It is never reinterpreted. See <a href="troubleshooting-faq.html#string-year">the FAQ</a>.</p>
 
 <h3 id="umm-al-qura">Umm al-Qura range<a class="anchor" href="#umm-al-qura" aria-label="Link to this section">#</a></h3>
@@ -128,6 +129,8 @@ require</span> __DIR__.<span class="tok-s">'/vendor/autoload.php'</span>;
 <tr><td><code>HolidayCalendar::withIslamicOffset()</code></td><td>-3 to +3 days</td><td><code>InvalidDateException</code></td></tr>
 <tr><td><code>HolidayCalendar::withHijriMonthStart()</code></td><td>within 3 days of the computed start. 29 or 30 days from a neighbouring month start you gave</td><td><code>InvalidDateException</code></td></tr>
 <tr><td><code>PrayerTimes::withTune()</code></td><td>-30 to +30 minutes, whole numbers, for <code>fajr</code>, <code>sunrise</code>, <code>dhuhr</code>, <code>asr</code>, <code>maghrib</code>, <code>isha</code></td><td><code>InvalidPrayerConfigException</code></td></tr>
+<tr><td><code>new PrayerTimes()</code></td><td>Latitude -90 to 90, longitude -180 to 180, elevation -20000 to 20000 metres (negative counts as 0). No <code>NaN</code> or infinity</td><td><code>InvalidPrayerConfigException</code></td></tr>
+<tr><td><code>PrayerTimes::getTimes()</code>, <code>nextPrayer()</code></td><td>The local year of the date must be 1 to 9999</td><td><code>InvalidDateException</code></td></tr>
 </tbody>
 </table></div>
 

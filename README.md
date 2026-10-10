@@ -232,7 +232,7 @@ try {
 }
 ```
 
-Bad input never leaks a raw `TypeError` or `ValueError`. Years outside the supported range throw `InvalidDateException`. Read the [error guide](https://ehsanenaloo.github.io/RTLY-Kit/en/error-handling.html) for the full list.
+A value of an accepted type that the library cannot use, such as a year outside the supported range, throws a library exception (`InvalidDateException` for dates). It never leaks a raw `TypeError` or `ValueError`. A value of a type the method does not accept, such as an array for a date, is rejected by PHP itself with a `TypeError`. Read the [error guide](https://ehsanenaloo.github.io/RTLY-Kit/en/error-handling.html) for the full list.
 
 ---
 

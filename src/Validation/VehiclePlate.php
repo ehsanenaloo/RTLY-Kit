@@ -18,7 +18,8 @@ use RtlyKit\Text\Normalizer;
 final class VehiclePlate implements Validator
 {
     /**
-     * Letters that appear on Iranian plates (the long form «الف» counts as one letter).
+     * Letters that appear on Iranian plates (the long form «الف» counts as one letter; a bare «ا» is accepted as the same
+     * letter and reported as «الف» in `normalized` and `letter`).
      * D and S (Latin) mark diplomatic / special plates.
      */
     private const VALID_LETTERS = [
@@ -82,11 +83,17 @@ final class VehiclePlate implements Validator
 
     public static function normalize(string $plate): string
     {
+        // Control characters (tab, newline, NUL ...) are not separators: Normalizer would trim them away,
+        // so mark them with U+FFFD and the shape check rejects the plate.
+        $plate = preg_replace('/[\x00-\x1F\x7F]/', "\u{FFFD}", $plate) ?? $plate;
         $plate = Normalizer::normalize(Digits::toEnglish($plate));
         $plate = str_replace('ایران', '', $plate);
         $plate = str_replace([' ', '-', '_', "\u{200C}"], '', $plate);
 
-        return strtoupper(trim($plate));
+        $plate = strtoupper($plate);
+
+        // A bare «ا» (also written «أ» or «إ», which Normalizer reads as «ا») is the short form of «الف».
+        return preg_replace('/^(\d{2})\x{0627}(?=\d{5}$)/Du', '$1الف', $plate) ?? $plate;
     }
 
     /**
@@ -96,7 +103,7 @@ final class VehiclePlate implements Validator
     {
         $letters = implode('|', array_map(static fn (string $l): string => preg_quote($l, '/'), self::VALID_LETTERS));
 
-        if (preg_match('/^(\d{2})('.$letters.')(\d{3})(\d{2})$/u', $normalized, $m) !== 1) {
+        if (preg_match('/^(\d{2})('.$letters.')(\d{3})(\d{2})$/Du', $normalized, $m) !== 1) {
             return null;
         }
 

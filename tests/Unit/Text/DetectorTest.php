@@ -66,6 +66,13 @@ final class DetectorTest extends TestCase
         $this->assertFalse(Detector::containsRtl('abc 123'));
     }
 
+    public function test_byte_order_mark_is_not_rtl(): void
+    {
+        $this->assertFalse(Detector::containsRtl("\u{FEFF}abc"));
+        $this->assertTrue(Detector::containsRtl("\u{FEFF}\u{FEFC}"));
+        $this->assertFalse(Detector::isArabic("\u{FEFF}abc"));
+    }
+
     public function test_rtl_locales(): void
     {
         foreach (['fa', 'fa_IR', 'ar-EG', 'he', 'ur', 'ps', 'sd', 'ckb', 'ckb-IQ', 'ug', 'ug-CN', 'dv', 'yi', 'ku-Arab', 'pa-Arab-PK'] as $l) {

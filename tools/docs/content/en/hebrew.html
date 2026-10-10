@@ -50,12 +50,18 @@ echo Hebrew::make('5785/01/10', $utc);                       // 5785/01/10 00:00
 echo Hebrew::make('0001-09-06')-&gt;format('Y/m/d');            // 3762/01/01</code></pre>
 <h3 id="string-rules">String semantics</h3>
 <ol>
-<li>Persian and Arabic digits become English digits, and the string is trimmed. An empty string throws <code>InvalidDateException</code>.</li>
-<li>A string like <code>Y/m/d</code> or <code>Y-m-d</code> (optional <code>H:i[:s]</code>) with a year of 3000 or more is read as a Hebrew date, with the month numbers above. The threshold works the other way round from Jalali and Hijri, which read years below 1700 as their own.</li>
-<li>Every other string is read as Gregorian or free text.</li>
+<li>Persian and Arabic digits become English digits, and the string is trimmed. A no-break space, a half-space (ZWNJ) and the LRM/RLM marks count as spaces. An empty string, or one with a NUL byte, throws <code>InvalidDateException</code>.</li>
+<li>A string that is exactly <code>Y/m/d</code> or <code>Y-m-d</code> (4 or 5 digit year), optionally followed by a space, <code>T</code> or <code>t</code>, <code>H:i[:s[.u]]</code> and a zone designator (<code>Z</code>, <code>+03:30</code>, <code>+0330</code> or <code>+03</code>), with a year of 3000 or more, is read as a Hebrew date (a designator sets the time zone, and a <code>$timezone</code> argument then converts to it), with the month numbers above. Five-digit years work, up to <code>'13759/01/01'</code>, and <code>toDateString()</code> gives text that <code>make()</code> reads back. The threshold works the other way round from Jalali and Hijri, which read years below 1700 as their own.</li>
+<li>Text that starts like that but has anything more or less (a zone name after the time, <code>PM</code>) and a bare run of 3 to 8 digits such as <code>'5785'</code> throw <code>InvalidDateException</code>.</li>
+<li>Every other string is read as Gregorian or free text, including eight digits that start with a year below 3000 (<code>'20240101'</code>).</li>
 </ol>
 <p>So <code>'5785/01/10'</code> is Hebrew and <code>'2025-10-07'</code> is Gregorian. <code>'3000/01/01'</code> is read as Hebrew year 3000. That is below the supported minimum, so it throws <code>Invalid Hebrew date: 3000/1/1</code>.</p>
 
+<h3 id="from-format">With a format: <code>createFromFormat()</code></h3>
+<p><code>Hebrew::createFromFormat($format, $time, $timezone = null)</code> works like <a href="jalali.html#from-format">the Jalali one</a>, with the Hebrew year and the ordinal month number of <code>create()</code>. The tokens are <code>d j m n Y H G i s g h A a</code> and backslash escapes; others throw <code>InvalidDateException</code> and name the token, and the format <code>U</code> alone reads a Unix timestamp. <code>Y</code> reads at most 4 digits, so years from 10000 need <code>create()</code>.</p>
+<pre><code class="language-php">echo Hebrew::createFromFormat('Y-n-j', '5784-13-29'); // 5784/13/29 00:00:00 (Elul, a leap year has 13 months)
+</code></pre>
+<p>A Gregorian string with an impossible day, such as <code>'2024-02-30'</code>, throws <code>InvalidDateException</code> (PHP alone would roll it over to 2024-03-01). Text has no negative years: <code>make('-0100/01/01')</code> throws, so use <code>create()</code> or a timestamp for those. <code>serialize()</code> stores only the moment (and the Hijri variant). <code>unserialize()</code> checks it again and throws <code>InvalidDateException</code> for a payload that is damaged or outside the supported range.</p>
 <h2 id="range">Supported range and errors</h2>
 <p>Hebrew years <code>Hebrew::MIN_YEAR</code> = <strong>3762</strong> to <code>Hebrew::MAX_YEAR</code> = <strong>13759</strong> are supported. These are the years inside Gregorian years 1 to 9999. The first day is 1 Tishrei 3762 (0001-09-06) and the last is the last day of Elul 13759 (9999-11-03). Anything outside throws <code>InvalidDateException</code>. <code>isValid()</code> returns false instead.</p>
 <pre><code class="language-php">foreach ([[3761, 1, 1], [13760, 1, 1], [5785, 13, 1], [5785, 3, 31]] as [$y, $m, $d]) {
@@ -92,7 +98,7 @@ echo Hebrew::create(5784, 7, 15, 0, 0, 0, $utc)-&gt;format('j F');   // 15 Adar 
 <table>
 <thead><tr><th>Token</th><th>Meaning</th></tr></thead>
 <tbody>
-<tr><td><code>Y y m n d j</code></td><td>Year, month (by position), day</td></tr>
+<tr><td><code>Y y m n d j</code></td><td>Year (at least 4 digits, 5 from the year 10000; <code>y</code> is the last 2 digits), month (by position), day</td></tr>
 <tr><td><code>H G h g i s</code></td><td>Time of day (24-hour and 12-hour)</td></tr>
 <tr><td><code>F M</code></td><td>Month name in the locale (Adar I, Adar II or Adar as needed)</td></tr>
 <tr><td><code>l</code></td><td>Weekday name in the locale</td></tr>

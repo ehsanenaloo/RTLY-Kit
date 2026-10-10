@@ -6,6 +6,112 @@ order: 80
 -->
 <p>Before 1.0.0, a minor release may contain breaking changes. Each one is listed here with the steps to migrate. The policy is on <a href="api-stability.html#versioning">API stability</a>. This page starts with the newest version. The last section covers the early pre-release builds, from before 0.1.0.</p>
 
+<h2 id="to-0-3-0">From 0.2.1 to 0.3.0</h2>
+<p>The changes below can break code that worked before. Most of them turn a guessed or wrong result into an exception or an invalid <code>Result</code>. Each item gives the old behaviour, the new behaviour and what to do.</p>
+<h3 id="to-0-3-0-text">Dates from text</h3>
+<ul>
+<li><strong>Text that only looks like a date.</strong> <code>make()</code> on <code>Jalali</code>, <code>Hijri</code> and <code>Hebrew</code> reads the exact shapes <code>Y/m/d</code> and <code>Y-m-d</code> (with an optional time and zone designator) as a date of the calendar. Before, text that started like such a date but had more or less was handed to PHP and read as a Gregorian date, which gave wrong results. Now it throws <code>InvalidDateException</code>. Examples are <code>'1403-01-01 10:00 UTC'</code>, a time with <code>PM</code>, one-digit minutes and <code>'1403-01'</code>. What to do: pass a <code>DateTimeImmutable</code> for such values, or cut the text to one of the accepted shapes.</li>
+<li><strong>Bare digits.</strong> Before, a run of 3 to 8 digits such as <code>'1403'</code> or <code>'14030101'</code> was read by PHP as a clock time. Now it throws <code>InvalidDateException</code>. Eight digits that start with a year of another calendar, such as <code>'20240101'</code>, are still read as a Gregorian date. A 5-digit year in a Jalali or Hijri string throws with the code <code>date_out_of_range</code>. What to do: use <code>create()</code> or a <code>DateTimeImmutable</code>.</li>
+<li><strong>Impossible Gregorian days.</strong> <code>make()</code> on the three calendar classes, and <code>JalaliCast</code>, throw <code>InvalidDateException</code> for a Gregorian string with a day that does not exist. Text with a negative year such as <code>'-0100/01/01'</code> throws a clear <code>InvalidDateException</code> too. For negative years, use <code>create()</code> or a timestamp.</li>
+</ul>
+<table>
+<thead><tr><th>Call</th><th>Before</th><th>After</th></tr></thead>
+<tbody>
+<tr><td><code>Jalali::make('2024-02-30')</code></td><td>the date of 2024-03-01</td><td><code>InvalidDateException</code></td></tr>
+</tbody>
+</table>
+<ul>
+<li><strong><code>createFromFormat()</code> tokens.</strong> <code>Jalali::createFromFormat()</code> rejects the tokens <code>z y F M D l S e T P O p u v</code> with <code>InvalidDateException</code>, because they have a Gregorian or time-zone meaning and gave wrong dates. The format <code>U</code> alone reads a Unix timestamp. What to do: use the tokens <code>d j m n Y H G i s g h A a</code>, and pass the time zone as the third argument.</li>
+<li><strong>End of a period.</strong> <code>endOfDay()</code>, <code>endOfMonth()</code> and <code>endOfYear()</code> end at 23:59:59.999999 and not at 23:59:59.000000. A format with <code>H:i:s</code> prints the same text. A strict comparison with a value built at <code>23:59:59</code> can now give another result. What to do: compare against the new end value, or use <code>startOfDay()</code> of the next day.</li>
+<li><strong>Year tokens in <code>format()</code>.</strong> The token <code>Y</code> writes at least 4 digits, with a minus sign for negative years. The token <code>y</code> uses floor modulo.</li>
+</ul>
+<table>
+<thead><tr><th>Call</th><th>Before</th><th>After</th></tr></thead>
+<tbody>
+<tr><td><code>Jalali::create(-5, 1, 1)-&gt;format('Y')</code></td><td><code>-005</code></td><td><code>-0005</code></td></tr>
+<tr><td><code>Jalali::create(-620, 1, 1)-&gt;format('y')</code></td><td><code>-20</code></td><td><code>80</code></td></tr>
+</tbody>
+</table>
+<h3 id="to-0-3-0-cast">Eloquent cast</h3>
+<ul>
+<li><strong>Unreadable stored values.</strong> When the model reads the column, <code>JalaliCast</code> throws <code>InvalidDateException</code> if the stored value is an array, a boolean, a float or an object. Before, it returned <code>null</code>. <code>null</code> and an empty string still give <code>null</code>. What to do: fix the column type, or catch the exception where you read the attribute.</li>
+</ul>
+<h3 id="to-0-3-0-validators">Validators</h3>
+<ul>
+<li><strong>Allowed characters.</strong> <code>Mobile</code>, <code>PostalCode</code> and <code>BankCard</code> accept only digits plus spaces, no-break spaces, half-spaces (ZWNJ), LRM and RLM marks, hyphens, parentheses and dots. <code>Mobile</code> also accepts one <code>+</code> at the start of a <code>+98</code> number. Everything else gives <code>invalid_format</code>, and <code>normalize()</code> returns an empty string. Before, these classes kept only the digits and dropped the rest. What to do: clean the input on your side if you want to allow more.</li>
+</ul>
+<table>
+<thead><tr><th>Input</th><th>Before</th><th>After</th></tr></thead>
+<tbody>
+<tr><td><code>Mobile::validate('call 09121234567 now')</code></td><td>valid</td><td><code>invalid_format</code></td></tr>
+<tr><td><code>Mobile::validate('-9121234567')</code></td><td>valid</td><td><code>invalid_format</code></td></tr>
+</tbody>
+</table>
+<ul>
+<li><strong>Tab, newline and NUL at the ends.</strong> These characters are no longer trimmed. <code>NationalCode</code>, <code>Sheba</code>, <code>VehiclePlate</code>, <code>Format::withSeparator()</code> and <code>NumberToWords</code> reject them. What to do: trim the input yourself when you want that.</li>
+<li><strong>Sheba check digits.</strong> <code>Sheba</code> gives <code>invalid_checksum</code> for the check digits 00, 01 and 99, even when the modulo comes out right. The standard produces only 02 to 98.</li>
+<li><strong>Postal codes.</strong> <code>PostalCode</code> gives <code>invalid_format</code> for a code with the digit 0 or 2 in its first five digits. The rule comes from three public sources. Iran Post publishes no official rule set. What to do: if you must accept codes that this rule rejects, check the shape yourself.</li>
+</ul>
+<table>
+<thead><tr><th>Call</th><th>Before</th><th>After</th></tr></thead>
+<tbody>
+<tr><td><code>PostalCode::isValid('1234567890')</code></td><td><code>true</code></td><td><code>false</code></td></tr>
+<tr><td><code>PostalCode::isValid('1593715416')</code></td><td><code>true</code></td><td><code>true</code></td></tr>
+</tbody>
+</table>
+<ul>
+<li><strong>Sheba bank names.</strong> The names for the codes 013 and 019 are now <code>بانک رفاه کارگران</code> and <code>بانک صادرات ایران</code>, the same as in the BIN table. If you compare the names as text, update the comparison.</li>
+</ul>
+<h3 id="to-0-3-0-text-tools">Numbers and text</h3>
+<ul>
+<li><strong>Grouping marks.</strong> <code>NumberToWords::convert()</code> and <code>Format::withSeparator()</code> accept thousands separators only in proper grouping: a first group of 1 to 3 digits, then groups of exactly 3. What to do: remove stray spaces and commas from the input.</li>
+</ul>
+<table>
+<thead><tr><th>Input</th><th>Before</th><th>After</th></tr></thead>
+<tbody>
+<tr><td><code>'1 234 567'</code></td><td>1234567</td><td>1234567</td></tr>
+<tr><td><code>'1,234,567'</code></td><td>1234567</td><td>1234567</td></tr>
+<tr><td><code>'12 34'</code></td><td>1234</td><td><code>InvalidNumberException</code> (<code>invalid_number</code>)</td></tr>
+<tr><td><code>'1 2'</code></td><td>12</td><td><code>InvalidNumberException</code> (<code>invalid_number</code>)</td></tr>
+</tbody>
+</table>
+<ul>
+<li><strong>Locale names.</strong> <code>NumberToWords</code> accepts a locale only when its language part is exactly <code>fa</code> or <code>ar</code>. <code>arn</code> and <code>farsi</code> were accepted by prefix. Now they throw <code>UnsupportedLocaleException</code>.</li>
+<li><strong>Invalid UTF-8.</strong> <code>Normalizer::normalize()</code>, <code>fixHalfSpace()</code> and <code>clean()</code> replace bytes that are not valid UTF-8 with U+FFFD and then apply every step. Before, they applied only the byte steps to such text. <code>Detector</code> ignores invalid bytes and no longer returns <code>false</code> or <code>ltr</code> because of them.</li>
+<li><strong>Locale direction.</strong> <code>Detector::isRtlLocale()</code> follows an explicit script subtag, so <code>fa-Latn</code>, <code>ar-Latn</code> and <code>sd-Deva</code> give <code>false</code>. <code>Detector::direction()</code> uses the same right-to-left scripts as <code>containsRtl()</code>.</li>
+</ul>
+<h3 id="to-0-3-0-prayer">Prayer times</h3>
+<ul>
+<li><strong>Input ranges.</strong> <code>new PrayerTimes()</code> throws <code>InvalidPrayerConfigException</code> for <code>NaN</code>, infinity, a latitude outside -90 to 90, a longitude outside -180 to 180 and an elevation beyond 20000 m in either direction. <code>getTimes()</code> and <code>nextPrayer()</code> throw <code>InvalidDateException</code> when the local year is outside 1 to 9999. Before, they returned wrong times.</li>
+<li><strong>Missing times.</strong> A prayer is <code>null</code> when its local date would fall after 9999-12-31 or before 0001-01-01. <code>nextPrayer()</code> returns <code>null</code> when no prayer is left up to the end of 9999. Near the poles, a time that would break the order fajr, sunrise, dhuhr, asr, maghrib, isha is <code>null</code> too. Asr after Isha at 89.9 degrees is an example. What to do: handle <code>null</code> in your output, as you already do for polar days.</li>
+<li><strong>Rounding.</strong> For time zones whose offset includes seconds (mostly dates before 1970), times are rounded to the nearest minute and not cut. A time can differ by one minute from before.</li>
+</ul>
+<h3 id="to-0-3-0-holidays">Holidays</h3>
+<ul>
+<li><strong>Date strings.</strong> <code>HolidayCalendar::withHoliday()</code> and <code>withoutHoliday()</code> accept only a Jalali date string: <code>Y/m/d</code> or <code>Y-m-d</code>, with a 3 or 4 digit year. Persian and Arabic digits are allowed. A year of 1700 or later, a time part and free text throw <code>InvalidDateException</code>. Before, a Gregorian-looking string was read as another day. A Hijri month start that contains a NUL byte throws <code>InvalidDateException</code>.</li>
+</ul>
+<table>
+<thead><tr><th>Call</th><th>Before</th><th>After</th></tr></thead>
+<tbody>
+<tr><td><code>withHoliday('2027/05/05', 'x')</code></td><td>another day than intended</td><td><code>InvalidDateException</code></td></tr>
+<tr><td><code>withHoliday('1406/02/03', 'x')</code></td><td>works</td><td>works</td></tr>
+</tbody>
+</table>
+<ul>
+<li><strong>Laravel config.</strong> A <code>rtly-kit.holidays</code> value that is not an array throws <code>InvalidDateException</code> when the holiday calendar is resolved. Before, it was ignored. What to do: set the entry to an array, or remove it.</li>
+</ul>
+<h3 id="to-0-3-0-also">Also check</h3>
+<p>These changes are not breaking for most code, but they can show up in tests or stored values.</p>
+<ul>
+<li><code>serialize()</code> of <code>Jalali</code>, <code>Hijri</code> and <code>Hebrew</code> stores the moment (and the Hijri variant) as a small versioned array. Values serialized by earlier versions still load. If you compare or store the raw serialized string, you will see a different value.</li>
+<li><code>Hijri::make()</code> and <code>Hebrew::make()</code> with an instance of their own class now honour the time zone argument. Before, they ignored it. <code>Hijri::make()</code> takes <code>?HijriVariant $variant = null</code>. The value <code>null</code> keeps the variant of a Hijri instance, and a variant you pass always applies.</li>
+<li>Comparison methods and <code>between()</code> use the whole instant, microseconds included. <code>addMonths()</code> and <code>addYears()</code> keep the microseconds.</li>
+<li>For the Tehran method with the <code>OneSeventh</code> and <code>NightMiddle</code> rules at high latitudes, Maghrib and Isha are no longer identical, so those times can change slightly. For zones far from their longitude, such as <code>Pacific/Kiritimati</code>, prayer times now belong to the requested local date.</li>
+</ul>
+<h2 id="to-0-2-1">From 0.2.0 to 0.2.1</h2>
+<p>The Composer package name changed to <code>enaxon/rtly-kit</code>. The namespace is still <code>RtlyKit\</code>, so your PHP code does not change. Remove the earlier package from your <code>composer.json</code> and require this one:</p>
+<pre><code class="language-bash">composer require enaxon/rtly-kit</code></pre>
+
 <h2 id="to-0-2-0">From 0.1.x to 0.2.0</h2>
 <p>Most applications need no change. Check the items below. Items 9 to 12 change what the library returns for some inputs.</p>
 <ol>
@@ -161,4 +267,4 @@ foreach (['2026-03-01', '2026-03-21'] as $d) {
 <li>The duplicate <code>hdate()</code> helper declaration.</li>
 </ul>
 
-<div class="note"><strong>Note.</strong> While the library is below 1.0.0, pin a minor range (for example <code>~0.2.0</code>), read this page before each minor upgrade, and run your own tests against any date and prayer-time outputs that you store.</div>
+<div class="note"><strong>Note.</strong> While the library is below 1.0.0, pin a minor range (for example <code>~0.3.0</code>), read this page before each minor upgrade, and run your own tests against any date and prayer-time outputs that you store.</div>

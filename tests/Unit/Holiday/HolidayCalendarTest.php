@@ -554,7 +554,45 @@ final class HolidayCalendarTest extends TestCase
         self::assertSame('1405/01/05', $this->calendar()->nextBusinessDay(Jalali::create(1404, 12, 28))->format('Y/m/d'));
     }
 
+    public function test_next_business_day_at_the_end_of_the_supported_range_throws(): void
+    {
+        $this->expectException(InvalidDateException::class);
+        $this->calendar()->nextBusinessDay(Jalali::create(9377, 12, 30));
+    }
+
     /* ---------------- fromArray ---------------- */
+
+    public function test_from_array_casts_an_int_like_string_offset(): void
+    {
+        foreach (['1' => 1, '-2' => -2, '+3' => 3, '0' => 0] as $text => $number) {
+            self::assertEquals(
+                HolidayCalendar::fromArray(['islamic_offset' => $number]),
+                HolidayCalendar::fromArray(['islamic_offset' => (string) $text]),
+                "offset {$text}",
+            );
+        }
+    }
+
+    /**
+     * @return array<string, array{mixed}>
+     */
+    public static function nonIntegerOffsets(): array
+    {
+        return ['float' => [1.0], 'decimal string' => ['1.5'], 'text' => ['one'], 'empty' => [''], 'spaces' => [' 1'], 'exponent' => ['1e0'], 'array' => [[]]];
+    }
+
+    #[DataProvider('nonIntegerOffsets')]
+    public function test_from_array_still_rejects_other_offset_types(mixed $offset): void
+    {
+        $this->expectException(InvalidDateException::class);
+        HolidayCalendar::fromArray(['islamic_offset' => $offset]);
+    }
+
+    public function test_from_array_rejects_an_out_of_range_string_offset(): void
+    {
+        $this->expectException(InvalidDateException::class);
+        HolidayCalendar::fromArray(['islamic_offset' => '4']);
+    }
 
     public function test_from_array_defaults_equal_the_default_calendar(): void
     {
@@ -596,7 +634,7 @@ final class HolidayCalendarTest extends TestCase
     {
         return [
             'unknown key' => [['islamic_ofset' => 1]],
-            'offset as string' => [['islamic_offset' => '1']],
+            'offset as decimal string' => [['islamic_offset' => '1.5']],
             'offset too large' => [['islamic_offset' => 4]],
             'official flag as int' => [['use_official_data' => 1]],
             'month starts not an array' => [['hijri_month_starts' => 'x']],

@@ -16,7 +16,7 @@ use function RtlyKit\is_postal_code;
 use function RtlyKit\is_vehicle_plate;
 
 var_dump(is_mobile('+98 912 123 4567'));          // bool(true)
-var_dump(is_postal_code('۱۲۳۴۵-۶۷۸۹۰'));          // bool(true)
+var_dump(is_postal_code('۱۵۹۳۷-۱۵۴۱۶'));          // bool(true)
 var_dump(is_vehicle_plate('12ب345 ایران 67'));    // bool(true)
 
 echo Mobile::getOperator('09121234567'), "\n";    // همراه اول</code></pre>
@@ -24,7 +24,7 @@ echo Mobile::getOperator('09121234567'), "\n";    // همراه اول</code></p
 
 <h2 id="mobile">شمارهٔ موبایل</h2>
 <h3 id="mobile-forms">شکل‌هایی که قبول می‌شود</h3>
-<p><code>Mobile</code> همه‌چیز را به شکل ملی <code>09xxxxxxxxx</code> (۱۱ رقم) درمی‌آورد. این پنج شکل را قبول می‌کند، با رقم فارسی یا عربی و با فاصله، خط تیره یا پرانتز بین رقم‌ها:</p>
+<p><code>Mobile</code> همه‌چیز را به شکل ملی <code>09xxxxxxxxx</code> (۱۱ رقم) درمی‌آورد. این پنج شکل را قبول می‌کند، با رقم فارسی یا عربی و با فاصله، خط تیره، نقطه یا پرانتز بین رقم‌ها:</p>
 <table>
 <thead><tr><th>ورودی</th><th><code>normalized</code></th></tr></thead>
 <tbody>
@@ -37,7 +37,7 @@ echo Mobile::getOperator('09121234567'), "\n";    // همراه اول</code></p
 <tr><td><code>(0912) 123-4567</code></td><td><code>09121234567</code></td></tr>
 </tbody>
 </table>
-<p>چون <code>Mobile</code> فقط رقم‌ها را نگه می‌دارد، هر جداکنندهٔ غیررقمی کنار می‌رود. عدد صحیح مثل <code>9121234567</code> هم قبول می‌شود. صفر اول ندارد که از دست برود، پس به شکل ۱۰ رقمی خوانده می‌شود.</p>
+<p>بین رقم‌ها فقط فاصله (فاصلهٔ ناشکن هم)، نیم‌فاصله (ZWNJ)، نشانه‌های LRM و RLM، خط تیره، پرانتز و نقطه مجاز است، و یک <code>+</code> در ابتدای شمارهٔ <code>+98</code>. حرف، علامت‌های دیگر مثل اسلش و ویرگول، تب، خط جدید یا NUL و خط تیره در ابتدا باعث <code>invalid_format</code> می‌شود. پس <code>-9121234567</code> و <code>call 09121234567 now</code> تمیز نمی‌شوند و رد می‌شوند. عدد صحیح مثل <code>9121234567</code> هم قبول می‌شود. صفر اول ندارد که از دست برود، پس به شکل ۱۰ رقمی خوانده می‌شود.</p>
 
 <h3 id="mobile-rules">قاعده</h3>
 <p>معتبر بودن فقط بررسی شکل است. بعد از یکسان‌سازی، شماره باید با <code>09</code> شروع شود، بعد رقمی از ۰ تا ۴ یا ۹ بیاید و هشت رقم دیگر. این‌ها بلوک‌های <code>090x</code> تا <code>094x</code> و <code>099x</code> هستند. هر چیز دیگر، مثل <code>0950...</code> یا شمارهٔ ۱۰ رقمی، <code>invalid_format</code> می‌دهد.</p>
@@ -68,9 +68,9 @@ echo json_encode(Mobile::validate('09061234567')-&gt;details(), JSON_UNESCAPED_U
 <p>کلیدهای جزئیات: <code>normalized</code>، <code>operator</code> و <code>allocated</code>. تنها کدهای خطا <code>invalid_format</code>، <code>invalid_type</code> و <code>input_too_long</code> هستند. تلفن ثابت و شمارهٔ بین‌المللی قبول نمی‌شود.</p>
 
 <h2 id="postal-code">کدپستی</h2>
-<p>کدپستی ایران ۱۰ رقم است و با <code>0</code> شروع نمی‌شود. <code>PostalCode</code> فقط رقم‌ها را نگه می‌دارد (اول رقم‌های فارسی و عربی انگلیسی می‌شوند، بعد جداکننده‌هایی مثل فاصله و خط تیره حذف می‌شوند) و طول و رقم اول را می‌سنجد:</p>
-<pre><code class="language-php">$r = PostalCode::validate('۱۲۳۴۵-۶۷۸۹۰');
-echo json_encode($r-&gt;details());   // {"normalized":"1234567890"}
+<p>کدپستی ایران ۱۰ رقم است و در پنج رقم اولش نه <code>0</code> می‌آید نه <code>2</code> (پس با صفر شروع نمی‌شود). <code>PostalCode</code> فقط رقم‌ها را نگه می‌دارد (اول رقم‌های فارسی و عربی انگلیسی می‌شوند، بعد جداکننده‌های مجاز، یعنی فاصله، نیم‌فاصله، خط تیره، پرانتز و نقطه حذف می‌شوند) و طول و پنج رقم اول را می‌سنجد. حرف، علامت‌های دیگر، نویسه‌های کنترلی و عدد منفی <code>invalid_format</code> می‌دهند:</p>
+<pre><code class="language-php">$r = PostalCode::validate('۱۵۹۳۷-۱۵۴۱۶');
+echo json_encode($r-&gt;details());   // {"normalized":"1593715416"}
 
 print_r(PostalCode::validate('12345')-&gt;errors());          // [invalid_length]
 print_r(PostalCode::validate('123456789012')-&gt;errors());   // [invalid_length]
@@ -79,11 +79,11 @@ print_r(PostalCode::validate('0123456789')-&gt;errors());     // [invalid_format
 <thead><tr><th>خطا</th><th>معنا</th></tr></thead>
 <tbody>
 <tr><td><code>invalid_length</code></td><td>تعداد رقم‌ها ۱۰ نیست</td></tr>
-<tr><td><code>invalid_format</code></td><td>کد با <code>0</code> شروع می‌شود</td></tr>
+<tr><td><code>invalid_format</code></td><td>در پنج رقم اول <code>0</code> یا <code>2</code> هست، یا متن چیزی جز رقم و جداکننده‌های مجاز دارد</td></tr>
 <tr><td><code>invalid_type</code>، <code>input_too_long</code></td><td><a href="validators-overview.html#input-handling">ورودی چطور پردازش می‌شود</a> را ببینید</td></tr>
 </tbody>
 </table>
-<div class="note"><strong>فقط شکل.</strong> کدپستی رقم کنترل ندارد و بازهٔ منطقه هم بررسی نمی‌شود. هر کد ۱۰ رقمی که با <code>0</code> شروع نشود معتبر است، حتی اگر پست آن را نداده باشد. عدد صحیح <code>1234567890</code> هم قبول می‌شود، چون کد معتبر هیچ‌وقت با صفر شروع نمی‌شود. ولی بهتر است کدپستی را باز هم رشته نگه دارید.</div>
+<div class="note"><strong>شکل و یک قاعدهٔ رقمی.</strong> کدپستی رقم کنترل ندارد و بازهٔ منطقه هم بررسی نمی‌شود. هر کد ۱۰ رقمی که در پنج رقم اولش <code>0</code> یا <code>2</code> نداشته باشد معتبر است، حتی اگر پست آن را نداده باشد. قاعده‌های دیگر (مثلاً دربارهٔ رقم پنجم یا کدهایی با یک رقم تکراری مثل <code>1111111111</code>) بررسی نمی‌شوند، چون برای هرکدام فقط یک منبع پیدا کردیم. عدد صحیح <code>1593715416</code> هم قبول می‌شود، چون کد معتبر هیچ‌وقت با صفر شروع نمی‌شود. ولی بهتر است کدپستی را باز هم رشته نگه دارید.</div>
 
 <h2 id="vehicle-plate">پلاک خودرو</h2>
 <h3 id="plate-shape">شکل پلاک</h3>
@@ -99,7 +99,7 @@ print_r(VehiclePlate::parse('12ب345 ایران 67'));
 var_dump(VehiclePlate::parse('xx'));   // NULL</code></pre>
 
 <h3 id="plate-letters">حرف‌ها</h3>
-<p>حرف باید یکی از این‌ها باشد: <code>الف ب پ ت ث ج د ز س ش ص ط ع ف ق ک گ ل م ن و ه ی ژ</code>. «الف» به شکل کامل هم یک حرف حساب می‌شود. <code>D</code> و <code>S</code> لاتین برای پلاک دیپلمات و ویژه قبول می‌شود. شکل‌های عربی حرف‌ها اول یکسان می‌شوند. پس <code>ك</code> و <code>ي</code> مثل <code>ک</code> و <code>ی</code> خوانده می‌شوند:</p>
+<p>حرف باید یکی از این‌ها باشد: <code>الف ب پ ت ث ج د ز س ش ص ط ع ف ق ک گ ل م ن و ه ی ژ</code>. «الف» به شکل کامل هم یک حرف حساب می‌شود، و «ا» تنها هم همان حرف است و در خروجی «الف» نوشته می‌شود. <code>D</code> و <code>S</code> لاتین برای پلاک دیپلمات و ویژه قبول می‌شود. شکل‌های عربی حرف‌ها اول یکسان می‌شوند. پس <code>ك</code> و <code>ي</code> مثل <code>ک</code> و <code>ی</code> خوانده می‌شوند:</p>
 <pre><code class="language-php">echo json_encode(VehiclePlate::validate('12ي34567')-&gt;details(), JSON_UNESCAPED_UNICODE);
 // {"normalized":"12ی34567","two_digit":"12","letter":"ی","three_digit":"345","region":"67"}
 

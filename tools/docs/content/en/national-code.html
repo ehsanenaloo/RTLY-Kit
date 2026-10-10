@@ -28,7 +28,7 @@ print_r(validate_national_code('0499370898')-&gt;errors());  // Array ( [0] =&gt
 <p>The checks run in this order and stop at the first failure:</p>
 <ol>
 <li><strong>Type and size.</strong> Strings, <code>int</code> and whole <code>float</code> values are accepted. Anything else is <code>invalid_type</code>. A string over 4096 bytes is <code>input_too_long</code>.</li>
-<li><strong>Cleaning.</strong> Persian and Arabic digits become English. Spaces, hyphens and half-spaces (ZWNJ) are removed, and the ends are trimmed.</li>
+<li><strong>Cleaning.</strong> Persian and Arabic digits become English. Spaces, non-breaking spaces, half-spaces (ZWNJ), the LRM and RLM marks and hyphens are removed.</li>
 <li><strong>Format.</strong> Exactly 10 digits, otherwise <code>invalid_format</code>.</li>
 <li><strong>Repeated digits.</strong> <code>0000000000</code> to <code>9999999999</code> pass the arithmetic by chance but are not real codes. They return <code>repeated_digits</code>.</li>
 <li><strong>Check digit</strong> (the mod-11 rule below), otherwise <code>invalid_checksum</code>.</li>
@@ -56,7 +56,7 @@ print_r(NationalCode::validate('abc')-&gt;errors());          // [invalid_format
 <tr><td>4097 characters</td><td><code>input_too_long</code></td></tr>
 </tbody>
 </table>
-<p>Only spaces, hyphens and ZWNJ count as separators. Slashes, dots and letters are not removed and cause <code>invalid_format</code>.</p>
+<p>Only spaces, non-breaking spaces, ZWNJ, LRM, RLM and hyphens count as separators. Slashes, dots, letters and control characters (a tab, a newline or NUL, even at the end of the text) are not removed and cause <code>invalid_format</code>.</p>
 <p>To get the cleaned form without validating, call <code>NationalCode::normalize()</code>:</p>
 <pre><code class="language-php">echo NationalCode::normalize(' ۰۴۹-۹۳۷ ۰۸۹۹ ');   // 0499370899</code></pre>
 

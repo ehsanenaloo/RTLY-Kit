@@ -7,6 +7,8 @@ namespace RtlyKit\Laravel;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Factory as ValidationFactory;
 use Illuminate\Validation\Validator;
+use RtlyKit\Exceptions\ErrorCode;
+use RtlyKit\Exceptions\InvalidDateException;
 use RtlyKit\Holiday\HolidayCalendar;
 use RtlyKit\Support\CarbonMacros;
 use RtlyKit\Validation\BankCard;
@@ -52,7 +54,15 @@ class RtlyKitServiceProvider extends ServiceProvider
             $config = $this->app->bound('config') ? $this->app->make('config') : null;
             $holidays = is_object($config) && method_exists($config, 'get') ? $config->get('rtly-kit.holidays') : null;
 
-            return HolidayCalendar::fromArray(is_array($holidays) ? $holidays : []);
+            if ($holidays !== null && ! is_array($holidays)) {
+                throw InvalidDateException::because(
+                    ErrorCode::InvalidArgument,
+                    sprintf('Config "rtly-kit.holidays" must be an array, %s given.', get_debug_type($holidays)),
+                    ['option' => 'rtly-kit.holidays'],
+                );
+            }
+
+            return HolidayCalendar::fromArray($holidays ?? []);
         });
     }
 
@@ -85,7 +95,7 @@ class RtlyKitServiceProvider extends ServiceProvider
             return;
         }
 
-        /** @var array<string, array{0: callable(string): bool, 1: string}> $rules */
+        /** @var array<string, array{0: callable(mixed): bool, 1: string}> $rules */
         $rules = [
             'national_code' => [NationalCode::isValid(...), 'The :attribute is not a valid Iranian national code.'],
             'sheba' => [Sheba::isValid(...), 'The :attribute is not a valid Iranian Sheba (IBAN).'],
@@ -98,11 +108,8 @@ class RtlyKitServiceProvider extends ServiceProvider
 
         foreach ($rules as $name => [$check, $message]) {
             $validator->extend($name, static function (string $attribute, mixed $value) use ($check): bool {
-                if (is_int($value) || is_float($value)) {
-                    $value = (string) $value;
-                }
-
-                return is_string($value) && $check($value);
+                // The validators read ints and whole floats themselves (a float is never turned into scientific notation).
+                return (is_string($value) || is_int($value) || is_float($value)) && $check($value);
             }, $message);
 
             // Swap the English fallback for the translated package line, unless the
@@ -118,8 +125,20 @@ class RtlyKitServiceProvider extends ServiceProvider
                     return $text;
                 }
 
+                // The text equals the English default, which can also be the application's own line. Ask where the text
+                // came from instead of trusting the string: an application line (`validation.<rule>`, also in the fallback
+                // locale, or `validation.custom.<attribute>.<rule>`) or an inline custom message always wins.
+                $translator = $instance->getTranslator();
+                if (
+                    $translator->get($appKey = 'validation.'.$name) !== $appKey
+                    || $translator->get($customKey = 'validation.custom.'.$attribute.'.'.$name) !== $customKey
+                    || in_array($message, $instance->customMessages, true)
+                ) {
+                    return $text;
+                }
+
                 $key = 'rtly-kit::validation.'.$name;
-                $line = $instance->getTranslator()->get($key);
+                $line = $translator->get($key);
 
                 if (! is_string($line) || $line === $key) {
                     return $text;

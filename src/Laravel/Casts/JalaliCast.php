@@ -7,6 +7,7 @@ namespace RtlyKit\Laravel\Casts;
 use DateTimeInterface;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
+use RtlyKit\Calendar\CalendarLimits;
 use RtlyKit\Calendar\Jalali;
 use RtlyKit\Exceptions\InvalidDateException;
 use RtlyKit\Number\Digits;
@@ -20,6 +21,10 @@ use RtlyKit\Number\Digits;
  * (separator "/" or "-", Persian digits allowed; years 1200-1599 are read as
  * Jalali). Invalid input throws {@see \RtlyKit\Exceptions\InvalidDateException}.
  *
+ * Reading: the stored value is always read as Gregorian (a string, a Unix
+ * timestamp or a date object). A value of any other type throws
+ * InvalidDateException; only null and the empty string give null.
+ *
  * @implements CastsAttributes<Jalali, mixed>
  */
 final class JalaliCast implements CastsAttributes
@@ -30,11 +35,17 @@ final class JalaliCast implements CastsAttributes
             return null;
         }
 
-        if ($value instanceof DateTimeInterface || is_string($value) || is_int($value)) {
+        if (is_string($value)) {
+            // The column holds a Gregorian datetime: read it as one, whatever the year
+            // (Jalali::make() would read a Gregorian year below 1700 as Jalali).
+            return Jalali::make(CalendarLimits::parseGregorian(CalendarLimits::normalize($value), null));
+        }
+
+        if ($value instanceof DateTimeInterface || is_int($value)) {
             return Jalali::make($value);
         }
 
-        return null;
+        throw new InvalidDateException(sprintf("Cannot read the value of '%s' as a date.", $key), context: ['attribute' => $key, 'type' => get_debug_type($value)]);
     }
 
     public function set(Model $model, string $key, mixed $value, array $attributes): ?string

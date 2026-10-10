@@ -50,12 +50,18 @@ echo Hebrew::make('5785/01/10', $utc);                       // 5785/01/10 00:00
 echo Hebrew::make('0001-09-06')-&gt;format('Y/m/d');            // 3762/01/01</code></pre>
 <h3 id="string-rules">رشته چطور خوانده می‌شود</h3>
 <ol>
-<li>رقم‌های فارسی و عربی به انگلیسی تبدیل می‌شوند و فاصله‌های دو سر رشته حذف می‌شود. رشتهٔ خالی <code>InvalidDateException</code> می‌دهد.</li>
-<li>رشته‌ای با شکل <code>Y/m/d</code> یا <code>Y-m-d</code> (با <code>H:i[:s]</code> اختیاری) که سالش <strong>۳۰۰۰ یا بیشتر</strong> باشد، تاریخ <em>عبری</em> است و ماه همان شمارهٔ ترتیبی بالاست. (این آستانه عکس جلالی و هجری است. آن‌ها سال <em>کمتر از</em> ۱۷۰۰ را مال خودشان می‌دانند.)</li>
-<li>هر رشتهٔ دیگر میلادی یا متن آزاد خوانده می‌شود.</li>
+<li>رقم‌های فارسی و عربی به انگلیسی تبدیل می‌شوند و فاصله‌های دو سر رشته حذف می‌شود. فاصلهٔ ناشکن، نیم‌فاصله (ZWNJ) و نشانه‌های LRM و RLM مثل فاصله‌اند. رشتهٔ خالی یا رشته‌ای که بایت NUL دارد <code>InvalidDateException</code> می‌دهد.</li>
+<li>رشته‌ای با شکل دقیق <code>Y/m/d</code> یا <code>Y-m-d</code> (سال ۴ یا ۵ رقم؛ بعد از آن می‌تواند فاصله، <code>T</code> یا <code>t</code>، <code>H:i[:s[.u]]</code> و نشانهٔ منطقه <code>Z</code>، <code>+03:30</code>، <code>+0330</code> یا <code>+03</code> بیاید؛ نشانه منطقهٔ نتیجه را تعیین می‌کند و <code>$timezone</code> بعد از آن تبدیل می‌کند) که سالش <strong>۳۰۰۰ یا بیشتر</strong> باشد، تاریخ <em>عبری</em> است و ماه همان شمارهٔ ترتیبی بالاست. سال ۵ رقمی هم کار می‌کند، تا <code>'13759/01/01'</code>، و خروجی <code>toDateString()</code> را <code>make()</code> دوباره می‌خواند. (این آستانه عکس جلالی و هجری است. آن‌ها سال <em>کمتر از</em> ۱۷۰۰ را مال خودشان می‌دانند.)</li>
+<li>متنی که مثل چنین تاریخی شروع شود ولی چیزی کم یا زیاد داشته باشد (نام منطقه بعد از ساعت، <code>PM</code>) و رشتهٔ فقط‌عددیِ ۳ تا ۸ رقمی مثل <code>'5785'</code> <code>InvalidDateException</code> می‌دهد.</li>
+<li>هر رشتهٔ دیگر میلادی یا متن آزاد خوانده می‌شود، از جمله هشت‌رقمی‌ای که با سالی کمتر از ۳۰۰۰ شروع شود (<code>'20240101'</code>).</li>
 </ol>
 <p>پس <code>'5785/01/10'</code> عبری است و <code>'2025-10-07'</code> میلادی. رشتهٔ <code>'3000/01/01'</code> سال عبری ۳۰۰۰ حساب می‌شود، که از کمترین سالِ پشتیبانی‌شده کوچک‌تر است و خطای <code>Invalid Hebrew date: 3000/1/1</code> می‌دهد.</p>
 
+<h3 id="from-format">با قالب: <code>createFromFormat()</code></h3>
+<p>متد <code>Hebrew::createFromFormat($format, $time, $timezone = null)</code> مثل <a href="jalali.html#from-format">نسخهٔ جلالی</a> کار می‌کند، با سال عبری و شمارهٔ ترتیبیِ ماه در <code>create()</code>. توکن‌های مجاز <code>d j m n Y H G i s g h A a</code> و escape با بک‌اسلش است؛ بقیه <code>InvalidDateException</code> می‌دهند و نام توکن را می‌آورند، و قالبِ تنهای <code>U</code> یک timestamp می‌خواند. <code>Y</code> حداکثر ۴ رقم می‌خواند، پس سال‌های ۱۰۰۰۰ به بعد را با <code>create()</code> بسازید.</p>
+<pre><code class="language-php">echo Hebrew::createFromFormat('Y-n-j', '5784-13-29'); // 5784/13/29 00:00:00 (الول؛ سال کبیسه ۱۳ ماه دارد)
+</code></pre>
+<p>رشتهٔ میلادی با روز ناممکن، مثل <code>'2024-02-30'</code>، <code>InvalidDateException</code> می‌دهد (خودِ PHP آن را به 2024-03-01 می‌برد). متن، سال منفی ندارد: <code>make('-0100/01/01')</code> خطا می‌دهد و برای آن‌ها باید از <code>create()</code> یا timestamp استفاده کنید. <code>serialize()</code> فقط لحظه (و در هجری نوع تقویم) را ذخیره می‌کند. <code>unserialize()</code> دوباره آن را بررسی می‌کند و برای دادهٔ خراب یا بیرون از بازه <code>InvalidDateException</code> می‌دهد.</p>
 <h2 id="range">بازهٔ سال و خطاها</h2>
 <p>سال عبری از <code>Hebrew::MIN_YEAR</code> = <strong>3762</strong> تا <code>Hebrew::MAX_YEAR</code> = <strong>13759</strong> پشتیبانی می‌شود. این همان بخشی است که در سال‌های میلادی ۱ تا ۹۹۹۹ می‌افتد. اولین روز، اول تیشری ۳۷۶۲ (برابر 0001-09-06) و آخرین روز، آخر الول ۱۳۷۵۹ (برابر 9999-11-03) است. هر چیز بیرون از آن <code>InvalidDateException</code> می‌دهد. متد <code>isValid()</code> به‌جای خطا <code>false</code> می‌دهد.</p>
 <pre><code class="language-php">foreach ([[3761, 1, 1], [13760, 1, 1], [5785, 13, 1], [5785, 3, 31]] as [$y, $m, $d]) {
@@ -92,7 +98,7 @@ echo Hebrew::create(5784, 7, 15, 0, 0, 0, $utc)-&gt;format('j F');   // 15 Adar 
 <table>
 <thead><tr><th>توکن</th><th>معنی</th></tr></thead>
 <tbody>
-<tr><td><code>Y y m n d j</code></td><td>سال، ماه (ترتیبی) و روز</td></tr>
+<tr><td><code>Y y m n d j</code></td><td>سال (دست‌کم ۴ رقم و از سال ۱۰۰۰۰ پنج رقم؛ <code>y</code> دو رقم آخر است)، ماه (ترتیبی) و روز</td></tr>
 <tr><td><code>H G h g i s</code></td><td>زمان روز (۲۴ ساعته و ۱۲ ساعته)</td></tr>
 <tr><td><code>F M</code></td><td>نام ماه به زبان انتخاب‌شده (آدار اول و دوم، یا فقط آدار، بسته به سال)</td></tr>
 <tr><td><code>l</code></td><td>نام روز هفته به زبان انتخاب‌شده</td></tr>

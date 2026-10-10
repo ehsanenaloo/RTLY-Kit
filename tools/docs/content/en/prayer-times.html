@@ -34,6 +34,7 @@ $p = new PrayerTimes(
     elevation: 0.0,                          // metres, default 0
 );</code></pre>
 <p><code>forCity()</code> knows these names (any letter case): <code>tehran</code>, <code>mashhad</code>, <code>isfahan</code>, <code>shiraz</code>, <code>tabriz</code>, <code>qom</code>, <code>mecca</code>, <code>medina</code>, <code>riyadh</code>, <code>istanbul</code>, <code>cairo</code>, <code>dubai</code>, <code>baghdad</code>, <code>jakarta</code>. Any other name throws. For other cities, use the constructor with your own coordinates.</p>
+<p>The constructor checks the numbers: latitude from -90 to 90, longitude from -180 to 180, elevation from -20000 to 20000 metres. <code>NaN</code>, infinity and values outside these ranges throw <code>InvalidPrayerConfigException</code>.</p>
 
 <h2 id="methods">Methods and angles</h2>
 <p>The method sets the depression angle of the sun for Fajr and Isha, and for Tehran also for Maghrib. Use the class constants, not strings.</p>
@@ -77,7 +78,7 @@ foreach (['2026-02-20', '2026-03-01', '2026-03-21'] as $s) {
 // 2026-03-21 maghrib 18:32 isha 20:02   (+90, after Ramadan)</code></pre>
 
 <h2 id="elevation">Elevation</h2>
-<p>The <code>elevation</code> argument is the height of the observer in metres. It lowers the sunrise and sunset altitude by the geometric dip <code>0.0347 * sqrt(h)</code> degrees. On a mountain, sunrise is earlier and sunset later. Negative values count as 0. It affects sunrise, sunset and the times derived from sunset.</p>
+<p>The <code>elevation</code> argument is the height of the observer in metres. It lowers the sunrise and sunset altitude by the geometric dip <code>0.0347 * sqrt(h)</code> degrees. On a mountain, sunrise is earlier and sunset later. Negative values count as 0 (the accepted range is -20000 to 20000). It affects sunrise, sunset and the times derived from sunset.</p>
 <pre><code class="language-php">$a = new PrayerTimes(35.6892, 51.3890, 'Tehran', 1, $tz);
 $b = new PrayerTimes(35.6892, 51.3890, 'Tehran', 1, $tz, 1500.0);
 $d = new DateTimeImmutable('2026-06-21', $tz);
@@ -94,6 +95,7 @@ foreach (['2026-03-28', '2026-03-29'] as $s) {
 }
 // 2026-03-28 {"fajr":"03:51","sunrise":"05:50","dhuhr":"12:11","asr":"15:39","maghrib":"18:34","isha":"20:26"}
 // 2026-03-29 {"fajr":"04:48","sunrise":"06:48","dhuhr":"13:11","asr":"16:40","maghrib":"19:35","isha":"21:28"}</code></pre>
+<p>A zone can be far from its longitude, for example <code>Pacific/Kiritimati</code> (UTC+14 at 157 W). The calculator still returns the times of the day you ask for: all six fall on that local date. Dhuhr in Kiritimati is therefore around 12:29, not around 12:00.</p>
 <p>Pass the zone in which your users read the clock. If you leave it out, <code>date_default_timezone_get()</code> is used.</p>
 
 <h2 id="next">The next prayer</h2>
@@ -103,7 +105,7 @@ echo json_encode($p-&gt;nextPrayer(new DateTimeImmutable('2026-03-21 10:00', $tz
 // {"name":"dhuhr","time":"12:12","date":"2026-03-21"}
 echo json_encode($p-&gt;nextPrayer(new DateTimeImmutable('2026-03-21 20:00', $tz)));
 // {"name":"fajr","time":"04:42","date":"2026-03-22"}</code></pre>
-<p>Sunrise is part of the sequence: fajr, sunrise, dhuhr, asr, maghrib, isha.</p>
+<p>Sunrise is part of the sequence: fajr, sunrise, dhuhr, asr, maghrib, isha. Dates must lie in the years 1 to 9999 of the zone: <code>getTimes()</code> and <code>nextPrayer()</code> throw <code>InvalidDateException</code> outside them. A prayer whose local date would be after 9999-12-31 (or before 0001-01-01) does not exist: in <code>getTimes()</code> that time is <code>null</code>, and <code>nextPrayer()</code> returns <code>null</code> when no prayer is left up to the end of 9999-12-31. Times are rounded to the nearest minute of the zone's exact UTC offset, so a zone with an old offset that has seconds (for example local mean time before 1970) is not cut to whole minutes.</p>
 
 <h2 id="high-latitude">High latitudes</h2>
 <p>Far from the equator, in summer the sun may not sink deep enough for Fajr or Isha to exist, or the twilight may last most of the night. <code>HighLatitudeRule</code> tells the calculator what to do. The night is the time from sunset to the next sunrise.</p>
@@ -131,7 +133,8 @@ foreach (HighLatitudeRule::cases() as $rule) {
 // NightMiddle  00:49 00:50
 // OneSeventh   02:45 22:54
 // AngleBased   01:54 23:40</code></pre>
-<p>In places with no sunrise or sunset at all (polar day or polar night), <code>sunrise</code> and <code>maghrib</code> stay <code>null</code>. <code>dhuhr</code> is always defined. <code>asr</code> is <code>null</code> only when the sun stays below the horizon all day. Fajr and Isha then come from the rule, using a night of 12 hours around solar noon as the reference. If you need another convention, use <code>HighLatitudeRule::None</code> and decide for yourself.</p>
+<p>In places with no sunrise or sunset at all (polar day or polar night), <code>sunrise</code> and <code>maghrib</code> stay <code>null</code>. <code>dhuhr</code> is always defined. <code>asr</code> is <code>null</code> when the sun stays below the horizon all day. Fajr and Isha then come from the rule, using a night of 12 hours around solar noon as the reference. If you need another convention, use <code>HighLatitudeRule::None</code> and decide for yourself.</p>
+<p>The six times keep the order fajr, sunrise, dhuhr, asr, maghrib, isha (as moments; Isha may be after midnight, equal minutes are allowed). Near the poles the sun geometry can break it, for example Asr falling after Isha at 89.9 degrees. A time that would break the order is <code>null</code>. At ordinary latitudes no time is removed this way. The manual tune is applied after this check.</p>
 <div class="note"><strong>Good to know.</strong> The default rule is <code>AngleBased</code>. Below about 44 degrees north all times are the same as in version 0.1.x. North of about 44 to 46 degrees, around the June solstice, some Fajr and Isha values differ from 0.1.x, and a time that used to be <code>null</code> now has a value. To get the old output, call <code>withHighLatitudeRule(HighLatitudeRule::None)</code>.</div>
 
 <h2 id="tune">Manual tuning</h2>
@@ -153,6 +156,8 @@ new PrayerTimes(35, 51, 'MWL', 3);
 // Invalid Asr factor: 3 (use 1 or 2)
 PrayerTimes::forCity('paris');
 // Unknown city: paris
+new PrayerTimes(95, 51, 'MWL');
+// The latitude must be between -90 and 90 degrees
 $p-&gt;withTune(['fajr' =&gt; 31]);
 // Tune for fajr must be an integer from -30 to 30 minutes</code></pre>
 <p>See <a href="error-handling.html">Error handling</a> to catch all library errors with one <code>catch</code>.</p>

@@ -77,7 +77,7 @@ echo get_class(Jalali::now());                         // RtlyKit\Calendar\Jalal
 <h2 id="config">الإعداد</h2>
 <p>ملف الإعداد اختياري، وبدونه يعمل كل شيء بالقيم الافتراضية. انشره حين تريد ضبط العطل:</p>
 <pre><code class="language-bash">php artisan vendor:publish --tag=rtly-kit-config</code></pre>
-<p>ينشئ هذا الأمر الملف <code>config/rtly-kit.php</code>. وفيه اليوم قسم واحد هو <code>holidays</code>: إزاحة التواريخ الإسلامية، وبدايات الأشهر الهجرية الفعلية، والعطل المضافة والمحذوفة، ومفتاح للبيانات الرسمية. وشرح الخيارات مع مثال عملي في صفحة <a href="holiday-calendar.html#laravel">تقويم العطل القابل للتعديل</a>.</p>
+<p>ينشئ هذا الأمر الملف <code>config/rtly-kit.php</code>. وفيه اليوم قسم واحد هو <code>holidays</code>: إزاحة التواريخ الإسلامية، وبدايات الأشهر الهجرية الفعلية، والعطل المضافة والمحذوفة، ومفتاح للبيانات الرسمية. وشرح الخيارات مع مثال عملي في صفحة <a href="holiday-calendar.html#laravel">تقويم العطل القابل للتعديل</a>. يُفحص هذا القسم عند أول طلب للتقويم: المدخل <code>holidays</code> غير المصفوفة، أو خيار خاطئ، يُثير <code>InvalidDateException</code>.</p>
 <p>وما عدا ذلك يتحدد السلوك بالمكتبة وبلغة التطبيق. وتقرأ المكتبة المنطقة الزمنية الافتراضية من PHP (<code>date_default_timezone_get()</code>) التي يضبطها Laravel من <code>config('app.timezone')</code>، لذا تتبع <code>Jalali::now()</code> المنطقة الزمنية لتطبيقك.</p>
 <div class="note"><strong>من المفيد أن تعرف.</strong> إذا لم يكن مصنع التحقق مربوطًا عند إقلاع المزوّد فلا تُسجَّل القواعد، ولا تُضاف لاحقًا. ولا يحدث هذا إلا في عمليات إقلاع غير معتادة، مثل حاوية لسطر الأوامر فقط بلا خدمة التحقق.</div>
 <p>التالي: <a href="laravel-validation-and-cast.html">قواعد التحقق وتحويل Eloquent (Cast)</a>.</p>

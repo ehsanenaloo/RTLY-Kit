@@ -54,13 +54,13 @@ require</span> __DIR__.<span class="tok-s">'/vendor/autoload.php'</span>;
 <span class="tok-k">echo</span> Jalali::create(<span class="tok-n">1404</span>, <span class="tok-n">1</span>, <span class="tok-n">1</span>)-&gt;addDays(<span class="tok-n">100</span>)-&gt;format(<span class="tok-s">'Y/m/d'</span>), <span class="tok-s">"\n"</span>;        <span class="tok-c">// 1404/04/08</span></code></pre>
 
 <h2 id="results">Results<a class="anchor" href="#results" aria-label="Link to this section">#</a></h2>
-<p>One run, median of 5 repeats of 20,000 iterations each. Environment: PHP 8.2.30 CLI in Docker on Windows 11, <code>opcache.enable_cli=1</code>.</p>
+<p>One run, median of 5 repeats of 20,000 iterations each. Environment: PHP 8.2.34 CLI in Docker on Windows 11, <code>opcache.enable_cli=1</code>.</p>
 <div class="table-wrap" tabindex="0" role="region" aria-label="Table"><table>
 <thead><tr><th scope="col">Scenario</th><th scope="col">RTLY-Kit (µs/op)</th><th scope="col">morilog/jalali (µs/op)</th><th scope="col">Ratio</th></tr></thead>
 <tbody>
-<tr><td>Gregorian string to Jalali <code>Y/m/d</code></td><td>13.33</td><td>153.84</td><td>11.5x</td></tr>
-<tr><td>Jalali <code>y/m/d</code> to Gregorian <code>Y-m-d</code></td><td>12.80</td><td>58.55</td><td>4.6x</td></tr>
-<tr><td><code>addDays</code> + format</td><td>33.18</td><td>479.04</td><td>14.4x</td></tr>
+<tr><td>Gregorian string to Jalali <code>Y/m/d</code></td><td>20.18</td><td>217.24</td><td>10.8x</td></tr>
+<tr><td>Jalali <code>y/m/d</code> to Gregorian <code>Y-m-d</code></td><td>19.38</td><td>78.44</td><td>4.0x</td></tr>
+<tr><td><code>addDays</code> + format</td><td>35.55</td><td>441.58</td><td>12.4x</td></tr>
 </tbody>
 </table></div>
 <p>Peak memory for the whole process, with both libraries loaded, was 4 MiB.</p>

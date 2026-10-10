@@ -11,3 +11,4 @@
 /.gitignore                 export-ignore
 /composer.lock              export-ignore
 
+/guides                     export-ignore

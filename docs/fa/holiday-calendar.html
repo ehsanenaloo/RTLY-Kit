@@ -92,7 +92,7 @@ require</span> <span class="tok-s">'vendor/autoload.php'</span>;
 <p>تاریخی که این قاعده‌ها را نداشته باشد <code>InvalidDateException</code> می‌دهد.</p>
 
 <h3 id="step-add-remove">۳. افزودن و حذف تعطیلی<a class="anchor" href="#step-add-remove" aria-label="پیوند به این بخش">#</a></h3>
-<p><code>withHoliday($date, $title)</code> یک تعطیلی به آن روز اضافه می‌کند. <code>$date</code> یک شیء <code>Jalali</code> است یا رشتهٔ جلالی مثل <code>'1406/02/03'</code> (رقم فارسی هم قبول است). <code>withoutHoliday($date)</code> همهٔ تعطیلی‌های آن روز را برمی‌دارد. اگر عنوان هم بدهید، فقط همان عنوان حذف می‌شود.</p>
+<p><code>withHoliday($date, $title)</code> یک تعطیلی به آن روز اضافه می‌کند. <code>$date</code> یک شیء <code>Jalali</code> است یا رشتهٔ جلالی مثل <code>'1406/02/03'</code> (<code>YYYY/MM/DD</code> یا <code>YYYY-MM-DD</code>، رقم فارسی هم قبول است). رشته‌ای که سالش ۱۷۰۰ یا بیشتر باشد تاریخ جلالی نیست و <code>InvalidDateException</code> می‌دهد؛ پس تاریخ میلادی مثل <code>'2027/05/05'</code> هیچ‌وقت به‌جای روز دیگری گرفته نمی‌شود. ساعت و متن آزاد هم رد می‌شوند. <code>withoutHoliday($date)</code> همهٔ تعطیلی‌های آن روز را برمی‌دارد. اگر عنوان هم بدهید، فقط همان عنوان حذف می‌شود.</p>
 <pre tabindex="0"><code class="language-php"><span class="tok-v">$company</span> = <span class="tok-v">$cal</span>
     -&gt;withHoliday(<span class="tok-s">'1406/02/03'</span>, <span class="tok-s">'روز شرکت'</span>)
     -&gt;withoutHoliday(<span class="tok-s">'1406/01/13'</span>);   <span class="tok-c">// روز طبیعت را برمی‌داریم</span>
@@ -123,7 +123,7 @@ var_dump(<span class="tok-v">$company</span>-&gt;isHoliday(<span class="tok-n">1
 <div class="table-wrap" tabindex="0" role="region" aria-label="جدول"><table>
 <thead><tr><th scope="col">گزینه</th><th scope="col">متد معادل</th><th scope="col">مقدار</th><th scope="col">پیش‌فرض</th></tr></thead>
 <tbody>
-<tr><td><code>islamic_offset</code></td><td><code>withIslamicOffset()</code></td><td>عدد صحیح ‎-۳ تا ۳. فقط سال‌های تخمینی</td><td><code>0</code></td></tr>
+<tr><td><code>islamic_offset</code></td><td><code>withIslamicOffset()</code></td><td>عدد صحیح ‎-۳ تا ۳ (رشتهٔ عددی مثل <code>'1'</code> هم پذیرفته می‌شود). فقط سال‌های تخمینی</td><td><code>0</code></td></tr>
 <tr><td><code>hijri_month_starts</code></td><td><code>withHijriMonthStart()</code></td><td>نقشه از <code>'1449-10'</code> به تاریخ میلادی روز اول ماه</td><td><code>[]</code></td></tr>
 <tr><td><code>extra</code></td><td><code>withHoliday()</code></td><td>نقشه از تاریخ جلالی به عنوان یا فهرست عنوان‌ها</td><td><code>[]</code></td></tr>
 <tr><td><code>removed</code></td><td><code>withoutHoliday()</code></td><td>تاریخ (همهٔ آن روز) یا نقشه از تاریخ به عنوان یا فهرست عنوان‌ها</td><td><code>[]</code></td></tr>
@@ -163,7 +163,7 @@ var_dump(<span class="tok-v">$custom</span>-&gt;isHoliday(<span class="tok-n">14
         <span class="tok-s">'use_official_data'</span>  =&gt; <span class="tok-k">true</span>,
     ],
 ];</code></pre>
-<p>service provider یک <code>HolidayCalendar</code> از این تنظیمات می‌سازد و در container می‌گذارد. کلید جاافتاده مقدار پیش‌فرضش را می‌گیرد. اگر تنظیمات نادرست باشد، خطا موقع اولین استفاده از تقویم پیش می‌آید.</p>
+<p>service provider یک <code>HolidayCalendar</code> از این تنظیمات می‌سازد و در container می‌گذارد. کلید جاافتاده مقدار پیش‌فرضش را می‌گیرد. اگر تنظیمات نادرست باشد، خطا موقع اولین استفاده از تقویم پیش می‌آید. خود کلید <code>holidays</code> باید آرایه باشد؛ مقدار دیگر (مثلاً رشتهٔ <code>'oops'</code>) <code>InvalidDateException</code> می‌دهد که نام <code>rtly-kit.holidays</code> در پیامش هست. مقدار <code>islamic_offset</code> می‌تواند رشتهٔ عددی مثل <code>'1'</code> یا <code>'-2'</code> باشد، چون <code>env()</code> رشته برمی‌گرداند. عدد اعشاری و رشتهٔ غیرعددی پذیرفته نمی‌شود.</p>
 <pre tabindex="0"><code class="language-php"><span class="tok-k">use</span> RtlyKit\Holiday\HolidayCalendar;
 
 <span class="tok-v">$calendar</span> = app(HolidayCalendar::<span class="tok-k">class</span>);
@@ -183,7 +183,7 @@ var_dump(<span class="tok-v">$custom</span>-&gt;isHoliday(<span class="tok-n">14
 <ul>
 <li>جابه‌جایی یکنواخت (<code>withIslamicOffset</code>) برای ماه‌به‌ماه تفاوت رؤیت هلال کافی نیست. این فقط یک تأخیر ثابت را درست می‌کند. برای تاریخ دقیق یک ماه، <code>withHijriMonthStart</code> را بزنید.</li>
 <li>برای سال ۱۴۰۶ هنوز تاریخ رسمی منتشر نشده است (تا 2026-10-08). هر وقت منتشر شود به داده اضافه می‌شود و کد شما تغییر نمی‌کند.</li>
-<li>در سال‌های <code>Reported</code> (۱۳۸۰ تا ۱۳۹۳ و ۱۳۹۵) فقط تاریخ‌ها از یک منبع است و بعضی مناسبت‌ها در فهرست نیستند، مثلاً تعطیلی امام رضا. اگر لازم دارید، با <code>sourceOf()</code> بفهمید و خودتان با <code>withHoliday()</code> اضافه کنید.</li>
+<li>در سال‌های <code>Reported</code> (۱۳۸۰ تا ۱۳۹۳ و ۱۳۹۵) فقط تاریخ‌ها از یک منبع است و بعضی مناسبت‌ها در فهرست نیستند، مثلاً تعطیلی امام رضا یا امام حسن عسکری. منبع منتشرشده‌ای برای پر کردن آن‌ها نداریم. اگر لازم دارید، با <code>sourceOf()</code> بفهمید و خودتان با <code>withHoliday()</code> اضافه کنید.</li>
 <li>تعطیلی‌های موردی که دولت اعلام می‌کند (مثل آلودگی هوا) جزو داده نیست. با <code>withHoliday()</code> اضافه‌اش کنید.</li>
 </ul>
 <p>مرتبط: <a href="holidays.html">تعطیلات</a>، <a href="laravel-setup.html">راه‌اندازی Laravel</a> و <a href="accuracy-and-data.html">دقت و داده</a>.</p>

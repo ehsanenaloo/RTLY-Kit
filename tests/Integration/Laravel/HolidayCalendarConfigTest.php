@@ -7,6 +7,7 @@ namespace RtlyKit\Tests\Integration\Laravel;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Container\Container as ContainerContract;
 use Illuminate\Support\ServiceProvider;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use RtlyKit\Exceptions\InvalidDateException;
 use RtlyKit\Holiday\HolidayCalendar;
@@ -164,11 +165,58 @@ final class HolidayCalendarConfigTest extends TestCase
         $app->make(HolidayCalendar::class);
     }
 
-    public function test_a_non_array_holidays_entry_falls_back_to_the_defaults(): void
+    /**
+     * @return array<string, array{mixed}>
+     */
+    public static function nonArrayHolidays(): array
     {
-        $app = $this->boot(['rtly-kit' => ['holidays' => 'nope']]);
+        return ['string' => ['oops'], 'int' => [1], 'bool' => [true], 'float' => [1.5]];
+    }
+
+    #[DataProvider('nonArrayHolidays')]
+    public function test_a_non_array_holidays_entry_fails_loudly_when_resolved(mixed $value): void
+    {
+        $app = $this->boot(['rtly-kit' => ['holidays' => $value]]);
+
+        try {
+            $app->make(HolidayCalendar::class);
+            self::fail('expected InvalidDateException');
+        } catch (InvalidDateException $e) {
+            self::assertStringContainsString('rtly-kit.holidays', $e->getMessage());
+            self::assertSame(['option' => 'rtly-kit.holidays'], $e->getContext());
+        }
+    }
+
+    public function test_a_missing_holidays_entry_uses_the_defaults(): void
+    {
+        $app = $this->boot(['rtly-kit' => ['holidays' => null]]);
 
         self::assertEquals(HolidayCalendar::default(), $app->make(HolidayCalendar::class));
+    }
+
+    public function test_an_int_like_string_islamic_offset_from_env_is_accepted(): void
+    {
+        $calendar = $this->boot(['rtly-kit' => ['holidays' => ['islamic_offset' => '-1']]])->make(HolidayCalendar::class);
+
+        self::assertSame(['تاسوعای حسینی'], $calendar->getTitles(1406, 3, 23));
+        self::assertEquals($this->boot(['rtly-kit' => ['holidays' => ['islamic_offset' => -1]]])->make(HolidayCalendar::class), $calendar);
+    }
+
+    #[DataProvider('badOffsets')]
+    public function test_other_islamic_offset_values_are_rejected_when_resolved(mixed $offset): void
+    {
+        $app = $this->boot(['rtly-kit' => ['holidays' => ['islamic_offset' => $offset]]]);
+
+        $this->expectException(InvalidDateException::class);
+        $app->make(HolidayCalendar::class);
+    }
+
+    /**
+     * @return array<string, array{mixed}>
+     */
+    public static function badOffsets(): array
+    {
+        return ['float' => [1.0], 'text' => ['abc'], 'decimal string' => ['1.5'], 'empty' => [''], 'too big' => ['4']];
     }
 
     public function test_the_config_file_is_publishable_with_the_rtly_kit_config_tag(): void

@@ -9,7 +9,7 @@ order: 50
 <p><strong>Before you start.</strong> Install RTLY-Kit (<a href="installation.html">Installation</a>) and Carbon 3 (<code>composer require nesbot/carbon</code>).</p>
 
 <h2 id="registration">How registration works</h2>
-<p>Composer loads the package's helper file on autoload. That file starts the integration. It checks whether the Carbon classes exist and, if they do, registers the macros once. You call nothing yourself:</p>
+<p>Composer loads the package's helper file on autoload. That file starts the integration. It checks whether the Carbon classes exist and, if they do, registers the macros once. If a macro with one of these names already exists, yours or one from another package, it is left as it is and only the missing ones are added. Calling <code>CarbonMacros::register()</code> again is safe. You call nothing yourself:</p>
 <pre><code class="language-php">&lt;?php
 require 'vendor/autoload.php';
 

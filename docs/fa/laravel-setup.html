@@ -106,6 +106,7 @@
 <p>تنها فایل تنظیمات اختیاری، مخصوص تعطیلات است:</p>
 <pre tabindex="0"><code class="language-bash">php artisan vendor:publish --tag=rtly-kit-config</code></pre>
 <p>در <code>config/rtly-kit.php</code> می‌توانید جابه‌جایی روز، شروع ماه قمری، تعطیلی اضافه و حذف‌شده و خاموش کردن داده‌های رسمی را بدهید. همهٔ گزینه‌ها در <a href="holiday-calendar.html#options">تقویم تعطیلات</a> آمده‌اند.</p>
+<p>این بخش هنگام اولین استفاده از تقویم بررسی می‌شود: اگر کلید <code>holidays</code> آرایه نباشد یا گزینه‌ای نادرست باشد، <code>InvalidDateException</code> پیش می‌آید.</p>
 <div class="callout note" role="note"><strong>خوب است بدانید.</strong> اگر در لحظهٔ بوت provider، validation factory در container بسته نشده باشد، قانون‌ها ثبت نمی‌شوند و بعداً هم ثبت نخواهند شد. این فقط در بوت‌استرپ‌های غیرمعمول پیش می‌آید، مثلاً container کنسولی بدون سرویس اعتبارسنجی.</div>
 <p>بعدی: <a href="laravel-validation-and-cast.html">قانون‌های اعتبارسنجی و cast در Eloquent</a>.</p>
 <nav class="reading-footer" aria-label="صفحهٔ قبلی و بعدی"><a class="prev" rel="prev" href="prayer-times.html"><small>قبلی</small>اوقات شرعی</a><a class="next" rel="next" href="laravel-validation-and-cast.html"><small>بعدی</small>قانون‌های اعتبارسنجی و cast در Eloquent</a></nav>

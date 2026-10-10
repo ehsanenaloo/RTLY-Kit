@@ -25,7 +25,7 @@ final class ShebaTest extends TestCase
             'sepah' => ['015', 'بانک سپه'],
             'melli' => ['017', 'بانک ملی ایران'],
             'tejarat' => ['018', 'بانک تجارت'],
-            'saderat' => ['019', 'بانک صادرات'],
+            'saderat' => ['019', 'بانک صادرات ایران'],
             'parsian' => ['054', 'بانک پارسیان'],
             'eghtesad-novin' => ['055', 'بانک اقتصاد نوین'],
             'saman' => ['056', 'بانک سامان'],
@@ -72,7 +72,7 @@ final class ShebaTest extends TestCase
         $this->assertTrue(Sheba::isValid('IR270170000000100324200001'));
         $this->assertSame('بانک ملی ایران', Sheba::getBankName('IR270170000000100324200001'));
         $this->assertSame('بانک ملت', Sheba::getBankName('ir47 0120 0000 0020 0324 2000 12'));
-        $this->assertSame('بانک صادرات', Sheba::getBankName('IR550190000000300123456789'));
+        $this->assertSame('بانک صادرات ایران', Sheba::getBankName('IR550190000000300123456789'));
         $this->assertTrue(Sheba::isValid('IR۲۷۰۱۷۰۰۰۰۰۰۰۱۰۰۳۲۴۲۰۰۰۰۱'));
     }
 

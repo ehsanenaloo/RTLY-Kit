@@ -80,6 +80,7 @@ require</span> __DIR__.<span class="tok-s">'/vendor/autoload.php'</span>;
 <tr><td><code>Hebrew</code> / <code>hebrew_date()</code></td><td>3000 أو أكثر</td><td>ميلادي</td></tr>
 </tbody>
 </table></div>
+<p>يجب أن يكون للنص الشكل الدقيق <code>Y/m/d</code> أو <code>Y-m-d</code>، مع وقت اختياري (<code>H:i</code> أو <code>H:i:s</code> أو <code>H:i:s.u</code> بعد مسافة أو <code>T</code> أو <code>t</code>) وعلامة منطقة اختيارية (<code>Z</code> أو <code>+03:30</code> أو <code>+0330</code> أو <code>+03</code> ضمن ±14:00) تحدّد المنطقة الزمنية. والنص الذي يبدأ مثل تاريخ التقويم نفسه وفيه زيادة (مثل اسم منطقة <code>UTC</code> أو <code>PM</code>) أو نقص، والسلسلة من 3 إلى 8 أرقام فقط، والسنة من 5 أرقام في Jalali وHijri، كلها تُطلق <code>InvalidDateException</code>. أما Hebrew فتقبل سنوات من 4 أو 5 أرقام (حتى 13759). وتُعامَل المسافة غير القابلة للكسر وZWNJ وLRM وRLM معاملة المسافة.</p>
 <p>لتمرير تاريخ ميلادي حقيقي دون العتبة (مثل السنة 999) استخدم <code>DateTimeImmutable</code> الذي لا يُعاد تفسيره أبدًا. انظر <a href="troubleshooting-faq.html#string-year">الأسئلة الشائعة</a>.</p>
 
 <h3 id="umm-al-qura">نطاق أم القرى<a class="anchor" href="#umm-al-qura" aria-label="رابط إلى هذا القسم">#</a></h3>
@@ -128,6 +129,8 @@ require</span> __DIR__.<span class="tok-s">'/vendor/autoload.php'</span>;
 <tr><td><code>HolidayCalendar::withIslamicOffset()</code></td><td>من -3 إلى +3 أيام</td><td><code>InvalidDateException</code></td></tr>
 <tr><td><code>HolidayCalendar::withHijriMonthStart()</code></td><td>ضمن 3 أيام من البداية المحسوبة، وبفارق 29 أو 30 يومًا عن بداية شهر مجاور أعطيته</td><td><code>InvalidDateException</code></td></tr>
 <tr><td><code>PrayerTimes::withTune()</code></td><td>من -30 إلى +30 دقيقة، أعداد صحيحة، لـ <code>fajr</code> و<code>sunrise</code> و<code>dhuhr</code> و<code>asr</code> و<code>maghrib</code> و<code>isha</code></td><td><code>InvalidPrayerConfigException</code></td></tr>
+<tr><td><code>new PrayerTimes()</code></td><td>خط العرض من -90 إلى 90، وخط الطول من -180 إلى 180، والارتفاع من -20000 إلى 20000 متر (السالب يُعد 0). لا <code>NaN</code> ولا لانهاية</td><td><code>InvalidPrayerConfigException</code></td></tr>
+<tr><td><code>PrayerTimes::getTimes()</code> و<code>nextPrayer()</code></td><td>يجب أن تكون السنة المحلية للتاريخ من 1 إلى 9999</td><td><code>InvalidDateException</code></td></tr>
 </tbody>
 </table></div>
 

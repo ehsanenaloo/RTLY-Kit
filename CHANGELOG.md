@@ -7,6 +7,57 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-10-10
+
+Some changes below can break existing code. They are marked `Breaking:`. For the steps to migrate, see [UPGRADE.md](UPGRADE.md).
+
+### Added
+
+- `make()` reads the common ISO-8601 forms as the calendar's own date when the year belongs to it: a space, `T` or `t` before the time, `H:i`, `H:i:s` or `H:i:s.u`, and an optional `Z`, `+03:30`, `+0330` or `+03` designator. A designator sets the time zone of the result, and a `$timezone` argument then converts to it. Offsets must lie within ±14:00.
+- `make()` treats no-break space, ZWNJ, LRM and RLM as spaces. `Hebrew::make()` and `toDateString()` now round-trip the years 10000 to 13759.
+- `islamic_offset` in the holiday config accepts an integer-like string such as `'1'`, as `env()` returns it.
+- `VehiclePlate` accepts a bare `ا` (and `أ`, `إ`) as the letter and reports it as `الف`. `NumberToWords::ordinal()` accepts whole floats, and `convert($n, 'fa', [])` no longer throws. `Detector::containsRtl()` counts the explicit RLE, RLO and RLI controls.
+- `Hijri::createFromFormat()` (with an optional variant) and `Hebrew::createFromFormat()`, with the same rules as `Jalali::createFromFormat()`.
+
+### Changed
+
+- Breaking: `make()` throws `InvalidDateException` for text that starts like a date of the calendar but is not one of the shapes above, for example a zone name after the time (`UTC`), `PM`, one-digit minutes or `1403-01`. It used to be read as a Gregorian date, which gave wrong results. Pass a `DateTimeImmutable` for such values.
+- Breaking: a bare run of 3 to 8 digits (`1403`, `14030101`) throws instead of being read as a clock time. Eight digits that start with a year of another calendar (`20240101`) are still read as a Gregorian date. A 5-digit year in a Jalali or Hijri string throws `date_out_of_range`.
+- Breaking: `endOfDay()`, `endOfMonth()` and `endOfYear()` end at 23:59:59.999999 instead of 23:59:59.000000. Formatted output with `H:i:s` is unchanged.
+- Breaking: `Jalali::createFromFormat()` throws `InvalidDateException` for tokens with a Gregorian or time-zone meaning (`z y F M D l S e T P O p u v`). The format `U` alone reads a Unix timestamp.
+- `Hijri::make()` takes `?HijriVariant $variant = null`. `null` keeps the variant of a Hijri instance and means Umm al-Qura for other input. A variant you pass, Umm al-Qura included, always applies. `Hijri::make()` and `Hebrew::make()` with an instance of their own class now honour the time zone. Before, they ignored it.
+- The comparison methods and `between()` on `Jalali`, `Hijri` and `Hebrew` compare the whole instant, microseconds included. `diffInMonths()` and `diffInYears()` count microseconds too.
+- `addMonths()` and `addYears()` keep the microseconds of the date, like `addDays()` and `addSeconds()` already did. `addMonths(0)` and `addYears(0)` return the same date, and month or year shifts keep the UTC offset during a repeated DST hour.
+- Breaking: `make()` on `Jalali`, `Hijri` and `Hebrew`, and `JalaliCast`, throw `InvalidDateException` for a Gregorian string with an impossible day such as `2024-02-30`. Before, PHP rolled it over to the next month.
+- Breaking: in `format()`, the token `Y` writes at least 4 digits and a leading minus for negative years (`-0005`; it used to print `-005`), and `y` uses the last two digits of the year with floor modulo (Jalali year -620 gives `80`; it used to give `-20`). A text date with a negative year now throws a clear `InvalidDateException` in `make()`.
+- `serialize()` of `Jalali`, `Hijri` and `Hebrew` stores the moment (and the Hijri variant) as a small versioned array. `unserialize()` checks the range again and throws `InvalidDateException` for damaged data. Values serialized by earlier versions still load. Anyone who compares or stores the raw serialized string will see a different value.
+- Breaking: `JalaliCast` throws `InvalidDateException` when the stored value is an array, a boolean, a float or an object. Before, it returned `null`. `null` and an empty string still give `null`.
+- Breaking: `Mobile`, `PostalCode` and `BankCard` accept only digits plus spaces, no-break spaces, half-spaces, LRM/RLM marks, hyphens, parentheses and dots (and a leading `+98` for `Mobile`). Letters, other punctuation, negative numbers and control characters give `invalid_format`. Their `normalize()` returns an empty string for such input.
+- Breaking: a tab, newline or NUL at either end of the input is no longer trimmed. `NationalCode`, `Sheba`, `VehiclePlate`, `Format::withSeparator()` and `NumberToWords` reject it.
+- Breaking: `Sheba` rejects the check digits 00, 01 and 99 as `invalid_checksum`.
+- Breaking: `PostalCode` rejects a code that has the digit 0 or 2 in its first five digits (for example `1234567890`) with `invalid_format`. The rule comes from three public sources; Iran Post publishes no official rule set.
+- Breaking: number strings with improper grouping, such as `1 2`, `12 34` or `1,2`, throw `invalid_number` in `NumberToWords::convert()` and `Format::withSeparator()`. Before, they were read as 12 or 1234. Groups of exactly three digits after a first group of one to three digits (`1 234 567`, `1,234,567`) still work.
+- Breaking: `Normalizer::normalize()`, `fixHalfSpace()` and `clean()` replace invalid UTF-8 bytes with U+FFFD and then apply every step. Before, they applied only the byte steps. `Detector` ignores invalid bytes instead of returning false or `ltr`.
+- Breaking: `Detector::isRtlLocale()` follows an explicit script subtag (`fa-Latn`, `ar-Latn` and `sd-Deva` are false), and `Detector::direction()` treats all RTL scripts as `containsRtl()` does.
+- Breaking: `NumberToWords` locales must name exactly `fa` or `ar`. `arn` and `farsi` used to be accepted by prefix and now throw `UnsupportedLocaleException`.
+- Breaking: the Sheba bank names for codes 013 and 019 are `بانک رفاه کارگران` and `بانک صادرات ایران`, the same as in the BIN table.
+- Breaking: `PrayerTimes` throws `InvalidPrayerConfigException` for NaN or infinite numbers, a latitude outside -90 to 90, a longitude outside -180 to 180 and an elevation beyond ±20000 m. `getTimes()` and `nextPrayer()` throw `InvalidDateException` when the local year is outside 1 to 9999. Before, they returned wrong times.
+- Breaking: `PrayerTimes` reports a prayer as `null` when its local date would fall after 9999-12-31 or before 0001-01-01, and `nextPrayer()` returns `null` once no prayer is left up to the end of 9999. Near the poles, a time that would break the order Fajr, Sunrise, Dhuhr, Asr, Maghrib, Isha (for example Asr after Isha at 89.9 degrees) is `null` too.
+- Breaking: for time zones whose offset includes seconds (mostly dates before 1970), prayer times are rounded to the nearest minute instead of cut, so a time can differ by one minute from before.
+- Breaking: `HolidayCalendar::withHoliday()` and `withoutHoliday()` accept only a Jalali date string (`Y/m/d` or `Y-m-d`, a 3 or 4 digit year, Persian or Arabic digits allowed). A year of 1700 or later, a time part and free text throw `InvalidDateException`. Before, a Gregorian-looking string was read as another day. A Hijri month start that contains a NUL byte throws `InvalidDateException`.
+- Breaking: a non-array `rtly-kit.holidays` Laravel config value throws `InvalidDateException` when the holiday calendar is resolved. Before, it was ignored.
+
+### Fixed
+
+- `JalaliCast` reads a stored Gregorian date with a year below 1700 as Gregorian. Before, such a value was read as a Jalali date.
+- The Carbon macros no longer replace a macro that already has the same name. Only the missing ones are added.
+- A NUL byte in a date string, a `createFromFormat()` argument or a time-zone name throws `InvalidDateException` instead of a `ValueError`. `diffInMonths()` and `diffInYears()` no longer throw for two valid dates near the year-range edge.
+- A Laravel validation message that your application sets and that equals the English default is no longer replaced by the package translation, and float values reach the validation rules unchanged.
+- `Normalizer::fixHalfSpace()` and `clean()` no longer damage text that ends in «ی» or «،», and `clean()` gives the same result when you run it again.
+- `Detector::containsRtl()` and `isArabic()` no longer treat the byte order mark (U+FEFF) as a right-to-left character.
+- `Slugify` no longer drops text that equals the separator or treats U+0001 as a separator. `NumberToWords::fromWords()` reports invalid UTF-8 clearly, and `Format::withSeparator('-0')` has no sign.
+- `nextPrayer()` no longer skips a prayer for query times before 1970. Tehran-method Maghrib and Isha no longer come out identical at high latitudes with the `OneSeventh` and `NightMiddle` rules, so those times can change slightly. For time zones far from their longitude, such as Pacific/Kiritimati, prayer times now belong to the requested local date.
+
 ## [0.2.1] - 2026-10-09
 
 ### Changed
@@ -83,7 +134,8 @@ First release.
 
 - Input size limits: `Format::withSeparator()` rejects strings over 4096 bytes and numbers over 1000 characters, and `NumberToWords::convert()` and `fromWords()` reject strings over 4096 bytes. They throw `InvalidNumberException`.
 
-[Unreleased]: https://github.com/ehsanenaloo/RTLY-Kit/compare/v0.2.1...HEAD
+[Unreleased]: https://github.com/ehsanenaloo/RTLY-Kit/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/ehsanenaloo/RTLY-Kit/compare/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/ehsanenaloo/RTLY-Kit/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/ehsanenaloo/RTLY-Kit/compare/v0.1.1...v0.2.0
 [0.1.1]: https://github.com/ehsanenaloo/RTLY-Kit/compare/v0.1.0...v0.1.1

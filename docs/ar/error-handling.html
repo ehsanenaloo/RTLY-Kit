@@ -35,7 +35,7 @@
 <p>تستخدم كل دالة في RTLY-Kit أحد أسلوبين فقط، فتعرف دائمًا ما الذي يجب حمايته:</p>
 <ul>
 <li><strong>أدوات التحقق لا ترمي استثناءً أبدًا.</strong> <code>NationalCode</code> و<code>Sheba</code> و<code>BankCard</code> و<code>Mobile</code> و<code>PostalCode</code> و<code>VehiclePlate</code> (ومعها الدوال المساعدة <code>is_*</code> / <code>validate_*</code>) تقبل أي قيمة وتجيب بـ <code>false</code> أو بـ <code>Result</code> غير صالح. راجع <a href="validators-overview.html">نظرة عامة على أدوات التحقق</a>.</li>
-<li><strong>كل ما عدا ذلك يرمي</strong> <code>RtlyKit\Exceptions\RtlyKitException</code> (أو صنفًا فرعيًا منه) عند مدخل لا يستطيع قبوله. ولا يتسرب <code>TypeError</code> أو <code>ValueError</code> أو استثناء <code>DateMalformed*</code> من PHP بسبب مدخل خاطئ؛ فإن حدث ذلك فهو خلل في المكتبة، نرجو الإبلاغ عنه.</li>
+<li><strong>كل ما عدا ذلك يرمي</strong> <code>RtlyKit\Exceptions\RtlyKitException</code> (أو صنفًا فرعيًا منه) عند قيمة من نوع مقبول لا تستطيع استعمالها. ولا يتسرب <code>TypeError</code> أو <code>ValueError</code> أو استثناء <code>DateMalformed*</code> من PHP بسبب قيمة كهذه؛ فإن حدث ذلك فهو خلل في المكتبة، نرجو الإبلاغ عنه. أما القيمة من نوع لا يقبله توقيع الدالة، كمصفوفة تُمرَّر بدل التاريخ، فترفضها PHP نفسها بـ <code>TypeError</code>.</li>
 </ul>
 
 <h2 id="hierarchy">تسلسل الاستثناءات<a class="anchor" href="#hierarchy" aria-label="رابط إلى هذا القسم">#</a></h2>

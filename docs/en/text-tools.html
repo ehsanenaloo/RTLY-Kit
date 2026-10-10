@@ -33,6 +33,7 @@
 <details class="toc-inline"><summary>On this page</summary><ol><li><a href="#normalizer">Normalizer</a><ol><li><a href="#normalize">normalize()</a></li><li><a href="#half-space">fixHalfSpace()</a></li><li><a href="#clean">clean()</a></li></ol></li><li><a href="#detector">Detector</a><ol><li><a href="#persian-arabic">isPersian() and isArabic()</a></li><li><a href="#direction">Direction and RTL</a></li><li><a href="#rtl-locale">isRtlLocale()</a></li></ol></li><li><a href="#slugify">Slugify</a><ol><li><a href="#slug-separator">The separator</a></li></ol></li></ol></details>
 <h2 id="normalizer">Normalizer<a class="anchor" href="#normalizer" aria-label="Link to this section">#</a></h2>
 <p><code>RtlyKit\Text\Normalizer</code> makes Persian text comparable and storable. User input mixes Arabic and Persian letter shapes (an Arabic keyboard types «ي» and «ك»), vowel marks, tatweel and stray whitespace. The same word then looks identical on screen but fails a string comparison or a database search.</p>
+<div class="callout note" role="note"><strong>Invalid UTF-8.</strong> <code>normalize()</code>, <code>fixHalfSpace()</code> and <code>clean()</code> first replace every byte that is not part of a valid UTF-8 sequence with U+FFFD (the replacement character), then apply all their steps. The result is always valid UTF-8, and no extension such as mbstring is needed.</div>
 
 <h3 id="normalize">normalize()<a class="anchor" href="#normalize" aria-label="Link to this section">#</a></h3>
 <p><code>Normalizer::normalize($text, $removeDiacritics = true)</code> does the following:</p>
@@ -76,13 +77,13 @@ require</span> <span class="tok-s">'vendor/autoload.php'</span>;
 <p>It does not add missing half-spaces and does not merge ordinary spaces.</p>
 
 <h3 id="clean">clean()<a class="anchor" href="#clean" aria-label="Link to this section">#</a></h3>
-<p><code>Normalizer::clean()</code> is the all-in-one version for storage and search. It runs <code>normalize()</code>, then <code>fixHalfSpace()</code>, then removes the invisible characters zero-width space (U+200B), zero-width joiner (U+200D) and the byte order mark (U+FEFF). ZWNJ is the only zero-width character it keeps.</p>
+<p><code>Normalizer::clean()</code> is the all-in-one version for storage and search. It first removes the invisible characters zero-width space (U+200B), zero-width joiner (U+200D) and the byte order mark (U+FEFF), then runs <code>normalize()</code> and <code>fixHalfSpace()</code>, and collapses whitespace once more. ZWNJ is the only zero-width character it keeps. The order makes <code>clean()</code> idempotent: cleaning an already clean text changes nothing.</p>
 <pre tabindex="0"><code class="language-php"><span class="tok-v">$c</span> = <span class="tok-s">"كتاب\u{200B}ي  ١٢٣"</span>;
 <span class="tok-k">echo</span> Normalizer::clean(<span class="tok-v">$c</span>), <span class="tok-s">"\n"</span>;   <span class="tok-c">// کتابی ۱۲۳</span></code></pre>
 <p><code>normalize()</code> alone would leave the invisible zero-width space inside the word. That is why <code>clean()</code> exists. Use it before you store or index user text.</p>
 
 <h2 id="detector">Detector<a class="anchor" href="#detector" aria-label="Link to this section">#</a></h2>
-<p><code>RtlyKit\Text\Detector</code> answers questions about script, language and direction. All methods are static and never throw.</p>
+<p><code>RtlyKit\Text\Detector</code> answers questions about script, language and direction. All methods are static and never throw. Invalid UTF-8 is handled like in <code>Normalizer</code>: each bad byte becomes U+FFFD, a neutral character that is neither a letter nor right-to-left, so the answer depends on the valid part of the text only.</p>
 
 <h3 id="persian-arabic">isPersian() and isArabic()<a class="anchor" href="#persian-arabic" aria-label="Link to this section">#</a></h3>
 <p>Both are heuristics for Arabic-script text. Persian is recognised by letters that exist only in Persian (<code>پ چ ژ گ</code>, the Persian forms <code>ک</code> and <code>ی</code>, and Persian digits). Arabic is recognised by <code>ي ك ى ة</code> and Arabic-Indic digits. Letters that both languages share, including «ه» and the hamza forms, are not counted. The text counts as Persian when Persian-only letters are at least as frequent as Arabic-only letters. So ties, and text with no telling letters, count as Persian.</p>
@@ -100,8 +101,8 @@ var_dump(Detector::isPersian(<span class="tok-s">''</span>));            <span c
 
 <h3 id="direction">Direction and RTL<a class="anchor" href="#direction" aria-label="Link to this section">#</a></h3>
 <ul>
-<li><code>containsRtl($text)</code>: whether the text has any character from a right-to-left script (Hebrew, Arabic and its supplements, Syriac, Thaana, N'Ko and others, Arabic presentation forms) or the RLM mark.</li>
-<li><code>direction($text)</code>: <code>'rtl'</code> or <code>'ltr'</code>, taken from the first strong letter, following the Unicode bidirectional rule. Digits, punctuation and spaces are neutral. Text with no letters returns <code>'ltr'</code>.</li>
+<li><code>containsRtl($text)</code>: whether the text has any character from a right-to-left script (Hebrew, Arabic and its supplements, Syriac, Thaana, N'Ko and others, Arabic presentation forms) or one of the explicit right-to-left controls RLM (U+200F), RLE (U+202B), RLO (U+202E) and RLI (U+2067). <code>direction()</code> does not count these controls: it only looks at the first letter.</li>
+<li><code>direction($text)</code>: <code>'rtl'</code> or <code>'ltr'</code>, taken from the first strong letter, following the Unicode bidirectional rule. Digits, punctuation and spaces are neutral. Text with no letters returns <code>'ltr'</code>. It treats the same scripts as right-to-left as <code>containsRtl()</code>, including historic ones such as Phoenician, Avestan and Nabataean.</li>
 <li><code>isHebrew($text)</code>: whether the text has Hebrew letters.</li>
 </ul>
 <pre tabindex="0"><code class="language-php">var_dump(Detector::containsRtl(<span class="tok-s">'abc'</span>));           <span class="tok-c">// bool(false)</span>
@@ -112,7 +113,7 @@ var_dump(Detector::isHebrew(<span class="tok-s">'שלום'</span>));            
 <p>The helpers <code>contains_rtl()</code> and <code>text_direction()</code> wrap <code>containsRtl()</code> and <code>direction()</code>. Use <code>direction()</code> for an HTML <code>dir</code> attribute on user-written text.</p>
 
 <h3 id="rtl-locale">isRtlLocale()<a class="anchor" href="#rtl-locale" aria-label="Link to this section">#</a></h3>
-<p><code>isRtlLocale($locale)</code> tells you if a locale tag is written right to left. It splits on <code>-</code>, <code>_</code>, <code>.</code> and <code>@</code>, ignores case and surrounding spaces, and returns true when the language is a right-to-left one (<code>fa</code>, <code>ar</code>, <code>he</code>, <code>ur</code>, <code>ps</code>, <code>ug</code>, <code>dv</code>, <code>ckb</code>, <code>azb</code> and others) or when a script subtag such as <code>Arab</code> or <code>Hebr</code> is present.</p>
+<p><code>isRtlLocale($locale)</code> tells you if a locale tag is written right to left. It splits on <code>-</code> and <code>_</code> (a <code>.UTF-8</code> or <code>@euro</code> suffix is ignored) and ignores case and surrounding spaces. A four-letter script subtag decides: <code>Arab</code>, <code>Hebr</code> and the other right-to-left scripts give true, any other script gives false, even for a right-to-left language (<code>fa-Latn</code>, <code>ar-Latn</code> and <code>sd-Deva</code> are false). Without a script subtag the language decides: <code>fa</code>, <code>ar</code>, <code>he</code>, <code>ur</code>, <code>ps</code>, <code>ug</code>, <code>dv</code>, <code>ckb</code>, <code>azb</code> and others are true.</p>
 <pre tabindex="0"><code class="language-php">var_dump(Detector::isRtlLocale(<span class="tok-s">'fa_IR'</span>));     <span class="tok-c">// bool(true)</span>
 var_dump(Detector::isRtlLocale(<span class="tok-s">'ar-SA'</span>));     <span class="tok-c">// bool(true)</span>
 var_dump(Detector::isRtlLocale(<span class="tok-s">'ckb-IQ'</span>));    <span class="tok-c">// bool(true)</span>
@@ -125,9 +126,9 @@ var_dump(Detector::isRtlLocale(<span class="tok-s">''</span>));          <span c
 <p><code>Slugify::make($text, $separator = '-')</code> turns a title into a URL-friendly slug and keeps Persian and Arabic letters readable. It does not transliterate.</p>
 <ol>
 <li>The text is cleaned with <code>Normalizer::normalize()</code>.</li>
-<li>Whitespace and half-spaces become the separator.</li>
+<li>Whitespace and half-spaces become the separator. A literal U+0001 in the text is dropped first, so it never acts as one.</li>
 <li>Everything except letters (any script), combining marks, digits (any set), hyphens and underscores is dropped. Punctuation and emoji disappear.</li>
-<li>Repeated hyphens, underscores and separators become one, and separators are trimmed from both ends.</li>
+<li>Repeated hyphens, underscores and separators become one, and separators are trimmed from both ends. This happens before the separator text is put in, so text that equals or contains the separator is kept: <code>Slugify::make('maxx', 'x')</code> is <code>maxx</code>.</li>
 <li>The result is lower-cased as UTF-8.</li>
 </ol>
 <pre tabindex="0"><code class="language-php"><span class="tok-k">use</span> RtlyKit\Text\Slugify;

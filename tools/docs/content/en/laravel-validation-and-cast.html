@@ -95,7 +95,8 @@ echo $post-&gt;published_at-&gt;addDays(20)-&gt;format('Y/m/d'); // 1404/02/04</
 <tr><td><code>null</code> or <code>''</code></td><td><code>null</code></td></tr>
 </tbody>
 </table>
-<p>A string is read as Jalali when its year is 1200 to 1599 and the separator is <code>/</code> or <code>-</code>, with an optional time <code>HH:MM</code> or <code>HH:MM:SS</code> after a space or <code>T</code>. Any other string goes through the normal date parser as Gregorian.</p>
+<p>A string is read as Jalali when its year is 1200 to 1599 and the separator is <code>/</code> or <code>-</code>, with an optional time <code>HH:MM</code> or <code>HH:MM:SS</code> after a space or <code>T</code>. Any other string goes to <code>Jalali::make()</code>. It reads a year below 1700 as Jalali and anything else as Gregorian, so <code>'1650-01-01'</code> is still Jalali.</p>
+<p>When the model reads the column, the stored value is always read as Gregorian, whatever the year, so a date such as <code>1650-05-05 10:00:00</code> comes back unchanged. A stored value of an unsupported type (an array, a boolean, a float or an object) throws <code>InvalidDateException</code> with the attribute name and the type. Only <code>null</code> and an empty string give <code>null</code>.</p>
 
 <h3 id="cast-errors">Errors</h3>
 <p>Bad input throws <code>RtlyKit\Exceptions\InvalidDateException</code> when you assign it, never a raw PHP error:</p>

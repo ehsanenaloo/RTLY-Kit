@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace RtlyKit\Validation;
 
 use RtlyKit\Contracts\Validator;
-use RtlyKit\Number\Digits;
 
 /**
  * Iranian Bank Card (شماره کارت) validator: 16 digits, Luhn checksum.
+ * Between the digits only spaces, NBSP, ZWNJ, LRM/RLM, hyphens, parentheses and dots are accepted;
+ * any other character is `invalid_format`.
  */
 final class BankCard implements Validator
 {
@@ -48,7 +49,7 @@ final class BankCard implements Validator
         $card = self::normalize($input);
         $details['normalized'] = $card;
 
-        if (preg_match('/^\d{16}$/', $card) !== 1) {
+        if (preg_match('/^\d{16}$/D', $card) !== 1) {
             return Result::invalid('invalid_format', $details);
         }
 
@@ -56,7 +57,7 @@ final class BankCard implements Validator
         $details['bin'] = $bin;
         $details['bank_name'] = self::bins()[(int) $bin] ?? null;
 
-        if (preg_match('/^(\d)\1{15}$/', $card) === 1) {
+        if (preg_match('/^(\d)\1{15}$/D', $card) === 1) {
             return Result::invalid('repeated_digits', $details);
         }
 
@@ -75,9 +76,15 @@ final class BankCard implements Validator
         return $result->isValid() && is_string($name) ? $name : null;
     }
 
+    /**
+     * Digits only. Persian/Arabic digits are converted; the input may hold only spaces, NBSP, ZWNJ,
+     * LRM/RLM, hyphens, parentheses and dots between the digits. Anything else (letters, other
+     * punctuation, control characters, a leading hyphen) gives an empty string, which
+     * {@see self::validate()} reports as `invalid_format`.
+     */
     public static function normalize(string $card): string
     {
-        return preg_replace('/\D/', '', Digits::toEnglish($card)) ?? '';
+        return Input::strictDigits($card) ?? '';
     }
 
     private static function luhn(string $digits): bool

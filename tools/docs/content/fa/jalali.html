@@ -38,16 +38,17 @@ echo Jalali::today();    // امروز، ساعت 00:00:00</code></pre>
 <h3 id="string-rules">رشته در <code>make()</code> چطور خوانده می‌شود</h3>
 <p>رشته‌ها به این ترتیب بررسی می‌شوند:</p>
 <ol>
-<li>رقم‌های فارسی و عربی به انگلیسی تبدیل می‌شوند و فاصله‌های دو سر رشته حذف می‌شود. رشتهٔ خالی یا فقط فاصله <code>InvalidDateException</code> می‌دهد.</li>
-<li>اگر رشته شکل <code>Y/m/d</code> یا <code>Y-m-d</code> داشته باشد، سالش ۳ یا ۴ رقم باشد (ساعت <code>H:i</code> یا <code>H:i:s</code> بعد از فاصله یا <code>T</code> اختیاری است) <strong>و سال کمتر از ۱۷۰۰ باشد</strong>، تاریخ <em>جلالی</em> حساب می‌شود.</li>
-<li>هر رشتهٔ دیگر، از جمله هر سال ۱۷۰۰ و بالاتر، به <code>DateTimeImmutable</code> داده می‌شود. یعنی میلادی یا متن آزاد است (<code>'2025-10-07'</code>، <code>'tomorrow'</code>، <code>'10 October 2025'</code>).</li>
+<li>رقم‌های فارسی و عربی به انگلیسی تبدیل می‌شوند و فاصله‌های دو سر رشته حذف می‌شود. فاصلهٔ ناشکن (NBSP)، نیم‌فاصله (ZWNJ) و نشانه‌های LRM و RLM مثل فاصله حساب می‌شوند. رشتهٔ خالی یا فقط فاصله، یا رشته‌ای که بایت NUL دارد، <code>InvalidDateException</code> می‌دهد.</li>
+<li>اگر رشته دقیقاً شکل <code>Y/m/d</code> یا <code>Y-m-d</code> داشته باشد، سالش ۳ یا ۴ رقم باشد (بعد از آن می‌تواند فاصله، <code>T</code> یا <code>t</code>، ساعت <code>H:i</code>، <code>H:i:s</code> یا <code>H:i:s.u</code> با کسر ثانیه، و نشانهٔ منطقه یعنی <code>Z</code>، <code>+03:30</code>، <code>+0330</code> یا <code>+03</code> بیاید) <strong>و سال کمتر از ۱۷۰۰ باشد</strong>، تاریخ <em>جلالی</em> حساب می‌شود. نشانهٔ منطقه، منطقهٔ زمانی نتیجه را تعیین می‌کند و اختلاف ساعت باید در ±۱۴:۰۰ باشد. اگر <code>$timezone</code> هم بدهید، اول نشانهٔ داخل متن خوانده می‌شود و بعد نتیجه به آن منطقه تبدیل می‌شود.</li>
+<li>اگر رشته مثل چنین تاریخی شروع شود ولی چیزی کم یا زیاد داشته باشد، به‌جای حدس میلادی <code>InvalidDateException</code> می‌دهد. مثال: نام منطقه بعد از ساعت (<code>'1403-01-01 10:00 UTC'</code>، <code>'1403-01-01T10:00 Asia/Tehran'</code>)، <code>PM</code>، دقیقه یا ثانیهٔ تک‌رقمی، و فقط سال و ماه (<code>'1403-01'</code>). رشتهٔ فقط‌عددیِ ۳ تا ۸ رقمی مثل <code>'1403'</code> یا <code>'14030101'</code> هم خطا می‌دهد، چون PHP آن را ساعت می‌خواند. سال ۵ رقمی مثل <code>'12345/01/01'</code> هم خطا می‌دهد (کد <code>date_out_of_range</code>). برای این مقدارها یک <code>DateTimeImmutable</code> بدهید.</li>
+<li>هر رشتهٔ دیگر، از جمله هر سال ۱۷۰۰ و بالاتر و هشت‌رقمی‌ای که با چنین سالی شروع شود (<code>'20240101'</code>)، به <code>DateTimeImmutable</code> داده می‌شود. یعنی میلادی یا متن آزاد است (<code>'2025-10-07'</code>، <code>'tomorrow'</code>، <code>'10 October 2025'</code>).</li>
 </ol>
 <pre><code class="language-php">echo Jalali::make('1403/12/30');          // 1403/12/30 00:00:00
 echo Jalali::make('۱۴۰۴/۰۷/۱۵');          // 1404/07/15 00:00:00   (رقم‌های فارسی)
 echo Jalali::make('1404-07-15 08:05');    // 1404/07/15 08:05:00
 echo Jalali::make('2025-10-07')-&gt;format('Y/m/d');  // 1404/07/15   (متن میلادی)
 echo Jalali::make('1700/01/01')-&gt;format('Y/m/d');  // 1078/10/12   (از 1700 به بعد میلادی است)</code></pre>
-<div class="note"><strong>مرز ۱۷۰۰.</strong> رشته‌ای مثل <code>'0001-01-01'</code> یا <code>'1500-06-01'</code> تاریخ جلالی خوانده می‌شود، نه میلادی. برای تاریخ میلادیِ قبل از ۱۷۰۰ خودتان یک <code>DateTimeImmutable</code> بسازید و همان را به <code>make()</code> بدهید.</div>
+<div class="note"><strong>مرز ۱۷۰۰.</strong> رشته‌ای مثل <code>'0001-01-01'</code> یا <code>'1500-06-01'</code> تاریخ جلالی خوانده می‌شود، نه میلادی. برای تاریخ میلادیِ قبل از ۱۷۰۰ خودتان یک <code>DateTimeImmutable</code> بسازید و همان را به <code>make()</code> بدهید. متن ISO مثل <code>'1500-06-01T10:00:00Z'</code> هم همین‌طور است: تاریخ جلالی خوانده می‌شود، نه میلادی.</div>
 <p>ورودی نامعتبر همیشه <code>InvalidDateException</code> می‌دهد:</p>
 <pre><code class="language-php">foreach (['1404/12/30', '1404/13/01', '1404/07/15 25:00', '', 'garbage'] as $s) {
     try {
@@ -72,7 +73,11 @@ try {
 } catch (InvalidDateException $e) {
     echo $e-&gt;getMessage();   // Unable to parse 'abc' with format 'Y/m/d'
 }</code></pre>
+<p>توکن‌هایی که تاریخ را غلط می‌کنند با <code>InvalidDateException</code> رد می‌شوند و نام توکن در پیام می‌آید. این توکن‌ها عبارت‌اند از <code>z</code>، <code>y</code>، نام‌های انگلیسی <code>F M D l</code>، پسوند <code>S</code> و توکن‌های منطقه و کسر ثانیه <code>e T P O p u v</code>. منطقهٔ زمانی را به‌جای آن‌ها در آرگومان سوم بدهید. قالب <code>U</code> به‌تنهایی زمان یونیکس را می‌خواند و هر قالب دیگری که <code>U</code> داشته باشد خطا می‌دهد. بایت NUL در قالب یا متن هم خطا می‌دهد.</p>
+<pre><code class="language-php">echo Jalali::createFromFormat('U', '1700000000', $tehran);   // 1402/08/24 01:43:20
+Jalali::createFromFormat('Y/m/d e', '1404/07/15 UTC');       // InvalidDateException: ... the 'e' token ...</code></pre>
 
+<p>رشتهٔ میلادی با روز ناممکن، مثل <code>'2024-02-30'</code>، <code>InvalidDateException</code> می‌دهد (خودِ PHP آن را به 2024-03-01 می‌برد). متن، سال منفی ندارد: <code>make('-0100/01/01')</code> خطا می‌دهد و برای آن‌ها باید از <code>create()</code> یا timestamp استفاده کنید. <code>serialize()</code> فقط لحظه (و در هجری نوع تقویم) را ذخیره می‌کند. <code>unserialize()</code> دوباره آن را بررسی می‌کند و برای دادهٔ خراب یا بیرون از بازه <code>InvalidDateException</code> می‌دهد.</p>
 <h2 id="range">بازهٔ سال و خطاها</h2>
 <p>سال جلالی از <code>Jalali::MIN_YEAR</code> = <strong>-620</strong> تا <code>Jalali::MAX_YEAR</code> = <strong>9377</strong> پشتیبانی می‌شود. این بازه دقیقاً با سال‌های میلادی ۱ تا ۹۹۹۹ برابر است. اولین روز ‎-620/01/01 (برابر 0001-03-21) و آخرین روز 9377/12/30 (برابر 9999-03-20) است. همهٔ راه‌های ورود به کلاس بازه را چک می‌کنند و فقط <code>InvalidDateException</code> می‌دهند. <code>TypeError</code>، <code>ValueError</code> و <code>DateMalformed*</code> بیرون نمی‌آید. این قاعده برای <code>create()</code>، <code>make()</code>، <code>createFromFormat()</code>، زمان یونیکس، <code>add*()</code> و <code>sub*()</code> و تبدیل‌های استاتیک برقرار است.</p>
 <pre><code class="language-php">foreach ([[-621, 1, 1], [9378, 1, 1], [1404, 12, 30], [1404, 0, 1], [1404, 7, 31]] as [$y, $m, $d]) {
@@ -126,7 +131,7 @@ echo $d-&gt;format('t L z W N D');        // 30 0 200 41 4 س</code></pre>
 <table>
 <thead><tr><th>توکن</th><th>معنی</th></tr></thead>
 <tbody>
-<tr><td><code>Y</code> <code>y</code></td><td>سال، چهار رقمی و دو رقمی</td></tr>
+<tr><td><code>Y</code> <code>y</code></td><td>سال با دست‌کم چهار رقم و صفر ابتدایی، و علامت منفی برای سال‌های منفی (<code>-0005</code>)؛ <code>y</code> دو رقم آخر است (سال -620 می‌شود <code>80</code>)</td></tr>
 <tr><td><code>m</code> <code>n</code></td><td>ماه، با صفر ابتدایی و بدون آن</td></tr>
 <tr><td><code>F</code> <code>M</code></td><td>نام فارسی ماه (<code>M</code> همان <code>F</code> است، چون نام ماه‌های فارسی کوتاه‌شده ندارند)</td></tr>
 <tr><td><code>d</code> <code>j</code></td><td>روز، با صفر ابتدایی و بدون آن</td></tr>
@@ -152,11 +157,11 @@ echo $d-&gt;format('t L z W N D');        // 30 0 200 41 4 س</code></pre>
 <tbody>
 <tr><td><code>addDays()</code> <code>subDays()</code></td><td>روز کامل روی لحظهٔ زیرین</td></tr>
 <tr><td><code>addHours()</code> <code>addMinutes()</code> <code>addSeconds()</code> و <code>sub*</code></td><td>زمان واقعی سپری‌شده</td></tr>
-<tr><td><code>addMonths()</code> <code>subMonths()</code></td><td>ماه تقویمی. اگر ماه مقصد کوتاه‌تر باشد، روز <strong>کم می‌شود</strong> تا در ماه جا شود</td></tr>
+<tr><td><code>addMonths()</code> <code>subMonths()</code></td><td>ماه تقویمی. اگر ماه مقصد کوتاه‌تر باشد، روز <strong>کم می‌شود</strong> تا در ماه جا شود. با صفر ماه همان شیء برمی‌گردد و در ساعتِ تکراریِ تغییر ساعت، اختلاف ساعت اولیه حفظ می‌شود</td></tr>
 <tr><td><code>addYears()</code> <code>subYears()</code></td><td>هر سال معادل ۱۲ ماه است. ۳۰ اسفندِ سال کبیسه در سال غیرکبیسه ۲۹ اسفند می‌شود</td></tr>
-<tr><td><code>startOfDay()</code> <code>endOfDay()</code></td><td>00:00:00 و 23:59:59 همان روز</td></tr>
-<tr><td><code>startOfMonth()</code> <code>endOfMonth()</code></td><td>اول ماه 00:00:00، آخر ماه 23:59:59</td></tr>
-<tr><td><code>startOfYear()</code> <code>endOfYear()</code></td><td>اول فروردین 00:00:00، آخر اسفند 23:59:59</td></tr>
+<tr><td><code>startOfDay()</code> <code>endOfDay()</code></td><td>00:00:00 و 23:59:59.999999 (آخرین میکروثانیه) همان روز</td></tr>
+<tr><td><code>startOfMonth()</code> <code>endOfMonth()</code></td><td>اول ماه 00:00:00، آخر ماه 23:59:59.999999</td></tr>
+<tr><td><code>startOfYear()</code> <code>endOfYear()</code></td><td>اول فروردین 00:00:00، آخر اسفند 23:59:59.999999</td></tr>
 </tbody>
 </table>
 <pre><code class="language-php">$x = Jalali::create(1403, 12, 30);              // آخرین روز یک سال کبیسه
@@ -190,7 +195,7 @@ var_dump($a-&gt;between(Jalali::create(1404, 1, 1), Jalali::create(1406, 1, 1)))
 <thead><tr><th>متد</th><th>معنی</th></tr></thead>
 <tbody>
 <tr><td><code>diffInDays($other, $absolute = true)</code></td><td>تعداد روز کامل، به سمت صفر گرد می‌شود. با <code>false</code> علامت همان علامت <code>$this - $other</code> است</td></tr>
-<tr><td><code>diffInMonths($other, $absolute = true)</code></td><td>تعداد ماه کامل <em>جلالی</em>. روز و ساعت هم حساب می‌شود (۱۵ فروردین تا ۱۴ تیر می‌شود ۲ ماه)</td></tr>
+<tr><td><code>diffInMonths($other, $absolute = true)</code></td><td>تعداد ماه کامل <em>جلالی</em>. روز و ساعت و حتی میکروثانیه هم حساب می‌شود (۱۵ فروردین تا ۱۴ تیر می‌شود ۲ ماه)</td></tr>
 <tr><td><code>diffInYears($other, $absolute = true)</code></td><td>تعداد سال کامل جلالی، بر اساس سالگرد</td></tr>
 </tbody>
 </table>

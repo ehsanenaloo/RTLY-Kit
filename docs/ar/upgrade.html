@@ -30,8 +30,114 @@
 <div class="shell doc-layout has-toc">
 <aside class="sidebar"><details open><summary>تصفح الأدلة</summary><nav aria-label="الأدلة"><a href="all.html">كل الأدلة</a><p>البدء</p><a href="quick-start.html">البدء السريع</a><a href="installation.html">التثبيت</a><p>التقاويم</p><a href="jalali.html">التقويم الجلالي</a><a href="hijri.html">التقويم الهجري</a><a href="hebrew.html">التقويم العبري</a><a href="convert-and-compare.html">التحويل والمقارنة بين التواريخ</a><a href="carbon-macros.html">ماكروات Carbon</a><p>التحقق من الصحة</p><a href="validators-overview.html">نظرة عامة على أدوات التحقق</a><a href="national-code.html">الرقم الوطني</a><a href="sheba-and-bank-card.html">شبا والبطاقة المصرفية</a><a href="mobile-postal-plate.html">الجوال والرمز البريدي ولوحة المركبة</a><p>الأرقام والنصوص</p><a href="digits-and-format.html">الأرقام وتنسيق الأعداد</a><a href="number-words.html">تحويل الأعداد إلى كلمات</a><a href="arabic-number-words.html">الأعداد بالحروف العربية</a><a href="text-tools.html">أدوات النصوص</a><p>العطل وأوقات الصلاة</p><a href="holidays.html">العطل الرسمية الإيرانية</a><a href="holiday-calendar.html">تقويم العطل القابل للتعديل</a><a href="prayer-times.html">أوقات الصلاة</a><p>لارافيل</p><a href="laravel-setup.html">إعداد Laravel</a><a href="laravel-validation-and-cast.html">قواعد التحقق وتحويل Eloquent</a><p>المرجع</p><a href="helpers-and-globals.html">الدوال المساعدة والدوال العامة</a><a href="error-handling.html">معالجة الأخطاء</a><a href="api-stability.html">استقرار واجهة API</a><a href="accuracy-and-data.html">الدقة والبيانات</a><a href="benchmarks.html">قياس الأداء</a><a href="limits.html">الحدود</a><a href="troubleshooting-faq.html">استكشاف الأخطاء والأسئلة الشائعة</a><a href="upgrade.html" aria-current="page">دليل الترقية</a><a href="verifying-releases.html">التحقق من الإصدارات</a></nav></details></aside>
 <article class="prose">
-<details class="toc-inline"><summary>في هذه الصفحة</summary><ol><li><a href="#to-0-2-0">من 0.1.x إلى 0.2.0</a></li><li><a href="#helpers">من النسخ التجريبية الأولى (قبل 0.1.0): الدوال المساعدة ضمن فضاء الأسماء</a><ol><li><a href="#no-globals">1. لم تعد الدوال المساعدة العامة معرَّفة افتراضيًا</a></li><li><a href="#other-changes">2. تغييرات أخرى يجدر الانتباه إليها</a></li></ol></li><li><a href="#changelog-highlights">أبرز ما في سجل التغييرات للسلسلة 0.x</a><ol><li><a href="#highlights-breaking">سلوك تغيّر</a></li><li><a href="#highlights-added">ما أُضيف</a></li><li><a href="#highlights-fixed">ما أُصلح</a></li></ol></li></ol></details>
+<details class="toc-inline"><summary>في هذه الصفحة</summary><ol><li><a href="#to-0-3-0">من 0.2.1 إلى 0.3.0</a><ol><li><a href="#to-0-3-0-text">التواريخ من النص</a></li><li><a href="#to-0-3-0-cast">تحويل Eloquent</a></li><li><a href="#to-0-3-0-validators">أدوات التحقق</a></li><li><a href="#to-0-3-0-text-tools">الأعداد والنصوص</a></li><li><a href="#to-0-3-0-prayer">أوقات الصلاة</a></li><li><a href="#to-0-3-0-holidays">العطل</a></li><li><a href="#to-0-3-0-also">تحقق أيضًا</a></li></ol></li><li><a href="#to-0-2-1">من 0.2.0 إلى 0.2.1</a></li><li><a href="#to-0-2-0">من 0.1.x إلى 0.2.0</a></li><li><a href="#helpers">من النسخ التجريبية الأولى (قبل 0.1.0): الدوال المساعدة ضمن فضاء الأسماء</a><ol><li><a href="#no-globals">1. لم تعد الدوال المساعدة العامة معرَّفة افتراضيًا</a></li><li><a href="#other-changes">2. تغييرات أخرى يجدر الانتباه إليها</a></li></ol></li><li><a href="#changelog-highlights">أبرز ما في سجل التغييرات للسلسلة 0.x</a><ol><li><a href="#highlights-breaking">سلوك تغيّر</a></li><li><a href="#highlights-added">ما أُضيف</a></li><li><a href="#highlights-fixed">ما أُصلح</a></li></ol></li></ol></details>
 <p>قبل الإصدار 1.0.0 قد يتضمن أي إصدار فرعي (minor) تغييرات جذرية. كل تغيير منها مذكور هنا مع خطوات الانتقال. والسياسة موضحة في <a href="api-stability.html#versioning">استقرار واجهة البرمجة</a>. وتبدأ هذه الصفحة بأحدث إصدار. ويغطي القسم الأخير النسخ التجريبية الأولى، أي ما قبل 0.1.0.</p>
+
+<h2 id="to-0-3-0">من 0.2.1 إلى 0.3.0<a class="anchor" href="#to-0-3-0" aria-label="رابط إلى هذا القسم">#</a></h2>
+<p>قد تكسر التغييرات الآتية شيفرة كانت تعمل من قبل. ومعظمها يحوّل نتيجة مُخمَّنة أو خاطئة إلى استثناء أو إلى <code>Result</code> غير صالح. ويذكر كل بند السلوك القديم والسلوك الجديد وما عليك فعله.</p>
+<h3 id="to-0-3-0-text">التواريخ من النص<a class="anchor" href="#to-0-3-0-text" aria-label="رابط إلى هذا القسم">#</a></h3>
+<ul>
+<li><strong>نص يشبه التاريخ فقط.</strong> تقرأ <code>make()</code> في <code>Jalali</code> و<code>Hijri</code> و<code>Hebrew</code> الشكلين <code>Y/m/d</code> و<code>Y-m-d</code> بالضبط (مع وقت ومحدِّد منطقة زمنية اختياريين) تاريخًا في التقويم. وكان النص الذي يبدأ مثل هذا التاريخ لكن فيه زيادة أو نقص يُسلَّم إلى PHP ويُقرأ تاريخًا ميلاديًا، فتخرج نتائج خاطئة. أما الآن فيُطلق <code>InvalidDateException</code>. ومن الأمثلة <code>'1403-01-01 10:00 UTC'</code> ووقت مع <code>PM</code> ودقائق من رقم واحد و<code>'1403-01'</code>. ما عليك فعله: مرّر <code>DateTimeImmutable</code> لمثل هذه القيم، أو اقصص النص إلى أحد الأشكال المقبولة.</li>
+<li><strong>أرقام مجردة.</strong> كان PHP يقرأ سلسلة من 3 إلى 8 أرقام مثل <code>'1403'</code> أو <code>'14030101'</code> وقتًا على الساعة. أما الآن فتُطلق <code>InvalidDateException</code>. وثمانية أرقام تبدأ بسنة من تقويم آخر، مثل <code>'20240101'</code>، تُقرأ تاريخًا ميلاديًا كما كانت. والسنة من 5 أرقام في نص Jalali أو Hijri تُطلق استثناءً بالرمز <code>date_out_of_range</code>. ما عليك فعله: استعمل <code>create()</code> أو <code>DateTimeImmutable</code>.</li>
+<li><strong>أيام ميلادية مستحيلة.</strong> تُطلق <code>make()</code> في فئات التقويم الثلاث، و<code>JalaliCast</code>، الاستثناء <code>InvalidDateException</code> للنص الميلادي الذي فيه يوم غير موجود. والنص الذي فيه سنة سالبة مثل <code>'-0100/01/01'</code> يُطلق أيضًا <code>InvalidDateException</code> واضحًا. وللسنوات السالبة استعمل <code>create()</code> أو طابعًا زمنيًا.</li>
+</ul>
+<div class="table-wrap" tabindex="0" role="region" aria-label="جدول"><table>
+<thead><tr><th scope="col">الاستدعاء</th><th scope="col">قبل</th><th scope="col">بعد</th></tr></thead>
+<tbody>
+<tr><td><code>Jalali::make('2024-02-30')</code></td><td>تاريخ 2024-03-01</td><td><code>InvalidDateException</code></td></tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>رموز <code>createFromFormat()</code>.</strong> ترفض <code>Jalali::createFromFormat()</code> الرموز <code>z y F M D l S e T P O p u v</code> بـ <code>InvalidDateException</code>، لأن لها معنى ميلاديًا أو متعلقًا بالمنطقة الزمنية وكانت تعطي تواريخ خاطئة. والصيغة <code>U</code> وحدها تقرأ طابعًا زمنيًا Unix. ما عليك فعله: استعمل الرموز <code>d j m n Y H G i s g h A a</code>، ومرّر المنطقة الزمنية وسيطًا ثالثًا.</li>
+<li><strong>نهاية الفترة.</strong> تنتهي <code>endOfDay()</code> و<code>endOfMonth()</code> و<code>endOfYear()</code> عند 23:59:59.999999 لا عند 23:59:59.000000. والصيغة التي فيها <code>H:i:s</code> تطبع النص نفسه. لكن المقارنة الصارمة مع قيمة مبنية عند <code>23:59:59</code> قد تعطي الآن نتيجة أخرى. ما عليك فعله: قارن بقيمة النهاية الجديدة، أو استعمل <code>startOfDay()</code> لليوم التالي.</li>
+<li><strong>رموز السنة في <code>format()</code>.</strong> يكتب الرمز <code>Y</code> أربعة أرقام على الأقل، مع إشارة ناقص للسنوات السالبة. ويستعمل الرمز <code>y</code> باقي القسمة نحو الأسفل (floor modulo).</li>
+</ul>
+<div class="table-wrap" tabindex="0" role="region" aria-label="جدول"><table>
+<thead><tr><th scope="col">الاستدعاء</th><th scope="col">قبل</th><th scope="col">بعد</th></tr></thead>
+<tbody>
+<tr><td><code>Jalali::create(-5, 1, 1)-&gt;format('Y')</code></td><td><code>-005</code></td><td><code>-0005</code></td></tr>
+<tr><td><code>Jalali::create(-620, 1, 1)-&gt;format('y')</code></td><td><code>-20</code></td><td><code>80</code></td></tr>
+</tbody>
+</table></div>
+<h3 id="to-0-3-0-cast">تحويل Eloquent<a class="anchor" href="#to-0-3-0-cast" aria-label="رابط إلى هذا القسم">#</a></h3>
+<ul>
+<li><strong>قيم مخزنة لا تُقرأ.</strong> عندما يقرأ النموذج العمود، تُطلق <code>JalaliCast</code> الاستثناء <code>InvalidDateException</code> إذا كانت القيمة المخزنة مصفوفة أو قيمة منطقية أو عددًا عشريًا أو كائنًا. وكانت تُرجع <code>null</code>. و<code>null</code> والنص الفارغ يعطيان <code>null</code> كما كانا. ما عليك فعله: أصلح نوع العمود، أو التقط الاستثناء حيث تقرأ الخاصية.</li>
+</ul>
+<h3 id="to-0-3-0-validators">أدوات التحقق<a class="anchor" href="#to-0-3-0-validators" aria-label="رابط إلى هذا القسم">#</a></h3>
+<ul>
+<li><strong>المحارف المسموحة.</strong> تقبل <code>Mobile</code> و<code>PostalCode</code> و<code>BankCard</code> الأرقام فقط مع المسافات والمسافات غير القابلة للكسر والمسافات النصفية (ZWNJ) وعلامتي LRM وRLM والواصلات والأقواس والنقاط. وتقبل <code>Mobile</code> أيضًا علامة <code>+</code> واحدة في أول رقم <code>+98</code>. وكل ما عدا ذلك يعطي <code>invalid_format</code>، وتُرجع <code>normalize()</code> سلسلة فارغة. وكانت هذه الفئات تُبقي الأرقام فقط وتحذف الباقي. ما عليك فعله: نظّف المُدخَل من جهتك إن أردت السماح بالمزيد.</li>
+</ul>
+<div class="table-wrap" tabindex="0" role="region" aria-label="جدول"><table>
+<thead><tr><th scope="col">المُدخَل</th><th scope="col">قبل</th><th scope="col">بعد</th></tr></thead>
+<tbody>
+<tr><td><code>Mobile::validate('call 09121234567 now')</code></td><td>صالح</td><td><code>invalid_format</code></td></tr>
+<tr><td><code>Mobile::validate('-9121234567')</code></td><td>صالح</td><td><code>invalid_format</code></td></tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>الجدولة والسطر الجديد وNUL في الأطراف.</strong> لم تعد هذه المحارف تُقصّ. وترفضها <code>NationalCode</code> و<code>Sheba</code> و<code>VehiclePlate</code> و<code>Format::withSeparator()</code> و<code>NumberToWords</code>. ما عليك فعله: قصّ المُدخَل بنفسك إن أردت ذلك.</li>
+<li><strong>أرقام تحقق Sheba.</strong> تعطي <code>Sheba</code> الخطأ <code>invalid_checksum</code> لأرقام التحقق 00 و01 و99، حتى لو خرج باقي القسمة صحيحًا. فالمعيار لا يُنتج إلا من 02 إلى 98.</li>
+<li><strong>الرموز البريدية.</strong> تعطي <code>PostalCode</code> الخطأ <code>invalid_format</code> للرمز الذي فيه الرقم 0 أو 2 في أول خمسة أرقام. وتأتي القاعدة من ثلاثة مصادر عامة، ولا ينشر البريد الإيراني مجموعة قواعد رسمية. ما عليك فعله: إن كان عليك قبول رموز ترفضها هذه القاعدة، فافحص الشكل بنفسك.</li>
+</ul>
+<div class="table-wrap" tabindex="0" role="region" aria-label="جدول"><table>
+<thead><tr><th scope="col">الاستدعاء</th><th scope="col">قبل</th><th scope="col">بعد</th></tr></thead>
+<tbody>
+<tr><td><code>PostalCode::isValid('1234567890')</code></td><td><code>true</code></td><td><code>false</code></td></tr>
+<tr><td><code>PostalCode::isValid('1593715416')</code></td><td><code>true</code></td><td><code>true</code></td></tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>أسماء مصارف Sheba.</strong> اسما الرمزين 013 و019 هما الآن <code>بانک رفاه کارگران</code> و<code>بانک صادرات ایران</code>، وهما الاسمان نفسهما في جدول BIN. وإن كنت تقارن الأسماء نصًا فحدّث المقارنة.</li>
+</ul>
+<h3 id="to-0-3-0-text-tools">الأعداد والنصوص<a class="anchor" href="#to-0-3-0-text-tools" aria-label="رابط إلى هذا القسم">#</a></h3>
+<ul>
+<li><strong>علامات التجميع.</strong> تقبل <code>NumberToWords::convert()</code> و<code>Format::withSeparator()</code> فواصل الآلاف بتجميع سليم فقط: مجموعة أولى من 1 إلى 3 أرقام ثم مجموعات من 3 أرقام بالضبط. ما عليك فعله: أزل المسافات والفواصل الزائدة من المُدخَل.</li>
+</ul>
+<div class="table-wrap" tabindex="0" role="region" aria-label="جدول"><table>
+<thead><tr><th scope="col">المُدخَل</th><th scope="col">قبل</th><th scope="col">بعد</th></tr></thead>
+<tbody>
+<tr><td><code>'1 234 567'</code></td><td>1234567</td><td>1234567</td></tr>
+<tr><td><code>'1,234,567'</code></td><td>1234567</td><td>1234567</td></tr>
+<tr><td><code>'12 34'</code></td><td>1234</td><td><code>InvalidNumberException</code> (<code>invalid_number</code>)</td></tr>
+<tr><td><code>'1 2'</code></td><td>12</td><td><code>InvalidNumberException</code> (<code>invalid_number</code>)</td></tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>أسماء اللغات المحلية.</strong> تقبل <code>NumberToWords</code> لغة محلية فقط إذا كان جزء اللغة فيها <code>fa</code> أو <code>ar</code> بالضبط. وكانت <code>arn</code> و<code>farsi</code> تُقبلان بالبادئة. أما الآن فتُطلقان <code>UnsupportedLocaleException</code>.</li>
+<li><strong>UTF-8 غير صالح.</strong> تستبدل <code>Normalizer::normalize()</code> و<code>fixHalfSpace()</code> و<code>clean()</code> البايتات غير الصالحة في UTF-8 بالمحرف U+FFFD ثم تطبّق كل الخطوات. وكانت تطبّق على مثل هذا النص خطوات البايت فقط. و<code>Detector</code> يتجاهل البايتات غير الصالحة ولم يعد يُرجع <code>false</code> أو <code>ltr</code> بسببها.</li>
+<li><strong>اتجاه اللغة المحلية.</strong> تتبع <code>Detector::isRtlLocale()</code> الوسم الفرعي الصريح للخط، فتعطي <code>fa-Latn</code> و<code>ar-Latn</code> و<code>sd-Deva</code> القيمة <code>false</code>. وتستعمل <code>Detector::direction()</code> الخطوط نفسها التي تعدّها <code>containsRtl()</code> من اليمين إلى اليسار.</li>
+</ul>
+<h3 id="to-0-3-0-prayer">أوقات الصلاة<a class="anchor" href="#to-0-3-0-prayer" aria-label="رابط إلى هذا القسم">#</a></h3>
+<ul>
+<li><strong>نطاقات المُدخَلات.</strong> يُطلق <code>new PrayerTimes()</code> الاستثناء <code>InvalidPrayerConfigException</code> عند <code>NaN</code> واللانهاية وخط عرض خارج -90 إلى 90 وخط طول خارج -180 إلى 180 وارتفاع يتجاوز 20000 متر في أي اتجاه. وتُطلق <code>getTimes()</code> و<code>nextPrayer()</code> الاستثناء <code>InvalidDateException</code> عندما تقع السنة المحلية خارج 1 إلى 9999. وكانتا تُرجعان أوقاتًا خاطئة.</li>
+<li><strong>أوقات مفقودة.</strong> تكون الصلاة <code>null</code> إذا كان تاريخها المحلي سيقع بعد 9999-12-31 أو قبل 0001-01-01. وتُرجع <code>nextPrayer()</code> القيمة <code>null</code> عندما لا تبقى صلاة حتى نهاية 9999. وقرب القطبين يكون الوقت <code>null</code> أيضًا إذا كان سيكسر الترتيب fajr وsunrise وdhuhr وasr وmaghrib وisha. ومن ذلك العصر بعد العشاء عند 89.9 درجة. ما عليك فعله: عالج <code>null</code> في ناتجك كما تفعل مع الأيام القطبية.</li>
+<li><strong>التقريب.</strong> في المناطق الزمنية التي تحتوي إزاحتها على ثوانٍ (غالبًا في تواريخ ما قبل 1970) تُقرَّب الأوقات إلى أقرب دقيقة ولا تُقصّ. وقد يختلف الوقت بدقيقة عمّا كان.</li>
+</ul>
+<h3 id="to-0-3-0-holidays">العطل<a class="anchor" href="#to-0-3-0-holidays" aria-label="رابط إلى هذا القسم">#</a></h3>
+<ul>
+<li><strong>نصوص التواريخ.</strong> تقبل <code>HolidayCalendar::withHoliday()</code> و<code>withoutHoliday()</code> نص تاريخ جلالي فقط: <code>Y/m/d</code> أو <code>Y-m-d</code> بسنة من 3 أو 4 أرقام. والأرقام الفارسية والعربية مسموحة. والسنة 1700 أو أكثر وجزء الوقت والنص الحر تُطلق <code>InvalidDateException</code>. وكان النص الذي يشبه التاريخ الميلادي يُقرأ يومًا آخر. وبداية شهر هجري فيها بايت NUL تُطلق <code>InvalidDateException</code>.</li>
+</ul>
+<div class="table-wrap" tabindex="0" role="region" aria-label="جدول"><table>
+<thead><tr><th scope="col">الاستدعاء</th><th scope="col">قبل</th><th scope="col">بعد</th></tr></thead>
+<tbody>
+<tr><td><code>withHoliday('2027/05/05', 'x')</code></td><td>يوم غير المقصود</td><td><code>InvalidDateException</code></td></tr>
+<tr><td><code>withHoliday('1406/02/03', 'x')</code></td><td>يعمل</td><td>يعمل</td></tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>إعداد Laravel.</strong> قيمة <code>rtly-kit.holidays</code> التي ليست مصفوفة تُطلق <code>InvalidDateException</code> عند حل تقويم العطل. وكانت تُتجاهل. ما عليك فعله: اجعل القيمة مصفوفة، أو احذفها.</li>
+</ul>
+<h3 id="to-0-3-0-also">تحقق أيضًا<a class="anchor" href="#to-0-3-0-also" aria-label="رابط إلى هذا القسم">#</a></h3>
+<p>هذه التغييرات ليست جذرية لمعظم الشيفرات، لكنها قد تظهر في الاختبارات أو القيم المخزنة.</p>
+<ul>
+<li>يحفظ <code>serialize()</code> في <code>Jalali</code> و<code>Hijri</code> و<code>Hebrew</code> اللحظة (ونمط Hijri) في مصفوفة صغيرة ذات إصدار. والقيم التي سلسلتها إصدارات أقدم تُحمَّل كما كانت. وإن كنت تقارن النص المسلسل الخام أو تخزنه فسترى قيمة مختلفة.</li>
+<li>تراعي <code>Hijri::make()</code> و<code>Hebrew::make()</code> مع نسخة من فئتها وسيط المنطقة الزمنية الآن. وكانتا تتجاهلانه. وتأخذ <code>Hijri::make()</code> الوسيط <code>?HijriVariant $variant = null</code>. والقيمة <code>null</code> تُبقي نمط نسخة Hijri، والنمط الذي تمرره يُطبَّق دائمًا.</li>
+<li>تستعمل دوال المقارنة و<code>between()</code> اللحظة كاملة، بما فيها الميكروثواني. وتُبقي <code>addMonths()</code> و<code>addYears()</code> الميكروثواني.</li>
+<li>في طريقة طهران مع القاعدتين <code>OneSeventh</code> و<code>NightMiddle</code> في خطوط العرض العالية لم يعد المغرب والعشاء متطابقين، فقد تتغير هذه الأوقات قليلًا. وفي المناطق البعيدة عن خط طولها، مثل <code>Pacific/Kiritimati</code>، تنتمي أوقات الصلاة الآن إلى التاريخ المحلي المطلوب.</li>
+</ul>
+<h2 id="to-0-2-1">من 0.2.0 إلى 0.2.1<a class="anchor" href="#to-0-2-1" aria-label="رابط إلى هذا القسم">#</a></h2>
+<p>تغيّر اسم حزمة Composer إلى <code>enaxon/rtly-kit</code>. ولا يزال فضاء الأسماء <code>RtlyKit\</code> لذلك لا تتغير شيفرة PHP لديك. أزل الحزمة السابقة من <code>composer.json</code> ثم ثبّت هذه:</p>
+<pre tabindex="0"><code class="language-bash">composer require enaxon/rtly-kit</code></pre>
 
 <h2 id="to-0-2-0">من 0.1.x إلى 0.2.0<a class="anchor" href="#to-0-2-0" aria-label="رابط إلى هذا القسم">#</a></h2>
 <p>لا تحتاج معظم التطبيقات إلى أي تغيير. راجع البنود التالية؛ فالبنود 8 و9 و10 تغيّر ما تُرجعه المكتبة لبعض المُدخلات.</p>
@@ -192,7 +298,7 @@
 <div class="callout note" role="note"><strong>ملاحظة.</strong> ثبّت نطاقًا فرعيًا (مثل <code>~0.1.0</code>) ما دامت المكتبة دون 1.0.0، واقرأ هذه الصفحة قبل كل ترقية فرعية، وشغّل اختباراتك الخاصة على مخرجات التواريخ وأوقات الصلاة التي تخزّنها.</div>
 <nav class="reading-footer" aria-label="الصفحة السابقة والتالية"><a class="prev" rel="prev" href="troubleshooting-faq.html"><small>السابق</small>استكشاف الأخطاء والأسئلة الشائعة</a><a class="next" rel="next" href="verifying-releases.html"><small>التالي</small>التحقق من الإصدارات</a></nav>
 </article>
-<nav class="toc" aria-label="في هذه الصفحة"><p>في هذه الصفحة</p><ol><li><a href="#to-0-2-0">من 0.1.x إلى 0.2.0</a></li><li><a href="#helpers">من النسخ التجريبية الأولى (قبل 0.1.0): الدوال المساعدة ضمن فضاء الأسماء</a><ol><li><a href="#no-globals">1. لم تعد الدوال المساعدة العامة معرَّفة افتراضيًا</a></li><li><a href="#other-changes">2. تغييرات أخرى يجدر الانتباه إليها</a></li></ol></li><li><a href="#changelog-highlights">أبرز ما في سجل التغييرات للسلسلة 0.x</a><ol><li><a href="#highlights-breaking">سلوك تغيّر</a></li><li><a href="#highlights-added">ما أُضيف</a></li><li><a href="#highlights-fixed">ما أُصلح</a></li></ol></li></ol></nav>
+<nav class="toc" aria-label="في هذه الصفحة"><p>في هذه الصفحة</p><ol><li><a href="#to-0-3-0">من 0.2.1 إلى 0.3.0</a><ol><li><a href="#to-0-3-0-text">التواريخ من النص</a></li><li><a href="#to-0-3-0-cast">تحويل Eloquent</a></li><li><a href="#to-0-3-0-validators">أدوات التحقق</a></li><li><a href="#to-0-3-0-text-tools">الأعداد والنصوص</a></li><li><a href="#to-0-3-0-prayer">أوقات الصلاة</a></li><li><a href="#to-0-3-0-holidays">العطل</a></li><li><a href="#to-0-3-0-also">تحقق أيضًا</a></li></ol></li><li><a href="#to-0-2-1">من 0.2.0 إلى 0.2.1</a></li><li><a href="#to-0-2-0">من 0.1.x إلى 0.2.0</a></li><li><a href="#helpers">من النسخ التجريبية الأولى (قبل 0.1.0): الدوال المساعدة ضمن فضاء الأسماء</a><ol><li><a href="#no-globals">1. لم تعد الدوال المساعدة العامة معرَّفة افتراضيًا</a></li><li><a href="#other-changes">2. تغييرات أخرى يجدر الانتباه إليها</a></li></ol></li><li><a href="#changelog-highlights">أبرز ما في سجل التغييرات للسلسلة 0.x</a><ol><li><a href="#highlights-breaking">سلوك تغيّر</a></li><li><a href="#highlights-added">ما أُضيف</a></li><li><a href="#highlights-fixed">ما أُصلح</a></li></ol></li></ol></nav>
 </div>
 </main>
 <footer class="footer"><div class="shell footer-inner"><p>دليل مستخدم RTLY-Kit · الترخيص: MIT</p><div><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">المستودع على جيت هب &#8599;</a><a href="https://github.com/ehsanenaloo/RTLY-Kit/issues" rel="noopener noreferrer">الإبلاغ عن مشكلة &#8599;</a></div></div></footer>

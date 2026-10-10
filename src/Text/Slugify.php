@@ -42,23 +42,25 @@ final class Slugify
             throw new RtlyKitException('The text to slugify must be valid UTF-8.', errorCode: ErrorCode::InvalidArgument, context: ['argument' => 'text']);
         }
 
-        $text = Normalizer::normalize($text);
+        // U+0001 is the placeholder below; a literal one in the input must not act as a separator.
+        $text = Normalizer::normalize(str_replace("\x01", '', $text));
 
-        // Whitespace and half-space become a placeholder, later the separator.
+        // Whitespace and half-space become the placeholder, which is replaced by the separator last,
+        // so text that happens to equal the separator (or contain it) is never collapsed or trimmed.
         $text = preg_replace('/[\s\x{200C}]+/u', "\x01", $text) ?? $text;
         $text = preg_replace('/[^\p{L}\p{M}\p{N}_\-\x01]+/u', '', $text) ?? $text;
 
-        // Collapse runs of separators, hyphens and underscores.
+        // A literal hyphen (or underscore) next to a hyphen (underscore) separator is one separator.
+        if ($separator === '-' || $separator === '_') {
+            $text = preg_replace('/'.preg_quote($separator, '/').'+/', "\x01", $text) ?? $text;
+        }
+
+        // Collapse runs of separators, hyphens and underscores, then trim the separators.
         $text = preg_replace('/\x01+/', "\x01", $text) ?? $text;
         $text = preg_replace('/-{2,}/', '-', $text) ?? $text;
         $text = preg_replace('/_{2,}/', '_', $text) ?? $text;
+        $text = trim($text, "\x01");
         $text = str_replace("\x01", $separator, $text);
-
-        if ($separator !== '') {
-            $q = preg_quote($separator, '/');
-            $text = preg_replace('/('.$q.'){2,}/u', $separator, $text) ?? $text;
-            $text = preg_replace('/^('.$q.')+|('.$q.')+$/u', '', $text) ?? $text;
-        }
 
         return Utf8::lower($text);
     }

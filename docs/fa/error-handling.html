@@ -35,7 +35,7 @@
 <p>هر تابع RTLY-Kit یکی از این دو سبک را دارد. پس همیشه می‌دانید کجا باید مراقب باشید:</p>
 <ul>
 <li><strong>اعتبارسنج‌ها هیچ‌وقت خطا پرتاب نمی‌کنند.</strong> <code>NationalCode</code>، <code>Sheba</code>، <code>BankCard</code>، <code>Mobile</code>، <code>PostalCode</code> و <code>VehiclePlate</code> (و توابع کمکی <code>is_*</code> و <code>validate_*</code>) هر مقداری را قبول می‌کنند و با <code>false</code> یا یک <code>Result</code> نامعتبر جواب می‌دهند. <a href="validators-overview.html">مرور اعتبارسنج‌ها</a> را ببینید.</li>
-<li><strong>بقیهٔ توابع خطا پرتاب می‌کنند.</strong> برای ورودی‌ای که نمی‌پذیرند، یک <code>RtlyKit\Exceptions\RtlyKitException</code> (یا زیرکلاسش) می‌گیرید. برای ورودی بد، <code>TypeError</code> و <code>ValueError</code> و <code>DateMalformed*</code> خود PHP بیرون نمی‌آید. اگر دیدید، باگ کتابخانه است. لطفاً گزارش بدهید.</li>
+<li><strong>بقیهٔ توابع خطا پرتاب می‌کنند.</strong> برای مقداری از نوع پذیرفته‌شده که نمی‌توانند به کار ببرند، یک <code>RtlyKit\Exceptions\RtlyKitException</code> (یا زیرکلاسش) می‌گیرید. برای چنین مقداری، <code>TypeError</code> و <code>ValueError</code> و <code>DateMalformed*</code> خود PHP بیرون نمی‌آید. اگر دیدید، باگ کتابخانه است. لطفاً گزارش بدهید. مقداری از نوعی که امضای متد قبول نمی‌کند، مثل آرایه به‌جای تاریخ، را خود PHP با <code>TypeError</code> رد می‌کند.</li>
 </ul>
 
 <h2 id="hierarchy">سلسله‌مراتب خطاها<a class="anchor" href="#hierarchy" aria-label="پیوند به این بخش">#</a></h2>

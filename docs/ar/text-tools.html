@@ -33,6 +33,7 @@
 <details class="toc-inline"><summary>في هذه الصفحة</summary><ol><li><a href="#normalizer">Normalizer</a><ol><li><a href="#normalize">normalize()</a></li><li><a href="#half-space">fixHalfSpace()</a></li><li><a href="#clean">clean()</a></li></ol></li><li><a href="#detector">Detector</a><ol><li><a href="#persian-arabic">isPersian() و isArabic()</a></li><li><a href="#direction">الاتجاه و RTL</a></li><li><a href="#rtl-locale">isRtlLocale()</a></li></ol></li><li><a href="#slugify">Slugify</a><ol><li><a href="#slug-separator">الفاصل</a></li></ol></li></ol></details>
 <h2 id="normalizer">Normalizer<a class="anchor" href="#normalizer" aria-label="رابط إلى هذا القسم">#</a></h2>
 <p>يجعل الصنف <code>RtlyKit\Text\Normalizer</code> النص الفارسي قابلًا للمقارنة والتخزين. فمدخلات المستخدمين تخلط بين أشكال الحروف العربية والفارسية (لوحة المفاتيح العربية تكتب «ي» و«ك»)، وتتضمن حركات وتطويلًا ومسافات زائدة؛ فتبدو الكلمة نفسها متطابقة على الشاشة لكنها تفشل في مقارنة السلاسل أو في البحث في قاعدة البيانات.</p>
+<div class="callout note" role="note"><strong>UTF-8 غير صالح.</strong> تستبدل <code>normalize()</code> و<code>fixHalfSpace()</code> و<code>clean()</code> أولًا كل بايت ليس جزءًا من تسلسل UTF-8 صالح بالمحرف U+FFFD (محرف الاستبدال)، ثم تطبّق جميع خطواتها. والنتيجة دائمًا UTF-8 صالح، ولا حاجة إلى امتداد مثل mbstring.</div>
 
 <h3 id="normalize">normalize()<a class="anchor" href="#normalize" aria-label="رابط إلى هذا القسم">#</a></h3>
 <p>تفعل <code>Normalizer::normalize($text, $removeDiacritics = true)</code> ما يلي:</p>
@@ -76,13 +77,13 @@ require</span> <span class="tok-s">'vendor/autoload.php'</span>;
 <p>لا تُدرج أنصاف المسافات الناقصة، ولا تختزل المسافات العادية.</p>
 
 <h3 id="clean">clean()<a class="anchor" href="#clean" aria-label="رابط إلى هذا القسم">#</a></h3>
-<p>الدالة <code>Normalizer::clean()</code> هي النسخة الشاملة للتخزين والبحث: <code>normalize()</code> ثم <code>fixHalfSpace()</code> ثم حذف المحارف الخفية: المسافة ذات العرض الصفري (U+200B) ووصلة العرض الصفري (U+200D) وعلامة ترتيب البايت (U+FEFF). ويبقى ZWNJ المحرف الوحيد ذو العرض الصفري الذي يُحتفظ به.</p>
+<p>الدالة <code>Normalizer::clean()</code> هي النسخة الشاملة للتخزين والبحث: تحذف أولًا المحارف الخفية: المسافة ذات العرض الصفري (U+200B) ووصلة العرض الصفري (U+200D) وعلامة ترتيب البايت (U+FEFF)، ثم تنفّذ <code>normalize()</code> و<code>fixHalfSpace()</code> وتدمج المسافات البيضاء مرة أخيرة. ويبقى ZWNJ المحرف الوحيد ذو العرض الصفري الذي يُحتفظ به. وبهذا الترتيب تكون <code>clean()</code> مُتساوية الأثر (idempotent): تنظيف نص نظيف لا يغيّر شيئًا.</p>
 <pre tabindex="0"><code class="language-php"><span class="tok-v">$c</span> = <span class="tok-s">"كتاب\u{200B}ي  ١٢٣"</span>;
 <span class="tok-k">echo</span> Normalizer::clean(<span class="tok-v">$c</span>), <span class="tok-s">"\n"</span>;   <span class="tok-c">// کتابی ۱۲۳</span></code></pre>
 <p>أما تطبيق <code>normalize()</code> وحدها على النص نفسه فكان سيترك المسافة ذات العرض الصفري داخل الكلمة، ولهذا وُجدت <code>clean()</code>. استخدمها قبل تخزين النصوص التي يدخلها المستخدمون أو فهرستها.</p>
 
 <h2 id="detector">Detector<a class="anchor" href="#detector" aria-label="رابط إلى هذا القسم">#</a></h2>
-<p>يجيب <code>RtlyKit\Text\Detector</code> عن أسئلة الكتابة (script) واللغة والاتجاه. كل دوالّه ساكنة (static) ولا تُطلق استثناءً أبدًا.</p>
+<p>يجيب <code>RtlyKit\Text\Detector</code> عن أسئلة الكتابة (script) واللغة والاتجاه. كل دوالّه ساكنة (static) ولا تُطلق استثناءً أبدًا. ويُعامَل UTF-8 غير الصالح كما في <code>Normalizer</code>: يصبح كل بايت سيئ المحرف U+FFFD وهو محرف محايد ليس حرفًا ولا من اليمين إلى اليسار، فتعتمد الإجابة على الجزء الصالح من النص فقط.</p>
 
 <h3 id="persian-arabic">isPersian() و isArabic()<a class="anchor" href="#persian-arabic" aria-label="رابط إلى هذا القسم">#</a></h3>
 <p>كلتاهما استدلال تقريبي (heuristic) للنص المكتوب بالخط العربي. تُعرف الفارسية من الحروف الموجودة في الفارسية وحدها (<code>پ چ ژ گ</code>، والشكلان الفارسيان <code>ک</code> و<code>ی</code>، والأرقام الفارسية). وتُعرف العربية من <code>ي ك ى ة</code> والأرقام العربية الهندية. أما الحروف المشتركة بين اللغتين، ومنها «ه» وصور الهمزة، فلا تُحتسب. ويُعدّ النص فارسيًا عندما تكون الحروف الفارسية الخالصة بتكرار لا يقل عن الحروف العربية الخالصة، فحالات التعادل والنصوص التي لا تحوي حروفًا مميِّزة تُعدّ فارسية.</p>
@@ -100,8 +101,8 @@ var_dump(Detector::isPersian(<span class="tok-s">''</span>));            <span c
 
 <h3 id="direction">الاتجاه و RTL<a class="anchor" href="#direction" aria-label="رابط إلى هذا القسم">#</a></h3>
 <ul>
-<li><code>containsRtl($text)</code>: هل يحتوي النص على أي محرف من خط يُكتب من اليمين إلى اليسار (العبرية والعربية وملحقاتها والسريانية والتانا وN'Ko وغيرها، وأشكال العرض العربية) أو علامة RLM.</li>
-<li><code>direction($text)</code>: تُرجع <code>'rtl'</code> أو <code>'ltr'</code> بحسب <strong>أول حرف قوي</strong>، وفق قاعدة Unicode للنص ثنائي الاتجاه. الأرقام وعلامات الترقيم والمسافات محايدة. والنص الذي لا يحوي حروفًا يُرجع <code>'ltr'</code>.</li>
+<li><code>containsRtl($text)</code>: هل يحتوي النص على أي محرف من خط يُكتب من اليمين إلى اليسار (العبرية والعربية وملحقاتها والسريانية والتانا وN'Ko وغيرها، وأشكال العرض العربية) أو أحد عناصر التحكم الصريحة من اليمين إلى اليسار: RLM (U+200F) وRLE (U+202B) وRLO (U+202E) وRLI (U+2067). ولا تحتسبها <code>direction()</code> إذ تنظر إلى أول حرف فقط.</li>
+<li><code>direction($text)</code>: تُرجع <code>'rtl'</code> أو <code>'ltr'</code> بحسب <strong>أول حرف قوي</strong>، وفق قاعدة Unicode للنص ثنائي الاتجاه. الأرقام وعلامات الترقيم والمسافات محايدة. والنص الذي لا يحوي حروفًا يُرجع <code>'ltr'</code>. وتعدّ الخطوط نفسها من اليمين إلى اليسار كما تفعل <code>containsRtl()</code>، ومنها الخطوط التاريخية كالفينيقي والأفستي والنبطي.</li>
 <li><code>isHebrew($text)</code>: هل يحتوي النص على حروف عبرية.</li>
 </ul>
 <pre tabindex="0"><code class="language-php">var_dump(Detector::containsRtl(<span class="tok-s">'abc'</span>));           <span class="tok-c">// bool(false)</span>
@@ -112,7 +113,7 @@ var_dump(Detector::isHebrew(<span class="tok-s">'שלום'</span>));            
 <p>تغلّف الدالتان المساعدتان <code>contains_rtl()</code> و<code>text_direction()</code> الدالتين <code>containsRtl()</code> و<code>direction()</code>. استخدم <code>direction()</code> للسمة <code>dir</code> في HTML على النصوص التي ينشئها المستخدمون.</p>
 
 <h3 id="rtl-locale">isRtlLocale()<a class="anchor" href="#rtl-locale" aria-label="رابط إلى هذا القسم">#</a></h3>
-<p>تخبرك <code>isRtlLocale($locale)</code> إن كان وسم اللغة المحلية (locale) يُكتب من اليمين إلى اليسار. تقسّم الوسم عند <code>-</code> و<code>_</code> و<code>.</code> و<code>@</code>، وتتجاهل حالة الأحرف والمسافات المحيطة، وتُرجع true عندما تكون اللغة من اللغات التي تُكتب من اليمين إلى اليسار (<code>fa</code> و<code>ar</code> و<code>he</code> و<code>ur</code> و<code>ps</code> و<code>ug</code> و<code>dv</code> و<code>ckb</code> و<code>azb</code> وغيرها) أو عندما يوجد وسم فرعي للخط مثل <code>Arab</code> أو <code>Hebr</code>.</p>
+<p>تخبرك <code>isRtlLocale($locale)</code> إن كان وسم اللغة المحلية (locale) يُكتب من اليمين إلى اليسار. تقسّم الوسم عند <code>-</code> و<code>_</code> (ويُتجاهل اللاحق مثل <code>.UTF-8</code> أو <code>@euro</code>)، وتتجاهل حالة الأحرف والمسافات المحيطة. والوسم الفرعي للخط المكوّن من أربعة أحرف هو الحاسم: <code>Arab</code> و<code>Hebr</code> وسائر الخطوط التي تُكتب من اليمين إلى اليسار تُرجع true، وأي خط آخر يُرجع false حتى لو كانت اللغة من اليمين إلى اليسار (<code>fa-Latn</code> و<code>ar-Latn</code> و<code>sd-Deva</code> تُرجع false). وعند غياب وسم الخط تحسم اللغة: <code>fa</code> و<code>ar</code> و<code>he</code> و<code>ur</code> و<code>ps</code> و<code>ug</code> و<code>dv</code> و<code>ckb</code> و<code>azb</code> وغيرها تُرجع true.</p>
 <pre tabindex="0"><code class="language-php">var_dump(Detector::isRtlLocale(<span class="tok-s">'fa_IR'</span>));     <span class="tok-c">// bool(true)</span>
 var_dump(Detector::isRtlLocale(<span class="tok-s">'ar-SA'</span>));     <span class="tok-c">// bool(true)</span>
 var_dump(Detector::isRtlLocale(<span class="tok-s">'ckb-IQ'</span>));    <span class="tok-c">// bool(true)</span>
@@ -125,9 +126,9 @@ var_dump(Detector::isRtlLocale(<span class="tok-s">''</span>));          <span c
 <p>تحوّل <code>Slugify::make($text, $separator = '-')</code> العنوان إلى معرّف نصي (slug) ملائم للروابط مع إبقاء الحروف الفارسية والعربية مقروءة. ولا تُجري أي نقحرة (transliteration) أبدًا.</p>
 <ol>
 <li>يُطبَّع النص بـ <code>Normalizer::normalize()</code>.</li>
-<li>تتحول المسافات البيضاء وأنصاف المسافات إلى الفاصل.</li>
+<li>تتحول المسافات البيضاء وأنصاف المسافات إلى الفاصل. وإن وُجد المحرف U+0001 في النص نفسه فيُحذف أولًا حتى لا يعمل فاصلًا.</li>
 <li>يُحذف كل شيء عدا الحروف (من أي خط) وعلامات الدمج والأرقام (من أي مجموعة) والواصلات والشرطات السفلية. وتختفي علامات الترقيم والرموز التعبيرية.</li>
-<li>تُختزل الواصلات والشرطات السفلية والفواصل المتكررة إلى واحد، وتُقصّ الفواصل من الطرفين.</li>
+<li>تُختزل الواصلات والشرطات السفلية والفواصل المتكررة إلى واحد، وتُقصّ الفواصل من الطرفين. يحدث هذا قبل وضع نص الفاصل، فيبقى النص الذي يساوي الفاصل أو يتضمنه: <code>Slugify::make('maxx', 'x')</code> تعطي <code>maxx</code>.</li>
 <li>تُحوَّل النتيجة إلى أحرف صغيرة بترميز UTF-8.</li>
 </ol>
 <pre tabindex="0"><code class="language-php"><span class="tok-k">use</span> RtlyKit\Text\Slugify;

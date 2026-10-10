@@ -116,3 +116,20 @@ We found no timetable issued by the University of Islamic Sciences, Karachi, or 
 - Jalali: matches the official calendar for 1206 to 1497 and the astronomical definition for 1178 to 1502.
 - Holidays: official dates for 1394 and 1396 to 1405, reported dates for 1380 to 1393 and 1395.
 - Bank BINs, Sheba codes and mobile prefixes: consistent with several public pages. The 19 Sheba codes of the Central Bank specification and the mobile blocks of the numbering plan are matched against official documents. Operator names, other Sheba codes and BINs rest on public pages. The checks were made on 2026-10-08.
+
+## Postal code (`src/Validation/PostalCode.php`)
+
+The code has 10 digits: five routing digits and five distribution digits (en.wikipedia.org, Postal codes in Iran). Iran Post publishes no rule set that we could reach. One structural rule is applied, because three public sources state it: the digits 0 and 2 do not occur in the first five digits.
+
+- django-localflavor, `localflavor/ir/forms.py` (read 2026-10-10): "don't use 0 in first 5 digit" and "don't use 2 in postal code".
+- factorial.tax, article "all about postal codes": the first 5 digits must not use 0 or 2.
+- peivast.com/p/128944: the digits 0 and 2 are not used in the postal code.
+
+Not applied, because only one source states them or the sources disagree:
+
+- The fifth digit is not 5, and the first four digits are not all equal: django-localflavor only.
+- The ten digits are not all the same: django-localflavor only (`1111111111` stays valid).
+- The digit 2 does not occur in the last five digits: django-localflavor and peivast.com say so, but peivast.com also says 0 never occurs, which django-localflavor contradicts, and factorial.tax limits the rule to the first five digits. Left out as not settled.
+- The PEAR package Validate_IR checks only `^\d{10}$`.
+
+A code is not checked against an address registry.

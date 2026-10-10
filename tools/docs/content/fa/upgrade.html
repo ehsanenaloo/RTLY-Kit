@@ -6,6 +6,112 @@ order: 80
 -->
 <p>قبل از ۱٫۰٫۰، هر نسخهٔ minor ممکن است تغییر ناسازگار داشته باشد. هر مورد اینجا با گام‌های مهاجرت آمده است. سیاست نسخه‌گذاری در <a href="api-stability.html#versioning">پایداری API</a> است. این صفحه از جدیدترین نسخه شروع می‌شود. بخش آخر به ساخت‌های اولیهٔ قبل از 0.1.0 می‌پردازد.</p>
 
+<h2 id="to-0-3-0">از 0.2.1 به 0.3.0</h2>
+<p>تغییرهای زیر می‌توانند کدی را که پیش‌تر کار می‌کرد خراب کنند. بیشترشان نتیجهٔ حدسی یا غلط را به استثنا یا <code>Result</code> نامعتبر تبدیل می‌کنند. هر مورد رفتار قبلی، رفتار جدید و کاری را که باید بکنید می‌گوید.</p>
+<h3 id="to-0-3-0-text">تاریخ از روی متن</h3>
+<ul>
+<li><strong>متنی که فقط شبیه تاریخ است.</strong> <code>make()</code> در <code>Jalali</code> و <code>Hijri</code> و <code>Hebrew</code> شکل‌های دقیق <code>Y/m/d</code> و <code>Y-m-d</code> را (با ساعت و نشانهٔ منطقهٔ اختیاری) تاریخ همان تقویم می‌خواند. قبلاً متنی که شبیه چنین تاریخی شروع می‌شد ولی چیزی کم یا زیاد داشت به PHP داده می‌شد و میلادی خوانده می‌شد، که نتیجهٔ غلط می‌داد. حالا <code>InvalidDateException</code> می‌دهد. نمونه‌ها: <code>'1403-01-01 10:00 UTC'</code>، ساعت با <code>PM</code>، دقیقهٔ یک‌رقمی و <code>'1403-01'</code>. کاری که باید بکنید: برای چنین مقدارهایی <code>DateTimeImmutable</code> بدهید، یا متن را به یکی از شکل‌های پذیرفته‌شده برسانید.</li>
+<li><strong>فقط رقم.</strong> قبلاً رشتهٔ ۳ تا ۸ رقمی مثل <code>'1403'</code> یا <code>'14030101'</code> را PHP ساعت می‌خواند. حالا <code>InvalidDateException</code> می‌دهد. هشت رقمی که با سال تقویم دیگری شروع شود، مثل <code>'20240101'</code>، هنوز تاریخ میلادی خوانده می‌شود. سال پنج‌رقمی در رشتهٔ جلالی یا هجری با کد <code>date_out_of_range</code> خطا می‌دهد. کاری که باید بکنید: از <code>create()</code> یا <code>DateTimeImmutable</code> استفاده کنید.</li>
+<li><strong>روز میلادیِ غیرممکن.</strong> <code>make()</code> در سه کلاس تقویم و <code>JalaliCast</code> برای رشتهٔ میلادی با روزی که وجود ندارد <code>InvalidDateException</code> می‌دهند. متنی با سال منفی مثل <code>'-0100/01/01'</code> هم <code>InvalidDateException</code> روشن می‌دهد. برای سال منفی از <code>create()</code> یا زمان یونیکس استفاده کنید.</li>
+</ul>
+<table>
+<thead><tr><th>فراخوانی</th><th>قبل</th><th>بعد</th></tr></thead>
+<tbody>
+<tr><td><code>Jalali::make('2024-02-30')</code></td><td>تاریخ 2024-03-01</td><td><code>InvalidDateException</code></td></tr>
+</tbody>
+</table>
+<ul>
+<li><strong>توکن‌های <code>createFromFormat()</code>.</strong> <code>Jalali::createFromFormat()</code> توکن‌های <code>z y F M D l S e T P O p u v</code> را با <code>InvalidDateException</code> رد می‌کند، چون معنای میلادی یا منطقهٔ زمانی دارند و تاریخ غلط می‌دادند. قالب <code>U</code> به‌تنهایی زمان یونیکس را می‌خواند. کاری که باید بکنید: از توکن‌های <code>d j m n Y H G i s g h A a</code> استفاده کنید و منطقهٔ زمانی را در آرگومان سوم بدهید.</li>
+<li><strong>پایان بازه.</strong> <code>endOfDay()</code> و <code>endOfMonth()</code> و <code>endOfYear()</code> در 23:59:59.999999 تمام می‌شوند، نه 23:59:59.000000. قالبی با <code>H:i:s</code> همان متن را چاپ می‌کند. مقایسهٔ سخت‌گیرانه با مقداری که در <code>23:59:59</code> ساخته‌اید حالا ممکن است نتیجهٔ دیگری بدهد. کاری که باید بکنید: با مقدار پایانیِ جدید مقایسه کنید، یا از <code>startOfDay()</code> روز بعد استفاده کنید.</li>
+<li><strong>توکن سال در <code>format()</code>.</strong> توکن <code>Y</code> دست‌کم ۴ رقم می‌نویسد، و برای سال منفی علامت منفی می‌گذارد. توکن <code>y</code> باقیمانده را با روش floor modulo می‌گیرد.</li>
+</ul>
+<table>
+<thead><tr><th>فراخوانی</th><th>قبل</th><th>بعد</th></tr></thead>
+<tbody>
+<tr><td><code>Jalali::create(-5, 1, 1)-&gt;format('Y')</code></td><td><code>-005</code></td><td><code>-0005</code></td></tr>
+<tr><td><code>Jalali::create(-620, 1, 1)-&gt;format('y')</code></td><td><code>-20</code></td><td><code>80</code></td></tr>
+</tbody>
+</table>
+<h3 id="to-0-3-0-cast">cast در Eloquent</h3>
+<ul>
+<li><strong>مقدار ذخیره‌شدهٔ ناخواندنی.</strong> وقتی مدل ستون را می‌خواند، <code>JalaliCast</code> اگر مقدار ذخیره‌شده آرایه، بولی، عدد اعشاری یا شیء باشد <code>InvalidDateException</code> می‌دهد. قبلاً <code>null</code> برمی‌گرداند. <code>null</code> و رشتهٔ خالی هنوز <code>null</code> می‌دهند. کاری که باید بکنید: نوع ستون را درست کنید، یا استثنا را همان‌جا که ویژگی را می‌خوانید بگیرید.</li>
+</ul>
+<h3 id="to-0-3-0-validators">اعتبارسنج‌ها</h3>
+<ul>
+<li><strong>نویسه‌های مجاز.</strong> <code>Mobile</code> و <code>PostalCode</code> و <code>BankCard</code> فقط رقم را می‌پذیرند، به‌علاوهٔ فاصله، فاصلهٔ بدون شکست، نیم‌فاصله (ZWNJ)، نشانه‌های LRM و RLM، خط تیره، پرانتز و نقطه. <code>Mobile</code> یک <code>+</code> در ابتدای شمارهٔ <code>+98</code> را هم می‌پذیرد. هر چیز دیگر <code>invalid_format</code> می‌دهد و <code>normalize()</code> رشتهٔ خالی برمی‌گرداند. قبلاً این کلاس‌ها فقط رقم‌ها را نگه می‌داشتند و بقیه را دور می‌ریختند. کاری که باید بکنید: اگر بیشتر از این را می‌خواهید بپذیرید، ورودی را خودتان پاک کنید.</li>
+</ul>
+<table>
+<thead><tr><th>ورودی</th><th>قبل</th><th>بعد</th></tr></thead>
+<tbody>
+<tr><td><code>Mobile::validate('call 09121234567 now')</code></td><td>معتبر</td><td><code>invalid_format</code></td></tr>
+<tr><td><code>Mobile::validate('-9121234567')</code></td><td>معتبر</td><td><code>invalid_format</code></td></tr>
+</tbody>
+</table>
+<ul>
+<li><strong>تب، خط جدید و NUL در دو سر.</strong> این نویسه‌ها دیگر حذف نمی‌شوند. <code>NationalCode</code>، <code>Sheba</code>، <code>VehiclePlate</code>، <code>Format::withSeparator()</code> و <code>NumberToWords</code> آن‌ها را رد می‌کنند. کاری که باید بکنید: اگر این را می‌خواهید، ورودی را خودتان trim کنید.</li>
+<li><strong>ارقام کنترلی شبا.</strong> <code>Sheba</code> برای ارقام کنترلی 00 و 01 و 99 <code>invalid_checksum</code> می‌دهد، حتی اگر باقیمانده درست دربیاید. استاندارد فقط 02 تا 98 می‌سازد.</li>
+<li><strong>کدپستی.</strong> <code>PostalCode</code> برای کدی که در پنج رقم اولش رقم 0 یا 2 دارد <code>invalid_format</code> می‌دهد. این قاعده از سه منبع عمومی آمده است. پست ایران مجموعه‌قاعدهٔ رسمی منتشر نکرده است. کاری که باید بکنید: اگر باید کدهایی را بپذیرید که این قاعده رد می‌کند، شکل را خودتان بررسی کنید.</li>
+</ul>
+<table>
+<thead><tr><th>فراخوانی</th><th>قبل</th><th>بعد</th></tr></thead>
+<tbody>
+<tr><td><code>PostalCode::isValid('1234567890')</code></td><td><code>true</code></td><td><code>false</code></td></tr>
+<tr><td><code>PostalCode::isValid('1593715416')</code></td><td><code>true</code></td><td><code>true</code></td></tr>
+</tbody>
+</table>
+<ul>
+<li><strong>نام بانک‌های شبا.</strong> نام کدهای 013 و 019 حالا <code>بانک رفاه کارگران</code> و <code>بانک صادرات ایران</code> است، مثل جدول BIN. اگر نام‌ها را به‌صورت متن مقایسه می‌کنید، مقایسه را به‌روز کنید.</li>
+</ul>
+<h3 id="to-0-3-0-text-tools">عدد و متن</h3>
+<ul>
+<li><strong>جداکننده‌های گروه.</strong> <code>NumberToWords::convert()</code> و <code>Format::withSeparator()</code> جداکنندهٔ هزارگان را فقط در گروه‌بندی درست می‌پذیرند: گروه اول ۱ تا ۳ رقم، بعد گروه‌های دقیقاً ۳ رقمی. کاری که باید بکنید: فاصله و ویرگول اضافی را از ورودی بردارید.</li>
+</ul>
+<table>
+<thead><tr><th>ورودی</th><th>قبل</th><th>بعد</th></tr></thead>
+<tbody>
+<tr><td><code>'1 234 567'</code></td><td>1234567</td><td>1234567</td></tr>
+<tr><td><code>'1,234,567'</code></td><td>1234567</td><td>1234567</td></tr>
+<tr><td><code>'12 34'</code></td><td>1234</td><td><code>InvalidNumberException</code> (<code>invalid_number</code>)</td></tr>
+<tr><td><code>'1 2'</code></td><td>12</td><td><code>InvalidNumberException</code> (<code>invalid_number</code>)</td></tr>
+</tbody>
+</table>
+<ul>
+<li><strong>نام زبان.</strong> <code>NumberToWords</code> زبان را فقط وقتی می‌پذیرد که بخش زبانش دقیقاً <code>fa</code> یا <code>ar</code> باشد. <code>arn</code> و <code>farsi</code> با پیشوند پذیرفته می‌شدند. حالا <code>UnsupportedLocaleException</code> می‌دهند.</li>
+<li><strong>UTF-8 نامعتبر.</strong> <code>Normalizer::normalize()</code> و <code>fixHalfSpace()</code> و <code>clean()</code> بایت‌های UTF-8 نامعتبر را با U+FFFD عوض می‌کنند و بعد همهٔ گام‌ها را اجرا می‌کنند. قبلاً برای چنین متنی فقط گام‌های بایتی اجرا می‌شد. <code>Detector</code> بایت‌های نامعتبر را نادیده می‌گیرد و به‌خاطر آن‌ها دیگر <code>false</code> یا <code>ltr</code> نمی‌دهد.</li>
+<li><strong>جهت زبان.</strong> <code>Detector::isRtlLocale()</code> زیربرچسب صریح خط را دنبال می‌کند، پس <code>fa-Latn</code> و <code>ar-Latn</code> و <code>sd-Deva</code> مقدار <code>false</code> می‌دهند. <code>Detector::direction()</code> همان خط‌های راست‌به‌چپی را به کار می‌برد که <code>containsRtl()</code> به کار می‌برد.</li>
+</ul>
+<h3 id="to-0-3-0-prayer">اوقات شرعی</h3>
+<ul>
+<li><strong>بازهٔ ورودی.</strong> <code>new PrayerTimes()</code> برای <code>NaN</code>، بی‌نهایت، عرض جغرافیایی بیرون از ‎-90 تا 90، طول جغرافیایی بیرون از ‎-180 تا 180 و ارتفاعی بیشتر از 20000 متر (در هر دو جهت) <code>InvalidPrayerConfigException</code> می‌دهد. <code>getTimes()</code> و <code>nextPrayer()</code> وقتی سال محلی بیرون از 1 تا 9999 باشد <code>InvalidDateException</code> می‌دهند. قبلاً وقت غلط برمی‌گرداندند.</li>
+<li><strong>وقت‌های جاافتاده.</strong> نمازی که تاریخ محلی‌اش بعد از 9999-12-31 یا قبل از 0001-01-01 بیفتد <code>null</code> است. <code>nextPrayer()</code> وقتی تا پایان 9999 نمازی نمانده باشد <code>null</code> برمی‌گرداند. نزدیک قطب‌ها، وقتی که ترتیب fajr، sunrise، dhuhr، asr، maghrib، isha را بشکند هم <code>null</code> است. عصر بعد از عشا در ۸۹٫۹ درجه یک نمونه است. کاری که باید بکنید: <code>null</code> را در خروجی‌تان در نظر بگیرید، همان‌طور که برای روز قطبی می‌کنید.</li>
+<li><strong>گرد کردن.</strong> برای منطقه‌هایی که اختلاف زمانی‌شان ثانیه دارد (بیشتر تاریخ‌های پیش از ۱۹۷۰)، وقت‌ها به نزدیک‌ترین دقیقه گرد می‌شوند و بریده نمی‌شوند. وقت ممکن است یک دقیقه با قبل فرق داشته باشد.</li>
+</ul>
+<h3 id="to-0-3-0-holidays">تعطیلات</h3>
+<ul>
+<li><strong>رشتهٔ تاریخ.</strong> <code>HolidayCalendar::withHoliday()</code> و <code>withoutHoliday()</code> فقط رشتهٔ تاریخ جلالی می‌پذیرند: <code>Y/m/d</code> یا <code>Y-m-d</code> با سال ۳ یا ۴ رقمی. رقم فارسی و عربی مجاز است. سال ۱۷۰۰ یا بیشتر، بخش ساعت و متن آزاد <code>InvalidDateException</code> می‌دهند. قبلاً رشته‌ای که میلادی به نظر می‌رسید به روز دیگری خوانده می‌شد. شروع ماه هجری که بایت NUL داشته باشد <code>InvalidDateException</code> می‌دهد.</li>
+</ul>
+<table>
+<thead><tr><th>فراخوانی</th><th>قبل</th><th>بعد</th></tr></thead>
+<tbody>
+<tr><td><code>withHoliday('2027/05/05', 'x')</code></td><td>روزی غیر از آنچه می‌خواستید</td><td><code>InvalidDateException</code></td></tr>
+<tr><td><code>withHoliday('1406/02/03', 'x')</code></td><td>کار می‌کند</td><td>کار می‌کند</td></tr>
+</tbody>
+</table>
+<ul>
+<li><strong>تنظیمات Laravel.</strong> مقدار <code>rtly-kit.holidays</code> که آرایه نباشد، هنگام ساخته شدن تقویم تعطیلات <code>InvalidDateException</code> می‌دهد. قبلاً نادیده گرفته می‌شد. کاری که باید بکنید: مقدار را آرایه کنید، یا آن را بردارید.</li>
+</ul>
+<h3 id="to-0-3-0-also">این‌ها را هم ببینید</h3>
+<p>این تغییرها برای بیشتر کدها ناسازگار نیستند، ولی ممکن است در آزمون‌ها یا مقدارهای ذخیره‌شده دیده شوند.</p>
+<ul>
+<li><code>serialize()</code> در <code>Jalali</code> و <code>Hijri</code> و <code>Hebrew</code> لحظه (و گونهٔ هجری) را در یک آرایهٔ کوچک نسخه‌دار نگه می‌دارد. مقدارهایی که نسخه‌های قبلی serialize کرده‌اند هنوز بارگذاری می‌شوند. اگر رشتهٔ خام serialize را مقایسه یا ذخیره می‌کنید، مقدار دیگری می‌بینید.</li>
+<li><code>Hijri::make()</code> و <code>Hebrew::make()</code> با شیئی از کلاس خودشان حالا آرگومان منطقهٔ زمانی را رعایت می‌کنند. قبلاً نادیده می‌گرفتند. <code>Hijri::make()</code> پارامتر <code>?HijriVariant $variant = null</code> را می‌گیرد. مقدار <code>null</code> گونهٔ شیء هجری را نگه می‌دارد و گونه‌ای که بدهید همیشه اثر دارد.</li>
+<li>متدهای مقایسه و <code>between()</code> کل لحظه را، با میکروثانیه، به کار می‌برند. <code>addMonths()</code> و <code>addYears()</code> میکروثانیه را نگه می‌دارند.</li>
+<li>برای روش تهران با قاعده‌های <code>OneSeventh</code> و <code>NightMiddle</code> در عرض‌های بالا، مغرب و عشا دیگر یکی نیستند، پس این وقت‌ها ممکن است کمی عوض شوند. برای منطقه‌هایی که از طول جغرافیایی‌شان دورند، مثل <code>Pacific/Kiritimati</code>، وقت نماز حالا به تاریخ محلیِ درخواستی تعلق دارد.</li>
+</ul>
+<h2 id="to-0-2-1">از 0.2.0 به 0.2.1</h2>
+<p>نام بستهٔ Composer به <code>enaxon/rtly-kit</code> تغییر کرد. فضای نام هنوز <code>RtlyKit\</code> است و کد PHP شما عوض نمی‌شود. بستهٔ قبلی را از <code>composer.json</code> بردارید و این را نصب کنید:</p>
+<pre><code class="language-bash">composer require enaxon/rtly-kit</code></pre>
+
 <h2 id="to-0-2-0">از 0.1.x به 0.2.0</h2>
 <p>بیشتر برنامه‌ها نیازی به تغییر ندارند. موارد زیر را نگاه کنید. موردهای ۹ تا ۱۲ خروجی کتابخانه را برای بعضی ورودی‌ها عوض می‌کنند.</p>
 <ol>
@@ -161,4 +267,4 @@ foreach (['2026-03-01', '2026-03-21'] as $d) {
 <li>تعریف تکراری تابع <code>hdate()</code>.</li>
 </ul>
 
-<div class="note"><strong>نکته.</strong> تا وقتی کتابخانه زیر ۱٫۰٫۰ است، یک بازهٔ minor ثابت کنید (مثلاً <code>~0.2.0</code>)، قبل از هر ارتقای minor این صفحه را بخوانید، و تست‌های خودتان را روی تاریخ و اوقات شرعی ذخیره‌شده اجرا کنید.</div>
+<div class="note"><strong>نکته.</strong> تا وقتی کتابخانه زیر ۱٫۰٫۰ است، یک بازهٔ minor ثابت کنید (مثلاً <code>~0.3.0</code>)، قبل از هر ارتقای minor این صفحه را بخوانید، و تست‌های خودتان را روی تاریخ و اوقات شرعی ذخیره‌شده اجرا کنید.</div>

@@ -54,13 +54,13 @@ require</span> __DIR__.<span class="tok-s">'/vendor/autoload.php'</span>;
 <span class="tok-k">echo</span> Jalali::create(<span class="tok-n">1404</span>, <span class="tok-n">1</span>, <span class="tok-n">1</span>)-&gt;addDays(<span class="tok-n">100</span>)-&gt;format(<span class="tok-s">'Y/m/d'</span>), <span class="tok-s">"\n"</span>;        <span class="tok-c">// 1404/04/08</span></code></pre>
 
 <h2 id="results">نتیجه‌ها<a class="anchor" href="#results" aria-label="پیوند به این بخش">#</a></h2>
-<p>یک اجرا، میانهٔ ۵ تکرار که هر کدام ۲۰٬۰۰۰ دور حلقه دارد. محیط: PHP 8.2.30 در CLI داخل Docker روی ویندوز ۱۱، با <code>opcache.enable_cli=1</code>.</p>
+<p>یک اجرا، میانهٔ ۵ تکرار که هر کدام ۲۰٬۰۰۰ دور حلقه دارد. محیط: PHP 8.2.34 در CLI داخل Docker روی ویندوز ۱۱، با <code>opcache.enable_cli=1</code>.</p>
 <div class="table-wrap" tabindex="0" role="region" aria-label="جدول"><table>
 <thead><tr><th scope="col">سناریو</th><th scope="col">RTLY-Kit (µs/op)</th><th scope="col">morilog/jalali (µs/op)</th><th scope="col">نسبت</th></tr></thead>
 <tbody>
-<tr><td>رشتهٔ میلادی به جلالی <code>Y/m/d</code></td><td>13.33</td><td>153.84</td><td>11.5x</td></tr>
-<tr><td>جلالی <code>y/m/d</code> به میلادی <code>Y-m-d</code></td><td>12.80</td><td>58.55</td><td>4.6x</td></tr>
-<tr><td><code>addDays</code> + قالب‌بندی</td><td>33.18</td><td>479.04</td><td>14.4x</td></tr>
+<tr><td>رشتهٔ میلادی به جلالی <code>Y/m/d</code></td><td>20.18</td><td>217.24</td><td>10.8x</td></tr>
+<tr><td>جلالی <code>y/m/d</code> به میلادی <code>Y-m-d</code></td><td>19.38</td><td>78.44</td><td>4.0x</td></tr>
+<tr><td><code>addDays</code> + قالب‌بندی</td><td>35.55</td><td>441.58</td><td>12.4x</td></tr>
 </tbody>
 </table></div>
 <p>بیشترین حافظهٔ کل فرایند، با بارگذاری هر دو کتابخانه، ۴ مگابایت (MiB) بود.</p>

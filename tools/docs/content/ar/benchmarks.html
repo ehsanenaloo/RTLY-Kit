@@ -27,13 +27,13 @@ echo Jalali::create(1404, 1, 1)-&gt;toGregorian()-&gt;format('Y-m-d'), "\n";    
 echo Jalali::create(1404, 1, 1)-&gt;addDays(100)-&gt;format('Y/m/d'), "\n";        // 1404/04/08</code></pre>
 
 <h2 id="results">النتائج</h2>
-<p>تشغيل واحد، والقيمة الوسطى من 5 تكرارات، في كل منها 20,000 دورة. البيئة: PHP 8.2.30 CLI داخل Docker على Windows 11، مع <code>opcache.enable_cli=1</code>.</p>
+<p>تشغيل واحد، والقيمة الوسطى من 5 تكرارات، في كل منها 20,000 دورة. البيئة: PHP 8.2.34 CLI داخل Docker على Windows 11، مع <code>opcache.enable_cli=1</code>.</p>
 <table>
 <thead><tr><th>السيناريو</th><th>RTLY-Kit (µs/op)</th><th>morilog/jalali (µs/op)</th><th>النسبة</th></tr></thead>
 <tbody>
-<tr><td>من نص ميلادي إلى جلالي <code>Y/m/d</code></td><td>13.33</td><td>153.84</td><td>11.5x</td></tr>
-<tr><td>من جلالي <code>y/m/d</code> إلى ميلادي <code>Y-m-d</code></td><td>12.80</td><td>58.55</td><td>4.6x</td></tr>
-<tr><td><code>addDays</code> + التنسيق</td><td>33.18</td><td>479.04</td><td>14.4x</td></tr>
+<tr><td>من نص ميلادي إلى جلالي <code>Y/m/d</code></td><td>20.18</td><td>217.24</td><td>10.8x</td></tr>
+<tr><td>من جلالي <code>y/m/d</code> إلى ميلادي <code>Y-m-d</code></td><td>19.38</td><td>78.44</td><td>4.0x</td></tr>
+<tr><td><code>addDays</code> + التنسيق</td><td>35.55</td><td>441.58</td><td>12.4x</td></tr>
 </tbody>
 </table>
 <p>بلغت ذروة الذاكرة للعملية كلها، مع تحميل المكتبتين، 4 MiB.</p>

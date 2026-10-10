@@ -156,7 +156,7 @@ var_dump(is_national_code(<span class="tok-s">'0013542419'</span>));   <span cla
 <h2 id="prayer-faq">أوقات الصلاة والعطل<a class="anchor" href="#prayer-faq" aria-label="رابط إلى هذا القسم">#</a></h2>
 
 <h3 id="prayer-timezone">أوقات الصلاة بمنطقة زمنية خاطئة أو متقدمة بساعة<a class="anchor" href="#prayer-timezone" aria-label="رابط إلى هذا القسم">#</a></h3>
-<p>الأوقات بصيغة HH:MM بالتوقيت المحلي للمنطقة الزمنية الخاصة بالحاسبة، لليوم التقويمي المحلي للتاريخ الذي تمرّره. تستخدم <code>PrayerTimes::forCity()</code> منطقة المدينة نفسها. أما الحاسبة المبنية بـ <code>new PrayerTimes()</code> دون منطقة فتستخدم الافتراضية في PHP (<code>date_default_timezone_get()</code>، وهي <code>UTC</code> في حاوية جديدة)، فمرّر <code>DateTimeZone</code>. ويُطبَّق التوقيت الصيفي لكل حدث على حدة، فجدول يعبر تغيير الساعة صحيح على جانبيه (الظهر في القاهرة بتاريخي 2026-10-08 و2026-10-31):</p>
+<p>الأوقات بصيغة HH:MM بالتوقيت المحلي للمنطقة الزمنية الخاصة بالحاسبة، لليوم التقويمي المحلي للتاريخ الذي تمرّره. تستخدم <code>PrayerTimes::forCity()</code> منطقة المدينة نفسها. أما الحاسبة المبنية بـ <code>new PrayerTimes()</code> دون منطقة فتستخدم الافتراضية في PHP (<code>date_default_timezone_get()</code>، وهي <code>UTC</code> في حاوية جديدة)، فمرّر <code>DateTimeZone</code>. والمنطقة البعيدة عن خط طولها (مثل <code>Pacific/Kiritimati</code>) تعطي أيضًا أوقات التاريخ الذي طلبته، وكلها في ذلك التاريخ المحلي. ويُطبَّق التوقيت الصيفي لكل حدث على حدة، فجدول يعبر تغيير الساعة صحيح على جانبيه (الظهر في القاهرة بتاريخي 2026-10-08 و2026-10-31):</p>
 <pre tabindex="0"><code class="language-php"><span class="tok-k">use</span> RtlyKit\Prayer\PrayerTimes;
 
 <span class="tok-v">$cairo</span> = PrayerTimes::forCity(<span class="tok-s">'cairo'</span>, PrayerTimes::METHOD_EGYPT);

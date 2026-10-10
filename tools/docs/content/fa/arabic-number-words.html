@@ -110,7 +110,7 @@ echo NumberToWords::ordinal(12), "\n";                                          
 echo NumberToWords::ordinal(21), ' | ', NumberToWords::ordinal(21, 'ar', ['gender' =&gt; 'f']), "\n"; // الحادي والعشرون | الحادية والعشرون
 echo NumberToWords::ordinal(20, 'ar', ['case' =&gt; 'gen']), "\n";                                // العشرين
 echo NumberToWords::ordinal(2, 'ar', ['definite' =&gt; false, 'case' =&gt; 'acc']), "\n";            // ثانيا</code></pre>
-<p>عدد ترتیبی فقط برای زبان <code>ar</code> است. برای ۰، عدد منفی یا عدد بالای ۹۹ خطا می‌گیرید. عدد ترتیبی فارسی را <a href="digits-and-format.html#ordinal"><code>Format::ordinal()</code></a> می‌سازد.</p>
+<p>عدد ترتیبی فقط برای زبان <code>ar</code> است. عدد اعشاری صحیح مثل <code>3.0</code> مثل <code>convert()</code> پذیرفته می‌شود و <code>1.5</code>، <code>NaN</code> و <code>INF</code> <code>InvalidNumberException</code> می‌دهند. آرایهٔ خالی به‌جای گزینه‌ها در هر دو زبان یعنی «بدون گزینه». برای ۰، عدد منفی یا عدد بالای ۹۹ خطا می‌گیرید. عدد ترتیبی فارسی را <a href="digits-and-format.html#ordinal"><code>Format::ordinal()</code></a> می‌سازد.</p>
 
 <h2 id="errors">خطاها</h2>
 <table>

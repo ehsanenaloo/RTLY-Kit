@@ -43,7 +43,7 @@ require</span> <span class="tok-s">'vendor/autoload.php'</span>;
 <span class="tok-k">use</span> <span class="tok-k">function</span> RtlyKit\is_vehicle_plate;
 
 var_dump(is_mobile(<span class="tok-s">'+98 912 123 4567'</span>));          <span class="tok-c">// bool(true)</span>
-var_dump(is_postal_code(<span class="tok-s">'۱۲۳۴۵-۶۷۸۹۰'</span>));          <span class="tok-c">// bool(true)</span>
+var_dump(is_postal_code(<span class="tok-s">'۱۵۹۳۷-۱۵۴۱۶'</span>));          <span class="tok-c">// bool(true)</span>
 var_dump(is_vehicle_plate(<span class="tok-s">'12ب345 ایران 67'</span>));    <span class="tok-c">// bool(true)</span>
 
 <span class="tok-k">echo</span> Mobile::getOperator(<span class="tok-s">'09121234567'</span>), <span class="tok-s">"\n"</span>;    <span class="tok-c">// همراه اول</span></code></pre>
@@ -51,7 +51,7 @@ var_dump(is_vehicle_plate(<span class="tok-s">'12ب345 ایران 67'</span>)); 
 
 <h2 id="mobile">أرقام الجوال<a class="anchor" href="#mobile" aria-label="رابط إلى هذا القسم">#</a></h2>
 <h3 id="mobile-forms">الصيغ المقبولة<a class="anchor" href="#mobile-forms" aria-label="رابط إلى هذا القسم">#</a></h3>
-<p>تُحوِّل <code>Mobile</code> كل شيء إلى الصيغة الوطنية <code>09xxxxxxxxx</code> (11 رقمًا). وتقبل هذه الصيغ الخمس، بأرقام فارسية أو عربية، ومع مسافات أو شرطات أو أقواس مختلطة بها:</p>
+<p>تُحوِّل <code>Mobile</code> كل شيء إلى الصيغة الوطنية <code>09xxxxxxxxx</code> (11 رقمًا). وتقبل هذه الصيغ الخمس، بأرقام فارسية أو عربية، ومع مسافات أو شرطات أو نقاط أو أقواس مختلطة بها:</p>
 <div class="table-wrap" tabindex="0" role="region" aria-label="جدول"><table>
 <thead><tr><th scope="col">المُدخَل</th><th scope="col"><code>normalized</code></th></tr></thead>
 <tbody>
@@ -64,7 +64,7 @@ var_dump(is_vehicle_plate(<span class="tok-s">'12ب345 ایران 67'</span>)); 
 <tr><td><code>(0912) 123-4567</code></td><td><code>09121234567</code></td></tr>
 </tbody>
 </table></div>
-<p>تُبقي <code>Mobile</code> على الأرقام فقط، فيُحذف أي فاصل غير رقمي. ويُقبل أيضًا عدد صحيح مثل <code>9121234567</code>؛ فليس فيه صفر بادئ يمكن أن يضيع، ولذلك يُقرأ على أنه الصيغة ذات الأرقام العشرة.</p>
+<p>لا تسمح <code>Mobile</code> بين الأرقام إلا بالمسافات (ومنها المسافة غير القابلة للكسر) والمسافة الصفرية (ZWNJ) وعلامتي LRM وRLM والشرطات والأقواس والنقاط، وبعلامة <code>+</code> واحدة في أول رقم <code>+98</code>. والحروف وعلامات الترقيم الأخرى كالشرطة المائلة والفاصلة، والتبويب والسطر الجديد وNUL، والشرطة في البداية، كلها تجعل الإدخال <code>invalid_format</code>. لذلك يُرفض <code>-9121234567</code> و<code>call 09121234567 now</code> ولا يُنظَّفان. ويُقبل أيضًا عدد صحيح مثل <code>9121234567</code>؛ فليس فيه صفر بادئ يمكن أن يضيع، ولذلك يُقرأ على أنه الصيغة ذات الأرقام العشرة.</p>
 
 <h3 id="mobile-rules">القاعدة<a class="anchor" href="#mobile-rules" aria-label="رابط إلى هذا القسم">#</a></h3>
 <p>الصلاحية فحص للشكل: بعد التنظيف يجب أن يكون الرقم <code>09</code> يليه رقم من 0 إلى 4 أو 9، ثم ثمانية أرقام أخرى. وهذه هي الكتل من <code>090x</code> إلى <code>094x</code> و<code>099x</code>. وأي شيء آخر، مثل <code>0950...</code> أو رقم من 10 أرقام، يُرجع <code>invalid_format</code>.</p>
@@ -97,9 +97,9 @@ var_dump(Mobile::validate(<span class="tok-s">'09951234567'</span>)-&gt;details(
 <div class="callout note" role="note"><strong>من المفيد أن تعرف.</strong> تؤكد خطة الترقيم أن البادئة مخصصة للهاتف المحمول، لكنها لا تذكر المشغّلين. أسماء المشغّلين مأخوذة من جداول عامة متفقة فيما بينها، ومن صفحات المشغّلين أنفسهم لإيرانسل وآپتل وشاتل موبايل. لا توجّه الرسائل النصية ولا الفوترة بحسب تلميح المشغّل. انظر <a href="accuracy-and-data.html">الدقة والبيانات</a>.</div>
 
 <h2 id="postal-code">الرمز البريدي<a class="anchor" href="#postal-code" aria-label="رابط إلى هذا القسم">#</a></h2>
-<p>يتكوّن الرمز البريدي الإيراني من 10 أرقام ولا يبدأ بالصفر أبدًا. تُبقي <code>PostalCode</code> على الأرقام فقط (تُحوَّل الأرقام الفارسية والعربية أولاً، ثم تُحذف الفواصل مثل المسافات والشرطات) وتفحص الطول والرقم الأول:</p>
-<pre tabindex="0"><code class="language-php"><span class="tok-v">$r</span> = PostalCode::validate(<span class="tok-s">'۱۲۳۴۵-۶۷۸۹۰'</span>);
-<span class="tok-k">echo</span> json_encode(<span class="tok-v">$r</span>-&gt;details());   <span class="tok-c">// {"normalized":"1234567890"}</span>
+<p>يتكوّن الرمز البريدي الإيراني من 10 أرقام ولا يظهر في الأرقام الخمسة الأولى منه الرقم <code>0</code> ولا <code>2</code> (فلا يبدأ بالصفر أبدًا). تُبقي <code>PostalCode</code> على الأرقام فقط (تُحوَّل الأرقام الفارسية والعربية أولاً، ثم تُحذف الفواصل المسموح بها وهي المسافات والمسافة الصفرية والشرطات والأقواس والنقاط) وتفحص الطول والأرقام الخمسة الأولى. والحروف وعلامات الترقيم الأخرى وأحرف التحكم والأعداد السالبة تعطي <code>invalid_format</code>:</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-v">$r</span> = PostalCode::validate(<span class="tok-s">'۱۵۹۳۷-۱۵۴۱۶'</span>);
+<span class="tok-k">echo</span> json_encode(<span class="tok-v">$r</span>-&gt;details());   <span class="tok-c">// {"normalized":"1593715416"}</span>
 
 print_r(PostalCode::validate(<span class="tok-s">'12345'</span>)-&gt;errors());          <span class="tok-c">// [invalid_length]</span>
 print_r(PostalCode::validate(<span class="tok-s">'123456789012'</span>)-&gt;errors());   <span class="tok-c">// [invalid_length]</span>
@@ -108,11 +108,11 @@ print_r(PostalCode::validate(<span class="tok-s">'0123456789'</span>)-&gt;errors
 <thead><tr><th scope="col">الخطأ</th><th scope="col">المعنى</th></tr></thead>
 <tbody>
 <tr><td><code>invalid_length</code></td><td>عدد الأرقام ليس 10</td></tr>
-<tr><td><code>invalid_format</code></td><td>يبدأ الرمز بالرقم <code>0</code></td></tr>
+<tr><td><code>invalid_format</code></td><td>يظهر <code>0</code> أو <code>2</code> في الأرقام الخمسة الأولى، أو يحتوي النص على غير الأرقام والفواصل المسموح بها</td></tr>
 <tr><td><code>invalid_type</code>، <code>input_too_long</code></td><td>انظر <a href="validators-overview.html#input-handling">معالجة المُدخَلات</a></td></tr>
 </tbody>
 </table></div>
-<div class="callout note" role="note"><strong>الشكل فقط.</strong> لا يوجد رقم تحقق في الرمز البريدي، ولا يُجرى أي فحص لنطاق المنطقة: الرمز المكوّن من 10 أرقام والذي لا يبدأ بالصفر يُعدّ صالحًا حتى لو لم يخصصه البريد الإيراني. ويُقبل عدد صحيح مثل <code>1234567890</code> لأن الرمز الصالح لا يبدأ بالصفر أبداً، لكن الأسلم مع ذلك أن تحتفظ بالرموز البريدية نصوصًا.</div>
+<div class="callout note" role="note"><strong>الشكل وقاعدة رقمية واحدة.</strong> لا يوجد رقم تحقق في الرمز البريدي، ولا يُجرى أي فحص لنطاق المنطقة: الرمز المكوّن من 10 أرقام دون <code>0</code> أو <code>2</code> في أرقامه الخمسة الأولى يُعدّ صالحًا حتى لو لم يخصصه البريد الإيراني. ولا تُفحص قواعد أخرى (مثل الرقم الخامس أو الرموز المكوّنة من رقم واحد مكرر كـ <code>1111111111</code>) لأننا لم نجد لكل منها إلا مصدرًا واحدًا. ويُقبل عدد صحيح مثل <code>1593715416</code> لأن الرمز الصالح لا يبدأ بالصفر أبداً، لكن الأسلم مع ذلك أن تحتفظ بالرموز البريدية نصوصًا.</div>
 
 <h2 id="vehicle-plate">لوحة المركبة<a class="anchor" href="#vehicle-plate" aria-label="رابط إلى هذا القسم">#</a></h2>
 <h3 id="plate-shape">الشكل<a class="anchor" href="#plate-shape" aria-label="رابط إلى هذا القسم">#</a></h3>
@@ -128,7 +128,7 @@ print_r(VehiclePlate::parse(<span class="tok-s">'12ب345 ایران 67'</span>))
 var_dump(VehiclePlate::parse(<span class="tok-s">'xx'</span>));   <span class="tok-c">// NULL</span></code></pre>
 
 <h3 id="plate-letters">الحروف<a class="anchor" href="#plate-letters" aria-label="رابط إلى هذا القسم">#</a></h3>
-<p>يجب أن يكون الحرف واحدًا من: <code>الف ب پ ت ث ج د ز س ش ص ط ع ف ق ک گ ل م ن و ه ی ژ</code>. والصيغة الطويلة <code>الف</code> تُحسب حرفًا واحدًا. ويُقبل الحرفان اللاتينيان <code>D</code> و<code>S</code> للوحات الدبلوماسية والخاصة. وتُطبَّع صور الحروف العربية أولاً، فيُقرأ <code>ك</code> و<code>ي</code> على أنهما <code>ک</code> و<code>ی</code>:</p>
+<p>يجب أن يكون الحرف واحدًا من: <code>الف ب پ ت ث ج د ز س ش ص ط ع ف ق ک گ ل م ن و ه ی ژ</code>. والصيغة الطويلة <code>الف</code> تُحسب حرفًا واحدًا، ويُقبل <code>ا</code> وحده بوصفه الحرف نفسه ويظهر في الناتج <code>الف</code>. ويُقبل الحرفان اللاتينيان <code>D</code> و<code>S</code> للوحات الدبلوماسية والخاصة. وتُطبَّع صور الحروف العربية أولاً، فيُقرأ <code>ك</code> و<code>ي</code> على أنهما <code>ک</code> و<code>ی</code>:</p>
 <pre tabindex="0"><code class="language-php"><span class="tok-k">echo</span> json_encode(VehiclePlate::validate(<span class="tok-s">'12ي34567'</span>)-&gt;details(), JSON_UNESCAPED_UNICODE);
 <span class="tok-c">// {"normalized":"12ی34567","two_digit":"12","letter":"ی","three_digit":"345","region":"67"}</span>
 

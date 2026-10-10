@@ -36,4 +36,16 @@ final class NormalizerTest extends TestCase
         $this->assertSame('ab', Normalizer::fixHalfSpace("a\u{00AD}b"));
         $this->assertSame("می{$zwnj}روم", Normalizer::clean("  می{$zwnj}روم\u{200B}  "));
     }
+
+    public function test_fix_half_space_keeps_the_last_letter_of_the_text(): void
+    {
+        $zwnj = "\u{200C}";
+        // ی (DB 8C) and the Arabic comma (D8 8C) end in the byte 8C that trim() would cut.
+        foreach (['سلامی', 'علی', 'ب،'] as $text) {
+            $this->assertSame($text, Normalizer::fixHalfSpace($text));
+            $this->assertSame($text, Normalizer::clean($text));
+        }
+        $this->assertSame('می', Normalizer::fixHalfSpace("{$zwnj}می{$zwnj}"));
+        $this->assertSame('علی', Normalizer::clean("  {$zwnj}علی{$zwnj}  "));
+    }
 }

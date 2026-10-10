@@ -24,13 +24,38 @@ use RtlyKit\Number\Digits;
  * is produced by these entry points.
  *
  * String parsing in {@see self::make()}: Persian/Arabic digits are normalised
- * first. A string of the form `Y/m/d` or `Y-m-d` (3-4 digit year, optional
- * ` H:i[:s]`) whose year is below 1700 is read as a JALALI date (so
- * `1403/12/30` and `1404-07-15` work); every other string, including any
- * year of 1700 or later, is handed to DateTimeImmutable as Gregorian/free-form
+ * first, and a no-break space, ZWNJ or LRM/RLM mark counts as a space. A string
+ * of the exact form `Y/m/d` or `Y-m-d` (3-4 digit year), optionally followed by
+ * a space, `T` or `t` and `H:i[:s[.u]]` and a zone designator (`Z`, `+HH:MM`,
+ * `+HHMM`, `+HH`; within +-14:00) whose year is below 1700 is read as a JALALI
+ * date (so `1403/12/30`, `1404-07-15` and `1403-01-01T10:00:00+03:30` work). A
+ * designator sets the zone of the result, and a $timezone argument then converts
+ * to that zone. Text that starts like such a date but is not exactly that shape
+ * (` UTC` or `Asia/Tehran` after the time, `1403/01/01 10:00 PM`, `1403-01`) throws {@see InvalidDateException}, as does a
+ * bare run of 3-8 digits (`1403`, `14030101`) and a 5-digit year (code
+ * date_out_of_range); pass a DateTimeImmutable for such values. Every other
+ * string, including any year of 1700 or later and eight digits that start with
+ * such a year (`20240101`), is handed to DateTimeImmutable as Gregorian/free-form
  * text. An invalid Jalali date (e.g. `1404/12/30`, a non-leap year) throws
- * {@see InvalidDateException}. Empty or whitespace-only strings throw;
- * `null` means "now".
+ * {@see InvalidDateException}. Empty or whitespace-only strings and strings with
+ * a NUL byte throw; `null` means "now". Given a Jalali instance, make() returns
+ * it when no zone is given and converts it to the zone otherwise.
+ *
+ * An impossible Gregorian day in text (`2024-02-30`) throws InvalidDateException
+ * instead of rolling over to the next month. Text dates have no negative years
+ * (`-0100/01/01` throws); use create() for them.
+ *
+ * format(): `Y` has at least 4 digits, zero-padded, with a leading minus for
+ * negative years (`-0005`, `0622`, `1403`); `y` is the last two digits by floor
+ * modulo (year -620 gives `80`).
+ *
+ * Serialising keeps only the instant; unserialize() re-checks the range and
+ * throws InvalidDateException for a malformed payload.
+ *
+ * createFromFormat() reads year, month and day as Jalali values. Tokens with a
+ * Gregorian or time-zone meaning (`z e T P O p u v y F M D l S`) throw
+ * {@see InvalidDateException} naming the token; the format `U` alone reads a Unix
+ * timestamp. endOfDay()/endOfMonth()/endOfYear() end at 23:59:59.999999.
  *
  * The Gregorian/Jalali conversion is an independent implementation of the
  * arithmetic 33-year-cycle rule (leap years at residues 1, 5, 9, 13, 17, 22,
@@ -108,6 +133,11 @@ final class Jalali implements CalendarDate
         return new self($instant);
     }
 
+    private function restoreFrom(DateTimeImmutable $instant, array $data): void
+    {
+        $this->__construct($instant);
+    }
+
     /* -----------------------------------------------------------------
      |  Factory Methods
      | -----------------------------------------------------------------
@@ -140,9 +170,12 @@ final class Jalali implements CalendarDate
 
         if (is_string($time)) {
             $normalized = CalendarLimits::normalize($time);
-            $own = CalendarLimits::matchOwnFormat($normalized);
-            if ($own !== null && $own[0] < self::OWN_YEAR_LIMIT) {
-                return self::create($own[0], $own[1], $own[2], $own[3], $own[4], $own[5], $timezone);
+            $own = CalendarLimits::matchOwnFormat($normalized, static fn (int $year): bool => $year < self::OWN_YEAR_LIMIT);
+            if ($own !== null) {
+                // A zone designator in the text is read first; $timezone then converts the result.
+                $created = self::create($own[0], $own[1], $own[2], $own[3], $own[4], $own[5], $own[7] ?? $timezone)->plusMicroseconds($own[6]);
+
+                return $own[7] !== null && $timezone !== null ? self::make($created, $timezone) : $created;
             }
 
             return new self(CalendarLimits::parseGregorian($normalized, $timezone));
@@ -188,29 +221,12 @@ final class Jalali implements CalendarDate
 
     public static function createFromFormat(string $format, string $time, ?DateTimeZone $timezone = null): static
     {
-        $parsed = date_parse_from_format($format, Digits::toEnglish($time));
-
-        // "The parsed date was invalid" is raised for Gregorian-invalid days
-        // (e.g. 02/31) that can be valid Jalali dates; create() validates properly.
-        $warnings = array_filter(
-            $parsed['warnings'],
-            static fn (string $w): bool => $w !== 'The parsed date was invalid',
-        );
-
-        if ($parsed['error_count'] > 0 || $warnings !== []
-            || $parsed['year'] === false || $parsed['month'] === false || $parsed['day'] === false) {
-            throw new InvalidDateException("Unable to parse '{$time}' with format '{$format}'");
+        $read = CalendarLimits::readFormat($format, $time);
+        if (is_int($read)) {
+            return self::make($read, $timezone);
         }
 
-        return self::create(
-            $parsed['year'],
-            $parsed['month'],
-            $parsed['day'],
-            is_int($parsed['hour']) ? $parsed['hour'] : 0,
-            is_int($parsed['minute']) ? $parsed['minute'] : 0,
-            is_int($parsed['second']) ? $parsed['second'] : 0,
-            $timezone,
-        );
+        return self::create($read[0], $read[1], $read[2], $read[3], $read[4], $read[5], $timezone);
     }
 
     /* -----------------------------------------------------------------
@@ -288,8 +304,8 @@ final class Jalali implements CalendarDate
         $h12 = $this->hour % 12 === 0 ? 12 : $this->hour % 12;
 
         return match ($c) {
-            'Y' => sprintf('%04d', $this->year),
-            'y' => sprintf('%02d', $this->year % 100),
+            'Y' => $this->yearText(),
+            'y' => $this->shortYearText(),
             'm' => sprintf('%02d', $this->month),
             'n' => (string) $this->month,
             'F', 'M' => self::MONTH_NAMES[$this->month],
@@ -312,7 +328,7 @@ final class Jalali implements CalendarDate
             's' => sprintf('%02d', $this->second),
             'S' => '',
             'W' => $this->gregorian->format('W'),
-            'c' => sprintf('%04d-%02d-%02dT%02d:%02d:%02d', $this->year, $this->month, $this->day, $this->hour, $this->minute, $this->second)
+            'c' => sprintf('%s-%02d-%02dT%02d:%02d:%02d', $this->yearText(), $this->month, $this->day, $this->hour, $this->minute, $this->second)
                 .$this->gregorian->format('P'),
             'r' => $this->gregorian->format('r'),
             'U', 'e', 'T', 'P', 'p', 'O', 'Z', 'I', 'u', 'v' => $this->gregorian->format($c),
@@ -342,6 +358,10 @@ final class Jalali implements CalendarDate
     {
         CalendarLimits::delta($months, (self::MAX_YEAR - self::MIN_YEAR + 2) * 12, 'months');
 
+        if ($months === 0) {
+            return $this;
+        }
+
         $totalMonths = $this->year * 12 + ($this->month - 1) + $months;
         $newYear     = intdiv($totalMonths, 12);
         $newMonth    = $totalMonths - $newYear * 12;
@@ -357,7 +377,7 @@ final class Jalali implements CalendarDate
 
         $day = min($this->day, self::daysInMonth($newYear, $newMonth));
 
-        return self::create($newYear, $newMonth, $day, $this->hour, $this->minute, $this->second, $this->getTimezone());
+        return $this->settle(self::create($newYear, $newMonth, $day, $this->hour, $this->minute, $this->second, $this->getTimezone()));
     }
 
     public function addYears(int $years): static
@@ -374,7 +394,7 @@ final class Jalali implements CalendarDate
 
     public function endOfDay(): static
     {
-        return self::create($this->year, $this->month, $this->day, 23, 59, 59, $this->getTimezone());
+        return self::create($this->year, $this->month, $this->day, 23, 59, 59, $this->getTimezone())->atLastMicrosecond();
     }
 
     public function startOfMonth(): static
@@ -386,7 +406,7 @@ final class Jalali implements CalendarDate
     {
         $lastDay = self::daysInMonth($this->year, $this->month);
 
-        return self::create($this->year, $this->month, $lastDay, 23, 59, 59, $this->getTimezone());
+        return self::create($this->year, $this->month, $lastDay, 23, 59, 59, $this->getTimezone())->atLastMicrosecond();
     }
 
     public function startOfYear(): static
@@ -398,7 +418,7 @@ final class Jalali implements CalendarDate
     {
         $lastDay = self::daysInMonth($this->year, 12);
 
-        return self::create($this->year, 12, $lastDay, 23, 59, 59, $this->getTimezone());
+        return self::create($this->year, 12, $lastDay, 23, 59, 59, $this->getTimezone())->atLastMicrosecond();
     }
 
     /* -----------------------------------------------------------------
@@ -407,24 +427,35 @@ final class Jalali implements CalendarDate
      */
 
     /**
-     * Whole Jalali months between two instants (day and time-of-day count).
+     * Whole Jalali months between two instants (day and time-of-day count,
+     * microseconds included). Works for any two valid instants, whatever
+     * their time zones.
+     *
+     * Not an exact inverse of addMonths() at a clamped month end (like Carbon):
+     * create(1403, 6, 31)->addMonths(1) is 1403/07/30, and diffInMonths() between
+     * those two is 0, because day 30 is before day 31.
      */
     public function diffInMonths(CalendarDate|DateTimeInterface $other, bool $absolute = true): int
     {
-        $other = self::make($other, $this->getTimezone());
+        $g = $this->instantInOwnZone($other);
+        [$oy, $om, $od] = self::gregorianToJalali((int) $g->format('Y'), (int) $g->format('n'), (int) $g->format('j'));
 
-        [$lo, $hi] = $this->getTimestamp() <= $other->getTimestamp() ? [$this, $other] : [$other, $this];
-
-        $months = ($hi->year - $lo->year) * 12 + ($hi->month - $lo->month);
-        if ([$hi->day, $hi->hour, $hi->minute, $hi->second] < [$lo->day, $lo->hour, $lo->minute, $lo->second]) {
-            $months--;
-        }
-
-        return $absolute || $lo === $other ? $months : -$months;
+        return $this->monthsBetween(
+            $this->year * 12 + $this->month,
+            [$this->day, ...self::clockOf($this->gregorian)],
+            $oy * 12 + $om,
+            [$od, ...self::clockOf($g)],
+            $this->gregorian <= $g,
+            $absolute,
+        );
     }
 
     /**
      * Whole Jalali years between two instants (month, day and time count).
+     *
+     * Not an exact inverse of addYears() at a clamped end (like Carbon):
+     * create(1403, 12, 30)->addYears(1) is 1404/12/29, and diffInYears() between
+     * those two is 0.
      */
     public function diffInYears(CalendarDate|DateTimeInterface $other, bool $absolute = true): int
     {
