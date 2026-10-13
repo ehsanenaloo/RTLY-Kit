@@ -76,8 +76,10 @@ trait CalendarDateTrait
     /**
      * Serialised form: only the instant, so that unserialize() can rebuild every
      * field through the constructor checks. Keys: `v` (layout version),
-     * `instant` (ISO 8601 with microseconds and UTC offset) and `timezone`
-     * (zone name or offset of the instance); Hijri adds `variant`.
+     * `instant` (ISO 8601 with microseconds and UTC offset in hours and minutes),
+     * `timezone` (zone name or offset of the instance) and `offset` (the exact UTC
+     * offset in seconds; the text cannot hold the seconds of historical offsets);
+     * Hijri adds `variant`.
      *
      * @return array<string, int|string>
      */
@@ -87,6 +89,7 @@ trait CalendarDateTrait
             'v' => self::SERIAL_VERSION,
             'instant' => $this->gregorian->format(self::SERIAL_INSTANT_FORMAT),
             'timezone' => $this->gregorian->getTimezone()->getName(),
+            'offset' => $this->gregorian->getOffset(),
         ] + $this->serialExtra();
     }
 
@@ -113,7 +116,7 @@ trait CalendarDateTrait
             if (($data['v'] ?? null) !== self::SERIAL_VERSION) {
                 throw InvalidDateException::because(ErrorCode::InvalidDate, 'Cannot unserialize the date: unknown payload version.');
             }
-            $instant = self::instantFromPayload($data['instant'] ?? null, $data['timezone'] ?? null);
+            $instant = self::instantFromPayload($data['instant'] ?? null, $data['timezone'] ?? null, $data['offset'] ?? null);
         }
 
         $this->restoreFrom($instant, $data);
@@ -136,7 +139,7 @@ trait CalendarDateTrait
      */
     abstract private function restoreFrom(DateTimeImmutable $instant, array $data): void;
 
-    private static function instantFromPayload(mixed $text, mixed $zoneName): DateTimeImmutable
+    private static function instantFromPayload(mixed $text, mixed $zoneName, mixed $offset = null): DateTimeImmutable
     {
         $fail = static fn (string $why): InvalidDateException => InvalidDateException::because(ErrorCode::InvalidDate, "Cannot unserialize the date: {$why}.");
 
@@ -157,6 +160,16 @@ trait CalendarDateTrait
             $zone = new DateTimeZone($zoneName);
         } catch (\Throwable) {
             throw $fail('the time zone is not valid');
+        }
+
+        if ($offset !== null) {
+            // The text offset is the exact one cut to whole minutes, so the two can differ by less than a minute.
+            if (! is_int($offset) || abs($offset) > 359_999 || abs($offset - $instant->getOffset()) >= 60) {
+                throw $fail('the UTC offset is not valid');
+            }
+            // The text holds the wall-clock time and an offset rounded to minutes: rebuild the moment from the exact offset.
+            $wall = $instant->getTimestamp() + $instant->getOffset();
+            $instant = (new DateTimeImmutable('@'.($wall - $offset)))->modify('+'.(int) $instant->format('u').' microseconds');
         }
 
         return $instant->setTimezone($zone);
@@ -444,12 +457,12 @@ trait CalendarDateTrait
 
     public function isPast(): bool
     {
-        return $this->getTimestamp() < time();
+        return $this->gregorian < new DateTimeImmutable('now');
     }
 
     public function isFuture(): bool
     {
-        return $this->getTimestamp() > time();
+        return $this->gregorian > new DateTimeImmutable('now');
     }
 
     /** True when this date is today's date in this instance's own time zone. */

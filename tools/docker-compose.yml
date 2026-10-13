@@ -24,3 +24,40 @@ services:
   php85:
     <<: *php
     build: { context: ., args: { PHP_VERSION: "8.5.11" } }
+
+  # Database tests for JalaliCast on MySQL and PostgreSQL (the SQLite test always runs):
+  #   docker compose -f tools/docker-compose.yml --profile db run --rm php-db \
+  #     vendor/bin/phpunit -c tools/phpunit.xml.dist tests/Integration/Laravel/Casts/JalaliCastDatabaseTest.php
+  # The databases are throw-away containers on the compose network, without passwords.
+  php-db:
+    <<: *php
+    profiles: ["db"]
+    build: { context: ., args: { PHP_VERSION: "8.2.34", WITH_DB: "1" } }
+    environment:
+      RTLY_TEST_MYSQL_HOST: mysql
+      RTLY_TEST_PGSQL_HOST: postgres
+    depends_on:
+      mysql: { condition: service_healthy }
+      postgres: { condition: service_healthy }
+  mysql:
+    profiles: ["db"]
+    image: mysql:8.4
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_DATABASE: rtly
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent"]
+      interval: 3s
+      timeout: 3s
+      retries: 40
+  postgres:
+    profiles: ["db"]
+    image: postgres:16
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_DB: rtly
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d rtly"]
+      interval: 3s
+      timeout: 3s
+      retries: 40

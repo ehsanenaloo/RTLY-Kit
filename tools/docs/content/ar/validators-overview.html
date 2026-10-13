@@ -129,7 +129,7 @@ print_r(NationalCode::validate(1.5)-&gt;errors());                   // [invalid
 print_r(NationalCode::validate(str_repeat('1', 4097))-&gt;errors()); // [input_too_long]
 print_r(NationalCode::validate("\xff\xfe")-&gt;errors());            // [invalid_format]
 var_dump(PostalCode::validate(1593715416)-&gt;isValid());            // bool(true)</code></pre>
-<div class="note"><strong>الأصفار البادئة.</strong> إذا مرّرت الرقم الوطني أو الرمز البريدي على أنه عدد صحيح فستضيع الأصفار البادئة: <code>499370899</code> ليس <code>0499370899</code>، وأداة التحقق لا ترى إلا تسعة أرقام. أبقِ هذه المعرّفات سلاسل نصية من النموذج أو من عمود قاعدة البيانات حتى تصل إلى أداة التحقق.</div>
+<div class="note"><strong>الأصفار البادئة.</strong> يفقد الرقم الوطني المُمرَّر عددًا صحيحًا أصفاره البادئة، لذلك يعيدها <code>NationalCode</code>: يُفحص <code>499370899</code> على أنه <code>0499370899</code>. أما النص فلا يُكمَّل أبدًا. ولا يبدأ الرمز البريدي ولا رقم البطاقة بصفر. ومع ذلك أبقِ المعرّفات نصوصًا.</div>
 
 <h2 id="normalization">التطبيع</h2>
 <p>بعد البوابة، تطبّع كل أداة تحقق السلسلة بدالتها العامة <code>normalize()</code>. وتشترك في هذه القواعد:</p>

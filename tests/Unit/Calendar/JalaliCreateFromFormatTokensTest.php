@@ -61,8 +61,6 @@ final class JalaliCreateFromFormatTokensTest extends TestCase
         yield 'offset with colon' => ['Y/m/d P', '1403/01/01 +03:30', 'P'];
         yield 'offset' => ['Y/m/d O', '1403/01/01 +0330', 'O'];
         yield 'offset or Z' => ['Y/m/d p', '1403/01/01 Z', 'p'];
-        yield 'microseconds' => ['Y/m/d H:i:s.u', '1403/01/01 10:00:00.123456', 'u'];
-        yield 'milliseconds' => ['Y/m/d H:i:s.v', '1403/01/01 10:00:00.123', 'v'];
         yield 'two-digit year' => ['y/m/d', '03/01/01', 'y'];
         yield 'english month name' => ['F j, Y', 'March 5, 1403', 'F'];
         yield 'english month abbreviation' => ['M j Y', 'Mar 5 1403', 'M'];

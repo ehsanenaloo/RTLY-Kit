@@ -97,11 +97,11 @@ $post-&gt;published_at = ['x'];                // throws InvalidDateException (i
 
 <h2 id="validation-faq">Validators and data</h2>
 
-<h3 id="leading-zero">is_national_code(13542419) is false, but the string version is true</h3>
-<p>An <code>int</code> has already lost its leading zeros. <code>0013542419</code> became <code>13542419</code>, eight digits. Validators turn integers into strings but cannot bring the zeros back. Keep identifiers as strings everywhere (form fields, JSON, database columns):</p>
+<h3 id="leading-zero">Does a national code that is an int work?</h3>
+<p>Yes. An <code>int</code> has lost its leading zeros (<code>0013542419</code> became <code>13542419</code>), so <code>NationalCode</code> pads a number of fewer than 10 digits with zeros on the left. A string is never padded. Keep identifiers as strings anyway (form fields, JSON, database columns), because other code between your input and the validator may change them:</p>
 <pre><code class="language-php">use function RtlyKit\is_national_code;
 
-var_dump(is_national_code(13542419));       // bool(false)
+var_dump(is_national_code(13542419));       // bool(true) 
 var_dump(is_national_code('0013542419'));   // bool(true)</code></pre>
 
 <h3 id="null-bank">getBankName() returns null for a valid card or Sheba</h3>

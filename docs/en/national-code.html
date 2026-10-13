@@ -68,7 +68,7 @@ print_r(validate_national_code(<span class="tok-s">'0499370898'</span>)-&gt;erro
 print_r(NationalCode::validate(<span class="tok-s">'1111111111'</span>)-&gt;errors());   <span class="tok-c">// [repeated_digits]</span>
 print_r(NationalCode::validate(<span class="tok-s">'12345'</span>)-&gt;errors());        <span class="tok-c">// [invalid_format]</span>
 print_r(NationalCode::validate(<span class="tok-s">'abc'</span>)-&gt;errors());          <span class="tok-c">// [invalid_format]</span></code></pre>
-<div class="callout note" role="note"><strong>Good to know.</strong> A national code can start with zero, so keep it a string. <code>NationalCode::validate(499370899)</code> receives the nine digits <code>499370899</code> and returns <code>invalid_format</code>. Do not cast the value to an integer anywhere between the input and the validator. That includes a database column or a JSON number.</div>
+<div class="callout note" role="note"><strong>Good to know.</strong> A national code can start with zero, so keep it a string when you can. A number is padded with zeros on the left to 10 digits, so <code>NationalCode::validate(499370899)</code> checks <code>0499370899</code>, and a whole float works the same way. A string is never padded: <code>'499370899'</code> returns <code>invalid_format</code>. Postal codes and card numbers never start with zero, so they need no padding.</div>
 
 <h2 id="accepted-input">Accepted input<a class="anchor" href="#accepted-input" aria-label="Link to this section">#</a></h2>
 <div class="table-wrap" tabindex="0" role="region" aria-label="Table"><table>

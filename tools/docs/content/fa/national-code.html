@@ -41,7 +41,7 @@ print_r(validate_national_code('0499370898')-&gt;errors());  // Array ( [0] =&gt
 print_r(NationalCode::validate('1111111111')-&gt;errors());   // [repeated_digits]
 print_r(NationalCode::validate('12345')-&gt;errors());        // [invalid_format]
 print_r(NationalCode::validate('abc')-&gt;errors());          // [invalid_format]</code></pre>
-<div class="note"><strong>رشته بماند.</strong> کد ملی می‌تواند با صفر شروع شود. <code>NationalCode::validate(499370899)</code> فقط نه رقم <code>499370899</code> را می‌بیند و <code>invalid_format</code> می‌دهد. بین ورودی و اعتبارسنج (از جمله در ستون پایگاه داده یا عدد JSON) مقدار را به عدد صحیح تبدیل نکنید.</div>
+<div class="note"><strong>رشته بماند.</strong> کد ملی می‌تواند با صفر شروع شود، پس تا جایی که می‌شود آن را رشته نگه دارید. عددِ کمتر از ۱۰ رقم از چپ با صفر به ۱۰ رقم می‌رسد؛ یعنی <code>NationalCode::validate(499370899)</code> همان <code>0499370899</code> را بررسی می‌کند و عدد اعشاریِ صحیح هم همین‌طور است. رشته هیچ‌وقت پر نمی‌شود: <code>'499370899'</code> خطای <code>invalid_format</code> می‌دهد. کد پستی و شمارهٔ کارت هیچ‌وقت با صفر شروع نمی‌شوند و پر کردن نمی‌خواهند.</div>
 
 <h2 id="accepted-input">ورودی‌هایی که قبول می‌شوند</h2>
 <table>

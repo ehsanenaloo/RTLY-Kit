@@ -87,6 +87,30 @@ class RtlyKitServiceProvider extends ServiceProvider
         }
     }
 
+    /**
+     * Whether the short rule name `mobile` is registered (config `rtly-kit.validation.mobile_alias`, default true).
+     *
+     * @throws InvalidDateException when the option is set to something other than a boolean
+     */
+    private function mobileAliasEnabled(): bool
+    {
+        $config = $this->app->bound('config') ? $this->app->make('config') : null;
+        $value = is_object($config) && method_exists($config, 'get') ? $config->get('rtly-kit.validation.mobile_alias', true) : true;
+
+        // env() gives strings such as 'false': read them like Laravel's own boolean options.
+        $flag = is_bool($value) ? $value : (is_string($value) || is_int($value) ? filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) : null);
+
+        if ($flag === null) {
+            throw InvalidDateException::because(
+                ErrorCode::InvalidArgument,
+                sprintf('Config "rtly-kit.validation.mobile_alias" must be true or false, %s given.', get_debug_type($value)),
+                ['option' => 'rtly-kit.validation.mobile_alias'],
+            );
+        }
+
+        return $flag;
+    }
+
     private function registerValidationRules(): void
     {
         $validator = $this->app->make('validator');
@@ -105,6 +129,10 @@ class RtlyKitServiceProvider extends ServiceProvider
             'postal_code' => [PostalCode::isValid(...), 'The :attribute is not a valid Iranian postal code.'],
             'vehicle_plate' => [VehiclePlate::isValid(...), 'The :attribute is not a valid Iranian vehicle plate.'],
         ];
+
+        if (! $this->mobileAliasEnabled()) {
+            unset($rules['mobile']);
+        }
 
         foreach ($rules as $name => [$check, $message]) {
             $validator->extend($name, static function (string $attribute, mixed $value) use ($check): bool {

@@ -53,9 +53,9 @@ use RtlyKit\Number\Digits;
  * throws InvalidDateException for a malformed payload.
  *
  * createFromFormat() reads year, month and day as Jalali values. Tokens with a
- * Gregorian or time-zone meaning (`z e T P O p u v y F M D l S`) throw
- * {@see InvalidDateException} naming the token; the format `U` alone reads a Unix
- * timestamp. endOfDay()/endOfMonth()/endOfYear() end at 23:59:59.999999.
+ * Gregorian or time-zone meaning (`z e T P O p y F M D l S`) throw
+ * {@see InvalidDateException} naming the token; `u` and `v` read microseconds and
+ * milliseconds; the format `U` alone reads a Unix timestamp. endOfDay()/endOfMonth()/endOfYear() end at 23:59:59.999999.
  *
  * The Gregorian/Jalali conversion is an independent implementation of the
  * arithmetic 33-year-cycle rule (leap years at residues 1, 5, 9, 13, 17, 22,
@@ -226,7 +226,9 @@ final class Jalali implements CalendarDate
             return self::make($read, $timezone);
         }
 
-        return self::create($read[0], $read[1], $read[2], $read[3], $read[4], $read[5], $timezone);
+        $date = self::create($read[0], $read[1], $read[2], $read[3], $read[4], $read[5], $timezone);
+
+        return $read[6] === 0 ? $date : $date->plusMicroseconds($read[6]);
     }
 
     /* -----------------------------------------------------------------

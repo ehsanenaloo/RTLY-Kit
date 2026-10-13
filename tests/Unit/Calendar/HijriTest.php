@@ -57,7 +57,8 @@ final class HijriTest extends TestCase
 
     public function test_umm_al_qura_is_contiguous_and_roundtrips(): void
     {
-        $d = new DateTimeImmutable('1882-11-12');
+        // UTC: in a zone that skipped a date (Pacific/Kiritimati lost 1994-12-31) the walk would skip it too.
+        $d = new DateTimeImmutable('1882-11-12', new DateTimeZone('UTC'));
         $prev = null;
         // daily walk over the whole table: contiguity; round-trip on every 13th day
         for ($i = 0; $i < 71000; $i++, $d = $d->modify('+1 day')) {

@@ -21,15 +21,22 @@ use RtlyKit\Exceptions\RtlyKitException;
  * underscores, so they are dropped ("v1.2" becomes "v12"). Lower-casing uses the
  * Unicode simple case mapping.
  *
- * @throws RtlyKitException when the text or separator is not valid UTF-8, or the separator is longer than 64 bytes
+ * @throws RtlyKitException when the text or separator is not valid UTF-8, the separator is longer than 64 bytes, or the text is longer than 4096 bytes
  */
 final class Slugify
 {
     /** Maximum bytes of the separator. */
     private const MAX_SEPARATOR_BYTES = 64;
 
+    /** Maximum bytes of the text. */
+    public const MAX_TEXT_BYTES = 4096;
+
     public static function make(string $text, string $separator = '-'): string
     {
+        if (strlen($text) > self::MAX_TEXT_BYTES) {
+            throw new RtlyKitException('The text to slugify is too long.', errorCode: ErrorCode::InputTooLong, context: ['argument' => 'text', 'limit' => self::MAX_TEXT_BYTES]);
+        }
+
         if (strlen($separator) > self::MAX_SEPARATOR_BYTES) {
             throw new RtlyKitException('The slug separator is too long.', errorCode: ErrorCode::InputTooLong, context: ['argument' => 'separator', 'limit' => self::MAX_SEPARATOR_BYTES]);
         }

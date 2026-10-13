@@ -41,7 +41,7 @@ print_r(validate_national_code('0499370898')-&gt;errors());  // Array ( [0] =&gt
 print_r(NationalCode::validate('1111111111')-&gt;errors());   // [repeated_digits]
 print_r(NationalCode::validate('12345')-&gt;errors());        // [invalid_format]
 print_r(NationalCode::validate('abc')-&gt;errors());          // [invalid_format]</code></pre>
-<div class="note"><strong>Good to know.</strong> A national code can start with zero, so keep it a string. <code>NationalCode::validate(499370899)</code> receives the nine digits <code>499370899</code> and returns <code>invalid_format</code>. Do not cast the value to an integer anywhere between the input and the validator. That includes a database column or a JSON number.</div>
+<div class="note"><strong>Good to know.</strong> A national code can start with zero, so keep it a string when you can. A number is padded with zeros on the left to 10 digits, so <code>NationalCode::validate(499370899)</code> checks <code>0499370899</code>, and a whole float works the same way. A string is never padded: <code>'499370899'</code> returns <code>invalid_format</code>. Postal codes and card numbers never start with zero, so they need no padding.</div>
 
 <h2 id="accepted-input">Accepted input</h2>
 <table>

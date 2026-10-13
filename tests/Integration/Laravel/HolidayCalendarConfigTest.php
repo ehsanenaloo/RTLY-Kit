@@ -237,7 +237,8 @@ final class HolidayCalendarConfigTest extends TestCase
     {
         $config = require RtlyKitServiceProvider::CONFIG_FILE;
 
-        self::assertSame(['holidays'], array_keys($config));
+        self::assertSame(['holidays', 'validation'], array_keys($config));
+        self::assertSame(['mobile_alias' => true], $config['validation']);
         self::assertSame(
             ['islamic_offset', 'hijri_month_starts', 'extra', 'removed', 'use_official_data'],
             array_keys($config['holidays']),

@@ -76,7 +76,6 @@ final class CreateFromFormatCalendarsTest extends TestCase
             yield "$class day of year" => [$class, 'Y z', "{$y} 5", 'z'];
             yield "$class zone identifier" => [$class, 'Y/m/d e', "{$y}/01/01 UTC", 'e'];
             yield "$class offset" => [$class, 'Y/m/d P', "{$y}/01/01 +03:30", 'P'];
-            yield "$class microseconds" => [$class, 'Y/m/d H:i:s.u', "{$y}/01/01 10:00:00.123456", 'u'];
             yield "$class two-digit year" => [$class, 'y/m/d', '03/01/01', 'y'];
             yield "$class english month" => [$class, 'F j, Y', "March 5, {$y}", 'F'];
             yield "$class english day" => [$class, 'l Y/m/d', "Monday {$y}/01/01", 'l'];

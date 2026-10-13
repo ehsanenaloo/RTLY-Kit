@@ -68,7 +68,7 @@ print_r(validate_national_code(<span class="tok-s">'0499370898'</span>)-&gt;erro
 print_r(NationalCode::validate(<span class="tok-s">'1111111111'</span>)-&gt;errors());   <span class="tok-c">// [repeated_digits]</span>
 print_r(NationalCode::validate(<span class="tok-s">'12345'</span>)-&gt;errors());        <span class="tok-c">// [invalid_format]</span>
 print_r(NationalCode::validate(<span class="tok-s">'abc'</span>)-&gt;errors());          <span class="tok-c">// [invalid_format]</span></code></pre>
-<div class="callout note" role="note"><strong>أبقِه نصًا.</strong> قد يبدأ الرقم الوطني بصفر. فالاستدعاء <code>NationalCode::validate(499370899)</code> يتلقى الأرقام التسعة <code>499370899</code> ويُرجع <code>invalid_format</code>. لذلك لا تحوّل القيمة إلى عدد صحيح في أي خطوة بين الإدخال وأداة التحقق، ومن ذلك عمود قاعدة البيانات ورقم JSON.</div>
+<div class="callout note" role="note"><strong>أبقِه نصًا متى أمكن.</strong> قد يبدأ الرقم الوطني بصفر. يُكمَّل العدد الذي له أقل من 10 أرقام بأصفار من اليسار إلى 10 أرقام، فيفحص <code>NationalCode::validate(499370899)</code> القيمة <code>0499370899</code>، والعدد العشري الصحيح مثله. أما النص فلا يُكمَّل أبدًا: يُرجع <code>'499370899'</code> الخطأ <code>invalid_format</code>. لا يبدأ الرمز البريدي ولا رقم البطاقة بصفر، فلا يحتاجان إلى إكمال.</div>
 
 <h2 id="accepted-input">المُدخَلات المقبولة<a class="anchor" href="#accepted-input" aria-label="رابط إلى هذا القسم">#</a></h2>
 <div class="table-wrap" tabindex="0" role="region" aria-label="جدول"><table>

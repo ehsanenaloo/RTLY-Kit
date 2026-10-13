@@ -48,7 +48,7 @@ final class ValidatorBoundaryTest extends TestCase
     {
         $this->assertSame(['invalid_type'], NationalCode::validate(1.0E15)->errors());
         $this->assertSame('999999999999999', NationalCode::validate(999999999999999.0)->details()['normalized']);
-        $this->assertSame('499370899', NationalCode::validate(499370899.0)->details()['normalized']);
+        $this->assertSame('0499370899', NationalCode::validate(499370899.0)->details()['normalized']);
     }
 
     public function test_sheba_anchors_and_normalisation(): void

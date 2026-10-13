@@ -206,21 +206,23 @@ final class Hebrew implements CalendarDate
      * Reads year, month and day as Hebrew values, like {@see Jalali::createFromFormat()}.
      * The month is the ordinal month number of {@see self::create()}. Tokens
      * `d j m n Y H G i s g h A a` and backslash escapes work; tokens with a
-     * Gregorian or time-zone meaning (`z e T P O p u v y F M D l S`, and `U`
-     * mixed with others) throw {@see InvalidDateException} naming the token; the
-     * format `U` alone reads a Unix timestamp. `Y` reads at most 4 digits, so
-     * years from 10000 cannot be read this way (use create()).
+     * Gregorian or time-zone meaning (`z e T P O p y F M D l S`, and `U`
+     * mixed with others) throw {@see InvalidDateException} naming the token; `u`
+     * and `v` read microseconds and milliseconds; the format `U` alone reads a Unix timestamp. A format with a single `Y` also
+     * reads a year of 5 digits (10000 to 13759), so `format()` output can be parsed back.
      *
      * @throws InvalidDateException
      */
     public static function createFromFormat(string $format, string $time, ?DateTimeZone $timezone = null): static
     {
-        $read = CalendarLimits::readFormat($format, $time);
+        $read = CalendarLimits::readFormat($format, $time, true);
         if (is_int($read)) {
             return self::make($read, $timezone);
         }
 
-        return self::create($read[0], $read[1], $read[2], $read[3], $read[4], $read[5], $timezone);
+        $date = self::create($read[0], $read[1], $read[2], $read[3], $read[4], $read[5], $timezone);
+
+        return $read[6] === 0 ? $date : $date->plusMicroseconds($read[6]);
     }
 
     /* -----------------------------------------------------------------

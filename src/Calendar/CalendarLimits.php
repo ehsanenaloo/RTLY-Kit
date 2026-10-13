@@ -9,6 +9,7 @@ use DateTimeZone;
 use RtlyKit\Exceptions\ErrorCode;
 use RtlyKit\Exceptions\InvalidDateException;
 use RtlyKit\Number\Digits;
+use RtlyKit\Text\Utf8;
 
 /**
  * Shared range guards and own-calendar string parsing for the calendar classes.
@@ -42,6 +43,15 @@ final class CalendarLimits
     public const DELTA_MINUTES = self::MAX_DAYS * 1440;
 
     public const DELTA_SECONDS = self::MAX_DAYS * 86400;
+
+    /** Longest date text accepted by make(), createFromFormat() and JalaliCast, in bytes. */
+    public const MAX_TEXT_BYTES = 256;
+
+    /** Longest createFromFormat() input pattern, in bytes. */
+    public const MAX_PARSE_FORMAT_BYTES = 256;
+
+    /** Characters of an input value echoed in an error message. */
+    private const ECHO_CHARS = 48;
 
     /** @codeCoverageIgnore Private constructor only prevents instantiation. */
     private function __construct() {}
@@ -107,27 +117,76 @@ final class CalendarLimits
     }
 
     /**
+     * Reject date text or an input pattern longer than its cap before any
+     * digit conversion, regex or native parsing runs.
+     *
+     * @throws InvalidDateException with ErrorCode::InputTooLong
+     */
+    public static function assertTextLength(string $text, string $argument = 'time'): void
+    {
+        $limit = $argument === 'format' ? self::MAX_PARSE_FORMAT_BYTES : self::MAX_TEXT_BYTES;
+        if (strlen($text) > $limit) {
+            throw new InvalidDateException(
+                sprintf('Input too long (%d bytes, max %d).', strlen($text), $limit),
+                errorCode: ErrorCode::InputTooLong,
+                context: ['argument' => $argument, 'limit' => $limit],
+            );
+        }
+    }
+
+    private static function parseFailure(string $time, string $format): string
+    {
+        return "Unable to parse '" . self::excerpt($time) . "' with format '" . self::excerpt($format) . "'";
+    }
+
+    private static function quoted(string $text): string
+    {
+        return "'" . self::excerpt($text) . "'";
+    }
+
+    /** The start of a value for an error message: bounded, valid UTF-8, no control characters. */
+    private static function excerpt(string $text): string
+    {
+        return Utf8::excerpt($text, self::ECHO_CHARS);
+    }
+
+    /**
      * Parse a Gregorian / free-form string with DateTimeImmutable.
      *
      * @throws InvalidDateException
      */
     public static function parseGregorian(string $time, ?DateTimeZone $timezone): DateTimeImmutable
     {
+        self::assertTextLength($time);
         if (str_contains($time, "\0")) {
             throw new InvalidDateException('Unable to parse date: the text contains a NUL byte.');
+        }
+
+        // No date form has a run of more than 14 digits (YYYYMMDDHHMMSS); PHP wraps longer runs around and
+        // can return a plausible date for them.
+        if (preg_match('/(?<![\d.,])\d{15}/', $time) === 1) {
+            throw InvalidDateException::because(ErrorCode::DateOutOfRange, 'Unable to parse date: ' . self::excerpt($time) . ' has a number that is too long.');
         }
 
         try {
             $instant = new DateTimeImmutable($time, $timezone);
         } catch (\Exception $e) {
-            throw new InvalidDateException("Unable to parse date: {$time}", previous: $e);
+            throw new InvalidDateException('Unable to parse date: ' . self::excerpt($time), previous: $e);
         }
 
         $parts = date_parse($time);
 
+        $relative = is_array($parts['relative'] ?? null) ? $parts['relative'] : [];
+        $limits = ['year' => 20_000, 'month' => 240_000, 'day' => self::DELTA_DAYS, 'hour' => self::DELTA_HOURS, 'minute' => self::DELTA_MINUTES, 'second' => self::DELTA_SECONDS];
+        foreach ($limits as $unit => $max) {
+            if (isset($relative[$unit]) && is_int($relative[$unit]) && abs($relative[$unit]) > $max) {
+                throw InvalidDateException::because(ErrorCode::DateOutOfRange, 'Unable to parse date: ' . self::excerpt($time) . ' is out of the supported range.');
+            }
+        }
+
         // PHP rolls an impossible day over (2024-02-30 becomes 2024-03-01); create() is strict, so is this.
         if (is_array($parts['warnings']) && in_array('The parsed date was invalid', $parts['warnings'], true)) {
-            throw InvalidDateException::because(ErrorCode::InvalidDate, "Unable to parse date: {$time} is not a real date.");
+            throw InvalidDateException::because(ErrorCode::InvalidDate, 'Unable to parse date: ' . self::excerpt($time) . ' is not a real date.');
         }
 
         // A bare zone token ("x", "z", "EST") parses as "now in that zone"; it is not a date.
@@ -136,7 +195,7 @@ final class CalendarLimits
             && $parts['year'] === false && $parts['month'] === false && $parts['day'] === false
             && $parts['hour'] === false && ! isset($parts['relative'])
         ) {
-            throw new InvalidDateException("Unable to parse date: {$time}");
+            throw new InvalidDateException('Unable to parse date: ' . self::excerpt($time));
         }
 
         return $instant;
@@ -145,21 +204,26 @@ final class CalendarLimits
     /**
      * Tokens whose PHP meaning is Gregorian (month/day names, day of the
      * year, 2-digit years, ordinal suffixes) or that carry a zone or a
-     * timestamp; reading them as a calendar value would give a wrong date silently.
+     * timestamp (`u` and `v`, the fraction of a second, are read); reading them as a calendar value would give a wrong date silently.
      */
-    private const FORMAT_TOKENS_REJECTED = 'UzeTPOpuvyFMDlS';
+    private const FORMAT_TOKENS_REJECTED = 'UzeTPOpyFMDlS';
 
     /**
      * Shared reader of the createFromFormat() methods: Persian/Arabic digits are
      * normalised, year, month and day are returned as the calendar's own values
      * (the caller validates them with create()).
      *
-     * @return int|array{0: int, 1: int, 2: int, 3: int, 4: int, 5: int} a Unix timestamp for the format `U` alone, otherwise [y, m, d, h, i, s]
+     * @param bool $fiveDigitYears whether a year of 5 digits (Hebrew, from 10000) is read for a single `Y` token
+     *
+     * @return int|array{0: int, 1: int, 2: int, 3: int, 4: int, 5: int, 6: int} a Unix timestamp for the format `U` alone, otherwise [y, m, d, h, i, s, microseconds]
      *
      * @throws InvalidDateException
      */
-    public static function readFormat(string $format, string $time): int|array
+    public static function readFormat(string $format, string $time, bool $fiveDigitYears = false): int|array
     {
+        self::assertTextLength($time);
+        self::assertTextLength($format, 'format');
+
         if (str_contains($format, "\0") || str_contains($time, "\0")) {
             throw new InvalidDateException('Unable to parse the date: the format or the text contains a NUL byte.');
         }
@@ -167,7 +231,7 @@ final class CalendarLimits
         $english = trim(Digits::toEnglish($time));
         if (trim($format) === 'U') {
             if (preg_match('/^-?\d{1,19}$/D', $english) !== 1) {
-                throw new InvalidDateException("Unable to parse '{$time}' with format '{$format}'");
+                throw new InvalidDateException(self::parseFailure($time, $format));
             }
 
             return (int) $english;
@@ -175,10 +239,17 @@ final class CalendarLimits
 
         self::assertFormatTokens($format);
 
+        $text = Digits::toEnglish($time);
+        $longYear = null;
+        if ($fiveDigitYears) {
+            // PHP reads at most 4 digits for `Y`: read a 5-digit year apart and let PHP see a placeholder.
+            [$text, $longYear] = self::splitLongYear($format, $text);
+        }
+
         try {
-            $parsed = date_parse_from_format($format, Digits::toEnglish($time));
+            $parsed = date_parse_from_format($format, $text);
         } catch (\ValueError $e) {
-            throw new InvalidDateException("Unable to parse '{$time}' with format '{$format}'", previous: $e);
+            throw new InvalidDateException(self::parseFailure($time, $format), previous: $e);
         }
 
         // "The parsed date was invalid" is raised for Gregorian-invalid days
@@ -190,17 +261,76 @@ final class CalendarLimits
 
         if ($parsed['error_count'] > 0 || $warnings !== []
             || $parsed['year'] === false || $parsed['month'] === false || $parsed['day'] === false) {
-            throw new InvalidDateException("Unable to parse '{$time}' with format '{$format}'");
+            throw new InvalidDateException(self::parseFailure($time, $format));
         }
 
         return [
-            $parsed['year'],
+            $longYear ?? $parsed['year'],
             $parsed['month'],
             $parsed['day'],
             is_int($parsed['hour']) ? $parsed['hour'] : 0,
             is_int($parsed['minute']) ? $parsed['minute'] : 0,
             is_int($parsed['second']) ? $parsed['second'] : 0,
+            is_float($parsed['fraction']) ? (int) round($parsed['fraction'] * 1_000_000) : 0,
         ];
+    }
+
+    /**
+     * When the format has exactly one `Y`, not next to another digit token, and the text has a 5-digit year
+     * (first digit 1 to 9) at the place of that `Y`, returns the text with the year replaced by `0000` and
+     * the year. Otherwise the text unchanged and null. The place is found with a pattern built from the format.
+     *
+     * @return array{0: string, 1: ?int}
+     */
+    private static function splitLongYear(string $format, string $text): array
+    {
+        $digitTokens = 'djmnYHGisghuv';
+        $length = strlen($format);
+        $pattern = '';
+        $years = 0;
+        $previousDigit = false;
+        $yearAfterDigit = false;
+
+        for ($i = 0; $i < $length; $i++) {
+            $c = $format[$i];
+            if ($c === '\\') {
+                $i++;
+                $pattern .= isset($format[$i]) ? preg_quote($format[$i], '/') : '';
+                $previousDigit = false;
+
+                continue;
+            }
+
+            $isDigit = str_contains($digitTokens, $c);
+            if ($c === 'Y') {
+                $years++;
+                $pattern .= '(\d{4}|[1-9]\d{4})';
+                $yearAfterDigit = $previousDigit;
+            } else {
+                if ($isDigit && $previousDigit && ($format[$i - 1] ?? '') === 'Y') {
+                    return [$text, null]; // a digit token right after Y: the width of Y is ambiguous
+                }
+                $pattern .= match ($c) {
+                    'd', 'm', 'H', 'i', 's', 'h' => '\d{1,2}',
+                    'j', 'n', 'G', 'g' => '\d{1,2}',
+                    'u' => '\d{1,6}',
+                    'v' => '\d{1,3}',
+                    'A', 'a' => '[AaPp][Mm]',
+                    default => preg_quote($c, '/'),
+                };
+            }
+            $previousDigit = $isDigit;
+        }
+
+        if ($years !== 1 || $yearAfterDigit) {
+            return [$text, null];
+        }
+
+        if (preg_match('/^'.$pattern.'$/D', $text, $m, PREG_OFFSET_CAPTURE) !== 1 || strlen($m[1][0]) !== 5) {
+            return [$text, null];
+        }
+
+        return [substr_replace($text, '0000', $m[1][1], 5), (int) $m[1][0]];
     }
 
     /**
@@ -232,6 +362,8 @@ final class CalendarLimits
      */
     public static function normalize(string $time): string
     {
+        self::assertTextLength($time);
+
         if (str_contains($time, "\0")) {
             throw new InvalidDateException('Unable to parse date: the text contains a NUL byte.');
         }
@@ -269,7 +401,7 @@ final class CalendarLimits
         if (preg_match('/^-\d{1,5}[\/-]\d{1,2}[\/-]\d{1,2}/', $normalized) === 1) {
             throw InvalidDateException::because(
                 ErrorCode::InvalidDate,
-                "Cannot read '{$normalized}' as a date: text dates have no negative years. Use create() or pass a DateTimeImmutable.",
+                'Cannot read ' . self::quoted($normalized) . ' as a date: text dates have no negative years. Use create() or pass a DateTimeImmutable.',
             );
         }
 
@@ -293,7 +425,7 @@ final class CalendarLimits
             if ($isOwnYear((int) $p[1])) {
                 throw InvalidDateException::because(
                     ErrorCode::InvalidDate,
-                    "Cannot read '{$p[0]}...' as a date: it starts like a date of this calendar but is not exactly Y/m/d or Y/m/d H:i[:s[.u]]. Use that exact form, or pass a DateTimeImmutable.",
+                    'Cannot read ' . self::quoted($p[0]) . ' as a date: it starts like a date of this calendar but is not exactly Y/m/d or Y/m/d H:i[:s[.u]]. Use that exact form, or pass a DateTimeImmutable.',
                 );
             }
 
@@ -308,7 +440,7 @@ final class CalendarLimits
 
             throw InvalidDateException::because(
                 ErrorCode::InvalidDate,
-                "Cannot read '{$normalized}' as a date: write it as Y/m/d, pass a Unix timestamp as an int, or pass a DateTimeImmutable.",
+                'Cannot read ' . self::quoted($normalized) . ' as a date: write it as Y/m/d, pass a Unix timestamp as an int, or pass a DateTimeImmutable.',
             );
         }
 

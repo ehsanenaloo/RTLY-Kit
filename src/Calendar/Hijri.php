@@ -235,9 +235,9 @@ final class Hijri implements CalendarDate
      * Reads year, month and day as Hijri values (in the given variant), like
      * {@see Jalali::createFromFormat()}: tokens `d j m n Y H G i s g h A a` and
      * backslash escapes work; tokens with a Gregorian or time-zone meaning
-     * (`z e T P O p u v y F M D l S`, and `U` mixed with others) throw
-     * {@see InvalidDateException} naming the token; the format `U` alone reads a
-     * Unix timestamp. `Y` reads at most 4 digits.
+     * (`z e T P O p y F M D l S`, and `U` mixed with others) throw
+     * {@see InvalidDateException} naming the token; `u` and `v` read microseconds
+     * and milliseconds; the format `U` alone reads a Unix timestamp. `Y` reads at most 4 digits.
      *
      * @throws InvalidDateException
      */
@@ -252,7 +252,9 @@ final class Hijri implements CalendarDate
             return self::make($read, $timezone, $variant);
         }
 
-        return self::create($read[0], $read[1], $read[2], $read[3], $read[4], $read[5], $timezone, $variant);
+        $date = self::create($read[0], $read[1], $read[2], $read[3], $read[4], $read[5], $timezone, $variant);
+
+        return $read[6] === 0 ? $date : $date->plusMicroseconds($read[6]);
     }
 
     /* -----------------------------------------------------------------

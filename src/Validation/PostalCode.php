@@ -42,10 +42,11 @@ final class PostalCode implements Validator
             return $input;
         }
 
-        $normalized = self::normalize($input);
+        $digits = Input::strictDigits($input);
+        $normalized = $digits ?? '';
         $details = ['normalized' => $normalized];
 
-        if (Input::strictDigits($input) === null) {
+        if ($digits === null) {
             return Result::invalid('invalid_format', $details);
         }
 

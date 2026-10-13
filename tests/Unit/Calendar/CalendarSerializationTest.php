@@ -65,13 +65,13 @@ final class CalendarSerializationTest extends TestCase
     {
         $jalali = Jalali::make(new DateTimeImmutable(self::INSTANT, new DateTimeZone('Asia/Tehran')));
         self::assertSame(
-            ['v' => 1, 'instant' => '2024-10-03T12:34:56.123456+03:30', 'timezone' => 'Asia/Tehran'],
+            ['v' => 1, 'instant' => '2024-10-03T12:34:56.123456+03:30', 'timezone' => 'Asia/Tehran', 'offset' => 12600],
             $jalali->__serialize(),
         );
 
         $hijri = Hijri::make(new DateTimeImmutable(self::INSTANT, new DateTimeZone('UTC')), null, HijriVariant::Tabular);
         self::assertSame(
-            ['v' => 1, 'instant' => '2024-10-03T12:34:56.123456+00:00', 'timezone' => 'UTC', 'variant' => 'tabular'],
+            ['v' => 1, 'instant' => '2024-10-03T12:34:56.123456+00:00', 'timezone' => 'UTC', 'offset' => 0, 'variant' => 'tabular'],
             $hijri->__serialize(),
         );
 
@@ -117,6 +117,15 @@ final class CalendarSerializationTest extends TestCase
         yield 'trailing text' => [['instant' => '2024-10-03T12:34:56.123456+00:00 x'] + $ok];
         yield 'unknown zone' => [['timezone' => 'Mars/Base'] + $ok];
         yield 'long zone' => [['timezone' => str_repeat('A', 500)] + $ok];
+        yield 'offset as text' => [['offset' => '0'] + $ok];
+        yield 'offset beyond a day' => [['offset' => 90_000] + $ok];
+        yield 'offset is a float' => [['offset' => 0.0] + $ok];
+        yield 'offset is an array' => [['offset' => [0]] + $ok];
+        yield 'offset is null-like false' => [['offset' => false] + $ok];
+        yield 'offset PHP_INT_MAX' => [['offset' => PHP_INT_MAX] + $ok];
+        yield 'offset PHP_INT_MIN' => [['offset' => PHP_INT_MIN] + $ok];
+        yield 'offset disagrees with the text' => [['offset' => 3600] + $ok];
+        yield 'offset one minute away' => [['offset' => 60] + $ok];
         yield 'zone with NUL' => [['timezone' => "UTC\0"] + $ok];
     }
 
@@ -208,5 +217,91 @@ final class CalendarSerializationTest extends TestCase
             self::assertTrue($date->eq($clone));
             self::assertSame((string) $date, (string) $clone);
         }
+    }
+
+    /** @return iterable<string, array{class-string<CalendarDate>, string, string}> */
+    public static function secondLevelOffsets(): iterable
+    {
+        foreach ([Jalali::class, Hijri::class, Hebrew::class] as $class) {
+            $name = (new \ReflectionClass($class))->getShortName();
+            yield "{$name} Tehran 1900" => [$class, '1900-01-01 00:00:00.654321', 'Asia/Tehran'];
+            yield "{$name} Amsterdam 1900" => [$class, '1900-06-01 12:00:00', 'Europe/Amsterdam'];
+            yield "{$name} New York 1800" => [$class, '1800-01-01 00:00:00.000001', 'America/New_York'];
+            yield "{$name} Kolkata 1900" => [$class, '1900-01-01 23:59:59.999999', 'Asia/Kolkata'];
+            yield "{$name} Tehran 2024" => [$class, '2024-07-01 12:00:00.5', 'Asia/Tehran'];
+        }
+    }
+
+    /** @param class-string<CalendarDate> $class */
+    #[DataProvider('secondLevelOffsets')]
+    public function test_historical_offsets_with_seconds_survive_the_round_trip(string $class, string $time, string $zone): void
+    {
+        $original = $class::make(new DateTimeImmutable($time, new DateTimeZone($zone)));
+        $copy = unserialize(serialize($original));
+
+        self::assertInstanceOf($class, $copy);
+        self::assertTrue($original->eq($copy));
+        self::assertSame($original->format('U u'), $copy->format('U u'));
+        self::assertSame($zone, $copy->getTimezone()->getName());
+        self::assertSame($original->format('Y-m-d H:i:s'), $copy->format('Y-m-d H:i:s'));
+    }
+
+    public function test_the_44_seconds_of_tehran_in_1900_are_kept(): void
+    {
+        $original = Jalali::make(new DateTimeImmutable('1900-01-01 00:00:00', new DateTimeZone('Asia/Tehran')));
+        $payload = $original->__serialize();
+
+        self::assertSame('1900-01-01T00:00:00.000000+03:25', $payload['instant']);
+        self::assertSame(12344, $payload['offset']);
+        self::assertSame(0, unserialize(serialize($original))->getTimestamp() - $original->getTimestamp());
+    }
+
+    public function test_zones_with_offsets_beyond_a_day_round_trip(): void
+    {
+        foreach (['+25:00', '-30:00', '+99:59', '-99:59', '+23:59'] as $zone) {
+            $original = Jalali::create(1403, 1, 1, 12, 0, 0, new DateTimeZone($zone));
+            $copy = unserialize(serialize($original));
+
+            self::assertInstanceOf(Jalali::class, $copy);
+            self::assertSame($original->format('U u P'), $copy->format('U u P'), $zone);
+        }
+    }
+
+    public function test_the_range_edges_round_trip_in_extreme_offsets(): void
+    {
+        $edges = [
+            [Jalali::class, '0001-03-22 00:00:00', '+14:00'],
+            [Hijri::class, '0622-07-19 12:00:00', '-12:00'],
+            [Hijri::class, '9999-12-31 23:59:59.999999', '-12:00'],
+            [Jalali::class, '9999-12-31 23:59:59.999999', '-11:00'],
+            [Hebrew::class, '0001-01-02 00:00:00', '+14:00'],
+        ];
+        foreach ($edges as [$class, $time, $zone]) {
+            try {
+                $original = $class::make(new DateTimeImmutable($time, new DateTimeZone($zone)));
+            } catch (InvalidDateException) {
+                continue;
+            }
+            $copy = unserialize(serialize($original));
+            self::assertSame($original->format('U u'), $copy->format('U u'), "{$class} {$time} {$zone}");
+        }
+    }
+
+    public function test_a_payload_without_the_offset_still_loads(): void
+    {
+        $copy = unserialize(self::payload(Jalali::class, ['v' => 1, 'instant' => '2024-03-20T03:30:00.000000+03:30', 'timezone' => 'Asia/Tehran']));
+
+        self::assertInstanceOf(Jalali::class, $copy);
+        self::assertSame(1_710_892_800, $copy->getTimestamp());
+        self::assertSame('1403/01/01 03:30:00', (string) $copy);
+    }
+
+    public function test_the_exact_offset_decides_the_instant(): void
+    {
+        $copy = unserialize(self::payload(Jalali::class, ['v' => 1, 'instant' => '1900-01-01T00:00:00.000000+03:25', 'timezone' => 'Asia/Tehran', 'offset' => 12344]));
+
+        self::assertInstanceOf(Jalali::class, $copy);
+        self::assertSame(12344, $copy->toGregorian()->getOffset());
+        self::assertSame('1900-01-01 00:00:00', $copy->toGregorian()->format('Y-m-d H:i:s'));
     }
 }

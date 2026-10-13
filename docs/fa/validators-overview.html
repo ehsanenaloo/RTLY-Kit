@@ -156,7 +156,7 @@ print_r(NationalCode::validate(<span class="tok-n">1.5</span>)-&gt;errors());   
 print_r(NationalCode::validate(str_repeat(<span class="tok-s">'1'</span>, <span class="tok-n">4097</span>))-&gt;errors()); <span class="tok-c">// [input_too_long]</span>
 print_r(NationalCode::validate(<span class="tok-s">"\xff\xfe"</span>)-&gt;errors());            <span class="tok-c">// [invalid_format]</span>
 var_dump(PostalCode::validate(<span class="tok-n">1593715416</span>)-&gt;isValid());            <span class="tok-c">// bool(true)</span></code></pre>
-<div class="callout note" role="note"><strong>صفر اول و عدد صحیح.</strong> اگر کد ملی یا کدپستی را عدد صحیح بدهید، صفرهای اولش از بین می‌رود. <code>499370899</code> با <code>0499370899</code> یکی نیست و اعتبارسنج فقط نه رقم می‌بیند. این شماره‌ها را از فرم یا ستون پایگاه داده تا اعتبارسنج به شکل رشته نگه دارید.</div>
+<div class="callout note" role="note"><strong>صفر اول و عدد صحیح.</strong> کد ملیِ عدد صحیح صفرهای اولش را از دست می‌دهد، پس <code>NationalCode</code> آن‌ها را برمی‌گرداند: <code>499370899</code> همان <code>0499370899</code> بررسی می‌شود. رشته هیچ‌وقت پر نمی‌شود. کد پستی و شمارهٔ کارت با صفر شروع نمی‌شوند. باز هم بهتر است شناسه‌ها را رشته نگه دارید.</div>
 
 <h2 id="normalization">یکسان‌سازی<a class="anchor" href="#normalization" aria-label="پیوند به این بخش">#</a></h2>
 <p>بعد از آن مرحله، هر اعتبارسنج رشته را با متد عمومی <code>normalize()</code> خودش یکسان می‌کند. قاعده‌های مشترک:</p>

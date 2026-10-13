@@ -113,10 +113,18 @@ final class ValidatorContractTest extends TestCase
         self::assertSame('0499370899', NationalCode::normalize('0499370899'));
     }
 
-    public function test_leading_zero_loss_in_integers_is_not_repaired(): void
+    public function test_a_national_code_given_as_a_number_gets_its_leading_zeros_back(): void
     {
-        // 499370899 has 9 digits: no silent zero-padding.
-        self::assertSame(['invalid_format'], NationalCode::validate(499370899)->errors());
+        // 499370899 is 0499370899 without its leading zero.
+        self::assertSame([], NationalCode::validate(499370899)->errors());
+        self::assertSame('0499370899', NationalCode::validate(499370899)->details()['normalized']);
+        self::assertSame([], NationalCode::validate(499370899.0)->errors());
+        self::assertTrue(NationalCode::isValid(13542419));
+        self::assertSame('0013542419', NationalCode::validate(13542419)->details()['normalized']);
+        // A string is never padded, and a number that is not a code stays invalid.
+        self::assertSame(['invalid_format'], NationalCode::validate('499370899')->errors());
+        self::assertFalse(NationalCode::isValid(123));
+        self::assertFalse(NationalCode::isValid(-13542419));
     }
 
     public function test_existing_string_behaviour_is_unchanged(): void

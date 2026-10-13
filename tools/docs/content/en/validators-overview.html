@@ -129,7 +129,7 @@ print_r(NationalCode::validate(1.5)-&gt;errors());                   // [invalid
 print_r(NationalCode::validate(str_repeat('1', 4097))-&gt;errors()); // [input_too_long]
 print_r(NationalCode::validate("\xff\xfe")-&gt;errors());            // [invalid_format]
 var_dump(PostalCode::validate(1593715416)-&gt;isValid());            // bool(true)</code></pre>
-<div class="note"><strong>Good to know.</strong> A national code or postal code passed as an integer loses its leading zeros. <code>499370899</code> is not <code>0499370899</code>, and the validator only sees nine digits. Keep identifiers as strings from the form or database column all the way to the validator.</div>
+<div class="note"><strong>Good to know.</strong> A national code passed as an integer loses its leading zeros, so <code>NationalCode</code> puts them back: <code>499370899</code> is checked as <code>0499370899</code>. A string is never padded. Postal codes and card numbers never start with zero. Keep identifiers as strings anyway.</div>
 
 <h2 id="normalization">Cleaning the input</h2>
 <p>After the gate, each validator cleans the string with its own public <code>normalize()</code> method. They share these rules:</p>

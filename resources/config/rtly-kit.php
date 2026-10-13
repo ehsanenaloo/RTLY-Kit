@@ -45,4 +45,19 @@ return [
         'use_official_data' => true,
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Validation rules
+    |--------------------------------------------------------------------------
+    |
+    | mobile_alias   The rule `mobile` is a short name for `iran_mobile`. Set this to false
+    |                when another package or your app defines its own `mobile` rule, so
+    |                RTLY-Kit leaves it alone. Must be true or false (a string such as
+    |                'false' from env() is read as a boolean).
+    |
+    */
+    'validation' => [
+        'mobile_alias' => true,
+    ],
+
 ];

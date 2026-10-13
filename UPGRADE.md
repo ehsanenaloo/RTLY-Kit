@@ -2,6 +2,19 @@
 
 Before 1.0.0, a minor release may contain breaking changes. Each one is listed here with the steps to migrate. See [API stability](https://ehsanenaloo.github.io/RTLY-Kit/en/api-stability.html) for the policy.
 
+## From 0.3.0 to 0.4.0
+
+Most changes are fixes. The items below can change the result of code that worked before. Each one says what changed and what to do.
+
+- **`NationalCode` and numbers.** A national code given as an `int` or a whole `float` with fewer than 10 digits is padded with zeros on the left. `NationalCode::validate(13542419)` now checks `0013542419` and is valid. Before, it returned `invalid_format`. A string is never padded.
+- **`Slugify::make()` text limit.** Text longer than 4096 bytes throws `RtlyKitException` with `input_too_long`. Cut long text before you call it.
+- **Date text limit.** `make()`, `createFromFormat()` and `JalaliCast` reject text longer than 256 bytes with `InvalidDateException` (`input_too_long`). A number of 15 digits or more, and relative text with a huge number such as `9223372036854775807 sec`, also throw. PHP used to wrap such numbers around and return a wrong date.
+- **`createFromFormat()` fractions.** The tokens `u` and `v` now read microseconds and milliseconds. Before, they threw.
+- **`isPast()` and `isFuture()`.** They compare the whole instant, microseconds included. A date inside the current second used to be neither past nor future.
+- **`serialize()`.** The payload has a new key `offset`. Older payloads still load. If you compare or store the raw serialized string, it is different now.
+- **`JalaliCast`.** It takes new optional arguments (`:UTC`, `:app`, precision). Without arguments the stored text is the same, and saving a model no longer rewrites a date column you did not change.
+- **Error messages.** The input shown in the error messages for dates, time zones, prayer methods and cities is cut to 40 or 48 characters.
+
 ## From 0.2.1 to 0.3.0
 
 The changes below can break code that worked before. Most of them turn a guessed or wrong result into an exception or an invalid `Result`. Each item gives the old behaviour, the new behaviour and what to do.

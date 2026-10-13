@@ -267,31 +267,6 @@ final class CalendarDateTraitTest extends TestCase
     }
 
     /**
-     * The present second is neither past nor future.
-     *
-     * @param class-string<CalendarDate> $class
-     */
-    #[DataProvider('calendars')]
-    public function test_the_current_second_is_neither_past_nor_future(string $class): void
-    {
-        for ($attempt = 0; $attempt < 20; $attempt++) {
-            $second = time();
-            $date = $class::make($second, $this->utc);
-            $past = $date->isPast();
-            $future = $date->isFuture();
-
-            if (time() === $second) { // the clock did not tick during the three calls above
-                self::assertFalse($past);
-                self::assertFalse($future);
-
-                return;
-            }
-        }
-
-        self::markTestSkipped('the clock ticked during every attempt');
-    }
-
-    /**
      * @param class-string<CalendarDate> $class
      */
     #[DataProvider('calendars')]
@@ -348,5 +323,26 @@ final class CalendarDateTraitTest extends TestCase
             self::assertSame('Format string too long (257 bytes, max 256).', $e->getMessage());
             self::assertSame(['argument' => 'format', 'limit' => 256], $e->getContext());
         }
+    }
+    /**
+     * Dates within the present second are ordered against now by their
+     * microseconds, not by whole seconds.
+     *
+     * @param class-string<CalendarDate> $class
+     */
+    #[DataProvider('calendars')]
+    public function test_is_past_and_is_future_use_sub_second_precision(string $class): void
+    {
+        $now = new DateTimeImmutable('now', $this->utc);
+        $startOfSecond = $now->setTime((int) $now->format('G'), (int) $now->format('i'), (int) $now->format('s'), 0);
+        usleep(2000);
+        $past = $class::make($startOfSecond);
+
+        self::assertTrue($past->isPast());
+        self::assertFalse($past->isFuture());
+
+        $soon = $class::make((new DateTimeImmutable('now', $this->utc))->modify('+700 milliseconds'));
+        self::assertTrue($soon->isFuture());
+        self::assertFalse($soon->isPast());
     }
 }

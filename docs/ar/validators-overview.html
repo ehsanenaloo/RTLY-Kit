@@ -156,7 +156,7 @@ print_r(NationalCode::validate(<span class="tok-n">1.5</span>)-&gt;errors());   
 print_r(NationalCode::validate(str_repeat(<span class="tok-s">'1'</span>, <span class="tok-n">4097</span>))-&gt;errors()); <span class="tok-c">// [input_too_long]</span>
 print_r(NationalCode::validate(<span class="tok-s">"\xff\xfe"</span>)-&gt;errors());            <span class="tok-c">// [invalid_format]</span>
 var_dump(PostalCode::validate(<span class="tok-n">1593715416</span>)-&gt;isValid());            <span class="tok-c">// bool(true)</span></code></pre>
-<div class="callout note" role="note"><strong>الأصفار البادئة.</strong> إذا مرّرت الرقم الوطني أو الرمز البريدي على أنه عدد صحيح فستضيع الأصفار البادئة: <code>499370899</code> ليس <code>0499370899</code>، وأداة التحقق لا ترى إلا تسعة أرقام. أبقِ هذه المعرّفات سلاسل نصية من النموذج أو من عمود قاعدة البيانات حتى تصل إلى أداة التحقق.</div>
+<div class="callout note" role="note"><strong>الأصفار البادئة.</strong> يفقد الرقم الوطني المُمرَّر عددًا صحيحًا أصفاره البادئة، لذلك يعيدها <code>NationalCode</code>: يُفحص <code>499370899</code> على أنه <code>0499370899</code>. أما النص فلا يُكمَّل أبدًا. ولا يبدأ الرمز البريدي ولا رقم البطاقة بصفر. ومع ذلك أبقِ المعرّفات نصوصًا.</div>
 
 <h2 id="normalization">التطبيع<a class="anchor" href="#normalization" aria-label="رابط إلى هذا القسم">#</a></h2>
 <p>بعد البوابة، تطبّع كل أداة تحقق السلسلة بدالتها العامة <code>normalize()</code>. وتشترك في هذه القواعد:</p>

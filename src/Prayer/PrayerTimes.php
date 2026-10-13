@@ -10,6 +10,7 @@ use RtlyKit\Calendar\Hijri;
 use RtlyKit\Exceptions\ErrorCode;
 use RtlyKit\Exceptions\InvalidDateException;
 use RtlyKit\Exceptions\InvalidPrayerConfigException;
+use RtlyKit\Text\Utf8;
 
 /**
  * Islamic prayer times calculator.
@@ -109,7 +110,7 @@ final class PrayerTimes
     ) {
         if (! isset(self::$methods[$method])) {
             throw new InvalidPrayerConfigException(
-                "Unknown calculation method: {$method}. Available: ".implode(', ', array_keys(self::$methods)),
+                'Unknown calculation method: '.Utf8::excerpt($method).'. Available: '.implode(', ', array_keys(self::$methods)),
             );
         }
 
@@ -180,7 +181,7 @@ final class PrayerTimes
 
         $key = strtolower(trim($city));
         if (! isset($cities[$key])) {
-            throw new InvalidPrayerConfigException("Unknown city: {$city}");
+            throw new InvalidPrayerConfigException('Unknown city: '.Utf8::excerpt($city));
         }
 
         [$lat, $lng, $tz] = $cities[$key];
@@ -253,7 +254,7 @@ final class PrayerTimes
             if (! in_array($name, self::NAMES, true)) {
                 throw InvalidPrayerConfigException::because(
                     ErrorCode::InvalidPrayerConfig,
-                    "Unknown tune key: {$name}. Available: ".implode(', ', self::NAMES),
+                    'Unknown tune key: '.Utf8::excerpt((string) $name).'. Available: '.implode(', ', self::NAMES),
                     ['key' => (string) $name],
                 );
             }

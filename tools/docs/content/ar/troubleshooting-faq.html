@@ -97,11 +97,11 @@ $post-&gt;published_at = ['x'];                // throws InvalidDateException (i
 
 <h2 id="validation-faq">أدوات التحقق والبيانات</h2>
 
-<h3 id="leading-zero">is_national_code(13542419) تعطي false، لكن النسخة النصية تعطي true</h3>
-<p>فقد <code>int</code> أصفاره البادئة أصلًا: صار <code>0013542419</code> هو <code>13542419</code>، أي ثمانية أرقام. تحوّل أدوات التحقق الأعداد الصحيحة إلى نصوص لكنها لا تستعيد الأصفار. أبقِ المعرّفات نصوصًا في كل مكان (حقول النماذج وJSON وأعمدة قواعد البيانات):</p>
+<h3 id="leading-zero">هل يعمل الرقم الوطني إذا كان عددًا صحيحًا؟</h3>
+<p>نعم. فقد <code>int</code> أصفاره البادئة (صار <code>0013542419</code> هو <code>13542419</code>)، لذلك يكمّل <code>NationalCode</code> العدد الذي له أقل من 10 أرقام بأصفار من اليسار. أما النص فلا يُكمَّل أبدًا. ومع ذلك أبقِ المعرّفات نصوصًا في كل مكان (حقول النماذج وJSON وأعمدة قواعد البيانات) لأن شيفرة أخرى بين الإدخال وأداة التحقق قد تغيّرها:</p>
 <pre><code class="language-php">use function RtlyKit\is_national_code;
 
-var_dump(is_national_code(13542419));       // bool(false)
+var_dump(is_national_code(13542419));       // bool(true) 
 var_dump(is_national_code('0013542419'));   // bool(true)</code></pre>
 
 <h3 id="null-bank">getBankName() تُرجع null لبطاقة أو شبا صالحة</h3>

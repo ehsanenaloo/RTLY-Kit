@@ -41,7 +41,8 @@ final class NationalCode implements Validator
      * Validate with structured errors. Error codes: invalid_format,
      * repeated_digits, invalid_checksum, invalid_type, input_too_long.
      * Details: normalized, location.
-     * Accepts strings, ints and integral floats; any other type or a string over 4096 bytes yields
+     * Accepts strings, ints and integral floats (a number of fewer than 10 digits is padded with leading
+     * zeros, because a code such as 0013542419 loses them as a number; a string is never padded); any other type or a string over 4096 bytes yields
      * `invalid_type` / `input_too_long`.
      */
     public static function validate(mixed $value): Result
@@ -51,6 +52,11 @@ final class NationalCode implements Validator
 
         if ($input instanceof Result) {
             return $input;
+        }
+
+        // A number has lost the leading zeros of a code such as 0013542419: put them back. A string is never padded.
+        if (! is_string($value) && preg_match('/^\d{1,9}$/D', $input) === 1) {
+            $input = str_pad($input, 10, '0', STR_PAD_LEFT);
         }
 
         $code = self::normalize($input);

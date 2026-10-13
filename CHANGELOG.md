@@ -7,6 +7,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-10-12
+
+Some changes below can change the result of existing code. They are marked `Breaking:`. For the steps to migrate, see [UPGRADE.md](UPGRADE.md).
+
+### Added
+
+- `JalaliCast` takes optional arguments: a storage time zone and the number of fraction digits, for example `JalaliCast::class.':UTC,6'`. The zone can be a name, an offset, or `app` for the application's default time zone. The cast then stores the moment in that zone, keeps the microseconds, and reads the value back as the same moment. Without arguments nothing changes.
+- The Laravel config `rtly-kit.validation.mobile_alias` (default `true`). Set it to `false` to keep a `mobile` validation rule that another package or your app defines.
+
+### Changed
+
+- Breaking: `NationalCode` pads a number (int or whole float) of fewer than 10 digits with zeros on the left, so `13542419` is checked as `0013542419`. A string is never padded.
+- `createFromFormat()` on `Jalali`, `Hijri` and `Hebrew` reads the fraction tokens `u` (microseconds) and `v` (milliseconds). Before, they threw.
+- Breaking: `Slugify::make()` rejects text longer than 4096 bytes with `input_too_long`. Cut long text before you pass it.
+- `make()`, `createFromFormat()` and `JalaliCast` reject date text longer than 256 bytes and `createFromFormat()` patterns longer than 256 bytes with `InvalidDateException` (`input_too_long`). Parse errors repeat at most 48 characters of the input.
+
+### Fixed
+
+- `serialize()` of `Jalali`, `Hijri` and `Hebrew` keeps the exact UTC offset. Before, dates in old years with offsets that have seconds (for example `Asia/Tehran` in 1900) came back a few seconds off. Payloads written by earlier versions still load.
+- `isPast()` and `isFuture()` compare microseconds, like the other comparison methods. Before, a date inside the current second was neither past nor future.
+- `JalaliCast` no longer rewrites a column when you save a model and did not change the date. Before, a stored value such as `12:00:00.123456` lost its fraction on any save.
+- `make()` throws `InvalidDateException` for relative text with a huge number, such as `9223372036854775807 sec`. PHP wrapped it around and returned a plausible date.
+- `Hebrew::createFromFormat()` reads years of 5 digits (10000 to 13759), so the output of `format()` can be read back.
+- Error messages for dates, time zones, prayer methods and cities show at most 48 or 40 characters of the input, as valid UTF-8 without control characters.
+- Lower-casing in `Slugify` and `Normalizer` is much faster for Persian and Arabic text.
+
 ## [0.3.0] - 2026-10-10
 
 Some changes below can break existing code. They are marked `Breaking:`. For the steps to migrate, see [UPGRADE.md](UPGRADE.md).
@@ -134,7 +160,8 @@ First release.
 
 - Input size limits: `Format::withSeparator()` rejects strings over 4096 bytes and numbers over 1000 characters, and `NumberToWords::convert()` and `fromWords()` reject strings over 4096 bytes. They throw `InvalidNumberException`.
 
-[Unreleased]: https://github.com/ehsanenaloo/RTLY-Kit/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/ehsanenaloo/RTLY-Kit/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/ehsanenaloo/RTLY-Kit/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/ehsanenaloo/RTLY-Kit/compare/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/ehsanenaloo/RTLY-Kit/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/ehsanenaloo/RTLY-Kit/compare/v0.1.1...v0.2.0

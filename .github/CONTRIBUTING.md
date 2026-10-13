@@ -30,6 +30,12 @@ docker compose -f tools/docker-compose.yml run --rm php vendor/bin/phpunit tests
 docker compose -f tools/docker-compose.yml run --rm php php -r 'require "vendor/autoload.php"; echo RtlyKit\Calendar\Jalali::make("2026-03-21")->format("Y/m/d");'
 ```
 
+The `JalaliCast` database tests always run on SQLite. To run them on MySQL and PostgreSQL too, start the throw-away databases with the `db` profile:
+
+```bash
+docker compose -f tools/docker-compose.yml --profile db run --rm php-db vendor/bin/phpunit -c tools/phpunit.xml.dist tests/Integration/Laravel/Casts/JalaliCastDatabaseTest.php
+```
+
 If you have PHP 8.2+ and Composer locally, the same `composer` scripts work without Docker.
 
 ## Code style

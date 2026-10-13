@@ -129,7 +129,7 @@ print_r(NationalCode::validate(1.5)-&gt;errors());                   // [invalid
 print_r(NationalCode::validate(str_repeat('1', 4097))-&gt;errors()); // [input_too_long]
 print_r(NationalCode::validate("\xff\xfe")-&gt;errors());            // [invalid_format]
 var_dump(PostalCode::validate(1593715416)-&gt;isValid());            // bool(true)</code></pre>
-<div class="note"><strong>صفر اول و عدد صحیح.</strong> اگر کد ملی یا کدپستی را عدد صحیح بدهید، صفرهای اولش از بین می‌رود. <code>499370899</code> با <code>0499370899</code> یکی نیست و اعتبارسنج فقط نه رقم می‌بیند. این شماره‌ها را از فرم یا ستون پایگاه داده تا اعتبارسنج به شکل رشته نگه دارید.</div>
+<div class="note"><strong>صفر اول و عدد صحیح.</strong> کد ملیِ عدد صحیح صفرهای اولش را از دست می‌دهد، پس <code>NationalCode</code> آن‌ها را برمی‌گرداند: <code>499370899</code> همان <code>0499370899</code> بررسی می‌شود. رشته هیچ‌وقت پر نمی‌شود. کد پستی و شمارهٔ کارت با صفر شروع نمی‌شوند. باز هم بهتر است شناسه‌ها را رشته نگه دارید.</div>
 
 <h2 id="normalization">یکسان‌سازی</h2>
 <p>بعد از آن مرحله، هر اعتبارسنج رشته را با متد عمومی <code>normalize()</code> خودش یکسان می‌کند. قاعده‌های مشترک:</p>

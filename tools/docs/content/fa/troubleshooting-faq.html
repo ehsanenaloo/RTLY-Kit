@@ -97,11 +97,11 @@ $post-&gt;published_at = ['x'];                // InvalidDateException (invalid_
 
 <h2 id="validation-faq">اعتبارسنج‌ها و داده</h2>
 
-<h3 id="leading-zero">is_national_code(13542419) برابر false است ولی با رشته true می‌شود</h3>
-<p>یک <code>int</code> صفرهای اولش را از قبل از دست داده: <code>0013542419</code> شده <code>13542419</code>، هشت رقم. اعتبارسنج‌ها عدد صحیح را به رشته تبدیل می‌کنند ولی صفرها را نمی‌توانند برگردانند. شناسه‌ها را همه‌جا (فیلد فرم، JSON، ستون پایگاه داده) رشته نگه دارید:</p>
+<h3 id="leading-zero">آیا کد ملی به‌شکل عدد صحیح کار می‌کند؟</h3>
+<p>بله. <code>int</code> صفرهای اولش را از دست داده (<code>0013542419</code> شده <code>13542419</code>)، پس <code>NationalCode</code> عددِ کمتر از ۱۰ رقم را از چپ با صفر پر می‌کند. رشته هیچ‌وقت پر نمی‌شود. باز هم شناسه‌ها را همه‌جا (فیلد فرم، JSON، ستون پایگاه داده) رشته نگه دارید، چون کد میان ورودی و اعتبارسنج ممکن است آن را عوض کند:</p>
 <pre><code class="language-php">use function RtlyKit\is_national_code;
 
-var_dump(is_national_code(13542419));       // bool(false)
+var_dump(is_national_code(13542419));       // bool(true) 
 var_dump(is_national_code('0013542419'));   // bool(true)</code></pre>
 
 <h3 id="null-bank">برای کارت یا شبای معتبر، getBankName() مقدار null می‌دهد</h3>

@@ -399,7 +399,14 @@ final class PublicApiFuzzTest extends TestCase
         foreach (self::strings() as $s) {
             self::assertContains(Detector::direction($s), ['rtl', 'ltr']);
             self::assertIsString(Normalizer::clean($s));
-            if (preg_match('//u', $s) === 1) {
+            if (strlen($s) > Slugify::MAX_TEXT_BYTES) {
+                try {
+                    Slugify::make($s);
+                    self::fail('text over the cap must be rejected');
+                } catch (RtlyKitException $e) {
+                    self::assertSame(ErrorCode::InputTooLong, $e->getErrorCode());
+                }
+            } elseif (preg_match('//u', $s) === 1) {
                 self::assertIsString(Slugify::make($s));
             } else {
                 $this->expectInvalidSlugText($s);

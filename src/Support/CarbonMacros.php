@@ -9,6 +9,7 @@ use RtlyKit\Calendar\Hijri;
 use RtlyKit\Calendar\HijriVariant;
 use RtlyKit\Calendar\Jalali;
 use RtlyKit\Exceptions\InvalidDateException;
+use RtlyKit\Text\Utf8;
 
 /**
  * Registers Carbon macros when nesbot/carbon is available.
@@ -36,13 +37,13 @@ final class CarbonMacros
 
         // DateTimeZone rejects a NUL byte with a ValueError, not an Exception.
         if (str_contains($tz, "\0")) {
-            throw new InvalidDateException('Unknown timezone: '.str_replace("\0", '', $tz));
+            throw new InvalidDateException('Unknown timezone: '.Utf8::excerpt(str_replace("\0", '', $tz)));
         }
 
         try {
             return new \DateTimeZone($tz);
         } catch (\Exception $e) {
-            throw new InvalidDateException("Unknown timezone: {$tz}", previous: $e);
+            throw new InvalidDateException('Unknown timezone: '.Utf8::excerpt($tz), previous: $e);
         }
     }
 

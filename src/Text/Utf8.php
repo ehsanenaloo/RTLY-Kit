@@ -225,8 +225,10 @@ final class Utf8
             return $text;
         }
 
+        // Hebrew, Arabic, Syriac, Thaana and the Arabic presentation forms have no case: skip them
+        // without a callback, which keeps Persian text fast.
         return preg_replace_callback(
-            '/[^\x00-\x7F]/u',
+            '/[^\x00-\x7F\x{0590}-\x{08FF}\x{FB1D}-\x{FDFF}\x{FE70}-\x{FEFF}]/u',
             static fn (array $m): string => self::lowerChar($m[0]),
             $text,
         ) ?? $text;
@@ -253,6 +255,18 @@ final class Utf8
         $text = self::scrub($text);
 
         return preg_match('/^.{0,'.max(0, $chars).'}/su', $text, $m) === 1 ? $m[0] : '';
+    }
+
+    /**
+     * A value as it may appear in an error message or a log line: at most $chars characters, invalid bytes
+     * as U+FFFD, control characters and line or paragraph separators as "?", and "..." when text was cut.
+     */
+    public static function excerpt(string $text, int $chars = 40): string
+    {
+        $cut = self::truncate($text, $chars);
+        $safe = preg_replace('/[\p{Cc}\x{2028}\x{2029}]/u', '?', $cut) ?? '';
+
+        return $cut === self::scrub($text) ? $safe : $safe.'...';
     }
 
     private static function lowerChar(string $char): string
