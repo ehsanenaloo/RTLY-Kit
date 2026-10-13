@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.4.0] - 2026-10-12
+## [0.4.0] - 2026-10-13
 
 Some changes below can change the result of existing code. They are marked `Breaking:`. For the steps to migrate, see [UPGRADE.md](UPGRADE.md).
 

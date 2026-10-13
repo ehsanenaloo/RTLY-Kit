@@ -25,7 +25,7 @@ final class MobileAliasConfigTest extends TestCase
     }
 
     /** @param array<string, mixed> $config */
-    private function boot(array $config): Factory
+    private function boot(array $config, bool $dropDefaults = false): Factory
     {
         $app = new class () extends Container {
             public function getNamespace(): string
@@ -46,6 +46,10 @@ final class MobileAliasConfigTest extends TestCase
 
         $provider = new RtlyKitServiceProvider($app);
         $provider->register();
+        if ($dropDefaults) {
+            // Without the defaults that register() merged in, the option is missing and the built-in default applies.
+            $app->instance('config', new Repository([]));
+        }
         $provider->boot();
 
         return $factory;
@@ -73,6 +77,34 @@ final class MobileAliasConfigTest extends TestCase
         foreach (['false' => false, '0' => false, 'off' => false, 'true' => true, '1' => true] as $text => $enabled) {
             $factory = $this->boot(['rtly-kit' => ['validation' => ['mobile_alias' => (string) $text]]]);
             self::assertSame($enabled, ! $factory->make(['m' => 'other'], ['m' => 'mobile'])->passes(), (string) $text);
+        }
+    }
+
+    public function test_a_missing_option_means_the_alias_is_on(): void
+    {
+        $factory = $this->boot([], true);
+
+        self::assertTrue($factory->make(['m' => '09121234567'], ['m' => 'mobile'])->passes());
+    }
+
+    public function test_integers_are_read_as_booleans_and_other_types_are_rejected(): void
+    {
+        $on = $this->boot(['rtly-kit' => ['validation' => ['mobile_alias' => 1]]]);
+        self::assertTrue($on->make(['m' => '09121234567'], ['m' => 'mobile'])->passes());
+
+        $off = $this->boot(['rtly-kit' => ['validation' => ['mobile_alias' => 0]]]);
+        self::assertTrue($off->make(['m' => 'other'], ['m' => 'mobile'])->passes());
+
+        foreach ([1.0, [true], null] as $bad) {
+            if ($bad === null) {
+                continue;
+            }
+            try {
+                $this->boot(['rtly-kit' => ['validation' => ['mobile_alias' => $bad]]]);
+                self::fail('Expected an InvalidDateException for '.get_debug_type($bad));
+            } catch (InvalidDateException $e) {
+                self::assertSame(['option' => 'rtly-kit.validation.mobile_alias'], $e->getContext());
+            }
         }
     }
 
