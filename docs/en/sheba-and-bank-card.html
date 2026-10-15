@@ -30,7 +30,7 @@
 <div class="shell doc-layout has-toc">
 <aside class="sidebar"><details open><summary>Browse the guides</summary><nav aria-label="Guides"><a href="all.html">All guides</a><p>Getting started</p><a href="quick-start.html">Quick start</a><a href="installation.html">Installation</a><p>Calendars</p><a href="jalali.html">Jalali calendar</a><a href="hijri.html">Hijri calendar</a><a href="hebrew.html">Hebrew calendar</a><a href="convert-and-compare.html">Convert and compare dates</a><a href="carbon-macros.html">Carbon macros</a><p>Validation</p><a href="validators-overview.html">Validators overview</a><a href="national-code.html">National code</a><a href="sheba-and-bank-card.html" aria-current="page">Sheba and bank card</a><a href="mobile-postal-plate.html">Mobile, postal code and plate</a><p>Numbers and text</p><a href="digits-and-format.html">Digits and number formatting</a><a href="number-words.html">Number to words</a><a href="arabic-number-words.html">Arabic number words</a><a href="text-tools.html">Text tools</a><p>Holidays and prayer times</p><a href="holidays.html">Iranian holidays</a><a href="holiday-calendar.html">Holiday calendar</a><a href="prayer-times.html">Prayer times</a><p>Laravel</p><a href="laravel-setup.html">Laravel setup</a><a href="laravel-validation-and-cast.html">Validation rules and Eloquent cast</a><p>Reference</p><a href="helpers-and-globals.html">Helpers and globals</a><a href="error-handling.html">Error handling</a><a href="api-stability.html">API stability</a><a href="accuracy-and-data.html">Accuracy and data</a><a href="benchmarks.html">Benchmarks</a><a href="limits.html">Limits</a><a href="troubleshooting-faq.html">Troubleshooting and FAQ</a><a href="upgrade.html">Upgrade guide</a><a href="verifying-releases.html">Verifying releases</a></nav></details></aside>
 <article class="prose">
-<details class="toc-inline"><summary>On this page</summary><ol><li><a href="#quick-start">Quick start</a></li><li><a href="#sheba">Sheba (IBAN)</a><ol><li><a href="#sheba-format">Format</a></li><li><a href="#sheba-normalization">Cleaning the input</a></li><li><a href="#sheba-checks">What is checked</a></li></ol></li><li><a href="#bank-card">Bank card number</a><ol><li><a href="#card-format">Format and checks</a></li></ol></li><li><a href="#data">Bank lookup data</a></li><li><a href="#notes">Practical notes</a></li></ol></details>
+<details class="toc-inline"><summary>On this page</summary><ol><li><a href="#quick-start">Quick start</a></li><li><a href="#sheba">Sheba (IBAN)</a><ol><li><a href="#sheba-format">Format</a></li><li><a href="#sheba-normalization">Cleaning the input</a></li><li><a href="#sheba-checks">What is checked</a></li></ol></li><li><a href="#bank-card">Bank card number</a><ol><li><a href="#card-format">Format and checks</a></li></ol></li><li><a href="#data">Bank lookup data</a><ol><li><a href="#own-table">Your own table</a></li></ol></li><li><a href="#notes">Practical notes</a></li></ol></details>
 <h2 id="quick-start">Quick start<a class="anchor" href="#quick-start" aria-label="Link to this section">#</a></h2>
 <pre tabindex="0"><code class="language-php"><span class="tok-k">&lt;?php
 require</span> <span class="tok-s">'vendor/autoload.php'</span>;
@@ -126,6 +126,23 @@ var_dump(BankCard::getBankName(<span class="tok-s">'6037991234567893'</span>)); 
 <div class="callout note" role="note"><strong>Good to know.</strong> The tables are small. Many valid cards come from a bank that is not listed, and then <code>bank_name</code> is <code>null</code>. No official BIN registry was reachable, and the Central Bank list is dated 2017, so newer codes rely on public pages. Banks merge, rename and reassign ranges, so show the name as a hint and do not use it for legal or financial decisions. Details are in <a href="accuracy-and-data.html">Accuracy and data</a>.</div>
 <p>Validity never depends on these tables. A number with a valid checksum is valid whether or not its bank is known.</p>
 
+<h3 id="own-table">Your own table<a class="anchor" href="#own-table" aria-label="Link to this section">#</a></h3>
+<p>You can change the lookup tables without touching the package. <code>ReferenceTable</code> is an immutable table: it starts from the bundled data, and each change returns a new table.</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">use</span> RtlyKit\Validation\BankCard;
+<span class="tok-k">use</span> RtlyKit\Validation\ReferenceTable;
+<span class="tok-k">use</span> RtlyKit\Validation\Sheba;
+<span class="tok-k">use</span> RtlyKit\Validation\TableKind;
+
+<span class="tok-v">$bins</span> = ReferenceTable::bankBins()-&gt;with(<span class="tok-n">400000</span>, <span class="tok-s">'Example Bank'</span>)-&gt;without(<span class="tok-n">603799</span>);
+BankCard::getBankName(<span class="tok-v">$card</span>, <span class="tok-v">$bins</span>);
+BankCard::validate(<span class="tok-v">$card</span>, <span class="tok-v">$bins</span>)-&gt;details()[<span class="tok-s">'bank_name'</span>];
+
+<span class="tok-v">$banks</span> = ReferenceTable::shebaBanks()-&gt;with(<span class="tok-s">'017'</span>, <span class="tok-s">'Other name'</span>);
+Sheba::getBankName(<span class="tok-v">$sheba</span>, <span class="tok-v">$banks</span>);
+
+<span class="tok-v">$mine</span> = ReferenceTable::from(TableKind::BankBin, [<span class="tok-n">400000</span> =&gt; <span class="tok-s">'Example Bank'</span>]);   <span class="tok-c">// only your entries</span></code></pre>
+<p>A BIN is 6 digits and a Sheba bank code is 3 digits (<code>'017'</code>, or the int 17); Persian digits work. A name is 1 to 100 characters of text. <code>without()</code> throws when the key is not in the table, so a typo does not pass silently; <code>get()</code> and <code>has()</code> never throw. The bundled tables and other tables are never changed. Validity never depends on the table, because the Luhn and mod-97 checks do not use it. An entry you add is your responsibility.</p>
+
 <h2 id="notes">Practical notes<a class="anchor" href="#notes" aria-label="Link to this section">#</a></h2>
 <ul>
 <li>The checksum catches typos. It cannot tell you that a card exists or that an account belongs to someone.</li>
@@ -136,7 +153,7 @@ var_dump(BankCard::getBankName(<span class="tok-s">'6037991234567893'</span>)); 
 <p>The size cap and type rules are the same as for every validator. See <a href="validators-overview.html#input-handling">Input handling</a>.</p>
 <nav class="reading-footer" aria-label="Previous and next page"><a class="prev" rel="prev" href="national-code.html"><small>Previous</small>National code</a><a class="next" rel="next" href="mobile-postal-plate.html"><small>Next</small>Mobile, postal code and plate</a></nav>
 </article>
-<nav class="toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#quick-start">Quick start</a></li><li><a href="#sheba">Sheba (IBAN)</a><ol><li><a href="#sheba-format">Format</a></li><li><a href="#sheba-normalization">Cleaning the input</a></li><li><a href="#sheba-checks">What is checked</a></li></ol></li><li><a href="#bank-card">Bank card number</a><ol><li><a href="#card-format">Format and checks</a></li></ol></li><li><a href="#data">Bank lookup data</a></li><li><a href="#notes">Practical notes</a></li></ol></nav>
+<nav class="toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#quick-start">Quick start</a></li><li><a href="#sheba">Sheba (IBAN)</a><ol><li><a href="#sheba-format">Format</a></li><li><a href="#sheba-normalization">Cleaning the input</a></li><li><a href="#sheba-checks">What is checked</a></li></ol></li><li><a href="#bank-card">Bank card number</a><ol><li><a href="#card-format">Format and checks</a></li></ol></li><li><a href="#data">Bank lookup data</a><ol><li><a href="#own-table">Your own table</a></li></ol></li><li><a href="#notes">Practical notes</a></li></ol></nav>
 </div>
 </main>
 <footer class="footer"><div class="shell footer-inner"><p>RTLY-Kit user guide · MIT licensed</p><div><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">Repository on GitHub &#8599;</a><a href="https://github.com/ehsanenaloo/RTLY-Kit/issues" rel="noopener noreferrer">Report an issue &#8599;</a></div></div></footer>

@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace RtlyKit\Validation;
 
 use RtlyKit\Contracts\Validator;
+use RtlyKit\Exceptions\ErrorCode;
+use RtlyKit\Exceptions\RtlyKitException;
 use RtlyKit\Number\Digits;
 
 /**
@@ -13,15 +15,14 @@ use RtlyKit\Number\Digits;
  */
 final class Sheba implements Validator
 {
-    /**
-     * Bank identifier to bank name, loaded lazily from resources/data/sheba-banks.php.
-     *
-     * @return array<string, string>
-     */
-    private static function banks(): array
+    private static function table(?ReferenceTable $table): ReferenceTable
     {
-        /** @var array<string, string> $table */
-        $table = DataTables::load('sheba-banks');
+        if ($table === null) {
+            return ReferenceTable::shebaBanks();
+        }
+        if ($table->kind !== TableKind::ShebaBank) {
+            throw RtlyKitException::because(ErrorCode::InvalidArgument, 'Sheba needs a table of Sheba bank codes (ReferenceTable::shebaBanks())', ['table' => $table->kind->value]);
+        }
 
         return $table;
     }
@@ -37,9 +38,14 @@ final class Sheba implements Validator
      * Details: normalized, bank_code, bank_name (null when the code is unknown).
      * Accepts strings, ints and integral floats; any other type or a string over 4096 bytes yields
      * `invalid_type` / `input_too_long`.
+     *
+     * $banks replaces the bundled bank-code table for the bank name only; validity never depends on it.
+     *
+     * @throws RtlyKitException when $banks is not a table of Sheba bank codes (a programming error, not bad input)
      */
-    public static function validate(mixed $value): Result
+    public static function validate(mixed $value, ?ReferenceTable $banks = null): Result
     {
+        $banks = self::table($banks);
         $details = ['normalized' => '', 'bank_code' => null, 'bank_name' => null];
         $input = Input::coerce($value, $details);
 
@@ -56,7 +62,8 @@ final class Sheba implements Validator
 
         $bankCode = substr($sheba, 4, 3);
         $details['bank_code'] = $bankCode;
-        $details['bank_name'] = self::banks()[$bankCode] ?? null;
+        $name = $banks->get($bankCode);
+        $details['bank_name'] = is_string($name) ? $name : null;
 
         // ISO 13616 / ISO 7064 mod 97-10 only produces check digits 02..98.
         $check = (int) substr($sheba, 2, 2);
@@ -74,9 +81,9 @@ final class Sheba implements Validator
         return Result::valid($details);
     }
 
-    public static function getBankName(mixed $value): ?string
+    public static function getBankName(mixed $value, ?ReferenceTable $banks = null): ?string
     {
-        $result = self::validate($value);
+        $result = self::validate($value, $banks);
         $name = $result->details()['bank_name'] ?? null;
 
         return $result->isValid() && is_string($name) ? $name : null;

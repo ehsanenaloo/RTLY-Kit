@@ -54,9 +54,10 @@ use Stringable;
  * `createFromFormat()` (Jalali, Hijri and Hebrew; the signatures differ by the
  * optional trailing Hijri variant, so it is not part of this interface) reads
  * Y/m/d H:i:s style tokens as values of that calendar. Tokens with a Gregorian
- * or time-zone meaning (`z e T P O p u v y F M D l S`, and `U` mixed with
- * others) throw {@see InvalidDateException}; the format `U` alone reads a Unix
- * timestamp.
+ * or time-zone meaning (`z e T P O p y F M D l S`, and `U` mixed with
+ * others) throw {@see InvalidDateException}; `u` and `v` read microseconds and
+ * milliseconds; the format `U` alone reads a Unix timestamp. The text and the
+ * pattern may each be at most 256 bytes.
  *
  * `make()` and the calendar `create*()` methods reject an impossible Gregorian
  * day in text (`2024-02-30`) with {@see InvalidDateException}; PHP itself would

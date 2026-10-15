@@ -99,6 +99,23 @@ var_dump(BankCard::getBankName('6037991234567893'));   // string(26) "بانک �
 <div class="note"><strong>من المفيد أن تعرف.</strong> الجداول صغيرة، فكثير من البطاقات الصالحة صادر عن مصرف غير مدرج، ويكون <code>bank_name</code> عندئذ <code>null</code>. ولم نصل إلى سجل رسمي لرموز BIN، وقائمة البنك المركزي مؤرخة بسنة 2017، لذلك تعتمد الرموز الأحدث على صفحات عامة. المصارف تندمج وتغيّر أسماءها وتعيد تخصيص النطاقات، فاعرض الاسم على أنه تلميح، ولا تستخدمه في قرار قانوني أو مالي. التفاصيل في <a href="accuracy-and-data.html">الدقة والبيانات</a>.</div>
 <p>لا تعتمد الصلاحية على هذه الجداول أبدًا. فالرقم صحيح المجموع الاختباري صالح سواء عُرف مصرفه أم لم يُعرف.</p>
 
+<h3 id="own-table">جدولك الخاص</h3>
+<p>يمكنك تغيير جداول البحث من دون المساس بالحزمة. <code>ReferenceTable</code> جدول غير قابل للتغيير: يبدأ من البيانات المرفقة، وكل تغيير يُرجع جدولًا جديدًا.</p>
+<pre><code class="language-php">use RtlyKit\Validation\BankCard;
+use RtlyKit\Validation\ReferenceTable;
+use RtlyKit\Validation\Sheba;
+use RtlyKit\Validation\TableKind;
+
+$bins = ReferenceTable::bankBins()-&gt;with(400000, 'Example Bank')-&gt;without(603799);
+BankCard::getBankName($card, $bins);
+BankCard::validate($card, $bins)-&gt;details()['bank_name'];
+
+$banks = ReferenceTable::shebaBanks()-&gt;with('017', 'Other name');
+Sheba::getBankName($sheba, $banks);
+
+$mine = ReferenceTable::from(TableKind::BankBin, [400000 =&gt; 'Example Bank']);   // only your entries</code></pre>
+<p>رمز BIN من 6 أرقام ورمز بنك شبا من 3 أرقام (<code>'017'</code> أو العدد الصحيح 17)؛ والأرقام الفارسية تعمل. والاسم نص من 1 إلى 100 حرف. تُطلق <code>without()</code> خطأ إذا لم يكن المفتاح في الجدول، فلا يمر الخطأ الإملائي بصمت؛ أما <code>get()</code> و<code>has()</code> فلا تُطلقان خطأ أبدًا. ولا تتغير الجداول المرفقة ولا الجداول الأخرى. والصلاحية لا تعتمد على الجدول لأن فحصي Luhn وmod-97 لا يستخدمانه. وما تضيفه من مدخلات مسؤوليتك.</p>
+
 <h2 id="notes">ملاحظات عملية</h2>
 <ul>
 <li>يكشف المجموع الاختباري الأخطاء المطبعية لا الأرقام المزيفة. ولا يستطيع أن يخبرك بأن بطاقة موجودة أو بأن حسابًا يخص شخصًا ما.</li>

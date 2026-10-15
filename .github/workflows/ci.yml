@@ -153,6 +153,56 @@ jobs:
         env:
           RTLY_EXPECT_NO_MBSTRING: '1'
 
+  # JalaliCast against real MySQL and PostgreSQL servers (fresh reload, fractional seconds, UTC
+  # instants, unchanged-column saves, session time zone). RTLY_TEST_REQUIRE_DB turns a missing
+  # server or driver into a failure, and --fail-on-skipped makes sure no case was skipped; a
+  # developer run without servers still skips those cases.
+  test-database:
+    name: Database tests (MySQL 8.4, PostgreSQL 16)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+          MYSQL_DATABASE: rtly
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 --silent"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=30
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_HOST_AUTH_METHOD: trust
+          POSTGRES_DB: rtly
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres -d rtly"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, pdo_sqlite, pdo_mysql, pdo_pgsql
+          coverage: none
+          tools: composer:v2
+      - run: composer install --no-interaction --prefer-dist --no-progress
+      - run: vendor/bin/phpunit -c tools/phpunit.xml.dist --fail-on-skipped tests/Integration/Laravel/Casts/JalaliCastDatabaseTest.php
+        env:
+          RTLY_TEST_REQUIRE_DB: '1'
+          RTLY_TEST_MYSQL_HOST: 127.0.0.1
+          RTLY_TEST_PGSQL_HOST: 127.0.0.1
+
   # Mutation testing: slow, so it runs on pushes to main, not on pull requests. The `ci` job below
   # waits for it, so a push to main is green only when mutation testing passed.
   mutation:
@@ -180,7 +230,7 @@ jobs:
   ci:
     name: CI result
     if: ${{ always() }}
-    needs: [test, test-os, test-lowest, test-laravel, test-minimal, mutation]
+    needs: [test, test-os, test-lowest, test-laravel, test-minimal, test-database, mutation]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:

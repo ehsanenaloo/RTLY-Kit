@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace RtlyKit\Validation;
 
 use RtlyKit\Contracts\Validator;
+use RtlyKit\Exceptions\ErrorCode;
+use RtlyKit\Exceptions\RtlyKitException;
 
 /**
  * Iranian Bank Card (شماره کارت) validator: 16 digits, Luhn checksum.
@@ -13,15 +15,14 @@ use RtlyKit\Contracts\Validator;
  */
 final class BankCard implements Validator
 {
-    /**
-     * BIN to bank name, loaded lazily from resources/data/bank-bins.php.
-     *
-     * @return array<int, string>
-     */
-    private static function bins(): array
+    private static function table(?ReferenceTable $table): ReferenceTable
     {
-        /** @var array<int, string> $table */
-        $table = DataTables::load('bank-bins');
+        if ($table === null) {
+            return ReferenceTable::bankBins();
+        }
+        if ($table->kind !== TableKind::BankBin) {
+            throw RtlyKitException::because(ErrorCode::InvalidArgument, 'BankCard needs a table of bank BINs (ReferenceTable::bankBins())', ['table' => $table->kind->value]);
+        }
 
         return $table;
     }
@@ -36,9 +37,14 @@ final class BankCard implements Validator
      * repeated_digits, invalid_checksum, invalid_type, input_too_long. Details: normalized, bin, bank_name.
      * Accepts strings, ints and integral floats; any other type or a string over 4096 bytes yields
      * `invalid_type` / `input_too_long`.
+     *
+     * $bins replaces the bundled BIN table for the bank name only; validity never depends on it.
+     *
+     * @throws RtlyKitException when $bins is not a table of bank BINs (a programming error, not bad input)
      */
-    public static function validate(mixed $value): Result
+    public static function validate(mixed $value, ?ReferenceTable $bins = null): Result
     {
+        $bins = self::table($bins);
         $details = ['normalized' => '', 'bin' => null, 'bank_name' => null];
         $input = Input::coerce($value, $details);
 
@@ -55,7 +61,8 @@ final class BankCard implements Validator
 
         $bin = substr($card, 0, 6);
         $details['bin'] = $bin;
-        $details['bank_name'] = self::bins()[(int) $bin] ?? null;
+        $name = $bins->get((int) $bin);
+        $details['bank_name'] = is_string($name) ? $name : null;
 
         if (preg_match('/^(\d)\1{15}$/D', $card) === 1) {
             return Result::invalid('repeated_digits', $details);
@@ -68,9 +75,9 @@ final class BankCard implements Validator
         return Result::valid($details);
     }
 
-    public static function getBankName(mixed $value): ?string
+    public static function getBankName(mixed $value, ?ReferenceTable $bins = null): ?string
     {
-        $result = self::validate($value);
+        $result = self::validate($value, $bins);
         $name = $result->details()['bank_name'] ?? null;
 
         return $result->isValid() && is_string($name) ? $name : null;

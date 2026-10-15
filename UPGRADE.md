@@ -2,6 +2,15 @@
 
 Before 1.0.0, a minor release may contain breaking changes. Each one is listed here with the steps to migrate. See [API stability](https://ehsanenaloo.github.io/RTLY-Kit/en/api-stability.html) for the policy.
 
+## From 0.4.0 to 0.5.0
+
+Nothing that worked in 0.4.0 stops working. Two differences can show in results:
+
+- **`JalaliCast` and a NUL byte.** A Jalali date text with a NUL byte at the start or the end (`"1404/01/01\0"`) now throws `InvalidDateException`, like a NUL anywhere else. Before, the byte was removed and the date was accepted.
+- **Lower-casing.** `Slugify` and `Normalizer` lower-case the 75 letters that Unicode 15 to 18 added. Text that has none of them is unchanged.
+
+New in this version: `CalculationMethod` for your own prayer-time method and `ReferenceTable` for your own bank, Sheba and national-code tables. See the changelog.
+
 ## From 0.3.0 to 0.4.0
 
 Most changes are fixes. The items below can change the result of code that worked before. Each one says what changed and what to do.
@@ -11,7 +20,7 @@ Most changes are fixes. The items below can change the result of code that worke
 - **Date text limit.** `make()`, `createFromFormat()` and `JalaliCast` reject text longer than 256 bytes with `InvalidDateException` (`input_too_long`). A number of 15 digits or more, and relative text with a huge number such as `9223372036854775807 sec`, also throw. PHP used to wrap such numbers around and return a wrong date.
 - **`createFromFormat()` fractions.** The tokens `u` and `v` now read microseconds and milliseconds. Before, they threw.
 - **`isPast()` and `isFuture()`.** They compare the whole instant, microseconds included. A date inside the current second used to be neither past nor future.
-- **`serialize()`.** The payload has a new key `offset`. Older payloads still load. If you compare or store the raw serialized string, it is different now.
+- **`serialize()`.** The payload has a new key `offset`. Older payloads still load. If you compare or store the raw serialized string, it is different now. Payloads written by 0.2.1 and 0.3.0 are tested with files made by those releases. A 0.3.0 payload rounds the offset to the minute, so a moment in an old year in a zone whose offset had seconds (for example `Asia/Tehran` in 1900) was already a few seconds off in it, and nothing can bring those seconds back.
 - **`JalaliCast`.** It takes new optional arguments (`:UTC`, `:app`, precision). Without arguments the stored text is the same, and saving a model no longer rewrites a date column you did not change.
 - **Error messages.** The input shown in the error messages for dates, time zones, prayer methods and cities is cut to 40 or 48 characters.
 

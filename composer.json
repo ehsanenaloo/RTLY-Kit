@@ -73,6 +73,7 @@
         "cs-fix": "php-cs-fixer fix --config=tools/php-cs-fixer.dist.php --ansi",
         "docs": "php tools/docs/build.php",
         "docs:check": "php tools/docs/build.php --check",
+        "data:check": "php tools/data/check.php",
         "check": [
             "@phpstan",
             "@test",

@@ -30,7 +30,7 @@
 <div class="shell doc-layout has-toc">
 <aside class="sidebar"><details open><summary>تصفح الأدلة</summary><nav aria-label="الأدلة"><a href="all.html">كل الأدلة</a><p>البدء</p><a href="quick-start.html">البدء السريع</a><a href="installation.html">التثبيت</a><p>التقاويم</p><a href="jalali.html">التقويم الجلالي</a><a href="hijri.html">التقويم الهجري</a><a href="hebrew.html">التقويم العبري</a><a href="convert-and-compare.html">التحويل والمقارنة بين التواريخ</a><a href="carbon-macros.html">ماكروات Carbon</a><p>التحقق من الصحة</p><a href="validators-overview.html">نظرة عامة على أدوات التحقق</a><a href="national-code.html">الرقم الوطني</a><a href="sheba-and-bank-card.html" aria-current="page">شبا والبطاقة المصرفية</a><a href="mobile-postal-plate.html">الجوال والرمز البريدي ولوحة المركبة</a><p>الأرقام والنصوص</p><a href="digits-and-format.html">الأرقام وتنسيق الأعداد</a><a href="number-words.html">تحويل الأعداد إلى كلمات</a><a href="arabic-number-words.html">الأعداد بالحروف العربية</a><a href="text-tools.html">أدوات النصوص</a><p>العطل وأوقات الصلاة</p><a href="holidays.html">العطل الرسمية الإيرانية</a><a href="holiday-calendar.html">تقويم العطل القابل للتعديل</a><a href="prayer-times.html">أوقات الصلاة</a><p>لارافيل</p><a href="laravel-setup.html">إعداد Laravel</a><a href="laravel-validation-and-cast.html">قواعد التحقق وتحويل Eloquent</a><p>المرجع</p><a href="helpers-and-globals.html">الدوال المساعدة والدوال العامة</a><a href="error-handling.html">معالجة الأخطاء</a><a href="api-stability.html">استقرار واجهة API</a><a href="accuracy-and-data.html">الدقة والبيانات</a><a href="benchmarks.html">قياس الأداء</a><a href="limits.html">الحدود</a><a href="troubleshooting-faq.html">استكشاف الأخطاء والأسئلة الشائعة</a><a href="upgrade.html">دليل الترقية</a><a href="verifying-releases.html">التحقق من الإصدارات</a></nav></details></aside>
 <article class="prose">
-<details class="toc-inline"><summary>في هذه الصفحة</summary><ol><li><a href="#quick-start">البدء السريع</a></li><li><a href="#sheba">شبا (IBAN)</a><ol><li><a href="#sheba-format">الصيغة</a></li><li><a href="#sheba-normalization">التطبيع</a></li><li><a href="#sheba-checks">ما الذي يُفحص</a></li></ol></li><li><a href="#bank-card">رقم البطاقة المصرفية</a><ol><li><a href="#card-format">الصيغة والفحوص</a></li></ol></li><li><a href="#data">بيانات البحث عن المصرف</a></li><li><a href="#notes">ملاحظات عملية</a></li></ol></details>
+<details class="toc-inline"><summary>في هذه الصفحة</summary><ol><li><a href="#quick-start">البدء السريع</a></li><li><a href="#sheba">شبا (IBAN)</a><ol><li><a href="#sheba-format">الصيغة</a></li><li><a href="#sheba-normalization">التطبيع</a></li><li><a href="#sheba-checks">ما الذي يُفحص</a></li></ol></li><li><a href="#bank-card">رقم البطاقة المصرفية</a><ol><li><a href="#card-format">الصيغة والفحوص</a></li></ol></li><li><a href="#data">بيانات البحث عن المصرف</a><ol><li><a href="#own-table">جدولك الخاص</a></li></ol></li><li><a href="#notes">ملاحظات عملية</a></li></ol></details>
 <h2 id="quick-start">البدء السريع<a class="anchor" href="#quick-start" aria-label="رابط إلى هذا القسم">#</a></h2>
 <pre tabindex="0"><code class="language-php"><span class="tok-k">&lt;?php
 require</span> <span class="tok-s">'vendor/autoload.php'</span>;
@@ -126,6 +126,23 @@ var_dump(BankCard::getBankName(<span class="tok-s">'6037991234567893'</span>)); 
 <div class="callout note" role="note"><strong>من المفيد أن تعرف.</strong> الجداول صغيرة، فكثير من البطاقات الصالحة صادر عن مصرف غير مدرج، ويكون <code>bank_name</code> عندئذ <code>null</code>. ولم نصل إلى سجل رسمي لرموز BIN، وقائمة البنك المركزي مؤرخة بسنة 2017، لذلك تعتمد الرموز الأحدث على صفحات عامة. المصارف تندمج وتغيّر أسماءها وتعيد تخصيص النطاقات، فاعرض الاسم على أنه تلميح، ولا تستخدمه في قرار قانوني أو مالي. التفاصيل في <a href="accuracy-and-data.html">الدقة والبيانات</a>.</div>
 <p>لا تعتمد الصلاحية على هذه الجداول أبدًا. فالرقم صحيح المجموع الاختباري صالح سواء عُرف مصرفه أم لم يُعرف.</p>
 
+<h3 id="own-table">جدولك الخاص<a class="anchor" href="#own-table" aria-label="رابط إلى هذا القسم">#</a></h3>
+<p>يمكنك تغيير جداول البحث من دون المساس بالحزمة. <code>ReferenceTable</code> جدول غير قابل للتغيير: يبدأ من البيانات المرفقة، وكل تغيير يُرجع جدولًا جديدًا.</p>
+<pre tabindex="0"><code class="language-php"><span class="tok-k">use</span> RtlyKit\Validation\BankCard;
+<span class="tok-k">use</span> RtlyKit\Validation\ReferenceTable;
+<span class="tok-k">use</span> RtlyKit\Validation\Sheba;
+<span class="tok-k">use</span> RtlyKit\Validation\TableKind;
+
+<span class="tok-v">$bins</span> = ReferenceTable::bankBins()-&gt;with(<span class="tok-n">400000</span>, <span class="tok-s">'Example Bank'</span>)-&gt;without(<span class="tok-n">603799</span>);
+BankCard::getBankName(<span class="tok-v">$card</span>, <span class="tok-v">$bins</span>);
+BankCard::validate(<span class="tok-v">$card</span>, <span class="tok-v">$bins</span>)-&gt;details()[<span class="tok-s">'bank_name'</span>];
+
+<span class="tok-v">$banks</span> = ReferenceTable::shebaBanks()-&gt;with(<span class="tok-s">'017'</span>, <span class="tok-s">'Other name'</span>);
+Sheba::getBankName(<span class="tok-v">$sheba</span>, <span class="tok-v">$banks</span>);
+
+<span class="tok-v">$mine</span> = ReferenceTable::from(TableKind::BankBin, [<span class="tok-n">400000</span> =&gt; <span class="tok-s">'Example Bank'</span>]);   <span class="tok-c">// only your entries</span></code></pre>
+<p>رمز BIN من 6 أرقام ورمز بنك شبا من 3 أرقام (<code>'017'</code> أو العدد الصحيح 17)؛ والأرقام الفارسية تعمل. والاسم نص من 1 إلى 100 حرف. تُطلق <code>without()</code> خطأ إذا لم يكن المفتاح في الجدول، فلا يمر الخطأ الإملائي بصمت؛ أما <code>get()</code> و<code>has()</code> فلا تُطلقان خطأ أبدًا. ولا تتغير الجداول المرفقة ولا الجداول الأخرى. والصلاحية لا تعتمد على الجدول لأن فحصي Luhn وmod-97 لا يستخدمانه. وما تضيفه من مدخلات مسؤوليتك.</p>
+
 <h2 id="notes">ملاحظات عملية<a class="anchor" href="#notes" aria-label="رابط إلى هذا القسم">#</a></h2>
 <ul>
 <li>يكشف المجموع الاختباري الأخطاء المطبعية لا الأرقام المزيفة. ولا يستطيع أن يخبرك بأن بطاقة موجودة أو بأن حسابًا يخص شخصًا ما.</li>
@@ -136,7 +153,7 @@ var_dump(BankCard::getBankName(<span class="tok-s">'6037991234567893'</span>)); 
 <p>سقف الحجم وقواعد النوع هي نفسها لكل أداة تحقق؛ انظر <a href="validators-overview.html#input-handling">معالجة المُدخَلات</a>.</p>
 <nav class="reading-footer" aria-label="الصفحة السابقة والتالية"><a class="prev" rel="prev" href="national-code.html"><small>السابق</small>الرقم الوطني</a><a class="next" rel="next" href="mobile-postal-plate.html"><small>التالي</small>الجوال والرمز البريدي ولوحة المركبة</a></nav>
 </article>
-<nav class="toc" aria-label="في هذه الصفحة"><p>في هذه الصفحة</p><ol><li><a href="#quick-start">البدء السريع</a></li><li><a href="#sheba">شبا (IBAN)</a><ol><li><a href="#sheba-format">الصيغة</a></li><li><a href="#sheba-normalization">التطبيع</a></li><li><a href="#sheba-checks">ما الذي يُفحص</a></li></ol></li><li><a href="#bank-card">رقم البطاقة المصرفية</a><ol><li><a href="#card-format">الصيغة والفحوص</a></li></ol></li><li><a href="#data">بيانات البحث عن المصرف</a></li><li><a href="#notes">ملاحظات عملية</a></li></ol></nav>
+<nav class="toc" aria-label="في هذه الصفحة"><p>في هذه الصفحة</p><ol><li><a href="#quick-start">البدء السريع</a></li><li><a href="#sheba">شبا (IBAN)</a><ol><li><a href="#sheba-format">الصيغة</a></li><li><a href="#sheba-normalization">التطبيع</a></li><li><a href="#sheba-checks">ما الذي يُفحص</a></li></ol></li><li><a href="#bank-card">رقم البطاقة المصرفية</a><ol><li><a href="#card-format">الصيغة والفحوص</a></li></ol></li><li><a href="#data">بيانات البحث عن المصرف</a><ol><li><a href="#own-table">جدولك الخاص</a></li></ol></li><li><a href="#notes">ملاحظات عملية</a></li></ol></nav>
 </div>
 </main>
 <footer class="footer"><div class="shell footer-inner"><p>دليل مستخدم RTLY-Kit · الترخيص: MIT</p><div><a href="https://github.com/ehsanenaloo/RTLY-Kit" rel="noopener noreferrer">المستودع على جيت هب &#8599;</a><a href="https://github.com/ehsanenaloo/RTLY-Kit/issues" rel="noopener noreferrer">الإبلاغ عن مشكلة &#8599;</a></div></div></footer>

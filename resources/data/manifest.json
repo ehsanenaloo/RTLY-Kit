@@ -1,0 +1,101 @@
+{
+    "schema": 1,
+    "tables": {
+        "bank-bins": {
+            "file": "bank-bins.php",
+            "what": "Card BIN (first 6 digits) to bank name",
+            "status": "community",
+            "publisher": "No official list found. An entry needs two agreeing public sources (two-source rule).",
+            "verified": "2026-10-08",
+            "coverage": "39 BINs; banks that merged or renamed keep the name at assignment time",
+            "sources_section": "Bank card BINs",
+            "entries": 39,
+            "sha256": "e5bd5126da7bf886c410d2e402e247431df729af8b7115545d7df315a1cc1355",
+            "known_answers": [
+                [
+                    "603799",
+                    "بانک ملی ایران"
+                ]
+            ]
+        },
+        "sheba-banks": {
+            "file": "sheba-banks.php",
+            "what": "Sheba (IBAN) bank identifier to bank name",
+            "status": "official_and_community",
+            "publisher": "Central Bank of Iran national IBAN specification (published by Bank Melli Iran) for 19 codes; two agreeing public sources for the rest.",
+            "verified": "2026-10-08",
+            "coverage": "38 codes",
+            "sources_section": "Sheba (IBAN) bank codes",
+            "entries": 38,
+            "sha256": "feeb2d60d853413d5eba69969e54bb25848752822da27ca3bc55705c602a486f",
+            "known_answers": [
+                [
+                    "010",
+                    "بانک مرکزی"
+                ]
+            ]
+        },
+        "national-code-locations": {
+            "file": "national-code-locations.php",
+            "what": "First 3 digits of the national code to province and city of issue",
+            "status": "community",
+            "publisher": "No official machine-readable list. A prefix needs agreement of the sources named in SOURCES.md.",
+            "verified": "2026-10-08",
+            "coverage": "547 prefixes; the place of issue, not of birth or residence",
+            "sources_section": "National-code place-of-issue prefixes",
+            "entries": 547,
+            "sha256": "3a4570d9983042ce75ba9a4ad512ab769321323b0fa27d6b7c51ea21f2130e71",
+            "known_answers": [
+                [
+                    "1",
+                    {
+                        "province": "تهران",
+                        "city": "تهران مرکزی"
+                    }
+                ]
+            ]
+        },
+        "iran-official-holidays": {
+            "file": "iran-official-holidays.php",
+            "what": "Dates of the Islamic-calendar public holidays per Jalali year",
+            "status": "official_and_reported",
+            "publisher": "Calendar Center, Institute of Geophysics, University of Tehran (official yearly tables); time.ir per-day pages and a news list for the reported years.",
+            "verified": "2026-10-08",
+            "coverage": "Jalali years 1380 to 1405: official for 1394 and 1396 to 1405, reported (single source) for 1380 to 1393 and 1395",
+            "sources_section": "Official holiday dates",
+            "entries": 26,
+            "sha256": "ec8a36d7e473c86b180d872bc6d73cc3bd0634e9d80e040ec7efac74e24da5db",
+            "known_answers": [
+                [
+                    "1404",
+                    "official"
+                ],
+                [
+                    "1395",
+                    "single_source"
+                ]
+            ]
+        },
+        "umm-al-qura": {
+            "file": "umm-al-qura.php",
+            "what": "Umm al-Qura month lengths, one entry per Hijri year",
+            "status": "official_and_generated",
+            "publisher": "KACST Umm Al-Qura Calendar (checked month by month for AH 1318 to 1500); ICU/CLDR islamic-umalqura data (generated) for AH 1300 to 1317.",
+            "verified": "2026-10-08",
+            "coverage": "AH 1300 to 1500 (1882-11-12 to 2077-11-16)",
+            "sources_section": "Umm al-Qura table",
+            "entries": 201,
+            "sha256": "34061dc40c7eb120860224734082a6c8057482aca71571ab5b5b28aa72280d8d",
+            "known_answers": [
+                [
+                    "first_year",
+                    1300
+                ],
+                [
+                    "last_year",
+                    1500
+                ]
+            ]
+        }
+    }
+}

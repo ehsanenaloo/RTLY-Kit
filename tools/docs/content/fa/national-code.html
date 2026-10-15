@@ -86,6 +86,18 @@ var_dump($b-&gt;isValid(), $b-&gt;details()['location']);   // bool(true)  NULL<
 <div class="note"><strong>سرنخ است، نه مدرک.</strong> پیش‌شماره نشان می‌دهد شناسنامه یا کارت اولیه کجا <em>صادر</em> شده است، نه محل تولد یا سکونت. خیلی از آدم‌ها کدی دارند که جای دیگری صادر شده، و مرز استان‌ها هم بعد از صدور عوض شده (مثلاً کرج زیر تهران آمده). از محل صدور برای احراز هویت یا سکونت استفاده نکنید.</div>
 <div class="note"><strong>خوب است بدانید.</strong> ثبت احوال فهرست ماشین‌خوان منتشر نمی‌کند. جدول ما ۵۴۷ پیش‌شماره دارد. هر مورد وقتی آمده که سه مجموعه‌دادهٔ عمومی دربارهٔ استان و شهرش هم‌نظر بوده‌اند و چهارمی مخالفتی نداشته. این مجموعه‌ها ریشهٔ مشترک دارند. پس توافقشان قوی است، ولی کاملاً مستقل نیست. اگر پیش‌شماره‌ای در جدول نباشد، یعنی ناشناخته است، نه نامعتبر. منبع‌ها در <a href="accuracy-and-data.html">دقت و داده</a> است.</div>
 
+<h3 id="own-table">جدول مکان‌های خودتان</h3>
+<p>جدول پیش‌شماره مثل جدول‌های بانک کار می‌کند (به <a href="sheba-and-bank-card.html#own-table">شبا و کارت بانکی</a> نگاه کنید): <code>ReferenceTable::nationalCodeLocations()</code> از دادهٔ همراه بسته شروع می‌شود و <code>with()</code> و <code>without()</code> جدول تازه برمی‌گردانند.</p>
+<pre><code class="language-php">use RtlyKit\Validation\NationalCode;
+use RtlyKit\Validation\ReferenceTable;
+
+$places = ReferenceTable::nationalCodeLocations()
+    -&gt;with(999, ['province' =&gt; 'Example province', 'city' =&gt; 'Example city']);
+
+NationalCode::getLocation('9991234561', $places);
+// ['province' =&gt; 'Example province', 'city' =&gt; 'Example city']</code></pre>
+<p>پیش‌شماره از ۱ تا ۹۹۹ است (یا سه رقم به‌شکل متن). مقدار باید دقیقاً <code>['province' =&gt; ..., 'city' =&gt; ...]</code> باشد، هر دو متنی ۱ تا ۱۰۰ نویسه‌ای. جدول را آرگومان دوم <code>getLocation()</code> یا <code>validate()</code> بدهید. فقط مکان در نتیجه را عوض می‌کند؛ رقم کنترل هرگز به آن وابسته نیست. ورودی‌ای که خودتان اضافه می‌کنید با مسئولیت خودتان است.</p>
+
 <h2 id="what-is-not-checked">اعتبارسنجی چه چیزی را نمی‌گوید</h2>
 <ul>
 <li>رقم کنترل درست یعنی عدد خوش‌قالب است. نمی‌گوید این کد واقعاً صادر شده یا مال کسی است.</li>

@@ -73,7 +73,7 @@ try {
 } catch (InvalidDateException $e) {
     echo $e-&gt;getMessage();   // Unable to parse 'abc' with format 'Y/m/d'
 }</code></pre>
-<p>تُرفض الرموز التي تعطي تاريخًا خاطئًا بـ <code>InvalidDateException</code> تذكر الرمز في رسالتها. وهي <code>z</code> و<code>y</code> وأسماء الأشهر والأيام الإنجليزية <code>F M D l</code> واللاحقة <code>S</code> ورموز المنطقة الزمنية وكسر الثانية <code>e T P O p u v</code>. مرّر المنطقة الزمنية بدلًا منها في الوسيط الثالث. والصيغة <code>U</code> وحدها تقرأ طابعًا زمنيًا يونكسيًا، وأي صيغة أخرى فيها <code>U</code> تُطلق خطأً. وبايت NUL في الصيغة أو النص يُطلق خطأً أيضًا.</p>
+<p>تُرفض الرموز التي تعطي تاريخًا خاطئًا بـ <code>InvalidDateException</code> تذكر الرمز في رسالتها. وهي <code>z</code> و<code>y</code> وأسماء الأشهر والأيام الإنجليزية <code>F M D l</code> واللاحقة <code>S</code> ورموز المنطقة الزمنية <code>e T P O p</code>. مرّر المنطقة الزمنية بدلًا منها في الوسيط الثالث. والصيغة <code>U</code> وحدها تقرأ طابعًا زمنيًا يونكسيًا، وأي صيغة أخرى فيها <code>U</code> تُطلق خطأً. وبايت NUL في الصيغة أو النص يُطلق خطأً أيضًا. أما رمزا الكسر <code>u</code> (الميكروثانية) و<code>v</code> (الميلي ثانية) فيُقرآن.</p>
 <pre><code class="language-php">echo Jalali::createFromFormat('U', '1700000000', $tehran);   // 1402/08/24 01:43:20
 Jalali::createFromFormat('Y/m/d e', '1404/07/15 UTC');       // InvalidDateException: ... the 'e' token ...</code></pre>
 
@@ -232,6 +232,7 @@ catch (InvalidDateException $e) { echo $e-&gt;getMessage(); }
 <h2 id="notes">ملاحظات عملية</h2>
 <ul>
 <li><strong>المناطق الزمنية.</strong> التواريخ المنشأة بلا منطقة تستخدم المنطقة الافتراضية في PHP. مرّر <code>DateTimeZone</code> إلى <code>create()</code>/<code>make()</code> كلما وجب ألا تعتمد النتيجة على إعدادات الخادم. وتُقرأ الساعة والدقيقة والتاريخ نفسه في منطقة النسخة.</li>
+<li><strong>التوقيت الصيفي.</strong> الوقت المحلي غير الموجود (الساعة المحذوفة عند تقديم الساعات) يتقدّم بمقدار الفجوة نفسها، كما في PHP. والوقت المحلي الذي يحدث مرتين يُقرأ على أنه أول حدوث له، إلا إذا مرّرت لحظة مع إزاحة.</li>
 <li><strong>حدود الأيام.</strong> يتغيّر اليوم عند منتصف الليل المدني في منطقة النسخة، كما في كل أجزاء هذه المكتبة.</li>
 <li><strong>الاستخدام بوصفها قيمة.</strong> النسخ تنفّذ <code>Stringable</code>، ويمكن مشاركتها وتخزينها في المصفوفات بأمان؛ ورتّبها بحسب <code>getTimestamp()</code>.</li>
 <li><strong>ذو صلة.</strong> التحويل إلى التقويمات الأخرى والمقارنة بينها في <a href="convert-and-compare.html">التحويل والمقارنة بين التواريخ</a>؛ وإضافة تكامل Carbon في <a href="carbon-macros.html">ماكروات Carbon</a>؛ والاطلاع على العطل الإيرانية في <a href="holidays.html">العطل</a>.</li>

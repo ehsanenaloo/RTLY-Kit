@@ -1,0 +1,351 @@
+{
+    "release": "0.2.1",
+    "php": "8.2.34",
+    "payloads": [
+        {
+            "class": "RtlyKit\\Calendar\\Jalali",
+            "case": "utc",
+            "zone": "UTC",
+            "original": {
+                "U.u": "1727958896.000000",
+                "zone": "UTC"
+            },
+            "serialized": "O:23:\"RtlyKit\\Calendar\\Jalali\":7:{s:34:\"\u0000RtlyKit\\Calendar\\Jalali\u0000gregorian\";O:17:\"DateTimeImmutable\":3:{s:4:\"date\";s:26:\"2024-10-03 12:34:56.000000\";s:13:\"timezone_type\";i:3;s:8:\"timezone\";s:3:\"UTC\";}s:29:\"\u0000RtlyKit\\Calendar\\Jalali\u0000year\";i:1403;s:30:\"\u0000RtlyKit\\Calendar\\Jalali\u0000month\";i:7;s:28:\"\u0000RtlyKit\\Calendar\\Jalali\u0000day\";i:12;s:29:\"\u0000RtlyKit\\Calendar\\Jalali\u0000hour\";i:12;s:31:\"\u0000RtlyKit\\Calendar\\Jalali\u0000minute\";i:34;s:31:\"\u0000RtlyKit\\Calendar\\Jalali\u0000second\";i:56;}",
+            "restored_by_release": {
+                "U.u": "1727958896.000000",
+                "zone": "UTC"
+            }
+        },
+        {
+            "class": "RtlyKit\\Calendar\\Jalali",
+            "case": "utc-micro",
+            "zone": "UTC",
+            "original": {
+                "U.u": "1727958896.123456",
+                "zone": "UTC"
+            },
+            "serialized": "O:23:\"RtlyKit\\Calendar\\Jalali\":7:{s:34:\"\u0000RtlyKit\\Calendar\\Jalali\u0000gregorian\";O:17:\"DateTimeImmutable\":3:{s:4:\"date\";s:26:\"2024-10-03 12:34:56.123456\";s:13:\"timezone_type\";i:3;s:8:\"timezone\";s:3:\"UTC\";}s:29:\"\u0000RtlyKit\\Calendar\\Jalali\u0000year\";i:1403;s:30:\"\u0000RtlyKit\\Calendar\\Jalali\u0000month\";i:7;s:28:\"\u0000RtlyKit\\Calendar\\Jalali\u0000day\";i:12;s:29:\"\u0000RtlyKit\\Calendar\\Jalali\u0000hour\";i:12;s:31:\"\u0000RtlyKit\\Calendar\\Jalali\u0000minute\";i:34;s:31:\"\u0000RtlyKit\\Calendar\\Jalali\u0000second\";i:56;}",
+            "restored_by_release": {
+                "U.u": "1727958896.123456",
+                "zone": "UTC"
+            }
+        },
+        {
+            "class": "RtlyKit\\Calendar\\Jalali",
+            "case": "tehran",
+            "zone": "Asia/Tehran",
+            "original": {
+                "U.u": "1727946296.500000",
+                "zone": "Asia/Tehran"
+            },
+            "serialized": "O:23:\"RtlyKit\\Calendar\\Jalali\":7:{s:34:\"\u0000RtlyKit\\Calendar\\Jalali\u0000gregorian\";O:17:\"DateTimeImmutable\":3:{s:4:\"date\";s:26:\"2024-10-03 12:34:56.500000\";s:13:\"timezone_type\";i:3;s:8:\"timezone\";s:11:\"Asia/Tehran\";}s:29:\"\u0000RtlyKit\\Calendar\\Jalali\u0000year\";i:1403;s:30:\"\u0000RtlyKit\\Calendar\\Jalali\u0000month\";i:7;s:28:\"\u0000RtlyKit\\Calendar\\Jalali\u0000day\";i:12;s:29:\"\u0000RtlyKit\\Calendar\\Jalali\u0000hour\";i:12;s:31:\"\u0000RtlyKit\\Calendar\\Jalali\u0000minute\";i:34;s:31:\"\u0000RtlyKit\\Calendar\\Jalali\u0000second\";i:56;}",
+            "restored_by_release": {
+                "U.u": "1727946296.500000",
+                "zone": "Asia/Tehran"
+            }
+        },
+        {
+            "class": "RtlyKit\\Calendar\\Jalali",
+            "case": "offset",
+            "zone": "+05:30",
+            "original": {
+                "U.u": "1742531400.000000",
+                "zone": "+05:30"
+            },
+            "serialized": "O:23:\"RtlyKit\\Calendar\\Jalali\":7:{s:34:\"\u0000RtlyKit\\Calendar\\Jalali\u0000gregorian\";O:17:\"DateTimeImmutable\":3:{s:4:\"date\";s:26:\"2025-03-21 10:00:00.000000\";s:13:\"timezone_type\";i:1;s:8:\"timezone\";s:6:\"+05:30\";}s:29:\"\u0000RtlyKit\\Calendar\\Jalali\u0000year\";i:1404;s:30:\"\u0000RtlyKit\\Calendar\\Jalali\u0000month\";i:1;s:28:\"\u0000RtlyKit\\Calendar\\Jalali\u0000day\";i:1;s:29:\"\u0000RtlyKit\\Calendar\\Jalali\u0000hour\";i:10;s:31:\"\u0000RtlyKit\\Calendar\\Jalali\u0000minute\";i:0;s:31:\"\u0000RtlyKit\\Calendar\\Jalali\u0000second\";i:0;}",
+            "restored_by_release": {
+                "U.u": "1742531400.000000",
+                "zone": "+05:30"
+            }
+        },
+        {
+            "class": "RtlyKit\\Calendar\\Jalali",
+            "case": "new-york-summer",
+            "zone": "America/New_York",
+            "original": {
+                "U.u": "1751428799.999999",
+                "zone": "America/New_York"
+            },
+            "serialized": "O:23:\"RtlyKit\\Calendar\\Jalali\":7:{s:34:\"\u0000RtlyKit\\Calendar\\Jalali\u0000gregorian\";O:17:\"DateTimeImmutable\":3:{s:4:\"date\";s:26:\"2025-07-01 23:59:59.999999\";s:13:\"timezone_type\";i:3;s:8:\"timezone\";s:16:\"America/New_York\";}s:29:\"\u0000RtlyKit\\Calendar\\Jalali\u0000year\";i:1404;s:30:\"\u0000RtlyKit\\Calendar\\Jalali\u0000month\";i:4;s:28:\"\u0000RtlyKit\\Calendar\\Jalali\u0000day\";i:10;s:29:\"\u0000RtlyKit\\Calendar\\Jalali\u0000hour\";i:23;s:31:\"\u0000RtlyKit\\Calendar\\Jalali\u0000minute\";i:59;s:31:\"\u0000RtlyKit\\Calendar\\Jalali\u0000second\";i:59;}",
+            "restored_by_release": {
+                "U.u": "1751428799.999999",
+                "zone": "America/New_York"
+            }
+        },
+        {
+            "class": "RtlyKit\\Calendar\\Jalali",
+            "case": "tehran-1900",
+            "zone": "Asia/Tehran",
+            "original": {
+                "U.u": "-2209001144.000000",
+                "zone": "Asia/Tehran"
+            },
+            "serialized": "O:23:\"RtlyKit\\Calendar\\Jalali\":7:{s:34:\"\u0000RtlyKit\\Calendar\\Jalali\u0000gregorian\";O:17:\"DateTimeImmutable\":3:{s:4:\"date\";s:26:\"1900-01-01 00:00:00.000000\";s:13:\"timezone_type\";i:3;s:8:\"timezone\";s:11:\"Asia/Tehran\";}s:29:\"\u0000RtlyKit\\Calendar\\Jalali\u0000year\";i:1278;s:30:\"\u0000RtlyKit\\Calendar\\Jalali\u0000month\";i:10;s:28:\"\u0000RtlyKit\\Calendar\\Jalali\u0000day\";i:11;s:29:\"\u0000RtlyKit\\Calendar\\Jalali\u0000hour\";i:0;s:31:\"\u0000RtlyKit\\Calendar\\Jalali\u0000minute\";i:0;s:31:\"\u0000RtlyKit\\Calendar\\Jalali\u0000second\";i:0;}",
+            "restored_by_release": {
+                "U.u": "-2209001144.000000",
+                "zone": "Asia/Tehran"
+            }
+        },
+        {
+            "class": "RtlyKit\\Calendar\\Jalali",
+            "case": "amsterdam-1900",
+            "zone": "Europe/Amsterdam",
+            "original": {
+                "U.u": "-2195900372.250000",
+                "zone": "Europe/Amsterdam"
+            },
+            "serialized": "O:23:\"RtlyKit\\Calendar\\Jalali\":7:{s:34:\"\u0000RtlyKit\\Calendar\\Jalali\u0000gregorian\";O:17:\"DateTimeImmutable\":3:{s:4:\"date\";s:26:\"1900-06-01 12:00:00.250000\";s:13:\"timezone_type\";i:3;s:8:\"timezone\";s:16:\"Europe/Amsterdam\";}s:29:\"\u0000RtlyKit\\Calendar\\Jalali\u0000year\";i:1279;s:30:\"\u0000RtlyKit\\Calendar\\Jalali\u0000month\";i:3;s:28:\"\u0000RtlyKit\\Calendar\\Jalali\u0000day\";i:11;s:29:\"\u0000RtlyKit\\Calendar\\Jalali\u0000hour\";i:12;s:31:\"\u0000RtlyKit\\Calendar\\Jalali\u0000minute\";i:0;s:31:\"\u0000RtlyKit\\Calendar\\Jalali\u0000second\";i:0;}",
+            "restored_by_release": {
+                "U.u": "-2195900372.250000",
+                "zone": "Europe/Amsterdam"
+            }
+        },
+        {
+            "class": "RtlyKit\\Calendar\\Hijri",
+            "case": "utc",
+            "zone": "UTC",
+            "original": {
+                "U.u": "1727958896.000000",
+                "zone": "UTC"
+            },
+            "serialized": "O:22:\"RtlyKit\\Calendar\\Hijri\":8:{s:31:\"\u0000RtlyKit\\Calendar\\Hijri\u0000variant\";E:39:\"RtlyKit\\Calendar\\HijriVariant:UmmAlQura\";s:33:\"\u0000RtlyKit\\Calendar\\Hijri\u0000gregorian\";O:17:\"DateTimeImmutable\":3:{s:4:\"date\";s:26:\"2024-10-03 12:34:56.000000\";s:13:\"timezone_type\";i:3;s:8:\"timezone\";s:3:\"UTC\";}s:28:\"\u0000RtlyKit\\Calendar\\Hijri\u0000year\";i:1446;s:29:\"\u0000RtlyKit\\Calendar\\Hijri\u0000month\";i:3;s:27:\"\u0000RtlyKit\\Calendar\\Hijri\u0000day\";i:30;s:28:\"\u0000RtlyKit\\Calendar\\Hijri\u0000hour\";i:12;s:30:\"\u0000RtlyKit\\Calendar\\Hijri\u0000minute\";i:34;s:30:\"\u0000RtlyKit\\Calendar\\Hijri\u0000second\";i:56;}",
+            "restored_by_release": {
+                "U.u": "1727958896.000000",
+                "zone": "UTC"
+            },
+            "variant": "umm_al_qura"
+        },
+        {
+            "class": "RtlyKit\\Calendar\\Hijri",
+            "case": "utc-micro",
+            "zone": "UTC",
+            "original": {
+                "U.u": "1727958896.123456",
+                "zone": "UTC"
+            },
+            "serialized": "O:22:\"RtlyKit\\Calendar\\Hijri\":8:{s:31:\"\u0000RtlyKit\\Calendar\\Hijri\u0000variant\";E:39:\"RtlyKit\\Calendar\\HijriVariant:UmmAlQura\";s:33:\"\u0000RtlyKit\\Calendar\\Hijri\u0000gregorian\";O:17:\"DateTimeImmutable\":3:{s:4:\"date\";s:26:\"2024-10-03 12:34:56.123456\";s:13:\"timezone_type\";i:3;s:8:\"timezone\";s:3:\"UTC\";}s:28:\"\u0000RtlyKit\\Calendar\\Hijri\u0000year\";i:1446;s:29:\"\u0000RtlyKit\\Calendar\\Hijri\u0000month\";i:3;s:27:\"\u0000RtlyKit\\Calendar\\Hijri\u0000day\";i:30;s:28:\"\u0000RtlyKit\\Calendar\\Hijri\u0000hour\";i:12;s:30:\"\u0000RtlyKit\\Calendar\\Hijri\u0000minute\";i:34;s:30:\"\u0000RtlyKit\\Calendar\\Hijri\u0000second\";i:56;}",
+            "restored_by_release": {
+                "U.u": "1727958896.123456",
+                "zone": "UTC"
+            },
+            "variant": "umm_al_qura"
+        },
+        {
+            "class": "RtlyKit\\Calendar\\Hijri",
+            "case": "tehran",
+            "zone": "Asia/Tehran",
+            "original": {
+                "U.u": "1727946296.500000",
+                "zone": "Asia/Tehran"
+            },
+            "serialized": "O:22:\"RtlyKit\\Calendar\\Hijri\":8:{s:31:\"\u0000RtlyKit\\Calendar\\Hijri\u0000variant\";E:39:\"RtlyKit\\Calendar\\HijriVariant:UmmAlQura\";s:33:\"\u0000RtlyKit\\Calendar\\Hijri\u0000gregorian\";O:17:\"DateTimeImmutable\":3:{s:4:\"date\";s:26:\"2024-10-03 12:34:56.500000\";s:13:\"timezone_type\";i:3;s:8:\"timezone\";s:11:\"Asia/Tehran\";}s:28:\"\u0000RtlyKit\\Calendar\\Hijri\u0000year\";i:1446;s:29:\"\u0000RtlyKit\\Calendar\\Hijri\u0000month\";i:3;s:27:\"\u0000RtlyKit\\Calendar\\Hijri\u0000day\";i:30;s:28:\"\u0000RtlyKit\\Calendar\\Hijri\u0000hour\";i:12;s:30:\"\u0000RtlyKit\\Calendar\\Hijri\u0000minute\";i:34;s:30:\"\u0000RtlyKit\\Calendar\\Hijri\u0000second\";i:56;}",
+            "restored_by_release": {
+                "U.u": "1727946296.500000",
+                "zone": "Asia/Tehran"
+            },
+            "variant": "umm_al_qura"
+        },
+        {
+            "class": "RtlyKit\\Calendar\\Hijri",
+            "case": "offset",
+            "zone": "+05:30",
+            "original": {
+                "U.u": "1742531400.000000",
+                "zone": "+05:30"
+            },
+            "serialized": "O:22:\"RtlyKit\\Calendar\\Hijri\":8:{s:31:\"\u0000RtlyKit\\Calendar\\Hijri\u0000variant\";E:39:\"RtlyKit\\Calendar\\HijriVariant:UmmAlQura\";s:33:\"\u0000RtlyKit\\Calendar\\Hijri\u0000gregorian\";O:17:\"DateTimeImmutable\":3:{s:4:\"date\";s:26:\"2025-03-21 10:00:00.000000\";s:13:\"timezone_type\";i:1;s:8:\"timezone\";s:6:\"+05:30\";}s:28:\"\u0000RtlyKit\\Calendar\\Hijri\u0000year\";i:1446;s:29:\"\u0000RtlyKit\\Calendar\\Hijri\u0000month\";i:9;s:27:\"\u0000RtlyKit\\Calendar\\Hijri\u0000day\";i:21;s:28:\"\u0000RtlyKit\\Calendar\\Hijri\u0000hour\";i:10;s:30:\"\u0000RtlyKit\\Calendar\\Hijri\u0000minute\";i:0;s:30:\"\u0000RtlyKit\\Calendar\\Hijri\u0000second\";i:0;}",
+            "restored_by_release": {
+                "U.u": "1742531400.000000",
+                "zone": "+05:30"
+            },
+            "variant": "umm_al_qura"
+        },
+        {
+            "class": "RtlyKit\\Calendar\\Hijri",
+            "case": "new-york-summer",
+            "zone": "America/New_York",
+            "original": {
+                "U.u": "1751428799.999999",
+                "zone": "America/New_York"
+            },
+            "serialized": "O:22:\"RtlyKit\\Calendar\\Hijri\":8:{s:31:\"\u0000RtlyKit\\Calendar\\Hijri\u0000variant\";E:39:\"RtlyKit\\Calendar\\HijriVariant:UmmAlQura\";s:33:\"\u0000RtlyKit\\Calendar\\Hijri\u0000gregorian\";O:17:\"DateTimeImmutable\":3:{s:4:\"date\";s:26:\"2025-07-01 23:59:59.999999\";s:13:\"timezone_type\";i:3;s:8:\"timezone\";s:16:\"America/New_York\";}s:28:\"\u0000RtlyKit\\Calendar\\Hijri\u0000year\";i:1447;s:29:\"\u0000RtlyKit\\Calendar\\Hijri\u0000month\";i:1;s:27:\"\u0000RtlyKit\\Calendar\\Hijri\u0000day\";i:6;s:28:\"\u0000RtlyKit\\Calendar\\Hijri\u0000hour\";i:23;s:30:\"\u0000RtlyKit\\Calendar\\Hijri\u0000minute\";i:59;s:30:\"\u0000RtlyKit\\Calendar\\Hijri\u0000second\";i:59;}",
+            "restored_by_release": {
+                "U.u": "1751428799.999999",
+                "zone": "America/New_York"
+            },
+            "variant": "umm_al_qura"
+        },
+        {
+            "class": "RtlyKit\\Calendar\\Hijri",
+            "case": "tehran-1900",
+            "zone": "Asia/Tehran",
+            "original": {
+                "U.u": "-2209001144.000000",
+                "zone": "Asia/Tehran"
+            },
+            "serialized": "O:22:\"RtlyKit\\Calendar\\Hijri\":8:{s:31:\"\u0000RtlyKit\\Calendar\\Hijri\u0000variant\";E:39:\"RtlyKit\\Calendar\\HijriVariant:UmmAlQura\";s:33:\"\u0000RtlyKit\\Calendar\\Hijri\u0000gregorian\";O:17:\"DateTimeImmutable\":3:{s:4:\"date\";s:26:\"1900-01-01 00:00:00.000000\";s:13:\"timezone_type\";i:3;s:8:\"timezone\";s:11:\"Asia/Tehran\";}s:28:\"\u0000RtlyKit\\Calendar\\Hijri\u0000year\";i:1317;s:29:\"\u0000RtlyKit\\Calendar\\Hijri\u0000month\";i:8;s:27:\"\u0000RtlyKit\\Calendar\\Hijri\u0000day\";i:29;s:28:\"\u0000RtlyKit\\Calendar\\Hijri\u0000hour\";i:0;s:30:\"\u0000RtlyKit\\Calendar\\Hijri\u0000minute\";i:0;s:30:\"\u0000RtlyKit\\Calendar\\Hijri\u0000second\";i:0;}",
+            "restored_by_release": {
+                "U.u": "-2209001144.000000",
+                "zone": "Asia/Tehran"
+            },
+            "variant": "umm_al_qura"
+        },
+        {
+            "class": "RtlyKit\\Calendar\\Hijri",
+            "case": "amsterdam-1900",
+            "zone": "Europe/Amsterdam",
+            "original": {
+                "U.u": "-2195900372.250000",
+                "zone": "Europe/Amsterdam"
+            },
+            "serialized": "O:22:\"RtlyKit\\Calendar\\Hijri\":8:{s:31:\"\u0000RtlyKit\\Calendar\\Hijri\u0000variant\";E:39:\"RtlyKit\\Calendar\\HijriVariant:UmmAlQura\";s:33:\"\u0000RtlyKit\\Calendar\\Hijri\u0000gregorian\";O:17:\"DateTimeImmutable\":3:{s:4:\"date\";s:26:\"1900-06-01 12:00:00.250000\";s:13:\"timezone_type\";i:3;s:8:\"timezone\";s:16:\"Europe/Amsterdam\";}s:28:\"\u0000RtlyKit\\Calendar\\Hijri\u0000year\";i:1318;s:29:\"\u0000RtlyKit\\Calendar\\Hijri\u0000month\";i:2;s:27:\"\u0000RtlyKit\\Calendar\\Hijri\u0000day\";i:3;s:28:\"\u0000RtlyKit\\Calendar\\Hijri\u0000hour\";i:12;s:30:\"\u0000RtlyKit\\Calendar\\Hijri\u0000minute\";i:0;s:30:\"\u0000RtlyKit\\Calendar\\Hijri\u0000second\";i:0;}",
+            "restored_by_release": {
+                "U.u": "-2195900372.250000",
+                "zone": "Europe/Amsterdam"
+            },
+            "variant": "umm_al_qura"
+        },
+        {
+            "class": "RtlyKit\\Calendar\\Hebrew",
+            "case": "utc",
+            "zone": "UTC",
+            "original": {
+                "U.u": "1727958896.000000",
+                "zone": "UTC"
+            },
+            "serialized": "O:23:\"RtlyKit\\Calendar\\Hebrew\":7:{s:34:\"\u0000RtlyKit\\Calendar\\Hebrew\u0000gregorian\";O:17:\"DateTimeImmutable\":3:{s:4:\"date\";s:26:\"2024-10-03 12:34:56.000000\";s:13:\"timezone_type\";i:3;s:8:\"timezone\";s:3:\"UTC\";}s:29:\"\u0000RtlyKit\\Calendar\\Hebrew\u0000year\";i:5785;s:30:\"\u0000RtlyKit\\Calendar\\Hebrew\u0000month\";i:1;s:28:\"\u0000RtlyKit\\Calendar\\Hebrew\u0000day\";i:1;s:29:\"\u0000RtlyKit\\Calendar\\Hebrew\u0000hour\";i:12;s:31:\"\u0000RtlyKit\\Calendar\\Hebrew\u0000minute\";i:34;s:31:\"\u0000RtlyKit\\Calendar\\Hebrew\u0000second\";i:56;}",
+            "restored_by_release": {
+                "U.u": "1727958896.000000",
+                "zone": "UTC"
+            }
+        },
+        {
+            "class": "RtlyKit\\Calendar\\Hebrew",
+            "case": "utc-micro",
+            "zone": "UTC",
+            "original": {
+                "U.u": "1727958896.123456",
+                "zone": "UTC"
+            },
+            "serialized": "O:23:\"RtlyKit\\Calendar\\Hebrew\":7:{s:34:\"\u0000RtlyKit\\Calendar\\Hebrew\u0000gregorian\";O:17:\"DateTimeImmutable\":3:{s:4:\"date\";s:26:\"2024-10-03 12:34:56.123456\";s:13:\"timezone_type\";i:3;s:8:\"timezone\";s:3:\"UTC\";}s:29:\"\u0000RtlyKit\\Calendar\\Hebrew\u0000year\";i:5785;s:30:\"\u0000RtlyKit\\Calendar\\Hebrew\u0000month\";i:1;s:28:\"\u0000RtlyKit\\Calendar\\Hebrew\u0000day\";i:1;s:29:\"\u0000RtlyKit\\Calendar\\Hebrew\u0000hour\";i:12;s:31:\"\u0000RtlyKit\\Calendar\\Hebrew\u0000minute\";i:34;s:31:\"\u0000RtlyKit\\Calendar\\Hebrew\u0000second\";i:56;}",
+            "restored_by_release": {
+                "U.u": "1727958896.123456",
+                "zone": "UTC"
+            }
+        },
+        {
+            "class": "RtlyKit\\Calendar\\Hebrew",
+            "case": "tehran",
+            "zone": "Asia/Tehran",
+            "original": {
+                "U.u": "1727946296.500000",
+                "zone": "Asia/Tehran"
+            },
+            "serialized": "O:23:\"RtlyKit\\Calendar\\Hebrew\":7:{s:34:\"\u0000RtlyKit\\Calendar\\Hebrew\u0000gregorian\";O:17:\"DateTimeImmutable\":3:{s:4:\"date\";s:26:\"2024-10-03 12:34:56.500000\";s:13:\"timezone_type\";i:3;s:8:\"timezone\";s:11:\"Asia/Tehran\";}s:29:\"\u0000RtlyKit\\Calendar\\Hebrew\u0000year\";i:5785;s:30:\"\u0000RtlyKit\\Calendar\\Hebrew\u0000month\";i:1;s:28:\"\u0000RtlyKit\\Calendar\\Hebrew\u0000day\";i:1;s:29:\"\u0000RtlyKit\\Calendar\\Hebrew\u0000hour\";i:12;s:31:\"\u0000RtlyKit\\Calendar\\Hebrew\u0000minute\";i:34;s:31:\"\u0000RtlyKit\\Calendar\\Hebrew\u0000second\";i:56;}",
+            "restored_by_release": {
+                "U.u": "1727946296.500000",
+                "zone": "Asia/Tehran"
+            }
+        },
+        {
+            "class": "RtlyKit\\Calendar\\Hebrew",
+            "case": "offset",
+            "zone": "+05:30",
+            "original": {
+                "U.u": "1742531400.000000",
+                "zone": "+05:30"
+            },
+            "serialized": "O:23:\"RtlyKit\\Calendar\\Hebrew\":7:{s:34:\"\u0000RtlyKit\\Calendar\\Hebrew\u0000gregorian\";O:17:\"DateTimeImmutable\":3:{s:4:\"date\";s:26:\"2025-03-21 10:00:00.000000\";s:13:\"timezone_type\";i:1;s:8:\"timezone\";s:6:\"+05:30\";}s:29:\"\u0000RtlyKit\\Calendar\\Hebrew\u0000year\";i:5785;s:30:\"\u0000RtlyKit\\Calendar\\Hebrew\u0000month\";i:6;s:28:\"\u0000RtlyKit\\Calendar\\Hebrew\u0000day\";i:21;s:29:\"\u0000RtlyKit\\Calendar\\Hebrew\u0000hour\";i:10;s:31:\"\u0000RtlyKit\\Calendar\\Hebrew\u0000minute\";i:0;s:31:\"\u0000RtlyKit\\Calendar\\Hebrew\u0000second\";i:0;}",
+            "restored_by_release": {
+                "U.u": "1742531400.000000",
+                "zone": "+05:30"
+            }
+        },
+        {
+            "class": "RtlyKit\\Calendar\\Hebrew",
+            "case": "new-york-summer",
+            "zone": "America/New_York",
+            "original": {
+                "U.u": "1751428799.999999",
+                "zone": "America/New_York"
+            },
+            "serialized": "O:23:\"RtlyKit\\Calendar\\Hebrew\":7:{s:34:\"\u0000RtlyKit\\Calendar\\Hebrew\u0000gregorian\";O:17:\"DateTimeImmutable\":3:{s:4:\"date\";s:26:\"2025-07-01 23:59:59.999999\";s:13:\"timezone_type\";i:3;s:8:\"timezone\";s:16:\"America/New_York\";}s:29:\"\u0000RtlyKit\\Calendar\\Hebrew\u0000year\";i:5785;s:30:\"\u0000RtlyKit\\Calendar\\Hebrew\u0000month\";i:10;s:28:\"\u0000RtlyKit\\Calendar\\Hebrew\u0000day\";i:5;s:29:\"\u0000RtlyKit\\Calendar\\Hebrew\u0000hour\";i:23;s:31:\"\u0000RtlyKit\\Calendar\\Hebrew\u0000minute\";i:59;s:31:\"\u0000RtlyKit\\Calendar\\Hebrew\u0000second\";i:59;}",
+            "restored_by_release": {
+                "U.u": "1751428799.999999",
+                "zone": "America/New_York"
+            }
+        },
+        {
+            "class": "RtlyKit\\Calendar\\Hebrew",
+            "case": "tehran-1900",
+            "zone": "Asia/Tehran",
+            "original": {
+                "U.u": "-2209001144.000000",
+                "zone": "Asia/Tehran"
+            },
+            "serialized": "O:23:\"RtlyKit\\Calendar\\Hebrew\":7:{s:34:\"\u0000RtlyKit\\Calendar\\Hebrew\u0000gregorian\";O:17:\"DateTimeImmutable\":3:{s:4:\"date\";s:26:\"1900-01-01 00:00:00.000000\";s:13:\"timezone_type\";i:3;s:8:\"timezone\";s:11:\"Asia/Tehran\";}s:29:\"\u0000RtlyKit\\Calendar\\Hebrew\u0000year\";i:5660;s:30:\"\u0000RtlyKit\\Calendar\\Hebrew\u0000month\";i:5;s:28:\"\u0000RtlyKit\\Calendar\\Hebrew\u0000day\";i:1;s:29:\"\u0000RtlyKit\\Calendar\\Hebrew\u0000hour\";i:0;s:31:\"\u0000RtlyKit\\Calendar\\Hebrew\u0000minute\";i:0;s:31:\"\u0000RtlyKit\\Calendar\\Hebrew\u0000second\";i:0;}",
+            "restored_by_release": {
+                "U.u": "-2209001144.000000",
+                "zone": "Asia/Tehran"
+            }
+        },
+        {
+            "class": "RtlyKit\\Calendar\\Hebrew",
+            "case": "amsterdam-1900",
+            "zone": "Europe/Amsterdam",
+            "original": {
+                "U.u": "-2195900372.250000",
+                "zone": "Europe/Amsterdam"
+            },
+            "serialized": "O:23:\"RtlyKit\\Calendar\\Hebrew\":7:{s:34:\"\u0000RtlyKit\\Calendar\\Hebrew\u0000gregorian\";O:17:\"DateTimeImmutable\":3:{s:4:\"date\";s:26:\"1900-06-01 12:00:00.250000\";s:13:\"timezone_type\";i:3;s:8:\"timezone\";s:16:\"Europe/Amsterdam\";}s:29:\"\u0000RtlyKit\\Calendar\\Hebrew\u0000year\";i:5660;s:30:\"\u0000RtlyKit\\Calendar\\Hebrew\u0000month\";i:10;s:28:\"\u0000RtlyKit\\Calendar\\Hebrew\u0000day\";i:4;s:29:\"\u0000RtlyKit\\Calendar\\Hebrew\u0000hour\";i:12;s:31:\"\u0000RtlyKit\\Calendar\\Hebrew\u0000minute\";i:0;s:31:\"\u0000RtlyKit\\Calendar\\Hebrew\u0000second\";i:0;}",
+            "restored_by_release": {
+                "U.u": "-2195900372.250000",
+                "zone": "Europe/Amsterdam"
+            }
+        }
+    ],
+    "casts": [
+        {
+            "default_zone": "UTC",
+            "input": "2025-03-21 10:30:15",
+            "raw": "2025-03-21 10:30:15",
+            "instant_U": "1742553015",
+            "read_back_U": "1742553015"
+        },
+        {
+            "default_zone": "UTC",
+            "input": "2025-03-21 00:00:00",
+            "raw": "2025-03-21 00:00:00",
+            "instant_U": "1742515200",
+            "read_back_U": "1742515200"
+        },
+        {
+            "default_zone": "UTC",
+            "input": "2025-07-01 23:59:59",
+            "raw": "2025-07-01 23:59:59",
+            "instant_U": "1751414399",
+            "read_back_U": "1751414399"
+        },
+        {
+            "default_zone": "Asia/Tehran",
+            "input": "2025-03-21 10:30:15",
+            "raw": "2025-03-21 10:30:15",
+            "instant_U": "1742540415",
+            "read_back_U": "1742540415"
+        },
+        {
+            "default_zone": "Asia/Tehran",
+            "input": "2025-03-21 00:00:00",
+            "raw": "2025-03-21 00:00:00",
+            "instant_U": "1742502600",
+            "read_back_U": "1742502600"
+        },
+        {
+            "default_zone": "Asia/Tehran",
+            "input": "2025-07-01 23:59:59",
+            "raw": "2025-07-01 23:59:59",
+            "instant_U": "1751401799",
+            "read_back_U": "1751401799"
+        }
+    ]
+}

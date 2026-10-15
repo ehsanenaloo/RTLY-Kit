@@ -13,7 +13,7 @@ order: 20
 <tr><td><code>sheba</code></td><td>شبا / IBAN، مع البادئة <code>IR</code> أو بدونها</td><td><a href="sheba-and-bank-card.html">شبا والبطاقة المصرفية</a></td></tr>
 <tr><td><code>bank_card</code></td><td>رقم بطاقة مصرفية من 16 رقماً (فحص Luhn)</td><td><a href="sheba-and-bank-card.html">شبا والبطاقة المصرفية</a></td></tr>
 <tr><td><code>iran_mobile</code></td><td>رقم جوال إيراني</td><td><a href="mobile-postal-plate.html">الجوال والرمز البريدي واللوحة</a></td></tr>
-<tr><td><code>mobile</code></td><td>اسم مختصر بديل لـ <code>iran_mobile</code></td><td>سلوك مطابق</td></tr>
+<tr><td><code>mobile</code></td><td>اسم مختصر بديل لـ <code>iran_mobile</code>. اجعل <code>rtly-kit.validation.mobile_alias</code> يساوي <code>false</code> إذا عرّفت حزمة أخرى أو تطبيقك قاعدة <code>mobile</code> خاصة بها</td><td>سلوك مطابق</td></tr>
 <tr><td><code>postal_code</code></td><td>رمز بريدي إيراني من 10 أرقام</td><td><a href="mobile-postal-plate.html">الجوال والرمز البريدي واللوحة</a></td></tr>
 <tr><td><code>vehicle_plate</code></td><td>لوحة مركبة إيرانية، مثل <code>12ب345-67</code></td><td><a href="mobile-postal-plate.html">الجوال والرمز البريدي واللوحة</a></td></tr>
 </tbody>
@@ -97,6 +97,16 @@ echo $post-&gt;published_at-&gt;addDays(20)-&gt;format('Y/m/d'); // 1404/02/04</
 </table>
 <p>تُقرأ السلسلة جلالية إذا كانت سنتها بين 1200 و1599 وكان الفاصل <code>/</code> أو <code>-</code>، مع وقت اختياري <code>HH:MM</code> أو <code>HH:MM:SS</code> بعد مسافة أو <code>T</code>. وأي سلسلة أخرى تذهب إلى <code>Jalali::make()</code>، وهي تقرأ السنة الأقل من 1700 جلالية وما عداها ميلادية، فـ <code>'1650-01-01'</code> تبقى جلالية.</p>
 <p>وحين يقرأ النموذج العمود تُقرأ القيمة المخزَّنة دائمًا ميلادية مهما كانت السنة، فيعود تاريخ مثل <code>1650-05-05 10:00:00</code> دون تغيير. وتُطلق القيمة المخزَّنة من نوع غير مدعوم (مصفوفة أو منطقي أو عدد عشري أو كائن) الاستثناء <code>InvalidDateException</code> مع اسم السمة والنوع. ولا يُعطي <code>null</code> إلا القيمتان <code>null</code> والسلسلة الفارغة.</p>
+
+<h3 id="cast-storage">المنطقة الزمنية للتخزين والدقة</h3>
+<p>افتراضيًا يخزّن الـ cast الوقت كما هو في القيمة التي تسندها، حتى الثانية، ويقرؤه في المنطقة الزمنية الافتراضية في PHP. إذا أسندت قيمة بإزاحة أخرى، مثل <code>2025-03-21 10:00:00+03:30</code>، فالنص المخزَّن هو <code>2025-03-21 10:00:00</code> ويُقرأ على أنه الساعة 10:00 في المنطقة الافتراضية. وهذه لحظة مختلفة.</p>
+<p>للأعمدة التي تحفظ لحظات، مرّر منطقة التخزين وسيطًا للـ cast:</p>
+<pre><code class="language-php">protected $casts = [
+    'published_at' =&gt; JalaliCast::class.':UTC',     // التخزين بتوقيت UTC حتى الثانية
+    'seen_at'      =&gt; JalaliCast::class.':UTC,6',   // التخزين بتوقيت UTC مع الميكروثواني (datetime(6))
+];</code></pre>
+<p>يحوّل الـ cast اللحظة إلى تلك المنطقة عند الإسناد، ويقرأ النص المخزَّن بها. وتُعرض القيمة في المنطقة الزمنية الافتراضية في PHP (وهي <code>config('app.timezone')</code> في Laravel). الوسيط الثاني هو عدد خانات الكسر من 0 إلى 6، ويجب أن يطابق العمود. الأعمدة الحالية تعمل كما كانت من دون وسائط. للعمود الذي يحتوي بيانات من قبل، مرّر المنطقة التي كُتبت بها القيم (مثل <code>JalaliCast::class.':Asia/Tehran'</code>). وإن كانت هي المنطقة الزمنية للتطبيق فاكتب <code>JalaliCast::class.':app'</code>، وهي تتبع <code>config('app.timezone')</code>. عندها تُقرأ الصفوف القديمة صحيحة ولا حاجة إلى ترحيل. استخدم <code>:UTC</code> على عمود قديم فقط بعد تحويل قيمه إلى UTC. المنطقة غير المعروفة أو الدقة خارج 0 إلى 6 تُطلق <code>InvalidDateException</code>.</p>
+<p>هناك حدّان يجب معرفتهما. الأول أن الوقت المحلي للكائن الذي تسنده يُخزَّن كما هو في الوضع الافتراضي، فيعود <code>Jalali</code> أو <code>DateTimeImmutable</code> بتوقيت UTC، عندما تكون المنطقة الافتراضية <code>Asia/Tehran</code>، بعد إعادة التحميل على أنه لحظة مختلفة. والثاني أن النص المخزَّن لا يحمل إزاحة. فالوقت المحلي الذي يحدث مرتين (الساعة المكرّرة عند تأخير الساعات) لا يمكن تمييزه في الوضع الافتراضي، ومع منطقة مسمّاة مثل <code>America/New_York</code>، ومع <code>:app</code>: يخزّن الوقتان النص نفسه، ويُقرأ الثاني قبل ساعة. وحده <code>:UTC</code> دقيق لكل لحظة، فاستخدمه للحقول التي تحمل لحظات. وعندما يقرأ الـ cast عمودًا ثم تحفظ النموذج، تُكتب القيمة التي لم تغيّرها كما كانت.</p>
 
 <h3 id="cast-errors">الأخطاء</h3>
 <p>المدخل السيئ يُطلق <code>RtlyKit\Exceptions\InvalidDateException</code> لحظة إسناده، ولا يظهر خطأ PHP خام أبدًا:</p>

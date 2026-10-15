@@ -98,7 +98,9 @@ require</span> __DIR__.<span class="tok-s">'/vendor/autoload.php'</span>;
 <tr><td>ورودی رشته‌ای <code>Format</code> (<code>withSeparator()</code>)</td><td>۴۰۹۶ بایت</td><td><code>InvalidNumberException</code> با <code>input_too_long</code></td></tr>
 <tr><td><code>Format::withSeparator()</code> و <code>format_number()</code></td><td>۱۰۰۰ نویسه در عدد اعشاری ساده (رقم‌های صحیح و کسر با هم)</td><td><code>InvalidNumberException</code> با <code>input_too_long</code></td></tr>
 <tr><td>جداکنندهٔ <code>Slugify::make()</code></td><td>۶۴ بایت، UTF-8 معتبر</td><td><code>RtlyKitException</code> (<code>input_too_long</code> یا <code>invalid_argument</code>)</td></tr>
+<tr><td>متن <code>Slugify::make()</code></td><td>۴۰۹۶ بایت</td><td><code>RtlyKitException</code>، <code>input_too_long</code></td></tr>
 <tr><td>الگوی <code>format()</code> (جلالی، هجری، عبری)</td><td>۲۵۶ بایت (<code>MAX_FORMAT_LENGTH</code> در هر کلاس)</td><td><code>InvalidDateException</code></td></tr>
+<tr><td>متن تاریخ برای <code>make()</code>، <code>createFromFormat()</code> و <code>JalaliCast</code>، و الگوی <code>createFromFormat()</code></td><td>هرکدام ۲۵۶ بایت، پیش از هر تجزیه بررسی می‌شود</td><td><code>InvalidDateException</code>، <code>input_too_long</code></td></tr>
 </tbody>
 </table></div>
 <p>این سقف‌ها جزو تعهد کتابخانه‌اند (<a href="api-stability.html">پایداری API</a>).</p>

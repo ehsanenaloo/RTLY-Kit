@@ -28,6 +28,11 @@ use RtlyKit\Number\Digits;
  * timestamp or a date object). A value of any other type throws
  * InvalidDateException; only null and the empty string give null.
  *
+ * Only UTC storage is exact for every instant. A local zone (the default mode, a
+ * named zone or `app`) stores text without an offset, so the two times of a
+ * repeated daylight-saving hour give the same text and the second one is read one
+ * hour early.
+ *
  * Storage time zone and precision are opt-in cast arguments:
  * `JalaliCast::class.':UTC'` converts the instant to UTC on write and reads
  * the stored text as UTC (the attribute is then shown in PHP's default time
@@ -119,7 +124,7 @@ final class JalaliCast implements CastsAttributes
         }
 
         if (is_string($value)) {
-            CalendarLimits::assertTextLength($value);
+            CalendarLimits::assertText($value);
             $jalali = self::fromJalaliString($value) ?? Jalali::make($value);
         } elseif ($value instanceof Jalali || $value instanceof DateTimeInterface || is_int($value)) {
             $jalali = Jalali::make($value);

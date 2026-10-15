@@ -61,6 +61,21 @@ $p = new PrayerTimes(
 // Karachi {"fajr":"04:42","sunrise":"06:07","dhuhr":"12:12","asr":"15:39","maghrib":"18:17","isha":"19:42"}</code></pre>
 <p>الظهر هو منتصف النهار الشمسي (عبور الشمس للزوال)، ولا يُضاف أي هامش احتياط إلى أي وقت.</p>
 
+<h3 id="custom-method">طريقتك الخاصة</h3>
+<p>كل اسم هو إعداد مسبق من <code>CalculationMethod</code>. يمكنك تمرير الكائن بدل الاسم، وبناء طريقتك لجهة لا نشحنها:</p>
+<pre><code class="language-php">use RtlyKit\Prayer\CalculationMethod;
+use RtlyKit\Prayer\PrayerTimes;
+
+$local = new CalculationMethod(name: 'Local', fajrAngle: 16.0, ishaAngle: 14.0);
+$gulf  = new CalculationMethod(name: 'Gulf', fajrAngle: 19.5, ishaMinutes: 90.0, ramadanIshaMinutes: 120.0);
+
+$p = new PrayerTimes(35.6892, 51.389, $local);
+$p = PrayerTimes::forCity('dubai', $gulf);
+echo $p-&gt;getCalculationMethod()-&gt;name;   // Gulf</code></pre>
+<p>العشاء إما زاوية (<code>ishaAngle</code>) أو دقائق بعد المغرب (<code>ishaMinutes</code>)، لا الاثنان معًا. <code>maghribAngle</code> اختياري؛ ومن دونه يكون المغرب هو الغروب. ولا تعمل <code>ramadanIshaMinutes</code> إلا مع <code>ishaMinutes</code>، وتُطبَّق في رمضان بتقويم أم القرى. تُفحص النطاقات: زاويتا الفجر والعشاء من 1 إلى 30 درجة، وزاوية المغرب فوق 0 وحتى 10، والدقائق فوق 0 وحتى 240. وما عدا ذلك يُطلق <code>InvalidPrayerConfigException</code>. تُفحص النطاقات فقط، لا مطابقة الأرقام لجهة ما. والطريقة المخصصة مسؤوليتك.</p>
+<p>تقول الطرق المدمجة ما نعرفه عنها. فـ <code>CalculationMethod::tehran()-&gt;verification</code> هو <code>MethodVerification::PublishedTable</code> (قورنت الأوقات بجدول الجهة نفسها) أو <code>Corroborated</code> (تتفق القيم مع عدة مصادر مستقلة لكننا لم نجد جدولًا للجهة)، و<code>-&gt;source</code> يذكر مصدر القيم. والطريقة المخصصة هي <code>Custom</code>.</p>
+<p>من الإعدادات (مثل ملف config في Laravel): <code>CalculationMethod::fromArray(['name' =&gt; 'Local', 'fajr_angle' =&gt; 16, 'isha_angle' =&gt; 14])</code>. المفاتيح هي <code>name</code> و<code>fajr_angle</code> و<code>isha_angle</code> أو <code>isha_minutes</code> و<code>maghrib_angle</code> و<code>ramadan_isha_minutes</code> و<code>source</code>. وأي مفتاح غير معروف أو قيمة من نوع خاطئ تُطلق خطأ.</p>
+
 <h2 id="asr">مذاهب العصر</h2>
 <p>يبدأ العصر حين يساوي ظلّ الجسم ظلّه وقت الزوال مضافًا إليه مضاعف لارتفاعه. يُستخدم <code>ASR_STANDARD</code> (القيمة 1، أي مثل الارتفاع) عند المذاهب الشافعي والمالكي والحنبلي والجعفري؛ أما <code>ASR_HANAFI</code> (القيمة 2، أي مثلا الارتفاع) فيعطي وقتًا أكثر تأخرًا.</p>
 <pre><code class="language-php">$hanafi = PrayerTimes::forCity('tehran', 'Tehran', PrayerTimes::ASR_HANAFI);

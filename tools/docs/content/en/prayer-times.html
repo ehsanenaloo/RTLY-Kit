@@ -61,6 +61,21 @@ $p = new PrayerTimes(
 // Karachi {"fajr":"04:42","sunrise":"06:07","dhuhr":"12:12","asr":"15:39","maghrib":"18:17","isha":"19:42"}</code></pre>
 <p>Dhuhr is solar noon, when the sun crosses the meridian. No safety margin is added to any time. If your authority adds one, use <code>withTune()</code> below.</p>
 
+<h3 id="custom-method">Your own method</h3>
+<p>Each name is a preset of <code>CalculationMethod</code>. You can pass the object instead of the name, and you can build your own for an authority we do not ship:</p>
+<pre><code class="language-php">use RtlyKit\Prayer\CalculationMethod;
+use RtlyKit\Prayer\PrayerTimes;
+
+$local = new CalculationMethod(name: 'Local', fajrAngle: 16.0, ishaAngle: 14.0);
+$gulf  = new CalculationMethod(name: 'Gulf', fajrAngle: 19.5, ishaMinutes: 90.0, ramadanIshaMinutes: 120.0);
+
+$p = new PrayerTimes(35.6892, 51.389, $local);
+$p = PrayerTimes::forCity('dubai', $gulf);
+echo $p-&gt;getCalculationMethod()-&gt;name;   // Gulf</code></pre>
+<p>Isha is either an angle (<code>ishaAngle</code>) or minutes after Maghrib (<code>ishaMinutes</code>), never both. <code>maghribAngle</code> is optional; without it Maghrib is sunset. <code>ramadanIshaMinutes</code> works only with <code>ishaMinutes</code> and applies in Ramadan of the Umm al-Qura calendar. The ranges are checked: Fajr and Isha angles from 1 to 30 degrees, the Maghrib angle above 0 and up to 10, minutes above 0 and up to 240. Anything else throws <code>InvalidPrayerConfigException</code>. Only the ranges are checked, never whether the numbers match an authority. A custom method is your responsibility.</p>
+<p>The built-in methods say what we know about them. <code>CalculationMethod::tehran()-&gt;verification</code> is <code>MethodVerification::PublishedTable</code> (times were compared with the authority's own timetable) or <code>Corroborated</code> (the values agree with several independent sources, but we found no timetable of the authority), and <code>-&gt;source</code> says where the values come from. A custom method is <code>Custom</code>.</p>
+<p>From configuration (for example a Laravel config file): <code>CalculationMethod::fromArray(['name' =&gt; 'Local', 'fajr_angle' =&gt; 16, 'isha_angle' =&gt; 14])</code>. The keys are <code>name</code>, <code>fajr_angle</code>, <code>isha_angle</code> or <code>isha_minutes</code>, <code>maghrib_angle</code>, <code>ramadan_isha_minutes</code> and <code>source</code>. An unknown key or a value of the wrong type throws.</p>
+
 <h2 id="asr">Asr schools</h2>
 <p>Asr begins when an object's shadow equals its noon shadow plus a multiple of its height. <code>ASR_STANDARD</code> (1, one times the height) is used by the Shafi'i, Maliki, Hanbali and Ja'fari schools. <code>ASR_HANAFI</code> (2, twice the height) gives a later time.</p>
 <pre><code class="language-php">$hanafi = PrayerTimes::forCity('tehran', 'Tehran', PrayerTimes::ASR_HANAFI);

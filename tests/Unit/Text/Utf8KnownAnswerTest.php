@@ -10,7 +10,7 @@ use RtlyKit\Text\Utf8;
 
 /**
  * Known-answer tests for the UTF-8 helpers: the complete simple lower-case
- * mapping (fixture), the exact byte-level definition of well-formed UTF-8 in
+ * mapping (two fixtures: Unicode 14 and the additions up to Unicode 18), the exact byte-level definition of well-formed UTF-8 in
  * RFC 3629 (overlong forms, surrogates, the U+10FFFF ceiling, truncation) and
  * the character counting of truncate().
  */
@@ -21,16 +21,18 @@ final class Utf8KnownAnswerTest extends TestCase
     /** @return array<int, string> code point => lower-cased UTF-8 */
     private static function mapping(): array
     {
-        /** @var string $table */
-        $table = require __DIR__.'/../../Fixtures/utf8-lowercase-mapping.php';
         $map = [];
-        foreach (preg_split('/\s+/', trim($table)) ?: [] as $pair) {
-            [$from, $to] = explode(':', $pair);
-            $out = '';
-            foreach (explode('+', $to) as $cp) {
-                $out .= self::encode((int) hexdec($cp));
+        foreach (['utf8-lowercase-mapping.php', 'utf8-lowercase-additions.php'] as $file) {
+            /** @var string $table */
+            $table = require __DIR__.'/../../Fixtures/'.$file;
+            foreach (preg_split('/\s+/', trim($table)) ?: [] as $pair) {
+                [$from, $to] = explode(':', $pair);
+                $out = '';
+                foreach (explode('+', $to) as $cp) {
+                    $out .= self::encode((int) hexdec($cp));
+                }
+                $map[(int) hexdec($from)] = $out;
             }
-            $map[(int) hexdec($from)] = $out;
         }
 
         return $map;
@@ -39,7 +41,7 @@ final class Utf8KnownAnswerTest extends TestCase
     public function test_lower_matches_the_unicode_mapping_for_every_code_point_below_u20000(): void
     {
         $map = self::mapping();
-        self::assertCount(1407, $map);
+        self::assertCount(1407 + 75, $map);
 
         $input = '';
         $expected = '';

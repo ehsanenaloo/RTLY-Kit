@@ -261,7 +261,7 @@ if (! function_exists('prayer_times')) {
      *
      * @return array{fajr: ?string, sunrise: ?string, dhuhr: string, asr: ?string, maghrib: ?string, isha: ?string}
      */
-    function prayer_times(string $city = 'tehran', string $method = 'Tehran'): array
+    function prayer_times(string $city = 'tehran', string|\RtlyKit\Prayer\CalculationMethod $method = 'Tehran'): array
     {
         return \RtlyKit\prayer_times($city, $method);
     }

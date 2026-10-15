@@ -28,6 +28,7 @@ use RtlyKit\Holiday\IranHolidays;
 use RtlyKit\Number\Digits;
 use RtlyKit\Number\Format;
 use RtlyKit\Number\NumberToWords;
+use RtlyKit\Prayer\CalculationMethod;
 use RtlyKit\Prayer\PrayerTimes;
 use RtlyKit\Support\AutoLoader;
 use RtlyKit\Text\Detector;
@@ -240,7 +241,7 @@ function is_iran_holiday(Jalali|int $year, ?int $month = null, ?int $day = null)
  *
  * @return array{fajr: ?string, sunrise: ?string, dhuhr: string, asr: ?string, maghrib: ?string, isha: ?string}
  */
-function prayer_times(string $city = 'tehran', string $method = 'Tehran'): array
+function prayer_times(string $city = 'tehran', string|CalculationMethod $method = 'Tehran'): array
 {
     return PrayerTimes::forCity($city, $method)->getTimes();
 }

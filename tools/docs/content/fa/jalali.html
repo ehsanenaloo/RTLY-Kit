@@ -73,7 +73,7 @@ try {
 } catch (InvalidDateException $e) {
     echo $e-&gt;getMessage();   // Unable to parse 'abc' with format 'Y/m/d'
 }</code></pre>
-<p>توکن‌هایی که تاریخ را غلط می‌کنند با <code>InvalidDateException</code> رد می‌شوند و نام توکن در پیام می‌آید. این توکن‌ها عبارت‌اند از <code>z</code>، <code>y</code>، نام‌های انگلیسی <code>F M D l</code>، پسوند <code>S</code> و توکن‌های منطقه و کسر ثانیه <code>e T P O p u v</code>. منطقهٔ زمانی را به‌جای آن‌ها در آرگومان سوم بدهید. قالب <code>U</code> به‌تنهایی زمان یونیکس را می‌خواند و هر قالب دیگری که <code>U</code> داشته باشد خطا می‌دهد. بایت NUL در قالب یا متن هم خطا می‌دهد.</p>
+<p>توکن‌هایی که تاریخ را غلط می‌کنند با <code>InvalidDateException</code> رد می‌شوند و نام توکن در پیام می‌آید. این توکن‌ها عبارت‌اند از <code>z</code>، <code>y</code>، نام‌های انگلیسی <code>F M D l</code>، پسوند <code>S</code> و توکن‌های منطقه <code>e T P O p</code>. منطقهٔ زمانی را به‌جای آن‌ها در آرگومان سوم بدهید. قالب <code>U</code> به‌تنهایی زمان یونیکس را می‌خواند و هر قالب دیگری که <code>U</code> داشته باشد خطا می‌دهد. بایت NUL در قالب یا متن هم خطا می‌دهد. توکن‌های کسر ثانیه <code>u</code> (میکروثانیه) و <code>v</code> (میلی‌ثانیه) خوانده می‌شوند.</p>
 <pre><code class="language-php">echo Jalali::createFromFormat('U', '1700000000', $tehran);   // 1402/08/24 01:43:20
 Jalali::createFromFormat('Y/m/d e', '1404/07/15 UTC');       // InvalidDateException: ... the 'e' token ...</code></pre>
 
@@ -232,6 +232,7 @@ catch (InvalidDateException $e) { echo $e-&gt;getMessage(); }
 <h2 id="notes">نکته‌های کاربردی</h2>
 <ul>
 <li><strong>منطقهٔ زمانی.</strong> تاریخی که بدون منطقه ساخته شود، منطقهٔ پیش‌فرض PHP را می‌گیرد. اگر نتیجه نباید به تنظیمات سرور وابسته باشد، به <code>create()</code> یا <code>make()</code> یک <code>DateTimeZone</code> بدهید. ساعت و دقیقه و خود تاریخ در منطقهٔ همان شیء خوانده می‌شوند.</li>
+<li><strong>ساعت تابستانی.</strong> ساعت محلی‌ای که وجود ندارد (ساعتی که هنگام جلو رفتن ساعت‌ها حذف می‌شود) مثل PHP به اندازهٔ همان شکاف جلو می‌رود. ساعت محلی‌ای که دو بار پیش می‌آید، اولین بار حساب می‌شود، مگر اینکه لحظه‌ای را با آفست بدهید.</li>
 <li><strong>مرز روز.</strong> روز در نیمه‌شبِ منطقهٔ شیء عوض می‌شود.</li>
 <li><strong>مثل یک مقدار.</strong> شیءها <code>Stringable</code> هستند. می‌توانید راحت آن‌ها را به اشتراک بگذارید و در آرایه نگه دارید. برای مرتب‌کردن از <code>getTimestamp()</code> استفاده کنید.</li>
 <li><strong>ببینید.</strong> تبدیل به تقویم‌های دیگر و مقایسهٔ بین تقویم‌ها: <a href="convert-and-compare.html">تبدیل و مقایسهٔ تاریخ‌ها</a>. Carbon: <a href="carbon-macros.html">ماکروهای Carbon</a>. تعطیلات رسمی ایران: <a href="holidays.html">تعطیلات</a>.</li>

@@ -99,6 +99,23 @@ var_dump(BankCard::getBankName('6037991234567893'));   // string(26) "بانک �
 <div class="note"><strong>Good to know.</strong> The tables are small. Many valid cards come from a bank that is not listed, and then <code>bank_name</code> is <code>null</code>. No official BIN registry was reachable, and the Central Bank list is dated 2017, so newer codes rely on public pages. Banks merge, rename and reassign ranges, so show the name as a hint and do not use it for legal or financial decisions. Details are in <a href="accuracy-and-data.html">Accuracy and data</a>.</div>
 <p>Validity never depends on these tables. A number with a valid checksum is valid whether or not its bank is known.</p>
 
+<h3 id="own-table">Your own table</h3>
+<p>You can change the lookup tables without touching the package. <code>ReferenceTable</code> is an immutable table: it starts from the bundled data, and each change returns a new table.</p>
+<pre><code class="language-php">use RtlyKit\Validation\BankCard;
+use RtlyKit\Validation\ReferenceTable;
+use RtlyKit\Validation\Sheba;
+use RtlyKit\Validation\TableKind;
+
+$bins = ReferenceTable::bankBins()-&gt;with(400000, 'Example Bank')-&gt;without(603799);
+BankCard::getBankName($card, $bins);
+BankCard::validate($card, $bins)-&gt;details()['bank_name'];
+
+$banks = ReferenceTable::shebaBanks()-&gt;with('017', 'Other name');
+Sheba::getBankName($sheba, $banks);
+
+$mine = ReferenceTable::from(TableKind::BankBin, [400000 =&gt; 'Example Bank']);   // only your entries</code></pre>
+<p>A BIN is 6 digits and a Sheba bank code is 3 digits (<code>'017'</code>, or the int 17); Persian digits work. A name is 1 to 100 characters of text. <code>without()</code> throws when the key is not in the table, so a typo does not pass silently; <code>get()</code> and <code>has()</code> never throw. The bundled tables and other tables are never changed. Validity never depends on the table, because the Luhn and mod-97 checks do not use it. An entry you add is your responsibility.</p>
+
 <h2 id="notes">Practical notes</h2>
 <ul>
 <li>The checksum catches typos. It cannot tell you that a card exists or that an account belongs to someone.</li>

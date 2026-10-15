@@ -144,6 +144,21 @@ final class CalendarLimits
         return "'" . self::excerpt($text) . "'";
     }
 
+    /**
+     * The checks every date text must pass before it is trimmed, converted or parsed: its length and
+     * the absence of a NUL byte (which `trim()` would remove at either end).
+     *
+     * @throws InvalidDateException
+     */
+    public static function assertText(string $text): void
+    {
+        self::assertTextLength($text);
+
+        if (str_contains($text, "\0")) {
+            throw new InvalidDateException('Unable to parse date: the text contains a NUL byte.');
+        }
+    }
+
     /** The start of a value for an error message: bounded, valid UTF-8, no control characters. */
     private static function excerpt(string $text): string
     {
@@ -157,10 +172,7 @@ final class CalendarLimits
      */
     public static function parseGregorian(string $time, ?DateTimeZone $timezone): DateTimeImmutable
     {
-        self::assertTextLength($time);
-        if (str_contains($time, "\0")) {
-            throw new InvalidDateException('Unable to parse date: the text contains a NUL byte.');
-        }
+        self::assertText($time);
 
         // No date form has a run of more than 14 digits (YYYYMMDDHHMMSS); PHP wraps longer runs around and
         // can return a plausible date for them.
@@ -362,11 +374,7 @@ final class CalendarLimits
      */
     public static function normalize(string $time): string
     {
-        self::assertTextLength($time);
-
-        if (str_contains($time, "\0")) {
-            throw new InvalidDateException('Unable to parse date: the text contains a NUL byte.');
-        }
+        self::assertText($time);
 
         $english = Digits::toEnglish($time);
         $normalized = trim(preg_replace('/[\x{00A0}\x{200C}\x{200E}\x{200F}]/u', ' ', $english) ?? $english);

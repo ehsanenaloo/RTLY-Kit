@@ -67,12 +67,9 @@ final class PrayerTimes
     /** Umm al-Qura Hijri month of Ramadan. */
     private const RAMADAN = 9;
 
-    /** Makkah: extra Isha delay (minutes after Maghrib) during Ramadan. */
-    private const MAKKAH_RAMADAN_ISHA_MINUTES = 120.0;
-
     private float $latitude;
     private float $longitude;
-    private string $method;
+    private CalculationMethod $calculation;
     private int $asrFactor;
     private DateTimeZone $timezone;
     private float $elevation;
@@ -81,17 +78,9 @@ final class PrayerTimes
     /** @var array<string, int> manual tune in minutes per prayer name */
     private array $tune = ['fajr' => 0, 'sunrise' => 0, 'dhuhr' => 0, 'asr' => 0, 'maghrib' => 0, 'isha' => 0];
 
-    /** @var array<string, array{fajr: float, isha: float, maghrib?: float, ishaMinutes?: float}> */
-    private static array $methods = [
-        'MWL'     => ['fajr' => 18.0, 'isha' => 17.0],
-        'ISNA'    => ['fajr' => 15.0, 'isha' => 15.0],
-        'Egypt'   => ['fajr' => 19.5, 'isha' => 17.5],
-        'Makkah'  => ['fajr' => 18.5, 'isha' => 0.0, 'ishaMinutes' => 90.0],
-        'Karachi' => ['fajr' => 18.0, 'isha' => 18.0],
-        'Tehran'  => ['fajr' => 17.7, 'isha' => 14.0, 'maghrib' => 4.5],
-    ];
-
     /**
+     * @param string|CalculationMethod $method one of the built-in names (see {@see CalculationMethod::builtIn()}) or a
+     *                                         {@see CalculationMethod}, which can be a custom one
      * @param ?DateTimeZone $timezone defaults to date_default_timezone_get()
      * @param float $elevation observer height in metres; lowers the sunrise/sunset
      *                         altitude by the geometric dip 0.0347*sqrt(h) degrees
@@ -103,16 +92,12 @@ final class PrayerTimes
     public function __construct(
         float $latitude,
         float $longitude,
-        string $method = self::METHOD_TEHRAN,
+        string|CalculationMethod $method = self::METHOD_TEHRAN,
         int $asrFactor = self::ASR_STANDARD,
         ?DateTimeZone $timezone = null,
         float $elevation = 0.0,
     ) {
-        if (! isset(self::$methods[$method])) {
-            throw new InvalidPrayerConfigException(
-                'Unknown calculation method: '.Utf8::excerpt($method).'. Available: '.implode(', ', array_keys(self::$methods)),
-            );
-        }
+        $calculation = $method instanceof CalculationMethod ? $method : CalculationMethod::named($method);
 
         if ($asrFactor !== self::ASR_STANDARD && $asrFactor !== self::ASR_HANAFI) {
             throw new InvalidPrayerConfigException("Invalid Asr factor: {$asrFactor} (use 1 or 2)");
@@ -154,13 +139,13 @@ final class PrayerTimes
 
         $this->latitude  = $latitude;
         $this->longitude = $longitude;
-        $this->method    = $method;
+        $this->calculation = $calculation;
         $this->asrFactor = $asrFactor;
         $this->timezone  = $timezone ?? new DateTimeZone(date_default_timezone_get());
         $this->elevation = max(0.0, $elevation);
     }
 
-    public static function forCity(string $city, string $method = self::METHOD_TEHRAN, int $asrFactor = self::ASR_STANDARD): self
+    public static function forCity(string $city, string|CalculationMethod $method = self::METHOD_TEHRAN, int $asrFactor = self::ASR_STANDARD): self
     {
         $cities = [
             'tehran'   => [35.6892, 51.3890, 'Asia/Tehran'],
@@ -187,6 +172,12 @@ final class PrayerTimes
         [$lat, $lng, $tz] = $cities[$key];
 
         return new self($lat, $lng, $method, $asrFactor, new DateTimeZone($tz));
+    }
+
+    /** The calculation method in use (a built-in preset or the custom one given to the constructor). */
+    public function getCalculationMethod(): CalculationMethod
+    {
+        return $this->calculation;
     }
 
     /**
@@ -405,22 +396,23 @@ final class PrayerTimes
      */
     private function eventHours(float $jd0, DateTimeImmutable $date): array
     {
-        $p       = self::$methods[$this->method];
+        $m       = $this->calculation;
+        $maghribAngle = $m->maghribAngle;
         $horizon = -(0.833 + 0.0347 * sqrt($this->elevation));
 
         $noon    = $this->solarNoon($jd0);
         $sunrise = $this->eventTime($jd0, $horizon, false);
         $sunset  = $this->eventTime($jd0, $horizon, true);
-        $maghrib = isset($p['maghrib']) ? $this->eventTime($jd0, -$p['maghrib'], true) : $sunset;
-        $fajr    = $this->eventTime($jd0, -$p['fajr'], false);
+        $maghrib = $maghribAngle !== null ? $this->eventTime($jd0, -$maghribAngle, true) : $sunset;
+        $fajr    = $this->eventTime($jd0, -$m->fajrAngle, false);
 
-        if (isset($p['ishaMinutes'])) {
-            $minutes = $this->method === self::METHOD_MAKKAH && $this->isRamadan($date)
-                ? self::MAKKAH_RAMADAN_ISHA_MINUTES
-                : $p['ishaMinutes'];
+        if ($m->ishaMinutes !== null) {
+            $minutes = $m->ramadanIshaMinutes !== null && $this->isRamadan($date)
+                ? $m->ramadanIshaMinutes
+                : $m->ishaMinutes;
             $isha = $maghrib === null ? null : $maghrib + $minutes / 60;
         } else {
-            $isha = $this->eventTime($jd0, -$p['isha'], true);
+            $isha = $this->eventTime($jd0, -(float) $m->ishaAngle, true);
         }
 
         if ($this->highLatitudeRule !== HighLatitudeRule::None) {
@@ -436,15 +428,15 @@ final class PrayerTimes
 
             $rule = $this->highLatitudeRule;
 
-            $portion = $rule->nightFraction($p['fajr']) * $night;
+            $portion = $rule->nightFraction($m->fajrAngle) * $night;
             if ($fajr === null) {
                 $fajr = $refRise - $portion;
             } elseif ($realNight && $sunrise !== null && $sunrise - $fajr > $portion) {
                 $fajr = $refRise - $portion;
             }
 
-            if (! isset($p['ishaMinutes'])) {
-                $portion = $rule->nightFraction($p['isha']) * $night;
+            if ($m->ishaMinutes === null) {
+                $portion = $rule->nightFraction((float) $m->ishaAngle) * $night;
                 if ($isha === null) {
                     $isha = $refSet + $portion;
                 } elseif ($realNight && $sunset !== null && $isha - $sunset > $portion) {
@@ -454,8 +446,8 @@ final class PrayerTimes
 
             // Tehran-style Maghrib at an angle below the horizon; with the plain
             // sunset (all other methods) there is nothing to adjust.
-            if (isset($p['maghrib']) && $sunset !== null) {
-                $portion = $rule->nightFraction($p['maghrib']) * $night;
+            if ($maghribAngle !== null && $sunset !== null) {
+                $portion = $rule->nightFraction($maghribAngle) * $night;
                 if ($maghrib === null || ($realNight && $maghrib - $sunset > $portion)) {
                     $maghrib = $sunset + $portion;
                 }
@@ -464,7 +456,7 @@ final class PrayerTimes
                 // hit the same limit. Maghrib then falls back to the angle-based portion
                 // (angle / 60), which is always shorter than Isha's, so it stays before Isha.
                 if ($isha !== null && $maghrib > $isha - 1.0 / 60) {
-                    $maghrib = $sunset + HighLatitudeRule::AngleBased->nightFraction($p['maghrib']) * $night;
+                    $maghrib = $sunset + HighLatitudeRule::AngleBased->nightFraction($maghribAngle) * $night;
                 }
             }
         }

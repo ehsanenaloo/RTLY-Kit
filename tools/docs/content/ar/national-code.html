@@ -85,6 +85,18 @@ $b = NationalCode::validate('9991234561');   // رقم تحقق صحيح، وا�
 var_dump($b-&gt;isValid(), $b-&gt;details()['location']);   // bool(true)  NULL</code></pre>
 <div class="note"><strong>من المفيد أن تعرف.</strong> تدل البادئة على المكان الذي <em>صدرت</em> فيه شهادة الميلاد أو البطاقة الأصلية، وليس على مكان ولادة الشخص أو إقامته. كثيرون يحملون أرقامًا صدرت في أماكن أخرى، وقد تغيّرت حدود المحافظات منذ الإصدار (كرج مثلًا تظهر تحت طهران). لذلك استخدم المكان معلومة إرشادية فقط، لا للتحقق من الهوية أو الأصل أو الإقامة.<br>لا ينشر السجل المدني قائمة تقرؤها الآلة. والجدول هنا يضم 547 بادئة، وكل بادئة فيه اتفقت عليها ثلاث مجموعات بيانات منشورة على المحافظة والمدينة معًا، ولم تناقضها مجموعة رابعة. وبعض هذه المجموعات مشتق من بعض. والبادئة غير الموجودة تعني «غير معروف» ولا تعني «غير صالح». المصادر في <a href="accuracy-and-data.html">الدقة والبيانات</a>.</div>
 
+<h3 id="own-table">جدول أماكنك الخاص</h3>
+<p>يعمل جدول البادئات مثل جداول البنوك (انظر <a href="sheba-and-bank-card.html#own-table">شبا وبطاقة مصرفية</a>): تبدأ <code>ReferenceTable::nationalCodeLocations()</code> من البيانات المرفقة، وتُرجع <code>with()</code> و<code>without()</code> جداول جديدة.</p>
+<pre><code class="language-php">use RtlyKit\Validation\NationalCode;
+use RtlyKit\Validation\ReferenceTable;
+
+$places = ReferenceTable::nationalCodeLocations()
+    -&gt;with(999, ['province' =&gt; 'Example province', 'city' =&gt; 'Example city']);
+
+NationalCode::getLocation('9991234561', $places);
+// ['province' =&gt; 'Example province', 'city' =&gt; 'Example city']</code></pre>
+<p>البادئة من 1 إلى 999 (أو ثلاثة أرقام نصًا). ويجب أن تكون القيمة بالضبط <code>['province' =&gt; ..., 'city' =&gt; ...]</code>، وكلاهما نص من 1 إلى 100 حرف. مرّر الجدول وسيطًا ثانيًا إلى <code>getLocation()</code> أو <code>validate()</code>. فهو يغيّر المكان في النتيجة فقط؛ ورقم التحقق لا يعتمد عليه أبدًا. وما تضيفه من مدخلات مسؤوليتك.</p>
+
 <h2 id="what-is-not-checked">ما لا يخبرك به التحقق</h2>
 <ul>
 <li>رقم التحقق الصحيح يعني أن الرقم سليم الصياغة. ولا يعني أن الرقم صدر يومًا أو أنه يخص شخصًا بعينه.</li>

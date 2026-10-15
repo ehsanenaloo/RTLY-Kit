@@ -94,6 +94,23 @@ var_dump(BankCard::getBankName('6037991234567893'));   // string(26) "بانک �
 <div class="note"><strong>خوب است بدانید.</strong> جدول‌ها کوچک‌اند. بسیاری از کارت‌های معتبر مال بانکی هستند که در فهرست نیست و برای آن‌ها <code>bank_name</code> برابر <code>null</code> است. بانک‌ها ادغام می‌شوند، نامشان عوض می‌شود و بازه‌ها را دوباره می‌دهند. پس نام بانک را به شکل «اشاره» نشان دهید و تصمیم مالی یا حقوقی را روی آن بنا نکنید. فهرست رسمی BIN در دسترس نبود. جدول‌ها در 2026-10-08 با چند صفحهٔ عمومی دوباره سنجیده شدند. جزئیات در <a href="accuracy-and-data.html">دقت و داده</a> است.</div>
 <p>معتبر بودن هیچ‌وقت به این جدول‌ها بستگی ندارد. شماره‌ای که چک‌سامش درست باشد معتبر است، چه بانکش شناخته شود چه نه.</p>
 
+<h3 id="own-table">جدول خودتان</h3>
+<p>می‌توانید جدول‌های جست‌وجو را بدون دست‌زدن به بسته عوض کنید. <code>ReferenceTable</code> یک جدول تغییرناپذیر است: از دادهٔ همراه بسته شروع می‌شود و هر تغییر یک جدول تازه برمی‌گرداند.</p>
+<pre><code class="language-php">use RtlyKit\Validation\BankCard;
+use RtlyKit\Validation\ReferenceTable;
+use RtlyKit\Validation\Sheba;
+use RtlyKit\Validation\TableKind;
+
+$bins = ReferenceTable::bankBins()-&gt;with(400000, 'Example Bank')-&gt;without(603799);
+BankCard::getBankName($card, $bins);
+BankCard::validate($card, $bins)-&gt;details()['bank_name'];
+
+$banks = ReferenceTable::shebaBanks()-&gt;with('017', 'Other name');
+Sheba::getBankName($sheba, $banks);
+
+$mine = ReferenceTable::from(TableKind::BankBin, [400000 =&gt; 'Example Bank']);   // only your entries</code></pre>
+<p>BIN شش رقم است و کد بانک شبا سه رقم (<code>'017'</code> یا عدد صحیح ۱۷)؛ رقم فارسی هم کار می‌کند. نام، متنی ۱ تا ۱۰۰ نویسه‌ای است. اگر کلید در جدول نباشد <code>without()</code> خطا می‌دهد، تا غلط املایی بی‌صدا رد نشود؛ <code>get()</code> و <code>has()</code> هیچ‌وقت خطا نمی‌دهند. جدول‌های همراه بسته و جدول‌های دیگر هرگز عوض نمی‌شوند. معتبر بودن به جدول وابسته نیست، چون بررسی Luhn و mod-97 از آن استفاده نمی‌کند. ورودی‌ای که خودتان اضافه می‌کنید با مسئولیت خودتان است.</p>
+
 <h2 id="notes">نکته‌های کاربردی</h2>
 <ul>
 <li>چک‌سام اشتباه تایپی را می‌گیرد، نه شمارهٔ جعلی را. نمی‌تواند بگوید کارتی وجود دارد یا حسابی مال کسی است.</li>

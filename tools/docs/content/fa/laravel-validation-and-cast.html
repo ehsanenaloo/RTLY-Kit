@@ -13,7 +13,7 @@ order: 20
 <tr><td><code>sheba</code></td><td>شبا / IBAN، با <code>IR</code> یا بدون آن</td><td><a href="sheba-and-bank-card.html">شبا و کارت بانکی</a></td></tr>
 <tr><td><code>bank_card</code></td><td>شمارهٔ کارت بانکی ۱۶ رقمی (بررسی Luhn)</td><td><a href="sheba-and-bank-card.html">شبا و کارت بانکی</a></td></tr>
 <tr><td><code>iran_mobile</code></td><td>شمارهٔ موبایل ایران</td><td><a href="mobile-postal-plate.html">موبایل، کدپستی، پلاک</a></td></tr>
-<tr><td><code>mobile</code></td><td>نام کوتاه <code>iran_mobile</code></td><td>رفتار یکسان</td></tr>
+<tr><td><code>mobile</code></td><td>نام کوتاه <code>iran_mobile</code>. اگر پکیج دیگر یا برنامهٔ شما قاعدهٔ <code>mobile</code> خودش را دارد، <code>rtly-kit.validation.mobile_alias</code> را <code>false</code> کنید</td><td>رفتار یکسان</td></tr>
 <tr><td><code>postal_code</code></td><td>کدپستی ۱۰ رقمی ایران</td><td><a href="mobile-postal-plate.html">موبایل، کدپستی، پلاک</a></td></tr>
 <tr><td><code>vehicle_plate</code></td><td>پلاک خودروی ایران، مثلاً <code>12ب345-67</code></td><td><a href="mobile-postal-plate.html">موبایل، کدپستی، پلاک</a></td></tr>
 </tbody>
@@ -97,6 +97,16 @@ echo $post-&gt;published_at-&gt;addDays(20)-&gt;format('Y/m/d'); // 1404/02/04</
 </table>
 <p>رشته‌ای جلالی حساب می‌شود که سالش بین ۱۲۰۰ و ۱۵۹۹ باشد و جداکننده‌اش <code>/</code> یا <code>-</code>، با ساعت اختیاری <code>HH:MM</code> یا <code>HH:MM:SS</code> بعد از فاصله یا <code>T</code>. بقیهٔ رشته‌ها به <code>Jalali::make()</code> می‌روند. این متد سال کمتر از ۱۷۰۰ را جلالی می‌خواند و بقیه را میلادی، پس <code>'1650-01-01'</code> هم جلالی است.</p>
 <p>وقتی مدل ستون را می‌خواند، مقدار ذخیره‌شده همیشه میلادی خوانده می‌شود، هر سالی که باشد، پس تاریخی مثل <code>1650-05-05 10:00:00</code> بدون تغییر برمی‌گردد. مقدار ذخیره‌شده از نوع پشتیبانی‌نشده (آرایه، boolean، float یا شیء) <code>InvalidDateException</code> می‌دهد، با نام ویژگی و نوع. فقط <code>null</code> و رشتهٔ خالی <code>null</code> می‌دهند.</p>
+
+<h3 id="cast-storage">منطقهٔ زمانی و دقت ذخیره</h3>
+<p>به‌طور پیش‌فرض cast ساعت دیواریِ مقداری را که می‌دهید، تا ثانیه، ذخیره می‌کند و آن را در منطقهٔ زمانی پیش‌فرض PHP می‌خواند. اگر مقداری با آفست دیگر بدهید، مثلاً <code>2025-03-21 10:00:00+03:30</code>، متن ذخیره‌شده <code>2025-03-21 10:00:00</code> است و با ساعت ۱۰ در منطقهٔ پیش‌فرض خوانده می‌شود. این یک لحظهٔ دیگر است.</p>
+<p>برای ستون‌هایی که لحظه نگه می‌دارند، منطقهٔ ذخیره را به‌عنوان آرگومان cast بدهید:</p>
+<pre><code class="language-php">protected $casts = [
+    'published_at' =&gt; JalaliCast::class.':UTC',     // ذخیره به وقت UTC، تا ثانیه
+    'seen_at'      =&gt; JalaliCast::class.':UTC,6',   // ذخیره به وقت UTC با میکروثانیه (datetime(6))
+];</code></pre>
+<p>cast هنگام مقداردهی لحظه را به آن منطقه تبدیل می‌کند و متن ذخیره‌شده را در همان منطقه می‌خواند. مقدار نمایش‌داده‌شده در منطقهٔ زمانی پیش‌فرض PHP است (در Laravel برابر <code>config('app.timezone')</code>). آرگومان دوم تعداد رقم‌های اعشار است، از ۰ تا ۶، و باید با ستون هماهنگ باشد. ستون‌های فعلی بدون آرگومان مثل قبل کار می‌کنند. برای ستونی که از قبل داده دارد، منطقه‌ای را بدهید که مقدارها با آن نوشته شده‌اند (مثلاً <code>JalaliCast::class.':Asia/Tehran'</code>). اگر آن منطقه همان منطقهٔ زمانی برنامه است، بنویسید <code>JalaliCast::class.':app'</code>؛ این گزینه <code>config('app.timezone')</code> را دنبال می‌کند. آن‌وقت ردیف‌های قدیمی درست خوانده می‌شوند و مهاجرت لازم نیست. <code>:UTC</code> را روی ستون قدیمی فقط بعد از تبدیل مقدارها به UTC بگذارید. منطقهٔ ناشناخته یا دقتی خارج از ۰ تا ۶ <code>InvalidDateException</code> پرتاب می‌کند.</p>
+<p>دو محدودیت را بدانید. اول، در حالت پیش‌فرض ساعت دیواریِ شیئی که می‌دهید همان‌طور که هست ذخیره می‌شود. پس <code>Jalali</code> یا <code>DateTimeImmutable</code> به وقت UTC، وقتی منطقهٔ پیش‌فرض <code>Asia/Tehran</code> است، بعد از بازخوانی لحظهٔ دیگری می‌شود. دوم، متن ذخیره‌شده آفست ندارد. ساعت محلی‌ای که دو بار پیش می‌آید (ساعتی که هنگام عقب رفتن ساعت‌ها تکرار می‌شود) در حالت پیش‌فرض، با منطقهٔ نام‌دار مثل <code>America/New_York</code> و با <code>:app</code> از هم جدا نمی‌شود: هر دو یک متن ذخیره می‌کنند و دومی یک ساعت زودتر خوانده می‌شود. فقط <code>:UTC</code> برای هر لحظه دقیق است، پس برای فیلدی که لحظه نگه می‌دارد آن را بگذارید. وقتی cast ستونی را می‌خواند و مدل را ذخیره می‌کنید، مقداری که تغییر نداده‌اید همان‌طور که بود نوشته می‌شود.</p>
 
 <h3 id="cast-errors">خطاها</h3>
 <p>ورودی نادرست موقع نوشتن <code>RtlyKit\Exceptions\InvalidDateException</code> می‌دهد، نه خطای خام PHP:</p>

@@ -30,13 +30,28 @@ docker compose -f tools/docker-compose.yml run --rm php vendor/bin/phpunit tests
 docker compose -f tools/docker-compose.yml run --rm php php -r 'require "vendor/autoload.php"; echo RtlyKit\Calendar\Jalali::make("2026-03-21")->format("Y/m/d");'
 ```
 
+Changing a bundled data table (banks, prefixes, holidays, the Umm al-Qura table) is a separate, documented step: see "Updating the data" in `resources/data/SOURCES.md` and run `composer data:check`.
+
 The `JalaliCast` database tests always run on SQLite. To run them on MySQL and PostgreSQL too, start the throw-away databases with the `db` profile:
 
 ```bash
 docker compose -f tools/docker-compose.yml --profile db run --rm php-db vendor/bin/phpunit -c tools/phpunit.xml.dist tests/Integration/Laravel/Casts/JalaliCastDatabaseTest.php
 ```
 
+The CI job `test-database` runs the same file with `RTLY_TEST_REQUIRE_DB=1`, which turns a missing server or driver into a failure instead of a skip. Set it yourself (together with `RTLY_TEST_MYSQL_HOST` and `RTLY_TEST_PGSQL_HOST`) when you want that behaviour locally.
+
 If you have PHP 8.2+ and Composer locally, the same `composer` scripts work without Docker.
+
+### Mutation testing and benchmarks on Windows
+
+`composer mutation` ends in many timeouts when the sources sit on a Windows bind mount. Run it on a copy inside the container instead; it then finishes in about 15 minutes and gives the same numbers as CI:
+
+```bash
+docker compose -f tools/docker-compose.yml run --rm -e COMPOSER_PROCESS_TIMEOUT=0 php sh -c \
+  "mkdir /w && tar -C /app --exclude=./.git -cf - . | tar -C /w -xf - && cd /w && composer mutation"
+```
+
+`php tools/benchmark/suite.php` (package-wide timings, memory and cold-start cost; it checks every result against a known answer outside the timed part) should be run the same way, with nothing else running. Compare only numbers from the same machine and session.
 
 ## Code style
 

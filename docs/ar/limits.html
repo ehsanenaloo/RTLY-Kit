@@ -98,7 +98,9 @@ require</span> __DIR__.<span class="tok-s">'/vendor/autoload.php'</span>;
 <tr><td>المُدخَل النصي لـ <code>Format</code> (<code>withSeparator()</code>)</td><td>4096 بايت</td><td><code>InvalidNumberException</code>، <code>input_too_long</code></td></tr>
 <tr><td><code>Format::withSeparator()</code> / <code>format_number()</code></td><td>1000 نويسة في العدد العشري العادي (أرقام الجزء الصحيح والكسري معًا)</td><td><code>InvalidNumberException</code>، <code>input_too_long</code></td></tr>
 <tr><td>فاصل <code>Slugify::make()</code></td><td>64 بايتاً، بترميز UTF-8 صالح</td><td><code>RtlyKitException</code> (<code>input_too_long</code> / <code>invalid_argument</code>)</td></tr>
+<tr><td>نص <code>Slugify::make()</code></td><td>4096 بايت</td><td><code>RtlyKitException</code>، <code>input_too_long</code></td></tr>
 <tr><td>نمط <code>Jalali::format()</code></td><td>256 بايتًا (<code>Jalali::MAX_FORMAT_LENGTH</code>)</td><td><code>InvalidDateException</code></td></tr>
+<tr><td>نص التاريخ في <code>make()</code> و<code>createFromFormat()</code> و<code>JalaliCast</code>، ونمط <code>createFromFormat()</code></td><td>256 بايتًا لكل منهما، ويُفحص قبل أي تحليل</td><td><code>InvalidDateException</code>، <code>input_too_long</code></td></tr>
 </tbody>
 </table></div>
 <p>السقوف جزء من العقد (انظر <a href="api-stability.html">استقرار الواجهة</a>).</p>

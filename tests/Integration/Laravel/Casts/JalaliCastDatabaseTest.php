@@ -19,6 +19,9 @@ use RtlyKit\Tests\Integration\Laravel\Casts\Fixtures\EventModel;
  * JalaliCast against real databases. SQLite always runs. MySQL and PostgreSQL run
  * when RTLY_TEST_MYSQL_HOST / RTLY_TEST_PGSQL_HOST name a server (see the `php-db`
  * service in tools/docker-compose.yml); otherwise those cases are skipped.
+ *
+ * With RTLY_TEST_REQUIRE_DB=1 (the CI job `test-database`) a missing server or driver
+ * fails the test instead of skipping it, so a green run proves the server paths ran.
  */
 final class JalaliCastDatabaseTest extends TestCase
 {
@@ -49,18 +52,23 @@ final class JalaliCastDatabaseTest extends TestCase
         yield 'pgsql' => ['pgsql'];
     }
 
-    private function connect(string $driver): void
+    /** @param array<string, mixed> $override */
+    private function connect(string $driver, array $override = []): void
     {
         $config = match ($driver) {
             'sqlite' => ['driver' => 'sqlite', 'database' => ':memory:', 'prefix' => ''],
             'mysql' => ['driver' => 'mysql', 'host' => getenv('RTLY_TEST_MYSQL_HOST') ?: '', 'database' => 'rtly', 'username' => 'root', 'password' => '', 'charset' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci', 'prefix' => '', 'timezone' => '+00:00'],
             default => ['driver' => 'pgsql', 'host' => getenv('RTLY_TEST_PGSQL_HOST') ?: '', 'database' => 'rtly', 'username' => 'postgres', 'password' => '', 'charset' => 'utf8', 'prefix' => '', 'search_path' => 'public', 'sslmode' => 'prefer'],
         };
+        $config = array_merge($config, $override);
+        $required = getenv('RTLY_TEST_REQUIRE_DB') === '1';
         if (($config['host'] ?? 'x') === '') {
-            self::markTestSkipped("No {$driver} server (set RTLY_TEST_".strtoupper($driver).'_HOST).');
+            $why = "No {$driver} server (set RTLY_TEST_".strtoupper($driver).'_HOST).';
+            $required ? self::fail($why) : self::markTestSkipped($why);
         }
         if (! extension_loaded('pdo_'.$driver)) {
-            self::markTestSkipped("The pdo_{$driver} extension is not loaded.");
+            $why = "The pdo_{$driver} extension is not loaded.";
+            $required ? self::fail($why) : self::markTestSkipped($why);
         }
 
         $capsule = new Capsule();
@@ -172,5 +180,47 @@ final class JalaliCastDatabaseTest extends TestCase
         $found = EventModel::query()->where('at', '2025-03-21 06:30:00')->first();
         self::assertNotNull($found, $driver);
         self::assertSame('10:00', $found->at->format('H:i'));
+    }
+    public function test_every_server_is_configured_when_the_run_requires_them(): void
+    {
+        if (getenv('RTLY_TEST_REQUIRE_DB') !== '1') {
+            self::markTestSkipped('Only checked when RTLY_TEST_REQUIRE_DB=1.');
+        }
+
+        foreach (['MYSQL' => 'pdo_mysql', 'PGSQL' => 'pdo_pgsql'] as $name => $extension) {
+            self::assertNotSame('', (string) getenv('RTLY_TEST_'.$name.'_HOST'), "RTLY_TEST_{$name}_HOST");
+            self::assertTrue(extension_loaded($extension), $extension);
+        }
+    }
+
+    /**
+     * A MySQL `timestamp` column converts through the session time zone, so the value
+     * is exact only while writer and reader use the same session zone; a `datetime`
+     * column does not depend on it. This pins down what the guides say about it.
+     */
+    public function test_a_mysql_timestamp_column_depends_on_the_session_time_zone(): void
+    {
+        $this->connect('mysql', ['timezone' => '+05:30']);
+        date_default_timezone_set('UTC');
+        $casts = ['at' => JalaliCast::class.':UTC,6', 'seen' => JalaliCast::class.':UTC,6'];
+        $input = new DateTimeImmutable('2025-03-21 10:00:00.5', new DateTimeZone('UTC'));
+
+        $event = $this->model($casts);
+        $event->at = $input;
+        $event->seen = $input;
+        $event->save();
+
+        $same = $this->fresh($event, (int) $event->getKey());
+        self::assertSame($input->format('U.u'), $same->at->format('U.u'));
+        self::assertSame($input->format('U.u'), $same->seen->format('U.u'));
+
+        $capsule = $this->capsule;
+        self::assertNotNull($capsule);
+        $capsule->addConnection(array_merge($capsule->getConnection()->getConfig(), ['timezone' => '+00:00']), 'utc');
+        $other = $capsule->getConnection('utc')->table('events')->where('id', $event->getKey())->first();
+        self::assertNotNull($other);
+
+        self::assertSame('2025-03-21 10:00:00.500000', $other->at, 'datetime does not depend on the session');
+        self::assertSame('2025-03-21 04:30:00.500000', $other->seen, 'timestamp is converted to the session zone');
     }
 }

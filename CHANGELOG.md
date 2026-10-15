@@ -7,13 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-10-15
+
+New public API for your own prayer-time methods and lookup tables, and a few fixes. Nothing that worked in 0.4.0 stops working. For the small differences, see [UPGRADE.md](UPGRADE.md).
+
+### Added
+
+- `CalculationMethod` describes how Fajr, Maghrib and Isha are computed. `PrayerTimes` and `PrayerTimes::forCity()` accept it instead of a method name, so you can use your own angles or minutes (`new CalculationMethod(name: 'Local', fajrAngle: 16.0, ishaAngle: 14.0)`), including an Isha delay in Ramadan. The six built-in methods are now `CalculationMethod::tehran()`, `mwl()`, `isna()`, `egypt()`, `makkah()` and `karachi()`, each with its source and how well it is verified (`MethodVerification`). The times of the built-in methods do not change.
+- `ReferenceTable` lets you change the bank BIN, Sheba bank code and national-code prefix tables: start from the bundled data and add or remove entries. `BankCard`, `Sheba` and `NationalCode` take the table as an optional last argument. Validity never depends on the table.
+- `resources/data/manifest.json` lists every bundled data table with its sources, status (official, reported or community), verification date, coverage and entry count.
+
+### Changed
+
+- `Slugify` and `Normalizer` lower-case the 75 letters that Unicode 15 to 18 added (for example Garay and some Latin Extended-D letters). Other text is unchanged.
+
+### Fixed
+
+- `JalaliCast` rejects a NUL byte at the start or end of a Jalali date text, like it does anywhere else in the text. Before, the byte was removed and the date was accepted.
+
 ## [0.4.0] - 2026-10-13
 
 Some changes below can change the result of existing code. They are marked `Breaking:`. For the steps to migrate, see [UPGRADE.md](UPGRADE.md).
 
 ### Added
 
-- `JalaliCast` takes optional arguments: a storage time zone and the number of fraction digits, for example `JalaliCast::class.':UTC,6'`. The zone can be a name, an offset, or `app` for the application's default time zone. The cast then stores the moment in that zone, keeps the microseconds, and reads the value back as the same moment. Without arguments nothing changes.
+- `JalaliCast` takes optional arguments: a storage time zone and the number of fraction digits, for example `JalaliCast::class.':UTC,6'`. The zone can be a name, an offset, or `app` for the application's default time zone. The cast then stores the moment in that zone and keeps the microseconds. With `:UTC` it reads the value back as the same moment. A local zone (a name such as `America/New_York`, or `app`) cannot tell apart the two times of a repeated daylight-saving hour, because the stored text has no offset; use UTC for instants. Without arguments nothing changes.
 - The Laravel config `rtly-kit.validation.mobile_alias` (default `true`). Set it to `false` to keep a `mobile` validation rule that another package or your app defines.
 
 ### Changed
@@ -160,7 +178,8 @@ First release.
 
 - Input size limits: `Format::withSeparator()` rejects strings over 4096 bytes and numbers over 1000 characters, and `NumberToWords::convert()` and `fromWords()` reject strings over 4096 bytes. They throw `InvalidNumberException`.
 
-[Unreleased]: https://github.com/ehsanenaloo/RTLY-Kit/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/ehsanenaloo/RTLY-Kit/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/ehsanenaloo/RTLY-Kit/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/ehsanenaloo/RTLY-Kit/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/ehsanenaloo/RTLY-Kit/compare/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/ehsanenaloo/RTLY-Kit/compare/v0.2.0...v0.2.1

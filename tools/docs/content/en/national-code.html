@@ -86,6 +86,18 @@ var_dump($b-&gt;isValid(), $b-&gt;details()['location']);   // bool(true)  NULL<
 <div class="note"><strong>Good to know.</strong> The prefix shows where the birth certificate or card was issued. It does not show where the person was born or lives. Many people hold codes issued elsewhere, and province borders have changed since (Karaj, for example, appears under Tehran). Use the location as a hint and not to confirm identity, origin or residence.</div>
 <p>The civil registry publishes no machine-readable list, so the table was built from public data. It has 547 prefixes. A prefix is included only when three community datasets agree on both province and city and a fourth does not contradict it. These datasets share some history, so we do not count their agreement as fully independent. A missing prefix means unknown, not invalid. The sources are listed in <a href="accuracy-and-data.html">Accuracy and data</a>.</p>
 
+<h3 id="own-table">Your own table of places</h3>
+<p>The prefix table works like the bank tables (see <a href="sheba-and-bank-card.html#own-table">Sheba and bank card</a>): <code>ReferenceTable::nationalCodeLocations()</code> starts from the bundled data and <code>with()</code> and <code>without()</code> return new tables.</p>
+<pre><code class="language-php">use RtlyKit\Validation\NationalCode;
+use RtlyKit\Validation\ReferenceTable;
+
+$places = ReferenceTable::nationalCodeLocations()
+    -&gt;with(999, ['province' =&gt; 'Example province', 'city' =&gt; 'Example city']);
+
+NationalCode::getLocation('9991234561', $places);
+// ['province' =&gt; 'Example province', 'city' =&gt; 'Example city']</code></pre>
+<p>A prefix is 1 to 999 (or three digits as text). The value must be exactly <code>['province' =&gt; ..., 'city' =&gt; ...]</code>, both as text of 1 to 100 characters. Pass the table as the second argument of <code>getLocation()</code> or <code>validate()</code>. It changes only the place in the result; the checksum never depends on it. An entry you add is your responsibility.</p>
+
 <h2 id="what-is-not-checked">What validation does not tell you</h2>
 <ul>
 <li>A valid check digit means the number is well formed. It does not mean the code was issued or belongs to a given person.</li>

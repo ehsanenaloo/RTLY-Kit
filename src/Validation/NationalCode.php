@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace RtlyKit\Validation;
 
 use RtlyKit\Contracts\Validator;
+use RtlyKit\Exceptions\ErrorCode;
+use RtlyKit\Exceptions\RtlyKitException;
 use RtlyKit\Number\Digits;
 
 /**
@@ -13,18 +15,18 @@ use RtlyKit\Number\Digits;
 final class NationalCode implements Validator
 {
     /**
-     * Prefix to province/city, loaded lazily from resources/data/national-code-locations.php (data provenance is documented there).
-     *
      * CAVEAT: the prefix identifies the place of ISSUANCE of the original
      * birth certificate/card, NOT necessarily the place of birth or residence.
      * Treat the result as a hint, never as proof of identity or origin.
-     *
-     * @return array<int, array{province: string, city: string}>
      */
-    private static function locations(): array
+    private static function table(?ReferenceTable $table): ReferenceTable
     {
-        /** @var array<int, array{province: string, city: string}> $table */
-        $table = DataTables::load('national-code-locations');
+        if ($table === null) {
+            return ReferenceTable::nationalCodeLocations();
+        }
+        if ($table->kind !== TableKind::NationalCodePrefix) {
+            throw RtlyKitException::because(ErrorCode::InvalidArgument, 'NationalCode needs a table of prefixes (ReferenceTable::nationalCodeLocations())', ['table' => $table->kind->value]);
+        }
 
         return $table;
     }
@@ -44,9 +46,14 @@ final class NationalCode implements Validator
      * Accepts strings, ints and integral floats (a number of fewer than 10 digits is padded with leading
      * zeros, because a code such as 0013542419 loses them as a number; a string is never padded); any other type or a string over 4096 bytes yields
      * `invalid_type` / `input_too_long`.
+     *
+     * $places replaces the bundled prefix table for the location only; validity never depends on it.
+     *
+     * @throws RtlyKitException when $places is not a table of national-code prefixes (a programming error, not bad input)
      */
-    public static function validate(mixed $value): Result
+    public static function validate(mixed $value, ?ReferenceTable $places = null): Result
     {
+        $places = self::table($places);
         $details = ['normalized' => '', 'location' => null];
         $input = Input::coerce($value, $details);
 
@@ -83,7 +90,8 @@ final class NationalCode implements Validator
             return Result::invalid('invalid_checksum', $details);
         }
 
-        $details['location'] = self::locations()[(int) substr($code, 0, 3)] ?? null;
+        $place = $places->get((int) substr($code, 0, 3));
+        $details['location'] = is_array($place) ? $place : null;
 
         return Result::valid($details);
     }
@@ -95,9 +103,9 @@ final class NationalCode implements Validator
      *
      * @return array{province: string, city: string}|null
      */
-    public static function getLocation(mixed $value): ?array
+    public static function getLocation(mixed $value, ?ReferenceTable $places = null): ?array
     {
-        $location = self::validate($value)->details()['location'] ?? null;
+        $location = self::validate($value, $places)->details()['location'] ?? null;
 
         /** @var array{province: string, city: string}|null $location */
         return is_array($location) ? $location : null;

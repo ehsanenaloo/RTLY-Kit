@@ -31,12 +31,13 @@ echo Jalali::create(1404, 1, 1)-&gt;addDays(100)-&gt;format('Y/m/d'), "\n";     
 <table>
 <thead><tr><th>Scenario</th><th>RTLY-Kit (µs/op)</th><th>morilog/jalali (µs/op)</th><th>Ratio</th></tr></thead>
 <tbody>
-<tr><td>Gregorian string to Jalali <code>Y/m/d</code></td><td>20.18</td><td>217.24</td><td>10.8x</td></tr>
-<tr><td>Jalali <code>y/m/d</code> to Gregorian <code>Y-m-d</code></td><td>19.38</td><td>78.44</td><td>4.0x</td></tr>
-<tr><td><code>addDays</code> + format</td><td>35.55</td><td>441.58</td><td>12.4x</td></tr>
+<tr><td>Gregorian string to Jalali <code>Y/m/d</code></td><td>33.08</td><td>309.64</td><td>9.4x</td></tr>
+<tr><td>Jalali <code>y/m/d</code> to Gregorian <code>Y-m-d</code></td><td>19.95</td><td>71.41</td><td>3.6x</td></tr>
+<tr><td><code>addDays</code> + format</td><td>48.26</td><td>370.83</td><td>7.7x</td></tr>
 </tbody>
 </table>
 <p>Peak memory for the whole process, with both libraries loaded, was 4 MiB.</p>
+<p>The numbers were measured again on 2026-10-15 for 0.4.0; the run in 0.2.x gave 20.18, 19.38 and 35.55 µs for RTLY-Kit. Two runs in the same session differ by up to a factor of two on this machine (Docker Desktop on Windows), so read the ratios, not the microseconds. <code>tools/benchmark/suite.php</code> times calendars, validators, numbers, text, holidays and prayer times in one run, checks every result against a known answer outside the timed part, and reports cold and warm timings and memory.</p>
 <p>An earlier ad-hoc run, without opcache and with a different mix of scenarios, showed a larger gap (roughly 25x). The spread between runs shows that the ratio depends on the scenario and on the PHP settings.</p>
 
 <h2 id="correctness">Correctness cross-check</h2>

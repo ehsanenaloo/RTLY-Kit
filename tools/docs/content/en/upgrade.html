@@ -6,6 +6,13 @@ order: 80
 -->
 <p>Before 1.0.0, a minor release may contain breaking changes. Each one is listed here with the steps to migrate. The policy is on <a href="api-stability.html#versioning">API stability</a>. This page starts with the newest version. The last section covers the early pre-release builds, from before 0.1.0.</p>
 
+<h2 id="to-0-5-0">From 0.4.0 to 0.5.0</h2>
+<p>Nothing that worked in 0.4.0 stops working. Two differences can show in results:</p>
+<ul>
+<li><strong><code>JalaliCast</code> and a NUL byte.</strong> A Jalali date text with a NUL byte at the start or the end (<code>"1404/01/01\0"</code>) now throws <code>InvalidDateException</code>, like a NUL anywhere else. Before, the byte was removed and the date was accepted.</li>
+<li><strong>Lower-casing.</strong> <code>Slugify</code> and <code>Normalizer</code> lower-case the 75 letters that Unicode 15 to 18 added. Text that has none of them is unchanged.</li>
+</ul>
+<p>New in this version: <code>CalculationMethod</code> for your own prayer-time method and <code>ReferenceTable</code> for your own bank, Sheba and national-code tables. See the changelog.</p>
 <h2 id="to-0-4-0">From 0.3.0 to 0.4.0</h2>
 <p>Most changes are fixes. The items below can change the result of code that worked before. Each one says what changed and what to do.</p>
 <ul>
@@ -14,7 +21,7 @@ order: 80
 <li><strong>Date text limit.</strong> <code>make()</code>, <code>createFromFormat()</code> and <code>JalaliCast</code> reject text longer than 256 bytes with <code>InvalidDateException</code> (<code>input_too_long</code>). A number of 15 digits or more, and relative text with a huge number such as <code>9223372036854775807 sec</code>, also throw. PHP used to wrap such numbers around and return a wrong date.</li>
 <li><strong><code>createFromFormat()</code> fractions.</strong> The tokens <code>u</code> and <code>v</code> now read microseconds and milliseconds. Before, they threw.</li>
 <li><strong><code>isPast()</code> and <code>isFuture()</code>.</strong> They compare the whole instant, microseconds included. A date inside the current second used to be neither past nor future.</li>
-<li><strong><code>serialize()</code>.</strong> The payload has a new key <code>offset</code>. Older payloads still load. If you compare or store the raw serialized string, it is different now.</li>
+<li><strong><code>serialize()</code>.</strong> The payload has a new key <code>offset</code>. Older payloads still load. If you compare or store the raw serialized string, it is different now. Payloads written by 0.2.1 and 0.3.0 are tested with files made by those releases. A 0.3.0 payload rounds the offset to the minute, so a moment in an old year in a zone whose offset had seconds (for example <code>Asia/Tehran</code> in 1900) was already a few seconds off in it, and nothing can bring those seconds back.</li>
 <li><strong><code>JalaliCast</code>.</strong> It takes new optional arguments (<code>:UTC</code>, <code>:app</code>, precision). Without arguments the stored text is the same, and saving a model no longer rewrites a date column you did not change.</li>
 <li><strong>Error messages.</strong> The input shown in the error messages for dates, time zones, prayer methods and cities is cut to 40 or 48 characters.</li>
 </ul>

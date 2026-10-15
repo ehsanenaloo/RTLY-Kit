@@ -74,7 +74,7 @@ try {
 } catch (InvalidDateException $e) {
     echo $e-&gt;getMessage();   // Unable to parse 'abc' with format 'Y/m/d'
 }</code></pre>
-<p>Tokens that would give a wrong date are rejected with an <code>InvalidDateException</code> that names the token. They are <code>z</code>, <code>y</code>, the English names <code>F M D l</code>, the suffix <code>S</code>, and the zone and fraction tokens <code>e T P O p u v</code>. Pass the time zone as the third argument instead. The format <code>U</code> alone reads a Unix timestamp. Any other format that contains <code>U</code> throws. A NUL byte in the format or the text throws too.</p>
+<p>Tokens that would give a wrong date are rejected with an <code>InvalidDateException</code> that names the token. They are <code>z</code>, <code>y</code>, the English names <code>F M D l</code>, the suffix <code>S</code>, and the zone <code>e T P O p</code>. Pass the time zone as the third argument instead. The format <code>U</code> alone reads a Unix timestamp. Any other format that contains <code>U</code> throws. A NUL byte in the format or the text throws too. The fraction tokens <code>u</code> (microseconds) and <code>v</code> (milliseconds) are read.</p>
 <pre><code class="language-php">echo Jalali::createFromFormat('U', '1700000000', $tehran);   // 1402/08/24 01:43:20
 Jalali::createFromFormat('Y/m/d e', '1404/07/15 UTC');       // InvalidDateException: ... the 'e' token ...</code></pre>
 
@@ -233,6 +233,7 @@ catch (InvalidDateException $e) { echo $e-&gt;getMessage(); }
 <h2 id="notes">Practical notes</h2>
 <ul>
 <li><strong>Time zones.</strong> A date made without a zone uses the PHP default zone. Pass a <code>DateTimeZone</code> to <code>create()</code> or <code>make()</code> when the result must not depend on server settings. Hour, minute and the date are read in the zone of the instance.</li>
+<li><strong>Daylight saving.</strong> A local time that does not exist (the hour skipped when the clocks go forward) moves forward by the length of the gap, as in PHP. A local time that happens twice is read as its first occurrence unless you pass an instant with an offset.</li>
 <li><strong>Day boundaries.</strong> The day changes at midnight in the zone of the instance, as everywhere in this library.</li>
 <li><strong>As a value.</strong> Instances are <code>Stringable</code> and safe to share or keep in arrays. Sort them by <code>getTimestamp()</code>.</li>
 <li><strong>Related.</strong> <a href="convert-and-compare.html">Convert and compare dates</a>, <a href="carbon-macros.html">Carbon macros</a> and <a href="holidays.html">Holidays</a>.</li>

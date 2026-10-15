@@ -13,7 +13,7 @@ order: 20
 <tr><td><code>sheba</code></td><td>Sheba / IBAN, with or without the <code>IR</code> prefix</td><td><a href="sheba-and-bank-card.html">Sheba and bank card</a></td></tr>
 <tr><td><code>bank_card</code></td><td>16-digit bank card number (Luhn check)</td><td><a href="sheba-and-bank-card.html">Sheba and bank card</a></td></tr>
 <tr><td><code>iran_mobile</code></td><td>Iranian mobile number</td><td><a href="mobile-postal-plate.html">Mobile, postal code, plate</a></td></tr>
-<tr><td><code>mobile</code></td><td>Short alias of <code>iran_mobile</code></td><td>same behaviour</td></tr>
+<tr><td><code>mobile</code></td><td>Short alias of <code>iran_mobile</code>. Set <code>rtly-kit.validation.mobile_alias</code> to <code>false</code> when another package or your app defines its own <code>mobile</code> rule</td><td>same behaviour</td></tr>
 <tr><td><code>postal_code</code></td><td>10-digit Iranian postal code</td><td><a href="mobile-postal-plate.html">Mobile, postal code, plate</a></td></tr>
 <tr><td><code>vehicle_plate</code></td><td>Iranian vehicle plate, for example <code>12ب345-67</code></td><td><a href="mobile-postal-plate.html">Mobile, postal code, plate</a></td></tr>
 </tbody>
@@ -97,6 +97,16 @@ echo $post-&gt;published_at-&gt;addDays(20)-&gt;format('Y/m/d'); // 1404/02/04</
 </table>
 <p>A string is read as Jalali when its year is 1200 to 1599 and the separator is <code>/</code> or <code>-</code>, with an optional time <code>HH:MM</code> or <code>HH:MM:SS</code> after a space or <code>T</code>. Any other string goes to <code>Jalali::make()</code>. It reads a year below 1700 as Jalali and anything else as Gregorian, so <code>'1650-01-01'</code> is still Jalali.</p>
 <p>When the model reads the column, the stored value is always read as Gregorian, whatever the year, so a date such as <code>1650-05-05 10:00:00</code> comes back unchanged. A stored value of an unsupported type (an array, a boolean, a float or an object) throws <code>InvalidDateException</code> with the attribute name and the type. Only <code>null</code> and an empty string give <code>null</code>.</p>
+
+<h3 id="cast-storage">Storage time zone and precision</h3>
+<p>By default the cast stores the wall-clock time of the value you assign, to the second, and reads it back in PHP's default time zone. If you assign a value with another offset, such as <code>2025-03-21 10:00:00+03:30</code>, the stored text is <code>2025-03-21 10:00:00</code> and it is read back as 10:00 in the default zone. That is a different moment.</p>
+<p>For columns that hold moments, pass the storage time zone as a cast argument:</p>
+<pre><code class="language-php">protected $casts = [
+    'published_at' =&gt; JalaliCast::class.':UTC',     // store in UTC, to the second
+    'seen_at'      =&gt; JalaliCast::class.':UTC,6',   // store in UTC with microseconds (datetime(6))
+];</code></pre>
+<p>The cast converts the moment to that zone when you assign it, and reads the stored text as that zone. The attribute is shown in PHP's default time zone (<code>config('app.timezone')</code> in Laravel). The second argument is the number of fraction digits, 0 to 6, and should match the column. Existing columns keep working with no arguments. For a column that already holds data, pass the zone those values were written in (for example <code>JalaliCast::class.':Asia/Tehran'</code>). If that is your application time zone, write <code>JalaliCast::class.':app'</code>: it follows <code>config('app.timezone')</code>. Old rows are then read correctly and no migration is needed. Use <code>:UTC</code> on an old column only after you convert its values to UTC. An unknown zone or a precision outside 0 to 6 throws <code>InvalidDateException</code>.</p>
+<p>Two limits to know. First, in the default mode the wall-clock time of the object you assign is stored as it is, so a <code>Jalali</code> or <code>DateTimeImmutable</code> in UTC and a default zone of <code>Asia/Tehran</code> reload as a different moment. Second, the stored text has no offset. Local time that happens twice (the hour when the clocks go back) cannot be told apart, in the default mode, with a named zone such as <code>America/New_York</code>, and with <code>:app</code>: both times store the same text, and the second one is read one hour early. Only <code>:UTC</code> is exact for every instant, so use it for fields that hold moments. When the cast reads a column and you save the model, a value you did not change is written back as it was.</p>
 
 <h3 id="cast-errors">Errors</h3>
 <p>Bad input throws <code>RtlyKit\Exceptions\InvalidDateException</code> when you assign it, never a raw PHP error:</p>

@@ -98,7 +98,9 @@ require</span> __DIR__.<span class="tok-s">'/vendor/autoload.php'</span>;
 <tr><td><code>Format</code> string input (<code>withSeparator()</code>)</td><td>4096 bytes</td><td><code>InvalidNumberException</code>, <code>input_too_long</code></td></tr>
 <tr><td><code>Format::withSeparator()</code> and <code>format_number()</code></td><td>1000 characters in the plain decimal number (whole and fraction digits together)</td><td><code>InvalidNumberException</code>, <code>input_too_long</code></td></tr>
 <tr><td><code>Slugify::make()</code> separator</td><td>64 bytes, valid UTF-8</td><td><code>RtlyKitException</code> (<code>input_too_long</code> or <code>invalid_argument</code>)</td></tr>
+<tr><td><code>Slugify::make()</code> text</td><td>4096 bytes</td><td><code>RtlyKitException</code>, <code>input_too_long</code></td></tr>
 <tr><td><code>format()</code> pattern (Jalali, Hijri, Hebrew)</td><td>256 bytes (<code>MAX_FORMAT_LENGTH</code> on each class)</td><td><code>InvalidDateException</code></td></tr>
+<tr><td>Date text for <code>make()</code>, <code>createFromFormat()</code> and <code>JalaliCast</code>, and the <code>createFromFormat()</code> pattern</td><td>256 bytes each, checked before any parsing</td><td><code>InvalidDateException</code>, <code>input_too_long</code></td></tr>
 </tbody>
 </table></div>
 <p>The caps are part of the contract (see <a href="api-stability.html">API stability</a>).</p>

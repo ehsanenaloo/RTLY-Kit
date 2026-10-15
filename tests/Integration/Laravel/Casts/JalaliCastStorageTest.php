@@ -140,6 +140,45 @@ final class JalaliCastStorageTest extends TestCase
         self::assertSame($input->getTimestamp(), $cast->get($model, 'at', '2025-03-21 02:30:00', [])->getTimestamp());
     }
 
+    /** @return iterable<string, array{string}> */
+    public static function localStorageZones(): iterable
+    {
+        yield 'named zone' => [JalaliCast::class.':America/New_York,6'];
+        yield 'app zone' => [JalaliCast::class.':app,6'];
+    }
+
+    /**
+     * The documented limit of local-time storage: the text has no offset, so the two
+     * occurrences of a repeated DST hour give the same stored text. The first one reads
+     * back as the same moment, the second one one hour earlier. UTC storage has no such limit.
+     */
+    #[DataProvider('localStorageZones')]
+    public function test_a_local_zone_cannot_tell_the_two_times_of_a_repeated_hour_apart(string $cast): void
+    {
+        date_default_timezone_set('America/New_York');
+        $first = new DateTimeImmutable('2025-11-02 01:30:00-04:00');
+        $second = new DateTimeImmutable('2025-11-02 01:30:00-05:00');
+
+        [$rawFirst, $loadedFirst] = $this->reload($cast, $first);
+        [$rawSecond, $loadedSecond] = $this->reload($cast, $second);
+
+        self::assertSame('2025-11-02 01:30:00.000000', $rawFirst);
+        self::assertSame($rawFirst, $rawSecond);
+        self::assertSame($first->getTimestamp(), $loadedFirst->getTimestamp());
+        self::assertSame($second->getTimestamp() - 3600, $loadedSecond->getTimestamp());
+    }
+
+    public function test_outside_the_repeated_hour_a_local_zone_keeps_the_instant(): void
+    {
+        date_default_timezone_set('America/New_York');
+        foreach (['2025-11-02 00:59:59-04:00', '2025-11-02 02:00:00-05:00', '2025-03-09 03:00:00-04:00', '2025-07-01 12:00:00-04:00'] as $text) {
+            $input = new DateTimeImmutable($text);
+            [, $loaded] = $this->reload(JalaliCast::class.':America/New_York,6', $input);
+
+            self::assertSame($input->getTimestamp(), $loaded->getTimestamp(), $text);
+        }
+    }
+
     public function test_precision_controls_the_fraction(): void
     {
         $value = new DateTimeImmutable('2025-03-21 10:00:00.123456', new DateTimeZone('UTC'));
@@ -204,6 +243,55 @@ final class JalaliCastStorageTest extends TestCase
         yield 'precision text' => ['UTC', 'x'];
         yield 'precision negative int' => ['UTC', -1];
         yield 'precision 10' => ['UTC', '10'];
+    }
+
+    /** @return iterable<string, array{string}> */
+    public static function textsWithNul(): iterable
+    {
+        yield 'jalali, at the end' => ["1404/01/01\0"];
+        yield 'jalali, at the start' => ["\x001404/01/01"];
+        yield 'jalali, in the middle' => ["1404/01\x00/01"];
+        yield 'jalali with time, at the end' => ["1404/01/01 10:00\0"];
+        yield 'persian digits, at the end' => ["۱۴۰۴/۰۱/۰۱\0"];
+        yield 'persian digits, at the start' => ["\0۱۴۰۴/۰۱/۰۱"];
+        yield 'gregorian, at the end' => ["2025-03-21\0"];
+        yield 'gregorian, at the start' => ["\x002025-03-21"];
+        yield 'only NUL' => ["\0"];
+        yield 'blanks around NUL' => [" \0 1404/01/01"];
+    }
+
+    #[DataProvider('textsWithNul')]
+    public function test_a_nul_byte_is_rejected_wherever_it_is(string $text): void
+    {
+        $model = new class () extends Model {};
+
+        foreach ([new JalaliCast(), new JalaliCast('UTC'), new JalaliCast('app', 6)] as $cast) {
+            try {
+                $cast->set($model, 'at', $text, []);
+                self::fail('Expected an InvalidDateException for '.json_encode($text));
+            } catch (InvalidDateException $e) {
+                self::assertSame('Unable to parse date: the text contains a NUL byte.', $e->getMessage());
+                self::assertStringNotContainsString("\0", $e->getMessage());
+            }
+
+            try {
+                $cast->get($model, 'at', $text, []);
+                self::fail('Expected an InvalidDateException for '.json_encode($text));
+            } catch (InvalidDateException $e) {
+                self::assertSame('Unable to parse date: the text contains a NUL byte.', $e->getMessage());
+            }
+        }
+    }
+
+    public function test_text_without_nul_is_unchanged_by_the_check(): void
+    {
+        $cast = new JalaliCast();
+        $model = new class () extends Model {};
+
+        self::assertSame('2025-03-21 00:00:00', $cast->set($model, 'at', ' 1404/01/01 ', []));
+        self::assertSame('2025-03-21 10:30:00', $cast->set($model, 'at', "1404/01/01 10:30\n", []));
+        self::assertNull($cast->set($model, 'at', '', []));
+        self::assertNull($cast->set($model, 'at', null, []));
     }
 
     public function test_oversized_text_fails_with_a_bounded_error(): void

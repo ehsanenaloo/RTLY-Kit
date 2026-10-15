@@ -133,3 +133,18 @@ Not applied, because only one source states them or the sources disagree:
 - The PEAR package Validate_IR checks only `^\d{10}$`.
 
 A code is not checked against an address registry.
+
+## Updating the data
+
+`resources/data/manifest.json` describes every table: what it maps, where it comes from, whether it is official, reported or community data, when it was last verified, what it covers, how many entries it has and a SHA-256 of the file. `composer data:check` (and the test `DataManifestTest`) fails when a data file and its manifest entry disagree, so a data change is always a deliberate step. The package never reads the manifest; it is development tooling.
+
+To update a table:
+
+1. Read the sources named in this file for that table again. Write down the date and what changed (new, removed or renamed entries). If a source cannot be retrieved automatically, check it by hand and say so in the commit message. Never add a runtime network lookup.
+2. Edit the data file under `resources/data/`. Keep algorithm changes in a separate commit.
+3. See what changed, key by key: `git show HEAD:resources/data/<file>.php > /tmp/old.php && php tools/data/diff.php /tmp/old.php resources/data/<file>.php`. Check each added or changed entry against the two-source rule above.
+4. Update the text of the table's section in this file (sources, counts, the check date) and its `coverage`, `publisher` and `status` in `manifest.json` if they changed.
+5. Run `php tools/data/check.php --update --verified=YYYY-MM-DD`. It rewrites the entry count and the SHA-256 and sets the verification date of the tables that changed. Run `composer data:check` and the test suite.
+6. Describe the data change in `CHANGELOG.md` if users can see it (a bank, a holiday date, a place name).
+
+The check also keeps a few known answers per table (for example the Bank Melli BIN 603799). They are a tripwire, not proof: the date in the manifest says when a person last compared the table with its sources, and it does not promise that the assignment is still current.
