@@ -1,8 +1,8 @@
 <div align="center" dir="rtl">
 
-[English](../README.md) | **فارسی** | [العربية (راهنما)](https://ehsanenaloo.github.io/RTLY-Kit/ar/)
+[English](../README.md) | **فارسی** | [العربية (راهنما)](https://enaloo.com/apps/rtly-kit/docs/ar/)
 
-<a href="https://ehsanenaloo.github.io/RTLY-Kit/fa/"><img src="../docs/assets/logo.svg" width="112" height="112" alt="لوگوی RTLY-Kit"></a>
+<a href="https://enaloo.com/apps/rtly-kit/docs/fa/"><img src="assets/logo.svg" width="112" height="112" alt="لوگوی RTLY-Kit"></a>
 
 # RTLY-Kit
 
@@ -12,20 +12,20 @@
 یک بستهٔ کوچک. بدون وابستگی اجباری.
 
 [![Install](https://img.shields.io/badge/Packagist-Install-F28D1A?logo=packagist&logoColor=white&style=for-the-badge)](https://packagist.org/packages/enaxon/rtly-kit)
-[![User guide](https://img.shields.io/badge/User%20guide-Read%20online-0f766e?logo=readthedocs&logoColor=white&style=for-the-badge)](https://ehsanenaloo.github.io/RTLY-Kit/fa/)
+[![User guide](https://img.shields.io/badge/User%20guide-Read%20online-0f766e?logo=readthedocs&logoColor=white&style=for-the-badge)](https://enaloo.com/apps/rtly-kit/docs/fa/)
 [![Buy me a coffee](https://img.shields.io/badge/Buy%20me%20a%20coffee-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/enaloo)
 
 [![CI](https://github.com/ehsanenaloo/RTLY-Kit/actions/workflows/ci.yml/badge.svg)](https://github.com/ehsanenaloo/RTLY-Kit/actions/workflows/ci.yml)
 [![Packagist](https://img.shields.io/packagist/v/enaxon/rtly-kit.svg?label=packagist)](https://packagist.org/packages/enaxon/rtly-kit)
 [![Downloads](https://img.shields.io/packagist/dt/enaxon/rtly-kit.svg)](https://packagist.org/packages/enaxon/rtly-kit)
 [![PHP](https://img.shields.io/badge/php-%5E8.2-777bb4.svg)](https://www.php.net/)
-[![Laravel](https://img.shields.io/badge/laravel-11%20%7C%2012%20%7C%2013-ff2d20.svg)](https://ehsanenaloo.github.io/RTLY-Kit/fa/laravel-setup.html)
+[![Laravel](https://img.shields.io/badge/laravel-11%20%7C%2012%20%7C%2013-ff2d20.svg)](https://enaloo.com/apps/rtly-kit/docs/fa/laravel-setup/)
 [![Dependencies](https://img.shields.io/badge/dependencies-none-2ea44f.svg)](#نیازمندی‌ها)
-[![Docs](https://img.shields.io/badge/docs-fa%20%7C%20en%20%7C%20ar-0f766e.svg)](https://ehsanenaloo.github.io/RTLY-Kit/fa/)
+[![Docs](https://img.shields.io/badge/docs-fa%20%7C%20en%20%7C%20ar-0f766e.svg)](https://enaloo.com/apps/rtly-kit/docs/fa/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](../LICENSE)
 [![GitHub stars](https://img.shields.io/github/stars/ehsanenaloo/RTLY-Kit?style=social)](https://github.com/ehsanenaloo/RTLY-Kit/stargazers)
 
-<a href="https://ehsanenaloo.github.io/RTLY-Kit/fa/"><img src="../docs/assets/screenshots/guide-validators-fa-dark.jpg" width="860" alt="صفحهٔ مرور اعتبارسنج‌ها در راهنمای فارسی، با پوستهٔ تیره و چیدمان راست‌به‌چپ"></a>
+<a href="https://enaloo.com/apps/rtly-kit/docs/fa/"><img src="assets/guide-validators-fa-dark.jpg" width="860" alt="صفحهٔ مرور اعتبارسنج‌ها در راهنمای فارسی، با پوستهٔ تیره و چیدمان راست‌به‌چپ"></a>
 
 </div>
 
@@ -92,7 +92,7 @@ echo hdate('2026-03-21')->format('j F Y', 'en');            // 2 Shawwal 1447
 echo hebrew_date('2026-03-21')->format('j F Y', 'en');      // 3 Nisan 5786
 ```
 
-هر سه تقویم PHP ساده‌اند و به `ext-calendar` نیاز ندارند. [راهنمای جلالی](https://ehsanenaloo.github.io/RTLY-Kit/fa/jalali.html) و [راهنمای تبدیل و مقایسه](https://ehsanenaloo.github.io/RTLY-Kit/fa/convert-and-compare.html) را ببینید.
+هر سه تقویم PHP ساده‌اند و به `ext-calendar` نیاز ندارند. [راهنمای جلالی](https://enaloo.com/apps/rtly-kit/docs/fa/jalali/) و [راهنمای تبدیل و مقایسه](https://enaloo.com/apps/rtly-kit/docs/fa/convert-and-compare/) را ببینید.
 
 ### اعتبارسنجی داده‌های ایرانی
 
@@ -146,7 +146,7 @@ $times = PrayerTimes::forCity('mecca', PrayerTimes::METHOD_MAKKAH)
 echo $times['fajr'];                     // 04:11
 ```
 
-[تقویم تعطیلات](https://ehsanenaloo.github.io/RTLY-Kit/fa/holiday-calendar.html) و [اوقات شرعی](https://ehsanenaloo.github.io/RTLY-Kit/fa/prayer-times.html) را ببینید.
+[تقویم تعطیلات](https://enaloo.com/apps/rtly-kit/docs/fa/holiday-calendar/) و [اوقات شرعی](https://enaloo.com/apps/rtly-kit/docs/fa/prayer-times/) را ببینید.
 
 ### کار با Carbon و Laravel
 
@@ -172,7 +172,7 @@ $request->validate([
 protected $casts = ['published_at' => \RtlyKit\Laravel\Casts\JalaliCast::class];
 ```
 
-جزئیات در [راهنمای Laravel](https://ehsanenaloo.github.io/RTLY-Kit/fa/laravel-setup.html).
+جزئیات در [راهنمای Laravel](https://enaloo.com/apps/rtly-kit/docs/fa/laravel-setup/).
 
 ---
 
@@ -182,8 +182,8 @@ protected $casts = ['published_at' => \RtlyKit\Laravel\Casts\JalaliCast::class];
 
 <table>
   <tr>
-    <td width="50%"><a href="https://ehsanenaloo.github.io/RTLY-Kit/fa/validators-overview.html"><img src="../docs/assets/screenshots/guide-validators-fa-dark.jpg" alt="صفحهٔ مرور اعتبارسنج‌ها در راهنمای فارسی، پوستهٔ تیره"></a></td>
-    <td width="50%"><a href="https://ehsanenaloo.github.io/RTLY-Kit/en/jalali.html"><img src="../docs/assets/screenshots/guide-jalali-light.jpg" alt="صفحهٔ تقویم جلالی در راهنمای انگلیسی، پوستهٔ روشن"></a></td>
+    <td width="50%"><a href="https://enaloo.com/apps/rtly-kit/docs/fa/validators-overview/"><img src="assets/guide-validators-fa-dark.jpg" alt="صفحهٔ مرور اعتبارسنج‌ها در راهنمای فارسی، پوستهٔ تیره"></a></td>
+    <td width="50%"><a href="https://enaloo.com/apps/rtly-kit/docs/jalali/"><img src="assets/guide-jalali-light.jpg" alt="صفحهٔ تقویم جلالی در راهنمای انگلیسی، پوستهٔ روشن"></a></td>
   </tr>
   <tr>
     <td align="center"><sub>فارسی، پوستهٔ تیره، راست‌به‌چپ</sub></td>
@@ -193,14 +193,14 @@ protected $casts = ['published_at' => \RtlyKit\Laravel\Casts\JalaliCast::class];
 
 | موضوع | بخوانید |
 |---|---|
-| شروع | [شروع سریع](https://ehsanenaloo.github.io/RTLY-Kit/fa/quick-start.html) · [نصب](https://ehsanenaloo.github.io/RTLY-Kit/fa/installation.html) |
-| تقویم‌ها | [جلالی](https://ehsanenaloo.github.io/RTLY-Kit/fa/jalali.html) · [هجری](https://ehsanenaloo.github.io/RTLY-Kit/fa/hijri.html) · [عبری](https://ehsanenaloo.github.io/RTLY-Kit/fa/hebrew.html) · [تبدیل و مقایسه](https://ehsanenaloo.github.io/RTLY-Kit/fa/convert-and-compare.html) · [ماکروهای Carbon](https://ehsanenaloo.github.io/RTLY-Kit/fa/carbon-macros.html) |
-| اعتبارسنجی | [مرور اعتبارسنج‌ها](https://ehsanenaloo.github.io/RTLY-Kit/fa/validators-overview.html) · [کد ملی](https://ehsanenaloo.github.io/RTLY-Kit/fa/national-code.html) · [شبا و کارت بانکی](https://ehsanenaloo.github.io/RTLY-Kit/fa/sheba-and-bank-card.html) · [موبایل، کدپستی، پلاک](https://ehsanenaloo.github.io/RTLY-Kit/fa/mobile-postal-plate.html) |
-| عدد و متن | [رقم‌ها و قالب‌بندی عدد](https://ehsanenaloo.github.io/RTLY-Kit/fa/digits-and-format.html) · [عدد به حروف](https://ehsanenaloo.github.io/RTLY-Kit/fa/number-words.html) · [عدد به حروف عربی](https://ehsanenaloo.github.io/RTLY-Kit/fa/arabic-number-words.html) · [ابزارهای متن](https://ehsanenaloo.github.io/RTLY-Kit/fa/text-tools.html) |
-| تاریخ و زمان | [تعطیلات](https://ehsanenaloo.github.io/RTLY-Kit/fa/holidays.html) · [تقویم تعطیلات](https://ehsanenaloo.github.io/RTLY-Kit/fa/holiday-calendar.html) · [اوقات شرعی](https://ehsanenaloo.github.io/RTLY-Kit/fa/prayer-times.html) |
-| Laravel | [راه‌اندازی](https://ehsanenaloo.github.io/RTLY-Kit/fa/laravel-setup.html) · [اعتبارسنجی و cast](https://ehsanenaloo.github.io/RTLY-Kit/fa/laravel-validation-and-cast.html) |
-| مرجع | [توابع کمکی](https://ehsanenaloo.github.io/RTLY-Kit/fa/helpers-and-globals.html) · [خطاها](https://ehsanenaloo.github.io/RTLY-Kit/fa/error-handling.html) · [پایداری API](https://ehsanenaloo.github.io/RTLY-Kit/fa/api-stability.html) · [دقت و داده](https://ehsanenaloo.github.io/RTLY-Kit/fa/accuracy-and-data.html) · [سقف‌ها](https://ehsanenaloo.github.io/RTLY-Kit/fa/limits.html) · [ارتقا](https://ehsanenaloo.github.io/RTLY-Kit/fa/upgrade.html) · [راستی‌آزمایی انتشارها](https://ehsanenaloo.github.io/RTLY-Kit/fa/verifying-releases.html) · [پرسش‌های متداول](https://ehsanenaloo.github.io/RTLY-Kit/fa/troubleshooting-faq.html) |
-| زبان‌های دیگر | [English](https://ehsanenaloo.github.io/RTLY-Kit/en/) · [العربية](https://ehsanenaloo.github.io/RTLY-Kit/ar/) |
+| شروع | [شروع سریع](https://enaloo.com/apps/rtly-kit/docs/fa/quick-start/) · [نصب](https://enaloo.com/apps/rtly-kit/docs/fa/installation/) |
+| تقویم‌ها | [جلالی](https://enaloo.com/apps/rtly-kit/docs/fa/jalali/) · [هجری](https://enaloo.com/apps/rtly-kit/docs/fa/hijri/) · [عبری](https://enaloo.com/apps/rtly-kit/docs/fa/hebrew/) · [تبدیل و مقایسه](https://enaloo.com/apps/rtly-kit/docs/fa/convert-and-compare/) · [ماکروهای Carbon](https://enaloo.com/apps/rtly-kit/docs/fa/carbon-macros/) |
+| اعتبارسنجی | [مرور اعتبارسنج‌ها](https://enaloo.com/apps/rtly-kit/docs/fa/validators-overview/) · [کد ملی](https://enaloo.com/apps/rtly-kit/docs/fa/national-code/) · [شبا و کارت بانکی](https://enaloo.com/apps/rtly-kit/docs/fa/sheba-and-bank-card/) · [موبایل، کدپستی، پلاک](https://enaloo.com/apps/rtly-kit/docs/fa/mobile-postal-plate/) |
+| عدد و متن | [رقم‌ها و قالب‌بندی عدد](https://enaloo.com/apps/rtly-kit/docs/fa/digits-and-format/) · [عدد به حروف](https://enaloo.com/apps/rtly-kit/docs/fa/number-words/) · [عدد به حروف عربی](https://enaloo.com/apps/rtly-kit/docs/fa/arabic-number-words/) · [ابزارهای متن](https://enaloo.com/apps/rtly-kit/docs/fa/text-tools/) |
+| تاریخ و زمان | [تعطیلات](https://enaloo.com/apps/rtly-kit/docs/fa/holidays/) · [تقویم تعطیلات](https://enaloo.com/apps/rtly-kit/docs/fa/holiday-calendar/) · [اوقات شرعی](https://enaloo.com/apps/rtly-kit/docs/fa/prayer-times/) |
+| Laravel | [راه‌اندازی](https://enaloo.com/apps/rtly-kit/docs/fa/laravel-setup/) · [اعتبارسنجی و cast](https://enaloo.com/apps/rtly-kit/docs/fa/laravel-validation-and-cast/) |
+| مرجع | [توابع کمکی](https://enaloo.com/apps/rtly-kit/docs/fa/helpers-and-globals/) · [خطاها](https://enaloo.com/apps/rtly-kit/docs/fa/error-handling/) · [پایداری API](https://enaloo.com/apps/rtly-kit/docs/fa/api-stability/) · [دقت و داده](https://enaloo.com/apps/rtly-kit/docs/fa/accuracy-and-data/) · [سقف‌ها](https://enaloo.com/apps/rtly-kit/docs/fa/limits/) · [ارتقا](https://enaloo.com/apps/rtly-kit/docs/fa/upgrade/) · [راستی‌آزمایی انتشارها](https://enaloo.com/apps/rtly-kit/docs/fa/verifying-releases/) · [پرسش‌های متداول](https://enaloo.com/apps/rtly-kit/docs/fa/troubleshooting-faq/) |
+| زبان‌های دیگر | [English](https://enaloo.com/apps/rtly-kit/docs/) · [العربية](https://enaloo.com/apps/rtly-kit/docs/ar/) |
 
 ---
 
@@ -234,7 +234,7 @@ try {
 }
 ```
 
-مقداری از نوع پذیرفته‌شده که کتابخانه نتواند به کار ببرد، مثل سال بیرون از بازهٔ پشتیبانی‌شده، یک استثنای کتابخانه می‌دهد (برای تاریخ `InvalidDateException`) و هیچ‌وقت `TypeError` یا `ValueError` خام بیرون نمی‌دهد. مقداری از نوعی که متد قبول نمی‌کند، مثل آرایه به‌جای تاریخ، را خود PHP با `TypeError` رد می‌کند. فهرست کامل در [راهنمای خطاها](https://ehsanenaloo.github.io/RTLY-Kit/fa/error-handling.html).
+مقداری از نوع پذیرفته‌شده که کتابخانه نتواند به کار ببرد، مثل سال بیرون از بازهٔ پشتیبانی‌شده، یک استثنای کتابخانه می‌دهد (برای تاریخ `InvalidDateException`) و هیچ‌وقت `TypeError` یا `ValueError` خام بیرون نمی‌دهد. مقداری از نوعی که متد قبول نمی‌کند، مثل آرایه به‌جای تاریخ، را خود PHP با `TypeError` رد می‌کند. فهرست کامل در [راهنمای خطاها](https://enaloo.com/apps/rtly-kit/docs/fa/error-handling/).
 
 ---
 
@@ -250,12 +250,12 @@ try {
 
 ### خوب است بدانید
 
-- ایران تاریخ مناسبت‌های مذهبی را با رؤیت هلال تعیین می‌کند. پس سال تخمینی ممکن است یکی دو روز فرق کند. با [HolidayCalendar](https://ehsanenaloo.github.io/RTLY-Kit/fa/holiday-calendar.html) می‌توانید اصلاحش کنید.
+- ایران تاریخ مناسبت‌های مذهبی را با رؤیت هلال تعیین می‌کند. پس سال تخمینی ممکن است یکی دو روز فرق کند. با [HolidayCalendar](https://enaloo.com/apps/rtly-kit/docs/fa/holiday-calendar/) می‌توانید اصلاحش کنید.
 - جدولی از ISNA، رابطه جهان اسلام یا دانشگاه علوم اسلامی کراچی پیدا نکردیم، و جدول رسمی تهران با عشا و عصر هم نیست.
 - نام بانک و اپراتور و محل از فهرست‌های عمومی می‌آید، نه از ثبت رسمی. کارت معتبر ممکن است برای نام بانک `null` بدهد.
 - چند خروجی عدد به حروف عربی هنوز منتظر بازبینی یک عرب‌زبان است.
 
-اشتباهی دیدید؟ همراه با منبع [یک issue باز کنید](https://github.com/ehsanenaloo/RTLY-Kit/issues/new/choose). فهرست کامل در [راهنمای دقت و داده](https://ehsanenaloo.github.io/RTLY-Kit/fa/accuracy-and-data.html) است.
+اشتباهی دیدید؟ همراه با منبع [یک issue باز کنید](https://github.com/ehsanenaloo/RTLY-Kit/issues/new/choose). فهرست کامل در [راهنمای دقت و داده](https://enaloo.com/apps/rtly-kit/docs/fa/accuracy-and-data/) است.
 
 ---
 

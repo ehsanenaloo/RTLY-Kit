@@ -1,6 +1,6 @@
 # Upgrade guide
 
-Before 1.0.0, a minor release may contain breaking changes. Each one is listed here with the steps to migrate. See [API stability](https://ehsanenaloo.github.io/RTLY-Kit/en/api-stability.html) for the policy.
+Before 1.0.0, a minor release may contain breaking changes. Each one is listed here with the steps to migrate. See [API stability](https://enaloo.com/apps/rtly-kit/docs/api-stability/) for the policy.
 
 ## From 0.4.0 to 0.5.0
 
@@ -152,7 +152,7 @@ Most applications need no change. Check the items below.
    | 1404/12/29 | ملی شدن صنعت نفت + عید فطر | ملی شدن صنعت نفت |
    | 1405/01/01 | جشن نوروز + تعطیل عید فطر | جشن نوروز + عید فطر |
 
-   In official years only the titles in the official table appear. Years 1380 to 1393 and 1395 are "reported": the dates come from one source, and the list of days may be incomplete. For the old behaviour use `HolidayCalendar::default()->withOfficialData(false)`. `IranHolidays::sourceOf($year)` shows where a year comes from. See the [holiday calendar guide](https://ehsanenaloo.github.io/RTLY-Kit/en/holiday-calendar.html).
+   In official years only the titles in the official table appear. Years 1380 to 1393 and 1395 are "reported": the dates come from one source, and the list of days may be incomplete. For the old behaviour use `HolidayCalendar::default()->withOfficialData(false)`. `IranHolidays::sourceOf($year)` shows where a year comes from. See the [holiday calendar guide](https://enaloo.com/apps/rtly-kit/docs/holiday-calendar/).
 10. **High-latitude prayer times.** `PrayerTimes` has a new `HighLatitudeRule`, and the default is `AngleBased`. It acts only where a Fajr or Isha time would be missing, or farther from sunrise or sunset than the rule allows. Below about 44 degrees north nothing changes. North of about 44 to 46 degrees, around the June solstice, some values differ, and a time that was `null` now has a value.
 
     | Place and day (MWL) | Before (same as `None`) | After (default) |
@@ -170,7 +170,7 @@ Most applications need no change. Check the items below.
     | `09321234567` | `null` | تالیا |
 
     If you compare the whole `details()` array, expect the extra key `allocated`.
-12. **Arabic number words.** `convert($n, 'ar')` without options gives the same text as before for every number below 10^9. It now also accepts numbers up to 10^27. New options and the ordinals from 1 to 99 are described in the [Arabic number words guide](https://ehsanenaloo.github.io/RTLY-Kit/en/arabic-number-words.html).
+12. **Arabic number words.** `convert($n, 'ar')` without options gives the same text as before for every number below 10^9. It now also accepts numbers up to 10^27. New options and the ordinals from 1 to 99 are described in the [Arabic number words guide](https://enaloo.com/apps/rtly-kit/docs/arabic-number-words/).
 
 ## From the early pre-release helpers to the namespaced helpers
 

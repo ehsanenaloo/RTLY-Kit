@@ -46,7 +46,6 @@ jobs:
         env:
           # The style rules target PHP 8.2; newer runtimes only print a notice.
           PHP_CS_FIXER_IGNORE_ENV: '1'
-      - run: composer docs:check
       - run: composer test
 
   # Unit and integration suites on the other operating systems, at the lowest

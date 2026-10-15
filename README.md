@@ -1,8 +1,8 @@
 <div align="center">
 
-**English** | [فارسی](.github/README.fa.md) | [العربية (guide)](https://ehsanenaloo.github.io/RTLY-Kit/ar/)
+**English** | [فارسی](.github/README.fa.md) | [العربية (guide)](https://enaloo.com/apps/rtly-kit/docs/ar/)
 
-<a href="https://ehsanenaloo.github.io/RTLY-Kit/"><img src="docs/assets/logo.svg" width="112" height="112" alt="RTLY-Kit logo"></a>
+<a href="https://enaloo.com/apps/rtly-kit/docs/"><img src=".github/assets/logo.svg" width="112" height="112" alt="RTLY-Kit logo"></a>
 
 # RTLY-Kit
 
@@ -12,20 +12,20 @@ Jalali, Hijri and Hebrew calendars. Iranian validators. Number words, holidays a
 One small package. No required dependencies.
 
 [![Install](https://img.shields.io/badge/Packagist-Install-F28D1A?logo=packagist&logoColor=white&style=for-the-badge)](https://packagist.org/packages/enaxon/rtly-kit)
-[![User guide](https://img.shields.io/badge/User%20guide-Read%20online-0f766e?logo=readthedocs&logoColor=white&style=for-the-badge)](https://ehsanenaloo.github.io/RTLY-Kit/)
+[![User guide](https://img.shields.io/badge/User%20guide-Read%20online-0f766e?logo=readthedocs&logoColor=white&style=for-the-badge)](https://enaloo.com/apps/rtly-kit/docs/)
 [![Buy me a coffee](https://img.shields.io/badge/Buy%20me%20a%20coffee-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/enaloo)
 
 [![CI](https://github.com/ehsanenaloo/RTLY-Kit/actions/workflows/ci.yml/badge.svg)](https://github.com/ehsanenaloo/RTLY-Kit/actions/workflows/ci.yml)
 [![Packagist](https://img.shields.io/packagist/v/enaxon/rtly-kit.svg?label=packagist)](https://packagist.org/packages/enaxon/rtly-kit)
 [![Downloads](https://img.shields.io/packagist/dt/enaxon/rtly-kit.svg)](https://packagist.org/packages/enaxon/rtly-kit)
 [![PHP](https://img.shields.io/badge/php-%5E8.2-777bb4.svg)](https://www.php.net/)
-[![Laravel](https://img.shields.io/badge/laravel-11%20%7C%2012%20%7C%2013-ff2d20.svg)](https://ehsanenaloo.github.io/RTLY-Kit/en/laravel-setup.html)
+[![Laravel](https://img.shields.io/badge/laravel-11%20%7C%2012%20%7C%2013-ff2d20.svg)](https://enaloo.com/apps/rtly-kit/docs/laravel-setup/)
 [![Dependencies](https://img.shields.io/badge/dependencies-none-2ea44f.svg)](#requirements)
-[![Docs](https://img.shields.io/badge/docs-en%20%7C%20fa%20%7C%20ar-0f766e.svg)](https://ehsanenaloo.github.io/RTLY-Kit/)
+[![Docs](https://img.shields.io/badge/docs-en%20%7C%20fa%20%7C%20ar-0f766e.svg)](https://enaloo.com/apps/rtly-kit/docs/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
 [![GitHub stars](https://img.shields.io/github/stars/ehsanenaloo/RTLY-Kit?style=social)](https://github.com/ehsanenaloo/RTLY-Kit/stargazers)
 
-<a href="https://ehsanenaloo.github.io/RTLY-Kit/en/"><img src="docs/assets/screenshots/guide-home-dark.jpg" width="860" alt="The RTLY-Kit guide home page: install command and a 30-second example"></a>
+<a href="https://enaloo.com/apps/rtly-kit/docs/"><img src=".github/assets/guide-home-dark.jpg" width="860" alt="The RTLY-Kit guide home page: install command and a 30-second example"></a>
 
 </div>
 
@@ -90,7 +90,7 @@ echo hdate('2026-03-21')->format('j F Y', 'en');            // 2 Shawwal 1447
 echo hebrew_date('2026-03-21')->format('j F Y', 'en');      // 3 Nisan 5786
 ```
 
-All three are plain PHP. You do not need `ext-calendar`. See the [Jalali guide](https://ehsanenaloo.github.io/RTLY-Kit/en/jalali.html) and the [compare guide](https://ehsanenaloo.github.io/RTLY-Kit/en/convert-and-compare.html).
+All three are plain PHP. You do not need `ext-calendar`. See the [Jalali guide](https://enaloo.com/apps/rtly-kit/docs/jalali/) and the [compare guide](https://enaloo.com/apps/rtly-kit/docs/convert-and-compare/).
 
 ### Check Iranian data
 
@@ -144,7 +144,7 @@ $times = PrayerTimes::forCity('mecca', PrayerTimes::METHOD_MAKKAH)
 echo $times['fajr'];                     // 04:11
 ```
 
-See [Holiday calendar](https://ehsanenaloo.github.io/RTLY-Kit/en/holiday-calendar.html) and [Prayer times](https://ehsanenaloo.github.io/RTLY-Kit/en/prayer-times.html).
+See [Holiday calendar](https://enaloo.com/apps/rtly-kit/docs/holiday-calendar/) and [Prayer times](https://enaloo.com/apps/rtly-kit/docs/prayer-times/).
 
 ### Use it with Carbon and Laravel
 
@@ -170,7 +170,7 @@ $request->validate([
 protected $casts = ['published_at' => \RtlyKit\Laravel\Casts\JalaliCast::class];
 ```
 
-More in the [Laravel guide](https://ehsanenaloo.github.io/RTLY-Kit/en/laravel-setup.html).
+More in the [Laravel guide](https://enaloo.com/apps/rtly-kit/docs/laravel-setup/).
 
 ---
 
@@ -180,8 +180,8 @@ The guide has 29 pages in English, Persian and Arabic. It has search, a light an
 
 <table>
   <tr>
-    <td width="50%"><a href="https://ehsanenaloo.github.io/RTLY-Kit/en/jalali.html"><img src="docs/assets/screenshots/guide-jalali-light.jpg" alt="The Jalali calendar page in the English guide, light theme"></a></td>
-    <td width="50%"><a href="https://ehsanenaloo.github.io/RTLY-Kit/fa/validators-overview.html"><img src="docs/assets/screenshots/guide-validators-fa-dark.jpg" alt="The validators page in the Persian guide, dark theme, right to left"></a></td>
+    <td width="50%"><a href="https://enaloo.com/apps/rtly-kit/docs/jalali/"><img src=".github/assets/guide-jalali-light.jpg" alt="The Jalali calendar page in the English guide, light theme"></a></td>
+    <td width="50%"><a href="https://enaloo.com/apps/rtly-kit/docs/fa/validators-overview/"><img src=".github/assets/guide-validators-fa-dark.jpg" alt="The validators page in the Persian guide, dark theme, right to left"></a></td>
   </tr>
   <tr>
     <td align="center"><sub>English, light theme</sub></td>
@@ -191,14 +191,14 @@ The guide has 29 pages in English, Persian and Arabic. It has search, a light an
 
 | Topic | Read |
 |---|---|
-| Start | [Quick start](https://ehsanenaloo.github.io/RTLY-Kit/en/quick-start.html) · [Installation](https://ehsanenaloo.github.io/RTLY-Kit/en/installation.html) |
-| Calendars | [Jalali](https://ehsanenaloo.github.io/RTLY-Kit/en/jalali.html) · [Hijri](https://ehsanenaloo.github.io/RTLY-Kit/en/hijri.html) · [Hebrew](https://ehsanenaloo.github.io/RTLY-Kit/en/hebrew.html) · [Convert and compare](https://ehsanenaloo.github.io/RTLY-Kit/en/convert-and-compare.html) · [Carbon macros](https://ehsanenaloo.github.io/RTLY-Kit/en/carbon-macros.html) |
-| Validation | [Validators overview](https://ehsanenaloo.github.io/RTLY-Kit/en/validators-overview.html) · [National code](https://ehsanenaloo.github.io/RTLY-Kit/en/national-code.html) · [Sheba and bank card](https://ehsanenaloo.github.io/RTLY-Kit/en/sheba-and-bank-card.html) · [Mobile, postal code, plate](https://ehsanenaloo.github.io/RTLY-Kit/en/mobile-postal-plate.html) |
-| Numbers and text | [Digits and format](https://ehsanenaloo.github.io/RTLY-Kit/en/digits-and-format.html) · [Number words](https://ehsanenaloo.github.io/RTLY-Kit/en/number-words.html) · [Arabic number words](https://ehsanenaloo.github.io/RTLY-Kit/en/arabic-number-words.html) · [Text tools](https://ehsanenaloo.github.io/RTLY-Kit/en/text-tools.html) |
-| Dates and times | [Holidays](https://ehsanenaloo.github.io/RTLY-Kit/en/holidays.html) · [Holiday calendar](https://ehsanenaloo.github.io/RTLY-Kit/en/holiday-calendar.html) · [Prayer times](https://ehsanenaloo.github.io/RTLY-Kit/en/prayer-times.html) |
-| Laravel | [Setup](https://ehsanenaloo.github.io/RTLY-Kit/en/laravel-setup.html) · [Validation and cast](https://ehsanenaloo.github.io/RTLY-Kit/en/laravel-validation-and-cast.html) |
-| Reference | [Helpers](https://ehsanenaloo.github.io/RTLY-Kit/en/helpers-and-globals.html) · [Errors](https://ehsanenaloo.github.io/RTLY-Kit/en/error-handling.html) · [API stability](https://ehsanenaloo.github.io/RTLY-Kit/en/api-stability.html) · [Accuracy and data](https://ehsanenaloo.github.io/RTLY-Kit/en/accuracy-and-data.html) · [Limits](https://ehsanenaloo.github.io/RTLY-Kit/en/limits.html) · [Upgrade](https://ehsanenaloo.github.io/RTLY-Kit/en/upgrade.html) · [Verifying releases](https://ehsanenaloo.github.io/RTLY-Kit/en/verifying-releases.html) · [FAQ](https://ehsanenaloo.github.io/RTLY-Kit/en/troubleshooting-faq.html) |
-| Other languages | [فارسی](https://ehsanenaloo.github.io/RTLY-Kit/fa/) · [العربية](https://ehsanenaloo.github.io/RTLY-Kit/ar/) |
+| Start | [Quick start](https://enaloo.com/apps/rtly-kit/docs/quick-start/) · [Installation](https://enaloo.com/apps/rtly-kit/docs/installation/) |
+| Calendars | [Jalali](https://enaloo.com/apps/rtly-kit/docs/jalali/) · [Hijri](https://enaloo.com/apps/rtly-kit/docs/hijri/) · [Hebrew](https://enaloo.com/apps/rtly-kit/docs/hebrew/) · [Convert and compare](https://enaloo.com/apps/rtly-kit/docs/convert-and-compare/) · [Carbon macros](https://enaloo.com/apps/rtly-kit/docs/carbon-macros/) |
+| Validation | [Validators overview](https://enaloo.com/apps/rtly-kit/docs/validators-overview/) · [National code](https://enaloo.com/apps/rtly-kit/docs/national-code/) · [Sheba and bank card](https://enaloo.com/apps/rtly-kit/docs/sheba-and-bank-card/) · [Mobile, postal code, plate](https://enaloo.com/apps/rtly-kit/docs/mobile-postal-plate/) |
+| Numbers and text | [Digits and format](https://enaloo.com/apps/rtly-kit/docs/digits-and-format/) · [Number words](https://enaloo.com/apps/rtly-kit/docs/number-words/) · [Arabic number words](https://enaloo.com/apps/rtly-kit/docs/arabic-number-words/) · [Text tools](https://enaloo.com/apps/rtly-kit/docs/text-tools/) |
+| Dates and times | [Holidays](https://enaloo.com/apps/rtly-kit/docs/holidays/) · [Holiday calendar](https://enaloo.com/apps/rtly-kit/docs/holiday-calendar/) · [Prayer times](https://enaloo.com/apps/rtly-kit/docs/prayer-times/) |
+| Laravel | [Setup](https://enaloo.com/apps/rtly-kit/docs/laravel-setup/) · [Validation and cast](https://enaloo.com/apps/rtly-kit/docs/laravel-validation-and-cast/) |
+| Reference | [Helpers](https://enaloo.com/apps/rtly-kit/docs/helpers-and-globals/) · [Errors](https://enaloo.com/apps/rtly-kit/docs/error-handling/) · [API stability](https://enaloo.com/apps/rtly-kit/docs/api-stability/) · [Accuracy and data](https://enaloo.com/apps/rtly-kit/docs/accuracy-and-data/) · [Limits](https://enaloo.com/apps/rtly-kit/docs/limits/) · [Upgrade](https://enaloo.com/apps/rtly-kit/docs/upgrade/) · [Verifying releases](https://enaloo.com/apps/rtly-kit/docs/verifying-releases/) · [FAQ](https://enaloo.com/apps/rtly-kit/docs/troubleshooting-faq/) |
+| Other languages | [فارسی](https://enaloo.com/apps/rtly-kit/docs/fa/) · [العربية](https://enaloo.com/apps/rtly-kit/docs/ar/) |
 
 ---
 
@@ -232,7 +232,7 @@ try {
 }
 ```
 
-A value of an accepted type that the library cannot use, such as a year outside the supported range, throws a library exception (`InvalidDateException` for dates). It never leaks a raw `TypeError` or `ValueError`. A value of a type the method does not accept, such as an array for a date, is rejected by PHP itself with a `TypeError`. Read the [error guide](https://ehsanenaloo.github.io/RTLY-Kit/en/error-handling.html) for the full list.
+A value of an accepted type that the library cannot use, such as a year outside the supported range, throws a library exception (`InvalidDateException` for dates). It never leaks a raw `TypeError` or `ValueError`. A value of a type the method does not accept, such as an array for a date, is rejected by PHP itself with a `TypeError`. Read the [error guide](https://enaloo.com/apps/rtly-kit/docs/error-handling/) for the full list.
 
 ---
 
@@ -248,12 +248,12 @@ On 2026-10-08 we compared the library with official sources wherever we could re
 
 ### Good to know
 
-- Iran sets religious dates by moon sighting, so an estimated year can be a day or two off. You can correct it with [HolidayCalendar](https://ehsanenaloo.github.io/RTLY-Kit/en/holiday-calendar.html).
+- Iran sets religious dates by moon sighting, so an estimated year can be a day or two off. You can correct it with [HolidayCalendar](https://enaloo.com/apps/rtly-kit/docs/holiday-calendar/).
 - We found no timetable issued by ISNA, the Muslim World League or the University of Islamic Sciences in Karachi, and no official Tehran table with Isha and Asr.
 - Bank, operator and place names come from public lists, not from an official registry. A valid card can return `null` for the bank name.
 - A few Arabic number-word outputs still wait for review by a native speaker.
 
-Found a mistake? Please [open an issue](https://github.com/ehsanenaloo/RTLY-Kit/issues/new/choose) with a source. The full list is in the [accuracy guide](https://ehsanenaloo.github.io/RTLY-Kit/en/accuracy-and-data.html).
+Found a mistake? Please [open an issue](https://github.com/ehsanenaloo/RTLY-Kit/issues/new/choose) with a source. The full list is in the [accuracy guide](https://enaloo.com/apps/rtly-kit/docs/accuracy-and-data/).
 
 ---
 

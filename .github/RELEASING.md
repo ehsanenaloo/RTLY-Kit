@@ -56,7 +56,7 @@ If a job fails before publishing, fix the cause on `main`, delete the tag locall
 ## 5. After publishing
 
 - **Packagist** updates automatically through its GitHub webhook. Confirm the new version appears at <https://packagist.org/packages/enaxon/rtly-kit>. If it does not, use "Update" on the package page and check the webhook under repository Settings > Webhooks.
-- **GitHub Pages** (the guide at <https://ehsanenaloo.github.io/RTLY-Kit/>) builds from `/docs` on `main`; check the Pages deployment finished and the new text is live.
+- **Guide** (<https://enaloo.com/apps/rtly-kit/docs/>) is built by enaloo.com from the private repository; check the new text is live there.
 - Smoke test in a clean project: `composer require enaxon/rtly-kit:X.Y.Z` and run one call from the README.
 - Announce if appropriate.
 
