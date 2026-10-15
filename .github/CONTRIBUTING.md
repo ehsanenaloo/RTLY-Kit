@@ -96,7 +96,7 @@ Reference data (holidays, bank BINs, Sheba codes, national-code prefixes, mobile
 
 - Branch from `main`, keep a PR focused on one change.
 - Make sure `composer check` passes.
-- Update the guide: edit the fragments in `tools/docs/content/{fa,en,ar}/` (the same page and the same ids in all three languages; maintainers will help translate) and run `composer docs` (never edit `docs/` by hand) and add a line under **Unreleased** in `CHANGELOG.md`.
+- Guide changes: describe the change in the issue or pull request. The guide is kept by the maintainers on the project website.
 - Describe what changed and why. For data changes link your sources.
 
 ## Documentation

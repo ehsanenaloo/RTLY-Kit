@@ -71,8 +71,6 @@
         "cs": "php-cs-fixer fix --config=tools/php-cs-fixer.dist.php --dry-run --diff --ansi",
         "mutation": "php -d memory_limit=-1 -d pcov.enabled=1 -d pcov.directory=src vendor/bin/infection --configuration=tools/infection.json5 --threads=8 --no-progress --with-uncovered --only-covering-test-cases",
         "cs-fix": "php-cs-fixer fix --config=tools/php-cs-fixer.dist.php --ansi",
-        "docs": "php tools/docs/build.php",
-        "docs:check": "php tools/docs/build.php --check",
         "data:check": "php tools/data/check.php",
         "check": [
             "@phpstan",

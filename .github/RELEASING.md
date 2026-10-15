@@ -6,13 +6,12 @@ Maintainer checklist. Releases are cut from `main`; the tag triggers everything 
 
 1. Decide the version ([Semantic Versioning](https://semver.org/)). Before 1.0, breaking changes bump the minor.
 2. In `CHANGELOG.md` rename **Unreleased** to `## [X.Y.Z] - YYYY-MM-DD`, add a fresh empty `## [Unreleased]` above it, update the compare links at the bottom of the file (`[Unreleased]` now compares `vX.Y.Z...HEAD`, and add `[X.Y.Z]` comparing the previous tag with `vX.Y.Z`), and make sure the section is complete: the GitHub Release notes are extracted from it verbatim. The release workflow refuses to run if the newest released section does not match the tag.
-3. Update any version-specific text in the docs (`UPGRADE.md` for breaking changes), then rebuild the guide: `composer docs`.
+3. Update any version-specific text in the docs (`UPGRADE.md` for breaking changes).
 4. Run the full gate (Docker, no local PHP needed):
 
    ```bash
    docker compose -f tools/docker-compose.yml run --rm php composer validate --strict --no-check-lock
    docker compose -f tools/docker-compose.yml run --rm php composer check
-   docker compose -f tools/docker-compose.yml run --rm php composer docs:check
    ```
 
 5. Commit (`chore: release X.Y.Z changelog`), push to `main` through a pull request if branch protection requires one, and wait until the CI run on that exact commit is green. That run includes mutation testing, which can take about an hour on a push to `main`. The release workflow checks this itself: it takes the newest CI run for that commit that was started by a push and requires it to be green. A run that was cancelled by a later push, or a pull request run on the same commit, does not count; if the newest push run is not green, re-run it before tagging.
