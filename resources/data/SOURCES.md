@@ -107,6 +107,7 @@ Comparison with published timetables (all on 2026-10-08; agreement within 1 to 2
 - Hanafi Asr: the fatwa desk of Darul Uloom Deoband (<https://islamqa.org/hanafi/darulifta-deoband/24409/>) states that Asr begins when the shadow is twice the object plus the noon shadow, which is shadow factor 2.
 - ISNA: the Fiqh Council of North America names 15 degrees for both Fajr and Isha for the setting that corresponds to ISNA in prayer apps (<https://fiqhcouncil.org/the-suggested-calculation-method-for-fajr-and-isha/>, published 2021-11-08). ISNA's own site and ISNA Canada's timetables could not be read, so no ISNA table was compared.
 - Tehran Isha: the 14 degree figure is attributed to the Lavaa Institute, Qom, by two secondary pages (ijtihadnet.ir, intime.ir). The Institute of Geophysics publishes no Isha or Asr column, and no official Tehran table with Isha was found.
+- Tehran Fajr (17.7 degrees) and Maghrib (4.5 degrees): the Persian Wikipedia article on prayer times (اوقات شرعی) states both angles for the Calendar Center of the Institute of Geophysics, University of Tehran, without a footnote for that sentence. It is a secondary source. The Institute's own page on its computation bases rendered no text when we read it (2026-10-15), so the primary statement is still not read. The numbers agree with the Institute's published tables (see above), which is the evidence we rely on. The same article gives no angle for Isha.
 
 We found no timetable issued by the University of Islamic Sciences, Karachi, or by the Muslim World League.
 

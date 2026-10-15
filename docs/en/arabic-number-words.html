@@ -163,6 +163,7 @@ require</span> <span class="tok-s">'vendor/autoload.php'</span>;
 
 <h2 id="sources">Where the rules come from<a class="anchor" href="#sources" aria-label="Link to this section">#</a></h2>
 <p>The forms follow Arabic grammar pages, a dictionary and one language-academy decision, all listed in the <a href="#sources">sources</a> section. Known-answer tests cover each rule. A few outputs, such as the split groups for 102 000 and the plural forms of the large scale names, still wait for review by a native speaker.</p>
+<p>On 2026-10-15 we also compared the output with the Arabic spell-out rules of ICU 76.1 (CLDR), with <code>tools/numbers/compare-icu.php</code>. All numbers from 0 to 999 and 1,286 numbers between 1,000 and 9,999 agree, once three spelling conventions of ICU are mapped (the hundreds written as separate words, the oblique dual in the nominative, and 11 written as إحدى عشر). This is a cross-check, not a native review. What still needs a native speaker is narrower: the groups of 101 to 110 thousand and 200 thousand before a scale word (for example 102 000), and the plural names of very large scale words.</p>
 <p>Related: <a href="number-words.html">Number to words</a> for Persian and the reverse direction, and <a href="limits.html#numbers">Limits</a>.</p>
 <nav class="reading-footer" aria-label="Previous and next page"><a class="prev" rel="prev" href="number-words.html"><small>Previous</small>Number to words</a><a class="next" rel="next" href="text-tools.html"><small>Next</small>Text tools</a></nav>
 </article>
